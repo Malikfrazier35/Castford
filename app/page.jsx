@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect, useRef, useCallback } from "react";
 import { Line, Area, BarChart, Bar, ComposedChart, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
-import { LayoutDashboard, TrendingUp, MessageSquare, FileText, Layers, GitBranch, CheckSquare, Plug, Brain, Search, Bell, Sun, Moon, ChevronDown, ChevronRight, ArrowUpRight, ArrowDownRight, Zap, Shield, Users, DollarSign, Target, Activity, Send, Sparkles, Settings, LogOut, X } from "lucide-react";
+import { LayoutDashboard, TrendingUp, MessageSquare, FileText, Layers, GitBranch, CheckSquare, Plug, Brain, Search, Bell, Sun, Moon, ChevronDown, ChevronRight, ArrowUpRight, ArrowDownRight, Zap, Shield, Users, DollarSign, Target, Activity, Send, Sparkles, Settings, LogOut, X, Check, Globe, Eye, Cpu } from "lucide-react";
 
 // ═══════════════════════════════════════════════════════════════
 // FINANCEOS — React Production Build
@@ -1097,7 +1097,7 @@ const CloseView = ({ c, toast }) => {
               background: t.status === "done" ? c.green : "transparent", display: "flex", alignItems: "center", justifyContent: "center",
               flexShrink: 0, transition: "all 0.2s",
             }}>
-              {t.status === "done" && <span style={{ color: "#fff", fontSize: 11, fontWeight: 700 }}>✓</span>}
+              {t.status === "done" && <Check size={12} color="#fff" strokeWidth={3} />}
             </div>
             <div style={{ flex: 1, minWidth: 0 }}>
               <div style={{ fontSize: 12.5, fontWeight: 600, color: c.text, textDecoration: t.status === "done" ? "line-through" : "none" }}>{t.task}</div>
@@ -1181,7 +1181,7 @@ const IntegrationsView = ({ c, toast }) => {
               </div>
             </div>
             {co.status === "connected" && (
-              <div style={{ fontSize: 10, color: c.green, fontWeight: 600, marginBottom: 8 }}>● Connected · {co.records} records</div>
+              <div style={{ fontSize: 10, color: c.green, fontWeight: 600, marginBottom: 8, display: "flex", alignItems: "center", gap: 5 }}><span style={{ width: 6, height: 6, borderRadius: "50%", background: c.green, display: "inline-block" }} /> Connected · {co.records} records</div>
             )}
             <div style={{ display: "flex", gap: 6 }}>
               <button onClick={() => toggleConnect(co.name)} style={{
@@ -1373,18 +1373,20 @@ const LandingPage = ({ onLogin }) => {
         </div>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 16 }}>
           {[
-            { title: "AI Copilot", desc: "Ask questions in plain English. Get data-backed answers with visible reasoning — not a black box.", icon: "🧠" },
-            { title: "Forecast Optimizer", desc: "ML ensemble models with live sensitivity sliders. Adjust NDR, pipeline, churn — see impact instantly.", icon: "📈" },
-            { title: "Multi-Entity Consolidation", desc: "Automatic intercompany eliminations, FX adjustments, and entity-level approval workflows.", icon: "🏢" },
-            { title: "Variance Detective", desc: "AI scans every line for favorable/unfavorable variances and explains the drivers automatically.", icon: "🔍" },
-            { title: "Scenario Modeling", desc: "Compare 4+ scenarios side-by-side. Base, bull, bear, and custom — all with live data feeds.", icon: "⚡" },
-            { title: "30+ Integrations", desc: "NetSuite, Salesforce, Stripe, Snowflake, Rippling, and more. Real-time bi-directional sync.", icon: "🔗" },
+            { title: "AI Copilot", desc: "Ask questions in plain English. Get data-backed answers with visible reasoning — not a black box.", Icon: Brain, color: "#a78bfa" },
+            { title: "Forecast Optimizer", desc: "ML ensemble models with live sensitivity sliders. Adjust NDR, pipeline, churn — see impact instantly.", Icon: TrendingUp, color: "#38bdf8" },
+            { title: "Multi-Entity Consolidation", desc: "Automatic intercompany eliminations, FX adjustments, and entity-level approval workflows.", Icon: Layers, color: "#34d399" },
+            { title: "Variance Detective", desc: "AI scans every line for favorable/unfavorable variances and explains the drivers automatically.", Icon: Eye, color: "#fbbf24" },
+            { title: "Scenario Modeling", desc: "Compare 4+ scenarios side-by-side. Base, bull, bear, and custom — all with live data feeds.", Icon: Cpu, color: "#f87171" },
+            { title: "30+ Integrations", desc: "NetSuite, Salesforce, Stripe, Snowflake, Rippling, and more. Real-time bi-directional sync.", Icon: Globe, color: "#22d3ee" },
           ].map(f => (
             <div key={f.title} style={{ background: "#131316", border: "1px solid #23232a", borderRadius: 14, padding: 24, transition: "border-color 0.15s" }}
               onMouseEnter={e => e.currentTarget.style.borderColor = "#38bdf8"}
               onMouseLeave={e => e.currentTarget.style.borderColor = "#23232a"}
             >
-              <div style={{ fontSize: 28, marginBottom: 12 }}>{f.icon}</div>
+              <div style={{ width: 40, height: 40, borderRadius: 10, background: `${f.color}12`, display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 14 }}>
+                <f.Icon size={20} color={f.color} strokeWidth={1.8} />
+              </div>
               <div style={{ fontSize: 15, fontWeight: 700, marginBottom: 6 }}>{f.title}</div>
               <div style={{ fontSize: 13, color: "#6b7280", lineHeight: 1.6 }}>{f.desc}</div>
             </div>
@@ -1414,7 +1416,7 @@ const LandingPage = ({ onLogin }) => {
               <div style={{ display: "flex", flexDirection: "column", gap: 8, marginBottom: 20 }}>
                 {p.features.map(f => (
                   <div key={f} style={{ fontSize: 13, color: "#9ca3b0", display: "flex", alignItems: "center", gap: 8 }}>
-                    <span style={{ color: "#34d399", fontSize: 14 }}>✓</span> {f}
+                    <Check size={14} color="#34d399" strokeWidth={2.5} /> {f}
                   </div>
                 ))}
               </div>
@@ -1452,14 +1454,54 @@ export default function FinanceOS() {
   const [loggedIn, setLoggedIn] = useState(false);
   const [view, setView] = useState("dashboard");
   const [prevView, setPrevView] = useState(null);
-  const [mode, setMode] = useState("dark");
   const [cmdOpen, setCmdOpen] = useState(false);
   const [drawerKpi, setDrawerKpi] = useState(null);
   const [period, setPeriod] = useState("FY2025 YTD");
   const [periodOpen, setPeriodOpen] = useState(false);
   const [navHistory, setNavHistory] = useState(["dashboard"]);
   const { toasts, toast } = useToast();
+
+  // Sunset-aware auto theme: dark after 6:30pm, light after 6:30am, respects OS preference
+  const getAutoMode = useCallback(() => {
+    const hour = new Date().getHours();
+    const minute = new Date().getMinutes();
+    const timeDecimal = hour + minute / 60;
+    // Approximate sunset/sunrise for mid-latitudes (adjusts seasonally would need API)
+    const sunrise = 6.5;  // 6:30 AM
+    const sunset = 18.5;  // 6:30 PM (conservative — real sunset varies by season/location)
+    if (timeDecimal >= sunrise && timeDecimal < sunset) return "light";
+    return "dark";
+  }, []);
+
+  const [mode, setMode] = useState("dark");
+  const [autoTheme, setAutoTheme] = useState(true);
   const c = THEME[mode];
+
+  // Check OS preference and time on mount, then recheck every 5 minutes
+  useEffect(() => {
+    if (!autoTheme) return;
+    // Check OS-level preference first
+    const prefersDark = window.matchMedia?.("(prefers-color-scheme: dark)")?.matches;
+    if (prefersDark !== undefined) {
+      setMode(prefersDark ? "dark" : "light");
+    } else {
+      setMode(getAutoMode());
+    }
+    // Recheck every 5 minutes for sunset transition
+    const interval = setInterval(() => {
+      if (autoTheme) setMode(getAutoMode());
+    }, 5 * 60 * 1000);
+    // Listen for OS preference changes
+    const mql = window.matchMedia?.("(prefers-color-scheme: dark)");
+    const handler = (e) => { if (autoTheme) setMode(e.matches ? "dark" : "light"); };
+    mql?.addEventListener?.("change", handler);
+    return () => { clearInterval(interval); mql?.removeEventListener?.("change", handler); };
+  }, [autoTheme, getAutoMode]);
+
+  const toggleMode = useCallback(() => {
+    setAutoTheme(false); // Manual override disables auto
+    setMode(prev => prev === "dark" ? "light" : "dark");
+  }, []);
 
   const handleLogout = useCallback(() => {
     setLoggedIn(false);
@@ -1508,6 +1550,8 @@ export default function FinanceOS() {
       <style>{`
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: 'DM Sans', system-ui, -apple-system, sans-serif; -webkit-font-smoothing: antialiased; }
+        button { font-family: inherit; border: none; background: none; cursor: pointer; padding: 0; line-height: inherit; -webkit-appearance: none; appearance: none; }
+        a { text-decoration: none; }
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: ${c.borderBright}; border-radius: 3px; }
@@ -1591,7 +1635,7 @@ export default function FinanceOS() {
 
         {/* Theme + User */}
         <div style={{ padding: "12px 14px", borderTop: `1px solid ${c.borderSub}` }}>
-          <div onClick={() => setMode(mode === "dark" ? "light" : "dark")} style={{
+          <div onClick={toggleMode} style={{
             display: "flex", alignItems: "center", gap: 8, padding: "8px 10px", borderRadius: 8,
             cursor: "pointer", fontSize: 12, color: c.textSec, transition: "all 0.15s",
           }}
@@ -1599,7 +1643,8 @@ export default function FinanceOS() {
           onMouseLeave={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = c.textSec; }}
           >
             {mode === "dark" ? <Sun size={14} /> : <Moon size={14} />}
-            {mode === "dark" ? "Light Mode" : "Dark Mode"}
+            <span style={{ flex: 1 }}>{mode === "dark" ? "Light Mode" : "Dark Mode"}</span>
+            {autoTheme && <span style={{ fontSize: 8, fontWeight: 700, padding: "2px 5px", borderRadius: 3, background: c.accentDim, color: c.accent, letterSpacing: "0.05em" }}>AUTO</span>}
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 10px", marginTop: 4, borderRadius: 8, cursor: "pointer", transition: "background 0.15s" }}
             onMouseEnter={e => e.currentTarget.style.background = c.surfaceAlt}
