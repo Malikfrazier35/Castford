@@ -609,32 +609,42 @@ const CopilotView = ({ c, toast }) => {
       </div>
 
       {/* Messages */}
-      <div style={{ flex: 1, overflow: "auto", padding: "16px 20px", display: "flex", flexDirection: "column", gap: 12 }}>
+      <div style={{ flex: 1, overflow: "auto", padding: "20px 24px", display: "flex", flexDirection: "column", gap: 14 }}>
         {messages.map((m, i) => (
           <div key={i} style={{
-            alignSelf: m.role === "user" ? "flex-end" : "flex-start", maxWidth: "85%",
-            padding: "12px 16px", borderRadius: m.role === "user" ? "12px 12px 4px 12px" : "12px 12px 12px 4px",
-            background: m.role === "user" ? c.accentDim : c.surfaceAlt,
-            border: `1px solid ${m.role === "user" ? c.accent + "33" : c.borderSub}`,
-            fontSize: 12.5, lineHeight: 1.7, color: c.text, whiteSpace: "pre-wrap",
+            alignSelf: m.role === "user" ? "flex-end" : "flex-start", maxWidth: "82%",
+            padding: m.role === "user" ? "12px 18px" : "16px 20px",
+            borderRadius: m.role === "user" ? "16px 16px 4px 16px" : "16px 16px 16px 4px",
+            background: m.role === "user" ? c.accentMid : `${c.surface}dd`,
+            border: `1px solid ${m.role === "user" ? c.accent + "40" : c.border}`,
+            boxShadow: m.role === "user" ? "none" : c.shadow1,
+            backdropFilter: m.role === "assistant" ? "blur(8px)" : "none",
+            fontSize: 13, lineHeight: 1.75, color: c.text, whiteSpace: "pre-wrap",
           }}>
-            {m.role === "assistant" && <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 8, fontSize: 10, color: c.purple, fontWeight: 700 }}>
-              <Sparkles size={12} /> AI Copilot
+            {m.role === "assistant" && <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 10, fontSize: 10, color: c.purple, fontWeight: 700, letterSpacing: "0.02em" }}>
+              <div style={{ width: 18, height: 18, borderRadius: 5, background: c.purpleDim, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                <Sparkles size={10} color={c.purple} />
+              </div>
+              FinanceOS Copilot
             </div>}
             {m.content.split("\n").map((line, j) => {
-              if (line.startsWith("**") && line.endsWith("**")) return <div key={j} style={{ fontWeight: 700, color: c.text, marginTop: 6 }}>{line.replace(/\*\*/g, "")}</div>;
-              if (line.startsWith("• ")) return <div key={j} style={{ paddingLeft: 12, color: c.textSec }}>{line}</div>;
+              if (line.startsWith("**") && line.endsWith("**")) return <div key={j} style={{ fontWeight: 700, color: c.text, marginTop: 8, marginBottom: 2, fontSize: 13.5 }}>{line.replace(/\*\*/g, "")}</div>;
+              if (line.match(/^\*\*.*\*\*$/)) return <div key={j} style={{ fontWeight: 700, color: c.text, marginTop: 8, marginBottom: 2 }}>{line.replace(/\*\*/g, "")}</div>;
+              if (line.startsWith("• ")) return <div key={j} style={{ paddingLeft: 14, color: c.textSec, position: "relative", marginBottom: 2 }}><span style={{ position: "absolute", left: 0, color: c.accent }}>•</span>{line.slice(2)}</div>;
               return <div key={j}>{line || <br />}</div>;
             })}
           </div>
         ))}
         {thinking && (
           <div style={{
-            alignSelf: "flex-start", padding: "12px 16px", borderRadius: "12px 12px 12px 4px",
-            background: c.surfaceAlt, border: `1px solid ${c.borderSub}`, display: "flex", alignItems: "center", gap: 8,
+            alignSelf: "flex-start", padding: "14px 20px", borderRadius: "16px 16px 16px 4px",
+            background: `${c.surface}dd`, border: `1px solid ${c.border}`, boxShadow: c.shadow1,
+            backdropFilter: "blur(8px)", display: "flex", alignItems: "center", gap: 10,
           }}>
-            <Sparkles size={12} color={c.purple} />
-            <span style={{ fontSize: 11, color: c.textDim }}>Analyzing financials...</span>
+            <div style={{ width: 18, height: 18, borderRadius: 5, background: c.purpleDim, display: "flex", alignItems: "center", justifyContent: "center" }}>
+              <Sparkles size={10} color={c.purple} />
+            </div>
+            <span style={{ fontSize: 12, color: c.textDim }}>Analyzing financials...</span>
             <div style={{ display: "flex", gap: 3 }}>
               {[0, 1, 2].map(i => <div key={i} style={{ width: 5, height: 5, borderRadius: "50%", background: c.purple, opacity: 0.5, animation: `pulse 1.2s ease-in-out ${i * 0.2}s infinite` }} />)}
             </div>
@@ -644,20 +654,24 @@ const CopilotView = ({ c, toast }) => {
       </div>
 
       {/* Input */}
-      <div style={{ padding: "12px 20px", borderTop: `1px solid ${c.border}`, display: "flex", gap: 8 }}>
+      <div style={{ padding: "14px 24px", borderTop: `1px solid ${c.border}`, display: "flex", gap: 10, background: `${c.bg2}cc`, backdropFilter: "blur(8px)" }}>
         <input value={input} onChange={e => setInput(e.target.value)} onKeyDown={e => e.key === "Enter" && send()}
           placeholder="Ask about forecasts, variance, scenarios..."
           style={{
-            flex: 1, background: c.surfaceAlt, border: `1px solid ${c.border}`, borderRadius: 8, padding: "10px 14px",
-            color: c.text, fontSize: 13, outline: "none", fontFamily: "inherit",
+            flex: 1, padding: "12px 16px", borderRadius: 10, border: `1px solid ${c.border}`, background: c.surface,
+            color: c.text, fontSize: 13, outline: "none", fontFamily: "inherit", transition: "border-color 0.15s, box-shadow 0.15s",
           }}
-          onFocus={e => e.target.style.borderColor = c.accent}
-          onBlur={e => e.target.style.borderColor = c.border}
+          onFocus={e => { e.target.style.borderColor = c.accent; e.target.style.boxShadow = `0 0 0 3px ${c.accent}15`; }}
+          onBlur={e => { e.target.style.borderColor = c.border; e.target.style.boxShadow = "none"; }}
         />
         <button onClick={send} style={{
-          background: c.accent, border: "none", borderRadius: 8, padding: "10px 18px", color: "#fff",
+          background: `linear-gradient(135deg, ${c.accent}, ${c.purple})`, border: "none", borderRadius: 10, padding: "12px 20px", color: "#fff",
           fontWeight: 700, fontSize: 13, cursor: "pointer", display: "flex", alignItems: "center", gap: 6, fontFamily: "inherit",
-        }}>
+          boxShadow: `0 4px 12px ${c.accent}30`, transition: "transform 0.1s, box-shadow 0.15s",
+        }}
+        onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-1px)"; e.currentTarget.style.boxShadow = `0 6px 20px ${c.accent}40`; }}
+        onMouseLeave={e => { e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = `0 4px 12px ${c.accent}30`; }}
+        >
           <Send size={14} /> Send
         </button>
       </div>
@@ -689,7 +703,7 @@ const PnlView = ({ c, onNav }) => {
 
   return (
     <div style={{ padding: 32, overflow: "auto" }}>
-      <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 12, overflow: "hidden" }}>
+      <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, overflow: "hidden" }}>
         <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12 }}>
           <thead>
             <tr style={{ borderBottom: `2px solid ${c.borderBright}` }}>
@@ -716,16 +730,16 @@ const PnlView = ({ c, onNav }) => {
                   </td>
                 </tr>,
                 ...(!isCollapsed ? section.rows.map((row, ri) => (
-                  <tr key={`row-${si}-${ri}`} style={{ borderBottom: `1px solid ${c.borderSub}` }}
-                    onMouseEnter={e => e.currentTarget.style.background = c.accentDim}
-                    onMouseLeave={e => e.currentTarget.style.background = "transparent"}
+                  <tr key={`row-${si}-${ri}`} style={{ borderBottom: `1px solid ${c.borderSub}`, background: ri % 2 === 1 ? `${c.surfaceAlt}60` : "transparent", transition: "background 0.12s" }}
+                    onMouseEnter={e => e.currentTarget.style.background = c.accentMid || c.accentDim}
+                    onMouseLeave={e => e.currentTarget.style.background = ri % 2 === 1 ? `${c.surfaceAlt}60` : "transparent"}
                   >
-                    <td style={{ padding: "7px 12px 7px 32px", color: c.text, fontWeight: 500 }}>{row.name}</td>
-                    <td style={{ textAlign: "right", padding: "7px 12px", color: c.text, fontFamily: "'JetBrains Mono', monospace", fontSize: 11 }}>{fmt(row.actual)}</td>
-                    <td style={{ textAlign: "right", padding: "7px 12px", color: c.textDim, fontFamily: "'JetBrains Mono', monospace", fontSize: 11 }}>{fmt(row.budget)}</td>
+                    <td style={{ padding: "9px 14px 9px 32px", color: c.text, fontWeight: 500 }}>{row.name}</td>
+                    <td style={{ textAlign: "right", padding: "9px 14px", color: c.text, fontFamily: "'JetBrains Mono', monospace", fontSize: 11 }}>{fmt(row.actual)}</td>
+                    <td style={{ textAlign: "right", padding: "9px 14px", color: c.textDim, fontFamily: "'JetBrains Mono', monospace", fontSize: 11 }}>{fmt(row.budget)}</td>
                     <VarCell actual={row.actual} budget={row.budget} revenue={isRev} />
-                    <td style={{ textAlign: "right", padding: "7px 12px", color: c.textDim, fontSize: 11 }}>{((row.actual / 51190) * 100).toFixed(1)}%</td>
-                    <td style={{ padding: "7px 12px", color: c.textDim, fontSize: 10 }}>{row.note}</td>
+                    <td style={{ textAlign: "right", padding: "9px 14px", color: c.textDim, fontSize: 11 }}>{((row.actual / 51190) * 100).toFixed(1)}%</td>
+                    <td style={{ padding: "9px 14px", color: c.textDim, fontSize: 10 }}>{row.note}</td>
                   </tr>
                 )) : []),
                 !isCollapsed && (
@@ -826,7 +840,7 @@ const ForecastView = ({ c }) => {
       </div>
 
       {/* Chart */}
-      <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 12, padding: 18, marginBottom: 16 }}>
+      <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, padding: 22, boxShadow: c.cardGlow, marginBottom: 16 }}>
         <div style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.04em", color: c.textDim, marginBottom: 14 }}>
           Revenue Forecast — 12-Month with Scenarios ($K)
         </div>
@@ -850,7 +864,7 @@ const ForecastView = ({ c }) => {
 
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
         {/* Driver importance */}
-        <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 12, padding: 18 }}>
+        <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, padding: 22, boxShadow: c.cardGlow }}>
           <div style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.04em", color: c.textDim, marginBottom: 12 }}>
             Top Drivers (SHAP Importance)
           </div>
@@ -866,7 +880,7 @@ const ForecastView = ({ c }) => {
         </div>
 
         {/* Assumption sliders */}
-        <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 12, padding: 18 }}>
+        <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, padding: 22, boxShadow: c.cardGlow }}>
           <div style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.04em", color: c.textDim, marginBottom: 12 }}>
             Adjust Key Assumptions
           </div>
@@ -938,7 +952,7 @@ const ConsolidationView = ({ c, onNav, toast }) => {
           const closing = st === "closing";
           const displayStatus = closing ? "Closing..." : st;
           return (
-            <div key={e.name} style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 12, padding: 16 }}>
+            <div key={e.name} style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, padding: 20, boxShadow: c.cardGlow }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
                 <span style={{ fontSize: 14, fontWeight: 800, color: c.text }}>{e.name}</span>
                 <span style={{ fontSize: 9, fontWeight: 700, padding: "3px 8px", borderRadius: 4, background: `${(statusColors[displayStatus] || c.textDim)}18`, color: statusColors[displayStatus] || c.textDim }}>{displayStatus}</span>
@@ -963,7 +977,7 @@ const ConsolidationView = ({ c, onNav, toast }) => {
       </div>
 
       {/* Consolidated P&L */}
-      <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 12, overflow: "hidden" }}>
+      <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, overflow: "hidden" }}>
         <div style={{ padding: "14px 18px", display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: `1px solid ${c.borderSub}` }}>
           <span style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.04em", color: c.textDim }}>Consolidated P&L — Eliminations Applied</span>
           <span style={{ fontSize: 9, color: c.purple, fontWeight: 700 }}>Auto-eliminated $1.2M IC transactions</span>
@@ -1027,18 +1041,18 @@ const CloseView = ({ c, toast }) => {
   return (
     <div style={{ padding: 32 }}>
       {/* Progress bar */}
-      <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 12, padding: 18, marginBottom: 20 }}>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
-          <span style={{ fontSize: 14, fontWeight: 800, color: c.text }}>February Close — {pct}% Complete</span>
-          <span style={{ fontSize: 11, color: c.textDim }}>{doneCount}/{tasks.length} tasks</span>
+      <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, padding: 22, marginBottom: 24, boxShadow: c.cardGlow }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
+          <span style={{ fontSize: 15, fontWeight: 800, color: c.text, letterSpacing: "-0.02em" }}>February Close — {pct}% Complete</span>
+          <span style={{ fontSize: 11, color: c.textDim, fontFamily: "'JetBrains Mono', monospace" }}>{doneCount}/{tasks.length} tasks</span>
         </div>
-        <div style={{ height: 8, background: c.bg2, borderRadius: 4, overflow: "hidden" }}>
-          <div style={{ width: `${pct}%`, height: "100%", background: `linear-gradient(90deg, ${c.accent}, ${c.green})`, borderRadius: 4, transition: "width 0.5s ease" }} />
+        <div style={{ height: 10, background: c.bg2, borderRadius: 5, overflow: "hidden", boxShadow: `inset 0 1px 3px ${c.bg}` }}>
+          <div style={{ width: `${pct}%`, height: "100%", background: `linear-gradient(90deg, ${c.accent}, ${c.green})`, borderRadius: 5, transition: "width 0.5s ease", boxShadow: `0 0 12px ${c.accent}40` }} />
         </div>
       </div>
 
       {/* Task list */}
-      <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 12, overflow: "hidden" }}>
+      <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, overflow: "hidden" }}>
         {tasks.map((t, i) => (
           <div key={t.id} style={{
             display: "flex", alignItems: "center", gap: 12, padding: "12px 18px",
@@ -1127,7 +1141,7 @@ const IntegrationsView = ({ c, toast }) => {
       {/* Connector grid */}
       <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 16 }}>
         {filtered.map(co => (
-          <div key={co.name} style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 12, padding: 16, transition: "border-color 0.15s" }}
+          <div key={co.name} style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, padding: 20, boxShadow: c.cardGlow, transition: "border-color 0.15s" }}
             onMouseEnter={e => e.currentTarget.style.borderColor = co.color}
             onMouseLeave={e => e.currentTarget.style.borderColor = c.border}
           >
@@ -1180,7 +1194,7 @@ const ScenariosView = ({ c }) => {
       <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 12 }}>
         {SCENARIOS_LIST.map((s, i) => (
           <div key={s.name} onClick={() => setSelected(i === selected ? null : i)} style={{
-            background: c.surface, border: `1px solid ${selected === i ? c.accent : c.border}`, borderRadius: 12, padding: 18,
+            background: c.surface, border: `1px solid ${selected === i ? c.accent : c.border}`, borderRadius: 14, padding: 22, boxShadow: c.cardGlow,
             cursor: "pointer", transition: "border-color 0.15s",
           }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
@@ -1208,7 +1222,7 @@ const ScenariosView = ({ c }) => {
 // ══════════════════════════════════════════════════════════════
 const SettingsView = ({ c }) => (
   <div style={{ padding: 32, maxWidth: 640 }}>
-    <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 12, padding: 20, marginBottom: 16 }}>
+    <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, padding: 22, boxShadow: c.cardGlow, marginBottom: 16 }}>
       <div style={{ fontSize: 13, fontWeight: 700, color: c.text, marginBottom: 12 }}>Organization</div>
       {[{ label: "Company", value: "Acme SaaS Corp" }, { label: "Fiscal Year End", value: "December 31" }, { label: "Currency", value: "USD" }, { label: "Plan", value: "Growth — $1,499/mo billed annually" }].map(f => (
         <div key={f.label} style={{ display: "flex", justifyContent: "space-between", padding: "10px 0", borderBottom: `1px solid ${c.borderSub}`, fontSize: 12 }}>
@@ -1217,7 +1231,7 @@ const SettingsView = ({ c }) => (
         </div>
       ))}
     </div>
-    <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 12, padding: 20 }}>
+    <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, padding: 22, boxShadow: c.cardGlow }}>
       <div style={{ fontSize: 13, fontWeight: 700, color: c.text, marginBottom: 12 }}>Billing</div>
       <div style={{ fontSize: 12, color: c.textSec, lineHeight: 1.7, marginBottom: 12 }}>Your Growth plan renews annually on January 15. Next charge: $17,988. Payment method: Visa ending 4242.</div>
       <div style={{ display: "flex", gap: 8 }}>
