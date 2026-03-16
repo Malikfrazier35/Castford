@@ -82,6 +82,21 @@ const DETAIL_DATA = {
     { label: "Cloud Infra", value: "$4.84M", color: "amber" }, { label: "CS Team", value: "$2.18M", color: "text" },
     { label: "Margin Trend", value: "+2.1pp YoY", color: "green" }, { label: "Benchmark (p75)", value: "78%", color: "text" },
   ]},
+  "Rule of 40": { title: "Rule of 40 Score", value: "52.1", trend: [38,40,42,44,46,48,50,52.1], details: [
+    { label: "Revenue Growth", value: "44.7%", color: "green" }, { label: "EBITDA Margin", value: "7.4%", color: "green" },
+    { label: "Growth Component", value: "44.7 pts", color: "accent" }, { label: "Profit Component", value: "7.4 pts", color: "accent" },
+    { label: "Benchmark (p90)", value: "45", color: "text" }, { label: "Percentile", value: "Top 10%", color: "green" },
+  ]},
+  "Burn Multiple": { title: "Burn Multiple", value: "0.8x", trend: [1.4,1.3,1.2,1.1,1.0,0.9,0.85,0.8], details: [
+    { label: "Net Burn", value: "$6.8M", color: "red" }, { label: "Net New ARR", value: "$8.6M", color: "green" },
+    { label: "Burn / ARR", value: "0.8x", color: "green" }, { label: "Cash Runway", value: "34 months", color: "green" },
+    { label: "Benchmark (good)", value: "<1.5x", color: "text" }, { label: "Trend", value: "Improving", color: "green" },
+  ]},
+  "Headcount": { title: "Headcount", value: "312", trend: [260,270,278,284,290,298,305,312], details: [
+    { label: "Engineering", value: "128", color: "accent" }, { label: "Sales & Marketing", value: "84", color: "purple" },
+    { label: "G&A", value: "52", color: "text" }, { label: "Customer Success", value: "48", color: "green" },
+    { label: "Open Reqs", value: "22", color: "amber" }, { label: "Revenue per Head", value: "$164K", color: "text" },
+  ]},
 };
 
 const DetailDrawer = ({ kpi, c, onClose }) => {
@@ -310,24 +325,25 @@ const Spark = ({ data, color, width = 64, height = 24 }) => {
 };
 
 // ── KPI CARD ─────────────────────────────────────────────────
-const KpiCard = ({ kpi, c, onClick }) => {
+const KpiCard = ({ kpi, c, onClick, index = 0 }) => {
   const Icon = kpi.icon;
   return (
     <div onClick={onClick} style={{
-      background: c.surface, border: `1px solid ${c.border}`, borderRadius: 12, padding: "16px 18px",
-      cursor: "pointer", transition: "border-color 0.15s, transform 0.15s",
+      background: c.surface, border: `1px solid ${c.border}`, borderRadius: 12, padding: "18px 20px",
+      cursor: "pointer", transition: "border-color 0.15s, transform 0.15s, box-shadow 0.15s",
       position: "relative", overflow: "hidden",
+      animation: `fadeSlideUp 0.4s cubic-bezier(0.22,1,0.36,1) ${index * 0.06}s both`,
     }}
-    onMouseEnter={e => { e.currentTarget.style.borderColor = c.accent; e.currentTarget.style.transform = "translateY(-1px)"; }}
-    onMouseLeave={e => { e.currentTarget.style.borderColor = c.border; e.currentTarget.style.transform = "none"; }}
+    onMouseEnter={e => { e.currentTarget.style.borderColor = c.accent; e.currentTarget.style.transform = "translateY(-2px)"; e.currentTarget.style.boxShadow = `0 8px 24px ${c.accent}15`; }}
+    onMouseLeave={e => { e.currentTarget.style.borderColor = c.border; e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = "none"; }}
     >
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 8 }}>
-        <div style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.05em", color: c.textDim }}>{kpi.label}</div>
-        <Icon size={14} color={c.textFaint} />
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 10 }}>
+        <div style={{ fontSize: 10, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.06em", color: c.textFaint }}>{kpi.label}</div>
+        <Icon size={14} color={c.textFaint} strokeWidth={1.5} />
       </div>
       <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between" }}>
         <div>
-          <div style={{ fontSize: 24, fontWeight: 800, color: c.text, letterSpacing: "-0.02em", lineHeight: 1 }}>{kpi.value}</div>
+          <div style={{ fontSize: 26, fontWeight: 800, color: c.text, letterSpacing: "-0.03em", lineHeight: 1, fontFamily: "'JetBrains Mono', monospace" }}>{kpi.value}</div>
           <div style={{
             fontSize: 11, fontWeight: 700, marginTop: 4, padding: "2px 6px", borderRadius: 4, display: "inline-block",
             color: kpi.up ? c.green : c.red, background: kpi.up ? c.greenDim : c.redDim,
@@ -363,14 +379,14 @@ const InsightRow = ({ item, c, onClick }) => (
 // DASHBOARD VIEW
 // ══════════════════════════════════════════════════════════════
 const DashboardView = ({ c, onNav, toast, onDrawer }) => (
-  <div style={{ padding: 24 }}>
+  <div style={{ padding: 32 }}>
     {/* KPI Grid */}
-    <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 12, marginBottom: 20 }}>
-      {KPIS.map(k => <KpiCard key={k.label} kpi={k} c={c} onClick={() => onDrawer(k.label)} />)}
+    <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 16, marginBottom: 20 }}>
+      {KPIS.map((k, i) => <KpiCard key={k.label} kpi={k} c={c} onClick={() => onDrawer(k.label)} index={i} />)}
     </div>
 
     {/* Charts Row */}
-    <div style={{ display: "grid", gridTemplateColumns: "1.6fr 1fr", gap: 14, marginBottom: 20 }}>
+    <div style={{ display: "grid", gridTemplateColumns: "1.6fr 1fr", gap: 16, marginBottom: 20 }}>
       {/* Revenue Chart */}
       <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 12, padding: 18 }}>
         <div style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.04em", color: c.textDim, marginBottom: 14 }}>
@@ -389,8 +405,17 @@ const DashboardView = ({ c, onNav, toast, onDrawer }) => (
             <Area type="monotone" dataKey="actual" stroke={c.accent} fill="url(#gAct)" strokeWidth={2.5} name="Actual" dot={{ r: 3, fill: c.accent }} connectNulls={false} />
             <Line type="monotone" dataKey="budget" stroke={c.textDim} strokeWidth={1} strokeDasharray="4 4" name="Budget" dot={false} />
             <Area type="monotone" dataKey="forecast" stroke={c.green} fill="url(#gFc)" strokeWidth={2} strokeDasharray="6 3" name="Forecast" dot={{ r: 3, fill: c.green }} connectNulls={false} />
+            {/* Today marker */}
+            <Line type="monotone" dataKey={() => null} stroke="none" />
           </ComposedChart>
         </ResponsiveContainer>
+        {/* Chart legend with today indicator */}
+        <div style={{ display: "flex", gap: 16, marginTop: 10, fontSize: 10, color: c.textDim, alignItems: "center" }}>
+          <span style={{ display: "flex", alignItems: "center", gap: 4 }}><span style={{ width: 16, height: 2.5, background: c.accent, borderRadius: 1, display: "inline-block" }} /> Actual</span>
+          <span style={{ display: "flex", alignItems: "center", gap: 4 }}><span style={{ width: 16, height: 1, background: c.textDim, borderRadius: 1, display: "inline-block", borderTop: "1px dashed " + c.textDim }} /> Budget</span>
+          <span style={{ display: "flex", alignItems: "center", gap: 4 }}><span style={{ width: 16, height: 2, background: c.green, borderRadius: 1, display: "inline-block", opacity: 0.7 }} /> Forecast</span>
+          <span style={{ marginLeft: "auto", fontWeight: 600, color: c.accent }}>Today: Jun 2025</span>
+        </div>
       </div>
 
       {/* Segment Donut */}
@@ -421,7 +446,7 @@ const DashboardView = ({ c, onNav, toast, onDrawer }) => (
     </div>
 
     {/* Expense Bars + Insights */}
-    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
+    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
       {/* Expense Breakdown */}
       <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 12, padding: 18 }}>
         <div style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.04em", color: c.textDim, marginBottom: 14 }}>
@@ -605,7 +630,7 @@ const PnlView = ({ c, onNav }) => {
   };
 
   return (
-    <div style={{ padding: 24, overflow: "auto" }}>
+    <div style={{ padding: 32, overflow: "auto" }}>
       <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 12, overflow: "hidden" }}>
         <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12 }}>
           <thead>
@@ -730,7 +755,7 @@ const ForecastView = ({ c }) => {
   };
 
   return (
-    <div style={{ padding: 24 }}>
+    <div style={{ padding: 32 }}>
       {/* Model info badges */}
       <div style={{ display: "flex", gap: 8, marginBottom: 16, flexWrap: "wrap" }}>
         {["ML: ETS + XGBoost + Linear ensemble", "MAPE: 3.2%", "14 drivers + 3 external signals", "Last trained 6h ago"].map(b => (
@@ -765,7 +790,7 @@ const ForecastView = ({ c }) => {
         </ResponsiveContainer>
       </div>
 
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
         {/* Driver importance */}
         <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 12, padding: 18 }}>
           <div style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.04em", color: c.textDim, marginBottom: 12 }}>
@@ -847,9 +872,9 @@ const ConsolidationView = ({ c, onNav, toast }) => {
   };
 
   return (
-    <div style={{ padding: 24 }}>
+    <div style={{ padding: 32 }}>
       {/* Entity cards */}
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 12, marginBottom: 20 }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 16, marginBottom: 20 }}>
         {ENTITIES.map(e => {
           const st = entityStatus[e.name] || e.status;
           const closing = st === "closing";
@@ -942,7 +967,7 @@ const CloseView = ({ c, toast }) => {
   const statusColor = { done: c.green, progress: c.accent, notstarted: c.textFaint };
 
   return (
-    <div style={{ padding: 24 }}>
+    <div style={{ padding: 32 }}>
       {/* Progress bar */}
       <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 12, padding: 18, marginBottom: 20 }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
@@ -1019,7 +1044,7 @@ const IntegrationsView = ({ c, toast }) => {
   const filtered = filter === "all" ? conns : conns.filter(co => co.cat === filter);
 
   return (
-    <div style={{ padding: 24 }}>
+    <div style={{ padding: 32 }}>
       {/* Stats */}
       <div style={{ display: "flex", gap: 16, marginBottom: 20 }}>
         {[{ label: "Connected", value: conns.filter(co => co.status === "connected").length, color: c.green }, { label: "Available", value: conns.filter(co => co.status === "available").length, color: c.textDim }, { label: "Total Records", value: "3.2M+", color: c.accent }].map(s => (
@@ -1042,7 +1067,7 @@ const IntegrationsView = ({ c, toast }) => {
       </div>
 
       {/* Connector grid */}
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 12 }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 16 }}>
         {filtered.map(co => (
           <div key={co.name} style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 12, padding: 16, transition: "border-color 0.15s" }}
             onMouseEnter={e => e.currentTarget.style.borderColor = co.color}
@@ -1088,7 +1113,7 @@ const ScenariosView = ({ c }) => {
   const [selected, setSelected] = useState(null);
 
   return (
-    <div style={{ padding: 24 }}>
+    <div style={{ padding: 32 }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
         <div style={{ fontSize: 12, color: c.textSec }}>{SCENARIOS_LIST.length} scenarios · Compare up to 4 side-by-side</div>
         <button style={{ fontSize: 11, padding: "8px 16px", borderRadius: 8, border: "none", background: c.accent, color: "#fff", fontWeight: 700, cursor: "pointer", fontFamily: "inherit" }}>+ New Scenario</button>
@@ -1124,7 +1149,7 @@ const ScenariosView = ({ c }) => {
 // SETTINGS VIEW (minimal)
 // ══════════════════════════════════════════════════════════════
 const SettingsView = ({ c }) => (
-  <div style={{ padding: 24, maxWidth: 640 }}>
+  <div style={{ padding: 32, maxWidth: 640 }}>
     <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 12, padding: 20, marginBottom: 16 }}>
       <div style={{ fontSize: 13, fontWeight: 700, color: c.text, marginBottom: 12 }}>Organization</div>
       {[{ label: "Company", value: "Acme SaaS Corp" }, { label: "Fiscal Year End", value: "December 31" }, { label: "Currency", value: "USD" }, { label: "Plan", value: "Growth — $1,499/mo billed annually" }].map(f => (
@@ -1207,6 +1232,7 @@ export default function FinanceOS() {
         @keyframes drawerIn { from { transform: translateX(100%); } to { transform: translateX(0); } }
         @keyframes cmdIn { from { opacity: 0; transform: scale(0.96) translateY(-8px); } to { opacity: 1; transform: scale(1) translateY(0); } }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes fadeSlideUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
         .view-fade { animation: fadeIn 0.2s ease-out; }
       `}</style>
 
@@ -1216,15 +1242,18 @@ export default function FinanceOS() {
         borderRight: `1px solid ${c.border}`, display: "flex", flexDirection: "column", flexShrink: 0,
       }}>
         {/* Logo */}
-        <div style={{ padding: "20px 20px 16px", borderBottom: `1px solid ${c.borderSub}` }}>
+        <div style={{ padding: "22px 20px 18px", borderBottom: `1px solid ${c.borderSub}` }}>
           <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
             <div style={{
-              width: 28, height: 28, borderRadius: 8, display: "flex", alignItems: "center", justifyContent: "center",
-              background: "linear-gradient(135deg, #0ea5e9, #7c3aed)", fontSize: 13, fontWeight: 900, color: "#fff",
+              width: 32, height: 32, borderRadius: 10, display: "flex", alignItems: "center", justifyContent: "center",
+              background: "linear-gradient(135deg, #0ea5e9, #7c3aed)", fontSize: 14, fontWeight: 900, color: "#fff",
+              boxShadow: "0 4px 12px rgba(14,165,233,0.25)",
             }}>F</div>
-            <span style={{ fontWeight: 800, fontSize: 15, color: c.text, letterSpacing: "-0.3px" }}>FinanceOS</span>
+            <div>
+              <span style={{ fontWeight: 800, fontSize: 15, color: c.text, letterSpacing: "-0.3px" }}>FinanceOS</span>
+              <div style={{ fontSize: 9, color: c.textFaint, marginTop: 1 }}>Acme SaaS Corp · FY2025</div>
+            </div>
           </div>
-          <div style={{ fontSize: 10, color: c.textDim, marginTop: 4 }}>Acme SaaS Corp · FY2025</div>
         </div>
 
         {/* Nav */}
@@ -1255,6 +1284,8 @@ export default function FinanceOS() {
                   <Icon size={16} strokeWidth={active ? 2.5 : 1.5} />
                   {item.label}
                   {item.id === "copilot" && <Sparkles size={10} color={c.purple} style={{ marginLeft: "auto" }} />}
+                  {item.id === "close" && <span style={{ marginLeft: "auto", fontSize: 9, fontWeight: 700, padding: "1px 6px", borderRadius: 4, background: c.amberDim, color: c.amber }}>3</span>}
+                  {item.id === "dashboard" && <span style={{ marginLeft: "auto", fontSize: 9, fontWeight: 700, padding: "1px 6px", borderRadius: 4, background: c.redDim, color: c.red }}>4</span>}
                 </div>
               </div>
             );
@@ -1308,7 +1339,7 @@ export default function FinanceOS() {
                 ))}
               </div>
             )}
-            <span style={{ fontSize: 15, fontWeight: 800, color: c.text }}>{viewTitles[view]}</span>
+            <span style={{ fontSize: 16, fontWeight: 800, color: c.text, letterSpacing: "-0.02em" }}>{viewTitles[view]}</span>
             {/* Period selector */}
             <div style={{ position: "relative" }}>
               <div onClick={() => setPeriodOpen(!periodOpen)} style={{
