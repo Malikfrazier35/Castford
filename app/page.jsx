@@ -239,18 +239,18 @@ const SEGMENT_DATA = [
 ];
 
 const KPIS = [
-  { label: "ARR", value: "$48.6M", delta: "+24.1%", up: true, icon: DollarSign, spark: [32,35,33,38,41,44,46,48.6] },
-  { label: "NDR", value: "118%", delta: "+4pp", up: true, icon: TrendingUp, spark: [108,110,112,114,115,116,117,118] },
-  { label: "Gross Margin", value: "84.7%", delta: "+2.1pp", up: true, icon: Target, spark: [80,81,82,82.5,83,83.5,84,84.7] },
-  { label: "Rule of 40", value: "52.1", delta: "+8.3", up: true, icon: Zap, spark: [38,40,42,44,46,48,50,52.1] },
-  { label: "Burn Multiple", value: "0.8x", delta: "-0.3x", up: true, icon: Activity, spark: [1.4,1.3,1.2,1.1,1.0,0.9,0.85,0.8] },
-  { label: "Headcount", value: "312", delta: "+28", up: true, icon: Users, spark: [260,270,278,284,290,298,305,312] },
+  { label: "ARR", value: "$48.6M", delta: "+24.1%", up: true, icon: DollarSign, spark: [32,35,33,38,41,44,46,48.6], accent: "accent" },
+  { label: "NDR", value: "118%", delta: "+4pp", up: true, icon: TrendingUp, spark: [108,110,112,114,115,116,117,118], accent: "green" },
+  { label: "Gross Margin", value: "84.7%", delta: "+2.1pp", up: true, icon: Target, spark: [80,81,82,82.5,83,83.5,84,84.7], accent: "cyan" },
+  { label: "Rule of 40", value: "52.1", delta: "+8.3", up: true, icon: Zap, spark: [38,40,42,44,46,48,50,52.1], accent: "purple" },
+  { label: "Burn Multiple", value: "0.8x", delta: "-0.3x", up: true, icon: Activity, spark: [1.4,1.3,1.2,1.1,1.0,0.9,0.85,0.8], accent: "amber" },
+  { label: "Headcount", value: "312", delta: "+28", up: true, icon: Users, spark: [260,270,278,284,290,298,305,312], accent: "accent" },
 ];
 
 const INSIGHTS = [
-  { text: "Revenue beat $2.09M — Enterprise ACV ↑28%. AI module 34% attach.", source: "Variance Detective", time: "2 min", color: "#10b981" },
-  { text: "S&M $730K over — Hiring $420K, events $180K. Pipeline ROI 7.2x.", source: "Variance Detective", time: "12 min", color: "#ef4444" },
-  { text: "Mid-market win rate declining — Runway wins 58% H2H. Cycles 42→58d.", source: "Competitive Intel", time: "1 hr", color: "#f59e0b" },
+  { text: "Revenue beat $2.09M — Enterprise ACV ↑28%. AI module 34% attach.", source: "Variance Detective", time: "2 min", color: "#34d399" },
+  { text: "S&M $730K over — Hiring $420K, events $180K. Pipeline ROI 7.2x.", source: "Variance Detective", time: "12 min", color: "#f87171" },
+  { text: "Mid-market win rate declining — Runway wins 58% H2H. Cycles 42→58d.", source: "Competitive Intel", time: "1 hr", color: "#fbbf24" },
   { text: "R&D 14 heads behind — 8 ML reqs open. AI v2 at risk if delayed.", source: "Workforce Agent", time: "3 hr", color: "#a78bfa" },
 ];
 
@@ -314,12 +314,18 @@ const isFavorable = (actual, budget, isRevenue = false) => isRevenue ? actual >=
 const ChartTooltip = ({ active, payload, label, c }) => {
   if (!active || !payload?.length) return null;
   return (
-    <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 8, padding: "10px 14px", fontSize: 12, boxShadow: "0 8px 30px rgba(0,0,0,0.3)" }}>
-      <div style={{ fontWeight: 700, color: c.text, marginBottom: 4 }}>{label}</div>
-      {payload.map((p, i) => (
-        <div key={i} style={{ color: p.color, display: "flex", justifyContent: "space-between", gap: 16 }}>
-          <span style={{ opacity: 0.7 }}>{p.name}</span>
-          <span style={{ fontWeight: 600, fontFamily: "'JetBrains Mono', monospace" }}>{typeof p.value === "number" ? fmt(p.value) : p.value}</span>
+    <div style={{
+      background: `${c.surface}ee`, border: `1px solid ${c.border}`, borderRadius: 12, padding: "12px 16px",
+      fontSize: 12, boxShadow: c.shadow3, backdropFilter: "blur(12px)", minWidth: 160,
+    }}>
+      <div style={{ fontWeight: 700, color: c.text, marginBottom: 8, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.04em" }}>{label}</div>
+      {payload.filter(p => p.value != null).map((p, i) => (
+        <div key={i} style={{ display: "flex", justifyContent: "space-between", gap: 20, padding: "3px 0", alignItems: "center" }}>
+          <span style={{ display: "flex", alignItems: "center", gap: 6, color: c.textSec }}>
+            <span style={{ width: 8, height: 3, borderRadius: 1, background: p.color, display: "inline-block" }} />
+            {p.name}
+          </span>
+          <span style={{ fontWeight: 700, fontFamily: "'JetBrains Mono', monospace", color: c.text }}>{typeof p.value === "number" ? fmt(p.value) : p.value}</span>
         </div>
       ))}
     </div>
@@ -329,10 +335,20 @@ const ChartTooltip = ({ active, payload, label, c }) => {
 // ── SPARKLINE ────────────────────────────────────────────────
 const Spark = ({ data, color, width = 64, height = 24 }) => {
   const min = Math.min(...data), max = Math.max(...data), range = max - min || 1;
-  const points = data.map((v, i) => `${(i / (data.length - 1)) * width},${height - ((v - min) / range) * height}`).join(" ");
+  const points = data.map((v, i) => `${(i / (data.length - 1)) * width},${height - ((v - min) / range) * (height - 2) - 1}`).join(" ");
+  const areaPoints = `0,${height} ${points} ${width},${height}`;
+  const id = `sp${Math.random().toString(36).slice(2, 6)}`;
   return (
     <svg width={width} height={height} style={{ display: "block" }}>
+      <defs>
+        <linearGradient id={id} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor={color} stopOpacity={0.2} />
+          <stop offset="100%" stopColor={color} stopOpacity={0} />
+        </linearGradient>
+      </defs>
+      <polygon points={areaPoints} fill={`url(#${id})`} />
       <polyline points={points} fill="none" stroke={color} strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" />
+      <circle cx={width} cy={parseFloat(points.split(" ").pop().split(",")[1])} r={2} fill={color} />
     </svg>
   );
 };
@@ -351,11 +367,11 @@ const KpiCard = ({ kpi, c, onClick, index = 0 }) => {
     onMouseLeave={e => { e.currentTarget.style.borderColor = c.border; e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = c.cardGlow; }}
     >
       {/* Subtle top accent line */}
-      <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 2, background: `linear-gradient(90deg, ${c.accent}00, ${c.accent}40, ${c.accent}00)`, opacity: 0.5 }} />
+      <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 2, background: `linear-gradient(90deg, ${c[kpi.accent]}00, ${c[kpi.accent]}40, ${c[kpi.accent]}00)`, opacity: 0.5 }} />
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 12 }}>
         <div style={{ fontSize: 10, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.06em", color: c.textFaint }}>{kpi.label}</div>
-        <div style={{ width: 28, height: 28, borderRadius: 8, background: c.accentDim, display: "flex", alignItems: "center", justifyContent: "center" }}>
-          <Icon size={14} color={c.accent} strokeWidth={2} />
+        <div style={{ width: 30, height: 30, borderRadius: 8, background: `${c[kpi.accent]}15`, display: "flex", alignItems: "center", justifyContent: "center" }}>
+          <Icon size={14} color={c[kpi.accent]} strokeWidth={2} />
         </div>
       </div>
       <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between" }}>
@@ -477,18 +493,30 @@ const DashboardView = ({ c, onNav, toast, onDrawer }) => (
               {SEGMENT_DATA.map((s, i) => <Cell key={i} fill={s.color} />)}
             </Pie>
             <Tooltip content={<ChartTooltip c={c} />} />
+            {/* Center label */}
+            <text x="50%" y="46%" textAnchor="middle" fill={c.text} fontSize={18} fontWeight={800} fontFamily="'JetBrains Mono', monospace">$51.2M</text>
+            <text x="50%" y="58%" textAnchor="middle" fill={c.textDim} fontSize={9} fontWeight={600}>TOTAL REV</text>
           </PieChart>
         </ResponsiveContainer>
-        <div style={{ display: "flex", flexDirection: "column", gap: 6, marginTop: 4 }}>
-          {SEGMENT_DATA.map(s => (
-            <div key={s.name} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", fontSize: 11 }}>
-              <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                <div style={{ width: 8, height: 8, borderRadius: 2, background: s.color }} />
-                <span style={{ color: c.textSec }}>{s.name}</span>
+        <div style={{ display: "flex", flexDirection: "column", gap: 8, marginTop: 8 }}>
+          {SEGMENT_DATA.map(s => {
+            const total = SEGMENT_DATA.reduce((a, b) => a + b.value, 0);
+            const pct = ((s.value / total) * 100).toFixed(0);
+            return (
+              <div key={s.name} style={{ fontSize: 11 }}>
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 3 }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                    <div style={{ width: 8, height: 8, borderRadius: 3, background: s.color }} />
+                    <span style={{ color: c.textSec, fontWeight: 500 }}>{s.name}</span>
+                  </div>
+                  <span style={{ fontWeight: 700, color: c.text, fontFamily: "'JetBrains Mono', monospace", fontSize: 11 }}>{pct}%</span>
+                </div>
+                <div style={{ height: 3, background: c.bg2, borderRadius: 2, overflow: "hidden" }}>
+                  <div style={{ width: `${pct}%`, height: "100%", background: s.color, borderRadius: 2 }} />
+                </div>
               </div>
-              <span style={{ fontWeight: 700, color: c.text, fontFamily: "'JetBrains Mono', monospace", fontSize: 11 }}>{fmt(s.value)}</span>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </div>
@@ -1371,26 +1399,35 @@ export default function FinanceOS() {
         </div>
 
         {/* Theme + User */}
-        <div style={{ padding: "12px 16px", borderTop: `1px solid ${c.borderSub}` }}>
+        <div style={{ padding: "12px 14px", borderTop: `1px solid ${c.borderSub}` }}>
           <div onClick={() => setMode(mode === "dark" ? "light" : "dark")} style={{
             display: "flex", alignItems: "center", gap: 8, padding: "8px 10px", borderRadius: 8,
-            cursor: "pointer", fontSize: 12, color: c.textSec, transition: "background 0.15s",
+            cursor: "pointer", fontSize: 12, color: c.textSec, transition: "all 0.15s",
           }}
-          onMouseEnter={e => e.currentTarget.style.background = c.surfaceAlt}
-          onMouseLeave={e => e.currentTarget.style.background = "transparent"}
+          onMouseEnter={e => { e.currentTarget.style.background = c.surfaceAlt; e.currentTarget.style.color = c.text; }}
+          onMouseLeave={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = c.textSec; }}
           >
             {mode === "dark" ? <Sun size={14} /> : <Moon size={14} />}
             {mode === "dark" ? "Light Mode" : "Dark Mode"}
           </div>
-          <div style={{ display: "flex", alignItems: "center", gap: 8, padding: "8px 10px", marginTop: 4 }}>
-            <div style={{
-              width: 26, height: 26, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center",
-              background: "linear-gradient(135deg, #10b981, #22d3ee)", fontSize: 10, fontWeight: 700, color: "#fff",
-            }}>SC</div>
-            <div>
-              <div style={{ fontSize: 11, fontWeight: 600, color: c.text }}>Sarah Chen</div>
-              <div style={{ fontSize: 9, color: c.textDim }}>VP Finance</div>
+          <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 10px", marginTop: 4, borderRadius: 8, cursor: "pointer", transition: "background 0.15s" }}
+            onMouseEnter={e => e.currentTarget.style.background = c.surfaceAlt}
+            onMouseLeave={e => e.currentTarget.style.background = "transparent"}
+            onClick={() => navigate("settings")}
+          >
+            <div style={{ position: "relative" }}>
+              <div style={{
+                width: 30, height: 30, borderRadius: 10, display: "flex", alignItems: "center", justifyContent: "center",
+                background: "linear-gradient(135deg, #10b981, #22d3ee)", fontSize: 10, fontWeight: 800, color: "#fff",
+                boxShadow: "0 2px 8px rgba(16,185,129,0.3)",
+              }}>SC</div>
+              <div style={{ position: "absolute", bottom: -1, right: -1, width: 8, height: 8, borderRadius: "50%", background: c.green, border: `2px solid ${c.bg}` }} />
             </div>
+            <div style={{ flex: 1 }}>
+              <div style={{ fontSize: 12, fontWeight: 600, color: c.text }}>Sarah Chen</div>
+              <div style={{ fontSize: 9, color: c.textDim, fontWeight: 500 }}>VP Finance · Online</div>
+            </div>
+            <Settings size={13} color={c.textFaint} />
           </div>
         </div>
       </div>
