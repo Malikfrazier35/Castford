@@ -1550,8 +1550,8 @@ export default function FinanceOS() {
       <style>{`
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: 'DM Sans', system-ui, -apple-system, sans-serif; -webkit-font-smoothing: antialiased; }
-        button { font-family: inherit; border: none; background: none; cursor: pointer; padding: 0; line-height: inherit; -webkit-appearance: none; appearance: none; }
-        a { text-decoration: none; }
+        button { font-family: inherit; font-size: inherit; color: inherit; cursor: pointer; }
+        a { text-decoration: none; color: inherit; }
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: ${c.borderBright}; border-radius: 3px; transition: background 0.3s; }
@@ -1559,9 +1559,9 @@ export default function FinanceOS() {
         input[type="range"] { cursor: pointer; }
         input[type="range"]::-webkit-slider-thumb { cursor: pointer; }
         ::selection { background: ${c.accentMid || c.accentDim}; }
-        /* Theme transition on all themeable properties */
-        .theme-transition, .theme-transition * {
-          transition: background 0.4s ease, background-color 0.4s ease, color 0.3s ease, border-color 0.4s ease, box-shadow 0.4s ease, fill 0.3s ease !important;
+        /* Smooth theme crossfade on structural elements */
+        .theme-transition {
+          transition: background 0.4s ease, background-color 0.4s ease, color 0.3s ease, border-color 0.4s ease, box-shadow 0.4s ease;
         }
         @keyframes pulse { 0%,100% { opacity: 0.3; transform: scale(1); } 50% { opacity: 1; transform: scale(1.2); } }
         @keyframes toastIn { from { opacity: 0; transform: translateX(40px); } to { opacity: 1; transform: translateX(0); } }
