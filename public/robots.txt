@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://financeos-rho.vercel.app/sitemap.xml
