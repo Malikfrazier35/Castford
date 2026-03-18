@@ -1736,13 +1736,50 @@ const IntegrationsView = ({ c, toast }) => {
   const [conns, setConns] = useState(CONNECTORS);
   const [filter, setFilter] = useState("all");
   const [search, setSearch] = useState("");
+  const [connectingName, setConnectingName] = useState(null); // shows connection setup modal
+  const [disconnectConfirm, setDisconnectConfirm] = useState(null); // shows disconnect confirmation
+  const [syncingName, setSyncingName] = useState(null);
   const cats = ["all", ...new Set(CONNECTORS.map(co => co.cat))];
+  const mountedRef = useRef(true);
+  useEffect(() => () => { mountedRef.current = false; }, []);
 
-  const toggleConnect = (name) => {
+  const startConnect = (name) => {
     const conn = conns.find(co => co.name === name);
-    const wasConnected = conn?.status === "connected";
-    setConns(prev => prev.map(co => co.name === name ? { ...co, status: wasConnected ? "available" : "connected", records: wasConnected ? null : "Syncing...", lastSync: wasConnected ? null : "Just now" } : co));
-    toast(wasConnected ? `Disconnected ${name}` : `Connected ${name} — syncing records...`, wasConnected ? "warning" : "success");
+    if (conn?.status === "connected") { setDisconnectConfirm(name); return; }
+    setConnectingName(name);
+  };
+
+  const confirmConnect = (name) => {
+    setConnectingName(null);
+    setSyncingName(name);
+    setConns(prev => prev.map(co => co.name === name ? { ...co, status: "syncing", records: "Syncing..." } : co));
+    toast(`Connecting ${name}...`, "info");
+    // Simulate sync delay
+    setTimeout(() => {
+      if (!mountedRef.current) return;
+      const fakeRecords = ["12K", "24K", "8.4K", "156K", "3.2K"][Math.floor(Math.random() * 5)];
+      setConns(prev => prev.map(co => co.name === name ? { ...co, status: "connected", records: fakeRecords, lastSync: "Just now" } : co));
+      setSyncingName(null);
+      toast(`${name} connected — ${fakeRecords} records synced`, "success");
+    }, 2500);
+  };
+
+  const confirmDisconnect = () => {
+    const name = disconnectConfirm;
+    setDisconnectConfirm(null);
+    setConns(prev => prev.map(co => co.name === name ? { ...co, status: "available", records: null, lastSync: null } : co));
+    toast(`Disconnected ${name}`, "warning");
+  };
+
+  const syncConnector = (name) => {
+    setSyncingName(name);
+    setConns(prev => prev.map(co => co.name === name ? { ...co, lastSync: "Syncing..." } : co));
+    setTimeout(() => {
+      if (!mountedRef.current) return;
+      setConns(prev => prev.map(co => co.name === name ? { ...co, lastSync: "Just now" } : co));
+      setSyncingName(null);
+      toast(`${name} synced`, "success");
+    }, 1800);
   };
 
   const filtered = (filter === "all" ? conns : conns.filter(co => co.cat === filter)).filter(co => !search || co.name.toLowerCase().includes(search.toLowerCase()));
@@ -1811,21 +1848,76 @@ const IntegrationsView = ({ c, toast }) => {
             {co.status === "connected" && (
               <div style={{ display: "flex", justifyContent: "space-between", fontSize: 10, marginBottom: 10, padding: "6px 10px", borderRadius: 6, background: c.surfaceAlt }}>
                 <span style={{ color: c.green, fontWeight: 600 }}>{co.records} records</span>
-                <span style={{ color: c.textFaint }}>Synced {co.lastSync || "3 min ago"}</span>
+                <span style={{ color: co.name === syncingName ? c.amber : c.textFaint }}>{co.name === syncingName ? "Syncing..." : (co.lastSync || "3 min ago")}</span>
+              </div>
+            )}
+            {co.status === "syncing" && (
+              <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 10, marginBottom: 10, padding: "6px 10px", borderRadius: 6, background: c.surfaceAlt }}>
+                <span style={{ width: 10, height: 10, border: `2px solid ${c.accent}40`, borderTopColor: c.accent, borderRadius: "50%", animation: "spin 0.8s linear infinite" }} />
+                <span style={{ color: c.amber, fontWeight: 600 }}>Connecting and syncing records...</span>
               </div>
             )}
             <div style={{ display: "flex", gap: 6 }}>
-              <button onClick={() => toggleConnect(co.name)} style={{
-                flex: 1, fontSize: 10, padding: "8px 0", borderRadius: 8, border: "none", fontFamily: "inherit", fontWeight: 700, cursor: "pointer", transition: "all 0.15s",
-                background: co.status === "connected" ? c.redDim : `linear-gradient(135deg, ${co.color}, ${co.color}cc)`, color: co.status === "connected" ? c.red : "#fff",
-              }}>{co.status === "connected" ? "Disconnect" : "Connect"}</button>
+              <button onClick={() => startConnect(co.name)} disabled={co.status === "syncing"} style={{
+                flex: 1, fontSize: 10, padding: "8px 0", borderRadius: 8, border: "none", fontFamily: "inherit", fontWeight: 700, cursor: co.status === "syncing" ? "wait" : "pointer", transition: "all 0.15s",
+                background: co.status === "connected" ? c.redDim : co.status === "syncing" ? c.surfaceAlt : `linear-gradient(135deg, ${co.color}, ${co.color}cc)`, color: co.status === "connected" ? c.red : co.status === "syncing" ? c.textDim : "#fff",
+              }}>{co.status === "connected" ? "Disconnect" : co.status === "syncing" ? "Connecting..." : "Connect"}</button>
               {co.status === "connected" && (
-                <button onClick={() => toast(`Syncing ${co.name}...`, "success")} style={{ fontSize: 10, padding: "8px 14px", borderRadius: 8, border: `1px solid ${c.border}`, background: "transparent", color: c.textSec, cursor: "pointer", fontFamily: "inherit", fontWeight: 600 }}>Sync</button>
+                <button onClick={() => syncConnector(co.name)} disabled={co.name === syncingName} style={{ fontSize: 10, padding: "8px 14px", borderRadius: 8, border: `1px solid ${c.border}`, background: "transparent", color: co.name === syncingName ? c.amber : c.textSec, cursor: co.name === syncingName ? "wait" : "pointer", fontFamily: "inherit", fontWeight: 600 }}>{co.name === syncingName ? "..." : "Sync"}</button>
               )}
             </div>
           </div>
         ))}
       </div>
+
+      {/* Connection setup modal */}
+      {connectingName && (() => {
+        const conn = CONNECTORS.find(co => co.name === connectingName);
+        return (
+        <div onClick={() => setConnectingName(null)} style={{ position: "fixed", inset: 0, zIndex: 2000, background: "rgba(0,0,0,0.5)", backdropFilter: "blur(4px)", display: "flex", alignItems: "center", justifyContent: "center", animation: "fadeIn 0.15s" }}>
+          <div onClick={e => e.stopPropagation()} style={{ width: 420, background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, boxShadow: "0 20px 60px rgba(0,0,0,0.4)", padding: "28px 32px", animation: "cmdIn 0.2s cubic-bezier(0.22,1,0.36,1)" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 20 }}>
+              <div style={{ width: 40, height: 40, borderRadius: 10, background: `${conn?.color || c.accent}15`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16, fontWeight: 800, color: conn?.color || c.accent }}>{connectingName[0]}</div>
+              <div>
+                <div style={{ fontSize: 16, fontWeight: 800, color: c.text }}>Connect {connectingName}</div>
+                <div style={{ fontSize: 11, color: c.textDim }}>{conn?.cat || "Integration"} · Bi-directional sync</div>
+              </div>
+            </div>
+            <div style={{ fontSize: 12, color: c.textSec, lineHeight: 1.7, marginBottom: 20 }}>
+              This will authorize FinanceOS to read and sync data from your {connectingName} account. You can disconnect at any time.
+            </div>
+            <div style={{ background: c.surfaceAlt, borderRadius: 10, padding: "12px 16px", marginBottom: 20 }}>
+              {["Read-only access to financial data", "Automatic sync every 5 minutes", "AES-256 encrypted connection", "Revocable at any time"].map(item => (
+                <div key={item} style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 11, color: c.textSec, padding: "4px 0" }}>
+                  <span style={{ color: c.green, fontSize: 12 }}>✓</span> {item}
+                </div>
+              ))}
+            </div>
+            <div style={{ display: "flex", gap: 8 }}>
+              <button onClick={() => confirmConnect(connectingName)} style={{ flex: 1, fontSize: 13, padding: "12px 0", borderRadius: 10, border: "none", background: `linear-gradient(135deg, ${conn?.color || c.accent}, ${conn?.color || c.accent}cc)`, color: "#fff", fontWeight: 700, cursor: "pointer", fontFamily: "inherit" }}>Authorize & Connect</button>
+              <button onClick={() => setConnectingName(null)} style={{ fontSize: 13, padding: "12px 20px", borderRadius: 10, border: `1px solid ${c.border}`, background: "transparent", color: c.textSec, cursor: "pointer", fontFamily: "inherit" }}>Cancel</button>
+            </div>
+          </div>
+        </div>
+        );
+      })()}
+
+      {/* Disconnect confirmation */}
+      {disconnectConfirm && (
+        <div onClick={() => setDisconnectConfirm(null)} style={{ position: "fixed", inset: 0, zIndex: 2000, background: "rgba(0,0,0,0.5)", backdropFilter: "blur(4px)", display: "flex", alignItems: "center", justifyContent: "center", animation: "fadeIn 0.15s" }}>
+          <div onClick={e => e.stopPropagation()} style={{ width: 380, background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, boxShadow: "0 20px 60px rgba(0,0,0,0.4)", padding: "28px 32px", animation: "cmdIn 0.2s cubic-bezier(0.22,1,0.36,1)", textAlign: "center" }}>
+            <div style={{ width: 44, height: 44, borderRadius: 12, background: c.redDim, display: "inline-flex", alignItems: "center", justifyContent: "center", marginBottom: 14 }}>
+              <X size={20} color={c.red} />
+            </div>
+            <div style={{ fontSize: 16, fontWeight: 800, color: c.text, marginBottom: 6 }}>Disconnect {disconnectConfirm}?</div>
+            <div style={{ fontSize: 12, color: c.textDim, lineHeight: 1.6, marginBottom: 20 }}>This will stop syncing data from {disconnectConfirm}. Historical data will be preserved. You can reconnect at any time.</div>
+            <div style={{ display: "flex", gap: 8 }}>
+              <button onClick={() => setDisconnectConfirm(null)} style={{ flex: 1, fontSize: 13, padding: "11px 0", borderRadius: 10, border: `1px solid ${c.border}`, background: "transparent", color: c.textSec, cursor: "pointer", fontFamily: "inherit" }}>Keep Connected</button>
+              <button onClick={confirmDisconnect} style={{ flex: 1, fontSize: 13, padding: "11px 0", borderRadius: 10, border: "none", background: c.red, color: "#fff", fontWeight: 700, cursor: "pointer", fontFamily: "inherit" }}>Disconnect</button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
@@ -2856,6 +2948,7 @@ const OnboardingWizard = ({ c, userName, onComplete }) => {
 const PlanPicker = ({ userName, onSkip, onSelect, isDemo }) => {
   const [billing, setBilling] = useState("annual");
   const [hoveredPlan, setHoveredPlan] = useState(null);
+  const [checkoutPending, setCheckoutPending] = useState(null); // plan name if checkout in progress
   const annualSavings = { Starter: 1200, Growth: 3600, Business: 9600 };
 
   const features = [
@@ -2916,7 +3009,7 @@ const PlanPicker = ({ userName, onSkip, onSelect, isDemo }) => {
                 {billing === "monthly" && <div style={{ height: 18 }} />}
                 <div style={{ fontSize: 11, color: "#6b7280", lineHeight: 1.6, marginBottom: 16, minHeight: 36 }}>{p.desc}</div>
                 <button onClick={() => {
-                  onSelect(p.name);
+                  setCheckoutPending(p.name);
                   try { window.open(billing === "annual" ? p.annualLink : p.monthlyLink, "_blank"); } catch {}
                 }} style={{
                   width: "100%", padding: "12px", borderRadius: 10, border: "none", cursor: "pointer", fontFamily: "inherit", fontSize: 13, fontWeight: 700,
@@ -2932,7 +3025,33 @@ const PlanPicker = ({ userName, onSkip, onSelect, isDemo }) => {
           </div>
         </div>
 
+        {/* Checkout confirmation gate */}
+        {checkoutPending && (
+          <div style={{ padding: "24px 40px", textAlign: "center" }}>
+            <div style={{ background: "linear-gradient(135deg, rgba(96,165,250,0.06), rgba(167,139,250,0.04))", border: "1px solid rgba(96,165,250,0.2)", borderRadius: 16, padding: "32px 28px" }}>
+              <div style={{ width: 48, height: 48, borderRadius: 14, background: "linear-gradient(135deg, #60a5fa, #a78bfa)", display: "inline-flex", alignItems: "center", justifyContent: "center", marginBottom: 16 }}>
+                <span style={{ fontSize: 20 }}>💳</span>
+              </div>
+              <div style={{ fontSize: 18, fontWeight: 800, color: "#f0f2f5", marginBottom: 6 }}>Complete your {checkoutPending} checkout</div>
+              <div style={{ fontSize: 13, color: "#6b7280", lineHeight: 1.6, marginBottom: 20, maxWidth: 400, margin: "0 auto 20px" }}>
+                A Stripe checkout tab has opened. Complete your payment there, then return here to confirm.
+              </div>
+              <div style={{ display: "flex", gap: 10, justifyContent: "center" }}>
+                <button onClick={() => onSelect(checkoutPending)} style={{
+                  fontSize: 14, padding: "12px 28px", borderRadius: 10, border: "none", cursor: "pointer", fontFamily: "inherit", fontWeight: 700,
+                  background: "linear-gradient(135deg, #34d399, #22d3ee)", color: "#fff", boxShadow: "0 4px 16px rgba(52,211,153,0.2)",
+                }}>I've Completed Payment</button>
+                <button onClick={() => setCheckoutPending(null)} style={{
+                  fontSize: 13, padding: "12px 20px", borderRadius: 10, border: "1px solid #23232a", background: "transparent", color: "#6b7280", cursor: "pointer", fontFamily: "inherit", fontWeight: 600,
+                }}>Go Back</button>
+              </div>
+              <div style={{ fontSize: 10, color: "#44495a", marginTop: 14 }}>Your subscription will be verified. If payment is not found, you'll be asked to retry.</div>
+            </div>
+          </div>
+        )}
+
         {/* Feature comparison */}
+        {!checkoutPending && (
         <div style={{ padding: "24px 40px 0" }}>
           <div style={{ fontSize: 11, fontWeight: 700, color: "#44495a", textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 10 }}>Feature Comparison</div>
           <div style={{ background: "#0c0c0f", border: "1px solid #1b1b20", borderRadius: 12, overflow: "hidden" }}>
@@ -2948,8 +3067,10 @@ const PlanPicker = ({ userName, onSkip, onSelect, isDemo }) => {
             ))}
           </div>
         </div>
+        )}
 
         {/* Footer */}
+        {!checkoutPending && (
         <div style={{ padding: "20px 40px 28px", textAlign: "center" }}>
           {isDemo ? (
             <button onClick={onSkip} style={{ fontSize: 12, color: "#6b7280", background: "none", border: "none", cursor: "pointer", fontFamily: "inherit", textDecoration: "underline", marginBottom: 12 }}>Continue with demo — explore with sample data</button>
@@ -2962,6 +3083,7 @@ const PlanPicker = ({ userName, onSkip, onSelect, isDemo }) => {
             ))}
           </div>
         </div>
+        )}
       </div>
     </div>
   );
