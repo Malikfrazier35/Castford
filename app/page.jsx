@@ -1635,7 +1635,7 @@ const IntegrationsView = ({ c, toast }) => {
                 background: co.status === "connected" ? c.redDim : c.green, color: co.status === "connected" ? c.red : "#fff",
               }}>{co.status === "connected" ? "Disconnect" : "Connect"}</button>
               {co.status === "connected" && (
-                <button style={{ fontSize: 10, padding: "7px 12px", borderRadius: 6, border: `1px solid ${c.border}`, background: "transparent", color: c.textSec, cursor: "pointer", fontFamily: "inherit" }}>Sync</button>
+                <button onClick={() => toast(`Syncing ${co.name}...`, "success")} style={{ fontSize: 10, padding: "7px 12px", borderRadius: 6, border: `1px solid ${c.border}`, background: "transparent", color: c.textSec, cursor: "pointer", fontFamily: "inherit" }}>Sync</button>
               )}
             </div>
           </div>
@@ -1655,14 +1655,14 @@ const SCENARIOS_LIST = [
   { name: "Mid-Market Recovery", revenue: 66.1, opex: 40.8, ebitda: 9.5, status: "Draft", updated: "Mar 5" },
 ];
 
-const ScenariosView = ({ c }) => {
+const ScenariosView = ({ c, toast }) => {
   const [selected, setSelected] = useState(null);
 
   return (
     <div style={{ padding: 32 }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
         <div style={{ fontSize: 12, color: c.textSec }}>{SCENARIOS_LIST.length} scenarios · Compare up to 4 side-by-side</div>
-        <button style={{ fontSize: 11, padding: "8px 16px", borderRadius: 8, border: "none", background: c.accent, color: "#fff", fontWeight: 700, cursor: "pointer", fontFamily: "inherit" }}>+ New Scenario</button>
+        <button onClick={() => toast("New scenario created — customize assumptions below", "success")} style={{ fontSize: 11, padding: "8px 16px", borderRadius: 8, border: "none", background: c.accent, color: "#fff", fontWeight: 700, cursor: "pointer", fontFamily: "inherit" }}>+ New Scenario</button>
       </div>
 
       <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 12 }}>
@@ -1908,8 +1908,8 @@ const LandingPage = ({ onLogin }) => {
           <a href="#features" style={{ fontSize: 13, color: "#9ca3b0", textDecoration: "none", fontWeight: 500 }}>Features</a>
           <a href="#security" style={{ fontSize: 13, color: "#9ca3b0", textDecoration: "none", fontWeight: 500 }}>Security</a>
           <a href="#pricing" style={{ fontSize: 13, color: "#9ca3b0", textDecoration: "none", fontWeight: 500 }}>Pricing</a>
-          <button onClick={onLogin} style={{ fontSize: 13, padding: "9px 20px", borderRadius: 8, border: "1px solid #23232a", background: "transparent", color: "#f0f2f5", cursor: "pointer", fontFamily: "inherit", fontWeight: 600 }}>Sign In</button>
-          <button onClick={onLogin} style={{ fontSize: 13, padding: "9px 20px", borderRadius: 8, border: "none", background: "linear-gradient(135deg, #60a5fa, #a78bfa)", color: "#fff", cursor: "pointer", fontFamily: "inherit", fontWeight: 700, boxShadow: "0 4px 16px rgba(96,165,250,0.25)" }}>Start Free Trial</button>
+          <button onClick={() => { onLogin(); }} style={{ fontSize: 13, padding: "9px 20px", borderRadius: 8, border: "1px solid #23232a", background: "transparent", color: "#f0f2f5", cursor: "pointer", fontFamily: "inherit", fontWeight: 600 }}>Sign In</button>
+          <button onClick={() => { onLogin(); }} style={{ fontSize: 13, padding: "9px 20px", borderRadius: 8, border: "none", background: "linear-gradient(135deg, #60a5fa, #a78bfa)", color: "#fff", cursor: "pointer", fontFamily: "inherit", fontWeight: 700, boxShadow: "0 4px 16px rgba(96,165,250,0.25)" }}>Start Free Trial</button>
         </div>
       </nav>
 
@@ -1923,11 +1923,14 @@ const LandingPage = ({ onLogin }) => {
           FinanceOS connects your ERP, CRM, and billing data into a unified model with AI-powered variance detection and natural language querying.
         </p>
         <div style={{ display: "flex", gap: 12, justifyContent: "center" }}>
-          <button onClick={onLogin} style={{ fontSize: 15, padding: "14px 32px", borderRadius: 10, border: "none", background: "linear-gradient(135deg, #60a5fa, #a78bfa)", color: "#fff", cursor: "pointer", fontFamily: "inherit", fontWeight: 700, boxShadow: "0 8px 30px rgba(96,165,250,0.25)", transition: "transform 0.15s" }}
+          <button onClick={() => { onLogin(); }} style={{ fontSize: 15, padding: "14px 32px", borderRadius: 10, border: "none", background: "linear-gradient(135deg, #60a5fa, #a78bfa)", color: "#fff", cursor: "pointer", fontFamily: "inherit", fontWeight: 700, boxShadow: "0 8px 30px rgba(96,165,250,0.25)", transition: "transform 0.15s" }}
             onMouseEnter={e => e.currentTarget.style.transform = "translateY(-2px)"}
             onMouseLeave={e => e.currentTarget.style.transform = "none"}
-          >Try the Live Demo →</button>
-          <button style={{ fontSize: 15, padding: "14px 32px", borderRadius: 10, border: "1px solid #23232a", background: "transparent", color: "#9ca3b0", cursor: "pointer", fontFamily: "inherit", fontWeight: 600 }}>Watch 2-min Overview</button>
+          >Try the Live Demo</button>
+          <button onClick={() => { document.getElementById("features")?.scrollIntoView({ behavior: "smooth" }); }} style={{ fontSize: 15, padding: "14px 32px", borderRadius: 10, border: "1px solid #23232a", background: "transparent", color: "#9ca3b0", cursor: "pointer", fontFamily: "inherit", fontWeight: 600, transition: "all 0.15s" }}
+            onMouseEnter={e => { e.currentTarget.style.borderColor = "#60a5fa"; e.currentTarget.style.color = "#f0f2f5"; }}
+            onMouseLeave={e => { e.currentTarget.style.borderColor = "#23232a"; e.currentTarget.style.color = "#9ca3b0"; }}
+          >Watch 2-min Overview</button>
         </div>
         <div style={{ marginTop: 16, fontSize: 12, color: "#44495a" }}>No credit card required · 30-day money-back guarantee</div>
       </div>
@@ -2046,7 +2049,7 @@ const LandingPage = ({ onLogin }) => {
                 ))}
               </div>
               <div style={{ display: "flex", gap: 6 }}>
-                <button onClick={onLogin} style={{
+                <button onClick={() => { onLogin(); }} style={{
                   flex: 1, fontSize: 12, padding: "11px 0", borderRadius: 8, border: `1px solid #23232a`, cursor: "pointer", fontFamily: "inherit", fontWeight: 600,
                   background: "transparent", color: "#9ca3b0",
                 }}>Try Demo</button>
@@ -2114,7 +2117,7 @@ const LandingPage = ({ onLogin }) => {
             <span style={{ fontSize: 36, fontWeight: 800, fontFamily: "'JetBrains Mono', monospace" }}>$2,799</span>
             <span style={{ fontSize: 14, color: "#6b7280" }}>/mo · Save 15%</span>
           </div>
-          <button onClick={onLogin} style={{ fontSize: 14, padding: "12px 28px", borderRadius: 10, border: "none", background: "linear-gradient(135deg, #60a5fa, #a78bfa)", color: "#fff", cursor: "pointer", fontFamily: "inherit", fontWeight: 700, boxShadow: "0 6px 24px rgba(96,165,250,0.25)" }}>Start Suite Trial</button>
+          <button onClick={() => { onLogin(); }} style={{ fontSize: 14, padding: "12px 28px", borderRadius: 10, border: "none", background: "linear-gradient(135deg, #60a5fa, #a78bfa)", color: "#fff", cursor: "pointer", fontFamily: "inherit", fontWeight: 700, boxShadow: "0 6px 24px rgba(96,165,250,0.25)" }}>Start Suite Trial</button>
         </div>
       </div>
 
@@ -2543,7 +2546,7 @@ export default function FinanceOS() {
           {view === "pnl" && <PnlView c={c} onNav={navigate} toast={toast} />}
           {view === "forecast" && <ForecastView c={c} />}
           {view === "consolidation" && <ConsolidationView c={c} onNav={navigate} toast={toast} />}
-          {view === "models" && <ScenariosView c={c} />}
+          {view === "models" && <ScenariosView c={c} toast={toast} />}
           {view === "close" && <CloseView c={c} toast={toast} />}
           {view === "integrations" && <IntegrationsView c={c} toast={toast} />}
           {view === "settings" && <SettingsView c={c} onLogout={handleLogout} toast={toast} mode={mode} />}
