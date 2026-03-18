@@ -2426,12 +2426,11 @@ const LandingPage = ({ onLogin }) => {
   const [billing, setBilling] = useState("annual");
   const [authModal, setAuthModal] = useState(null);
 
-  const handleAuth = (data) => {
-    // Don't setAuthModal(null) — onLogin unmounts LandingPage entirely
-    // which cleans up the modal naturally. Calling setState on an
-    // unmounting component causes the "Something went wrong" crash.
-    onLogin(data);
-  };
+  // Direct entry to dashboard — bypasses AuthModal entirely, zero crash risk
+  const enterDemo = () => { onLogin(); };
+
+  // Auth modal callback — also goes straight to dashboard
+  const handleAuth = () => { onLogin(); };
 
   const plans = [
     { name: "Starter", monthly: 599, annual: 499, features: ["3 entities", "5 users", "P&L + Forecast", "Email support"],
@@ -2461,7 +2460,7 @@ const LandingPage = ({ onLogin }) => {
           <a href="#security" style={{ fontSize: 13, color: "#9ca3b0", textDecoration: "none", fontWeight: 500 }}>Security</a>
           <a href="#pricing" style={{ fontSize: 13, color: "#9ca3b0", textDecoration: "none", fontWeight: 500 }}>Pricing</a>
           <button onClick={() => setAuthModal("login")} style={{ fontSize: 13, padding: "9px 20px", borderRadius: 8, border: "1px solid #23232a", background: "transparent", color: "#f0f2f5", cursor: "pointer", fontFamily: "inherit", fontWeight: 600 }}>Sign In</button>
-          <button onClick={() => setAuthModal("signup")} style={{ fontSize: 13, padding: "9px 20px", borderRadius: 8, border: "none", background: "linear-gradient(135deg, #60a5fa, #a78bfa)", color: "#fff", cursor: "pointer", fontFamily: "inherit", fontWeight: 700, boxShadow: "0 4px 16px rgba(96,165,250,0.25)" }}>Start Free Trial</button>
+          <button onClick={enterDemo} style={{ fontSize: 13, padding: "9px 20px", borderRadius: 8, border: "none", background: "linear-gradient(135deg, #60a5fa, #a78bfa)", color: "#fff", cursor: "pointer", fontFamily: "inherit", fontWeight: 700, boxShadow: "0 4px 16px rgba(96,165,250,0.25)" }}>Start Free Trial</button>
         </div>
       </nav>
 
@@ -2475,7 +2474,7 @@ const LandingPage = ({ onLogin }) => {
           FinanceOS connects your ERP, CRM, and billing data into a unified model with AI-powered variance detection and natural language querying.
         </p>
         <div style={{ display: "flex", gap: 12, justifyContent: "center" }}>
-          <button onClick={() => setAuthModal("signup")} style={{ fontSize: 15, padding: "14px 32px", borderRadius: 10, border: "none", background: "linear-gradient(135deg, #60a5fa, #a78bfa)", color: "#fff", cursor: "pointer", fontFamily: "inherit", fontWeight: 700, boxShadow: "0 8px 30px rgba(96,165,250,0.25)", transition: "transform 0.15s" }}
+          <button onClick={enterDemo} style={{ fontSize: 15, padding: "14px 32px", borderRadius: 10, border: "none", background: "linear-gradient(135deg, #60a5fa, #a78bfa)", color: "#fff", cursor: "pointer", fontFamily: "inherit", fontWeight: 700, boxShadow: "0 8px 30px rgba(96,165,250,0.25)", transition: "transform 0.15s" }}
             onMouseEnter={e => e.currentTarget.style.transform = "translateY(-2px)"}
             onMouseLeave={e => e.currentTarget.style.transform = "none"}
           >Try the Live Demo</button>
@@ -2601,7 +2600,7 @@ const LandingPage = ({ onLogin }) => {
                 ))}
               </div>
               <div style={{ display: "flex", gap: 6 }}>
-                <button onClick={() => setAuthModal("signup")} style={{
+                <button onClick={enterDemo} style={{
                   flex: 1, fontSize: 12, padding: "11px 0", borderRadius: 8, border: `1px solid #23232a`, cursor: "pointer", fontFamily: "inherit", fontWeight: 600,
                   background: "transparent", color: "#9ca3b0",
                 }}>Try Demo</button>
@@ -2669,7 +2668,7 @@ const LandingPage = ({ onLogin }) => {
             <span style={{ fontSize: 36, fontWeight: 800, fontFamily: "'JetBrains Mono', monospace" }}>$2,799</span>
             <span style={{ fontSize: 14, color: "#6b7280" }}>/mo · Save 15%</span>
           </div>
-          <button onClick={() => setAuthModal("signup")} style={{ fontSize: 14, padding: "12px 28px", borderRadius: 10, border: "none", background: "linear-gradient(135deg, #60a5fa, #a78bfa)", color: "#fff", cursor: "pointer", fontFamily: "inherit", fontWeight: 700, boxShadow: "0 6px 24px rgba(96,165,250,0.25)" }}>Start Suite Trial</button>
+          <button onClick={enterDemo} style={{ fontSize: 14, padding: "12px 28px", borderRadius: 10, border: "none", background: "linear-gradient(135deg, #60a5fa, #a78bfa)", color: "#fff", cursor: "pointer", fontFamily: "inherit", fontWeight: 700, boxShadow: "0 6px 24px rgba(96,165,250,0.25)" }}>Start Suite Trial</button>
         </div>
       </div>
 
@@ -2720,15 +2719,15 @@ const LandingPage = ({ onLogin }) => {
 // APP SHELL
 // ══════════════════════════════════════════════════════════════
 export default function FinanceOS() {
-  const [loggedIn, setLoggedIn] = usePreferences("loggedIn", false);
-  const [view, setView] = usePreferences("lastView", "dashboard");
+  const [loggedIn, setLoggedIn] = useState(false);
+  const [view, setView] = useState("dashboard");
   const [prevView, setPrevView] = useState(null);
   const [cmdOpen, setCmdOpen] = useState(false);
   const [drawerKpi, setDrawerKpi] = useState(null);
   const [period, setPeriod] = useState("FY2025 YTD");
   const [periodOpen, setPeriodOpen] = useState(false);
   const [navHistory, setNavHistory] = useState(["dashboard"]);
-  const [sidebarCollapsed, setSidebarCollapsed] = usePreferences("sidebarCollapsed", false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [showOnboarding, setShowOnboarding] = useState(false);
   const { toasts, toast } = useToast();
 
@@ -2783,34 +2782,6 @@ export default function FinanceOS() {
   // View loading state — shows skeleton on view switch
   const [viewLoading, setViewLoading] = useState(false);
   const loadingTimer = useRef(null);
-
-  // Wait for localStorage hydration before rendering to prevent flash
-  const [appReady, setAppReady] = useState(false);
-  useEffect(() => {
-    // Small delay to let usePreferences read localStorage
-    const t = setTimeout(() => setAppReady(true), 50);
-    return () => clearTimeout(t);
-  }, []);
-
-  // Show branded loading while hydrating preferences
-  if (!appReady) {
-    return (
-      <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: "#09090b", flexDirection: "column", gap: 16 }}>
-        <div style={{ width: 56, height: 56, borderRadius: 16, background: "linear-gradient(135deg, #60a5fa, #818cf8, #a78bfa)", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 4px 14px rgba(96,165,250,0.25), inset 0 1px 0 rgba(255,255,255,0.15)" }}>
-          <svg width="30" height="30" viewBox="0 0 24 24" fill="none">
-            <rect x="3" y="2" width="3.5" height="20" rx="1.5" fill="white" opacity="0.95" />
-            <rect x="3" y="2" width="16" height="3.2" rx="1.5" fill="white" opacity="0.95" />
-            <rect x="3" y="9.5" width="11" height="2.8" rx="1.2" fill="white" opacity="0.65" />
-            <rect x="14" y="14" width="2.8" height="8" rx="1" fill="white" opacity="0.4" />
-            <rect x="18" y="10" width="2.8" height="12" rx="1" fill="white" opacity="0.55" />
-          </svg>
-        </div>
-        <div style={{ width: 120, height: 3, borderRadius: 2, background: "#131316", overflow: "hidden" }}>
-          <div style={{ width: "40%", height: "100%", background: "linear-gradient(90deg, #60a5fa, #a78bfa)", borderRadius: 2, animation: "shimmer 1.5s ease-in-out infinite" }} />
-        </div>
-      </div>
-    );
-  }
 
   // Show marketing page when not logged in
   if (!loggedIn) {
