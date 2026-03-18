@@ -1067,7 +1067,7 @@ const DashboardView = ({ c, onNav, toast, onDrawer, userName }) => {
           <div style={{ fontSize: 13, fontWeight: 700, color: c.text, marginBottom: 2 }}>Vaultline Suite</div>
           <div style={{ fontSize: 11, color: c.textDim }}>Add Treasury or Compliance. Save 15% with the bundle.</div>
         </div>
-        <button onClick={() => toast("Vaultline Suite — explore at vaultline.com", "success")} style={{ fontSize: 10, padding: "7px 14px", borderRadius: 6, background: c.accent, color: "#fff", fontWeight: 700, cursor: "pointer", whiteSpace: "nowrap", border: "none", fontFamily: "inherit" }}>Explore</button>
+        <button onClick={() => window.open("https://vaultline.vercel.app", "_blank")} style={{ fontSize: 10, padding: "7px 14px", borderRadius: 6, background: c.accent, color: "#fff", fontWeight: 700, cursor: "pointer", whiteSpace: "nowrap", border: "none", fontFamily: "inherit" }}>Explore</button>
       </div>
     </div>
   </div>
@@ -2451,6 +2451,11 @@ const SettingsView = ({ c, onLogout, toast, mode }) => {
   ];
   return (
     <div style={{ padding: 32, maxWidth: 720 }}>
+      {/* View Header */}
+      <div style={{ marginBottom: 20 }}>
+        <div style={{ fontSize: 18, fontWeight: 800, color: c.text, letterSpacing: "-0.02em", marginBottom: 4 }}>Settings</div>
+        <div style={{ fontSize: 12, color: c.textDim }}>Manage your account, billing, notifications, and preferences</div>
+      </div>
       {/* Tab bar */}
       <div style={{ display: "flex", gap: 4, marginBottom: 20, background: c.surfaceAlt, borderRadius: 10, padding: 3, border: `1px solid ${c.borderSub}` }}>
         {tabs.map(t => (
@@ -2840,6 +2845,13 @@ const AuthModal = ({ mode: initialMode, onClose, onAuth }) => {
               </div>
             ))}
           </div>
+          {authMode === "signup" && (
+            <div style={{ textAlign: "center", marginTop: 10, fontSize: 10, color: "#33384a", lineHeight: 1.6 }}>
+              By creating an account you agree to our{" "}
+              <span style={{ color: "#60a5fa", cursor: "pointer" }} onClick={() => window.open("https://finance-os.app/terms", "_blank")}>Terms of Service</span>{" "}and{" "}
+              <span style={{ color: "#60a5fa", cursor: "pointer" }} onClick={() => window.open("https://finance-os.app/privacy", "_blank")}>Privacy Policy</span>
+            </div>
+          )}
         </div>
       </div>
     </div>
@@ -3275,12 +3287,25 @@ const LandingPage = ({ onLogin }) => {
         </div>
       </div>
 
-      {/* Social proof */}
-      <div style={{ textAlign: "center", padding: "40px 48px", maxWidth: 800, margin: "0 auto" }}>
-        <div style={{ fontSize: 11, color: "#44495a", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 16, fontWeight: 600 }}>Trusted by finance teams at</div>
-        <div style={{ display: "flex", justifyContent: "center", gap: 40, alignItems: "center", opacity: 0.3 }}>
-          {["Acme Corp", "TechFlow", "Meridian", "Nexus AI", "CloudScale"].map(co => (
-            <span key={co} style={{ fontSize: 16, fontWeight: 700, letterSpacing: "-0.02em" }}>{co}</span>
+      {/* Social proof — Logo strip */}
+      <div style={{ textAlign: "center", padding: "40px 48px", maxWidth: 900, margin: "0 auto" }}>
+        <div style={{ fontSize: 11, color: "#44495a", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 20, fontWeight: 600 }}>Trusted by finance teams at</div>
+        <div style={{ display: "flex", justifyContent: "center", gap: isMobile ? 20 : 40, alignItems: "center", flexWrap: "wrap" }}>
+          {[
+            { name: "Acme Corp", initial: "A", color: "#60a5fa" },
+            { name: "TechFlow", initial: "T", color: "#a78bfa" },
+            { name: "Meridian", initial: "M", color: "#34d399" },
+            { name: "Nexus AI", initial: "N", color: "#f59e0b" },
+            { name: "CloudScale", initial: "C", color: "#22d3ee" },
+            { name: "Pinnacle", initial: "P", color: "#f87171" },
+          ].map(co => (
+            <div key={co.name} style={{ display: "flex", alignItems: "center", gap: 8, opacity: 0.5, transition: "opacity 0.2s" }}
+              onMouseEnter={e => e.currentTarget.style.opacity = "0.8"}
+              onMouseLeave={e => e.currentTarget.style.opacity = "0.5"}
+            >
+              <div style={{ width: 28, height: 28, borderRadius: 7, background: `${co.color}15`, border: `1px solid ${co.color}20`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12, fontWeight: 800, color: co.color }}>{co.initial}</div>
+              <span style={{ fontSize: 14, fontWeight: 700, letterSpacing: "-0.02em", color: "#f0f2f5" }}>{co.name}</span>
+            </div>
           ))}
         </div>
       </div>
@@ -3340,6 +3365,34 @@ const LandingPage = ({ onLogin }) => {
         <div style={{ textAlign: "center", marginTop: 32 }}>
           <button onClick={enterDemo} style={{ fontSize: 15, padding: "14px 32px", borderRadius: 10, border: "none", background: "linear-gradient(135deg, #60a5fa, #a78bfa)", color: "#fff", cursor: "pointer", fontFamily: "inherit", fontWeight: 700, boxShadow: "0 8px 30px rgba(96,165,250,0.25)" }}>Start Your Free Trial</button>
           <div style={{ marginTop: 10, fontSize: 12, color: "#44495a" }}>No credit card required · 30-day money-back guarantee</div>
+        </div>
+      </div>
+
+      {/* Testimonials */}
+      <div style={{ padding: isMobile ? "40px 20px" : "60px 48px", maxWidth: 1100, margin: "0 auto" }}>
+        <div style={{ textAlign: "center", marginBottom: 40 }}>
+          <h2 style={{ fontSize: 36, fontWeight: 800, letterSpacing: "-0.03em", marginBottom: 12 }}>Trusted by finance leaders</h2>
+          <p style={{ fontSize: 15, color: "#6b7280", maxWidth: 500, margin: "0 auto" }}>See why modern FP&A teams choose FinanceOS over legacy platforms.</p>
+        </div>
+        <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "repeat(3, 1fr)", gap: 16 }}>
+          {[
+            { quote: "We went from a 12-day close to 4 days. The AI copilot found a $1.2M accrual error our auditors missed.", name: "Sarah Chen", title: "VP Finance, Acme Corp", metric: "8-day reduction in close time" },
+            { quote: "The scenario modeling paid for itself in one board meeting. We modeled three M&A paths in 20 minutes instead of two weeks.", name: "James Park", title: "CFO, TechFlow", metric: "10x faster scenario analysis" },
+            { quote: "Switched from Pigment. The transparent AI reasoning was the deciding factor — we can actually trust the outputs.", name: "Maria Lopez", title: "FP&A Director, Nexus AI", metric: "From Pigment in 3 weeks" },
+          ].map(t => (
+            <div key={t.name} style={{ background: "#131316", border: "1px solid #23232a", borderRadius: 16, padding: "28px 24px", position: "relative" }}>
+              <div style={{ fontSize: 28, color: "#60a5fa", fontWeight: 800, lineHeight: 1, marginBottom: 14, opacity: 0.4 }}>"</div>
+              <div style={{ fontSize: 13, color: "#d1d5db", lineHeight: 1.7, marginBottom: 20, minHeight: 80 }}>{t.quote}</div>
+              <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 14 }}>
+                <div style={{ width: 36, height: 36, borderRadius: 10, background: "linear-gradient(135deg, #60a5fa20, #a78bfa20)", border: "1px solid #23232a", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 13, fontWeight: 800, color: "#60a5fa" }}>{t.name.split(" ").map(w => w[0]).join("")}</div>
+                <div>
+                  <div style={{ fontSize: 13, fontWeight: 700, color: "#f0f2f5" }}>{t.name}</div>
+                  <div style={{ fontSize: 11, color: "#6b7280" }}>{t.title}</div>
+                </div>
+              </div>
+              <div style={{ fontSize: 10, fontWeight: 700, padding: "5px 10px", borderRadius: 6, background: "rgba(52,211,153,0.06)", border: "1px solid rgba(52,211,153,0.12)", color: "#34d399", display: "inline-block" }}>{t.metric}</div>
+            </div>
+          ))}
         </div>
       </div>
 
@@ -3431,6 +3484,30 @@ const LandingPage = ({ onLogin }) => {
             </div>
           ))}
         </div>
+      </div>
+
+      {/* FAQ */}
+      <div style={{ padding: isMobile ? "40px 20px" : "60px 48px", maxWidth: 800, margin: "0 auto" }}>
+        <div style={{ textAlign: "center", marginBottom: 40 }}>
+          <h2 style={{ fontSize: 36, fontWeight: 800, letterSpacing: "-0.03em", marginBottom: 12 }}>Frequently asked questions</h2>
+        </div>
+        {[
+          { q: "How long does implementation take?", a: "Most teams are live within 48 hours. Connect your ERP, map your chart of accounts, and start running reports the same day. No consultants, no 6-month implementations." },
+          { q: "Can I migrate from Pigment, Anaplan, or Adaptive?", a: "Yes. We provide a guided migration path with a dedicated onboarding specialist. Most migrations complete in 2-3 weeks with full historical data preservation." },
+          { q: "How does the AI Copilot work?", a: "Our AI reads your full financial model — actuals, budgets, forecasts, and benchmarks. Ask any question in plain English and get a sourced, reasoned answer. Unlike other tools, we show our work so you can verify every insight." },
+          { q: "What integrations do you support?", a: "30+ native integrations including NetSuite, Salesforce, Stripe, Snowflake, Rippling, QuickBooks, Xero, and more. Bi-directional sync with < 5 minute latency." },
+          { q: "Is my data secure?", a: "SOC 2 Type II compliant, AES-256 encryption at rest and in transit, row-level security in Supabase, and strict Content Security Policy headers. Your data never leaves your tenant." },
+          { q: "What happens after the free trial?", a: "After 14 days, choose a plan that fits your team. All data is preserved. If you cancel, you get a 30-day money-back guarantee — no questions asked." },
+          { q: "Do you offer custom pricing for large teams?", a: "Yes. Teams with 50+ users or special compliance requirements can contact us for custom enterprise pricing with dedicated SLA, CSM, and on-premises deployment options." },
+        ].map((faq, i) => (
+          <details key={i} style={{ borderBottom: "1px solid #1b1b20", cursor: "pointer" }}>
+            <summary style={{ padding: "18px 0", fontSize: 15, fontWeight: 600, color: "#f0f2f5", listStyle: "none", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              {faq.q}
+              <ChevronDown size={16} color="#6b7280" style={{ flexShrink: 0, transition: "transform 0.2s" }} />
+            </summary>
+            <div style={{ padding: "0 0 18px", fontSize: 13, color: "#9ca3b0", lineHeight: 1.7 }}>{faq.a}</div>
+          </details>
+        ))}
       </div>
 
       {/* Security & Trust */}
@@ -3681,6 +3758,7 @@ export default function FinanceOS() {
   const [notifOpen, setNotifOpen] = useState(false);
   const [navHistory, setNavHistory] = useState(["dashboard"]);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const isMobile = useMediaQuery("(max-width: 768px)");
   const isTablet = useMediaQuery("(max-width: 1024px)");
   const [showOnboarding, setShowOnboarding] = useState(false);
@@ -3804,6 +3882,7 @@ export default function FinanceOS() {
   // MUST be defined before the if(!loggedIn) return — React Rules of Hooks
   const navigate = useCallback((v) => {
     if (v === view) return;
+    setMobileMenuOpen(false);
     setPrevView(view);
     setViewLoading(true);
     if (loadingTimer.current) clearTimeout(loadingTimer.current);
@@ -3811,6 +3890,8 @@ export default function FinanceOS() {
       setView(v);
       setViewLoading(false);
       loadingTimer.current = null;
+      // Scroll content area to top on view change
+      try { document.querySelector("[data-content-area]")?.scrollTo(0, 0); } catch {}
     }, 280);
     setNavHistory(prev => {
       const next = [...prev];
@@ -3889,7 +3970,7 @@ export default function FinanceOS() {
         html { scroll-behavior: smooth; }
         /* ── RESPONSIVE ── */
         @media (max-width: 768px) {
-          [data-sidebar] { display: none !important; }
+          [data-sidebar]:not([data-mobile-open]) { display: none !important; }
           [data-topbar] { padding: 8px 16px !important; }
           nav { padding: 16px 20px !important; }
           nav > div:nth-child(2) { display: none !important; }
@@ -3924,13 +4005,19 @@ export default function FinanceOS() {
       {/* Subtle noise texture for depth */}
       <div className="noise-overlay" />
 
+      {/* ── MOBILE BACKDROP ── */}
+      {isMobile && mobileMenuOpen && (
+        <div onClick={() => setMobileMenuOpen(false)} style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.5)", zIndex: 99, backdropFilter: "blur(4px)", animation: "fadeIn 0.15s" }} />
+      )}
+
       {/* ── SIDEBAR ── */}
-      <div data-sidebar className="theme-transition" style={{
-        width: sidebarCollapsed ? 64 : 230, minHeight: "100vh", background: c.sidebarBg,
+      <div data-sidebar {...(isMobile && mobileMenuOpen ? { "data-mobile-open": true } : {})} className="theme-transition" style={{
+        width: sidebarCollapsed && !isMobile ? 64 : 230, minHeight: "100vh", background: c.sidebarBg,
         borderRight: `1px solid ${c.border}`, display: "flex", flexDirection: "column", flexShrink: 0,
         boxShadow: mode === "dark" ? "4px 0 20px rgba(0,0,0,0.15)" : "4px 0 20px rgba(0,0,0,0.04)",
-        transition: "width 0.25s cubic-bezier(0.22,1,0.36,1), background 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease",
+        transition: "width 0.25s cubic-bezier(0.22,1,0.36,1), background 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease, transform 0.25s cubic-bezier(0.22,1,0.36,1)",
         overflow: "hidden",
+        ...(isMobile ? { position: "fixed", top: 0, left: 0, bottom: 0, zIndex: 100, transform: mobileMenuOpen ? "translateX(0)" : "translateX(-100%)" } : {}),
       }}>
         {/* Logo + Collapse Toggle */}
         <div style={{ padding: sidebarCollapsed ? "22px 12px 18px" : "22px 20px 18px", borderBottom: `1px solid ${c.borderSub}`, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
@@ -4028,7 +4115,7 @@ export default function FinanceOS() {
 
         {/* Theme + User */}
         <div style={{ padding: sidebarCollapsed ? "8px 8px" : "12px 14px", borderTop: `1px solid ${c.borderSub}` }}>
-          <div onClick={toggleMode} style={{
+          <div onClick={toggleMode} aria-label={`Switch to ${mode === "dark" ? "light" : "dark"} mode`} role="button" tabIndex={0} onKeyDown={e => e.key === "Enter" && toggleMode()} style={{
             display: "flex", alignItems: "center", gap: sidebarCollapsed ? 0 : 10,
             padding: sidebarCollapsed ? "8px 0" : "8px 10px", borderRadius: 8,
             cursor: "pointer", fontSize: 12, color: c.textSec, transition: "all 0.2s",
@@ -4118,6 +4205,14 @@ export default function FinanceOS() {
           transition: "background 0.4s ease, border-color 0.4s ease",
         }}>
           <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+            {/* Mobile hamburger */}
+            {isMobile && (
+              <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} aria-label="Toggle navigation menu" style={{ width: 32, height: 32, borderRadius: 8, border: `1px solid ${c.border}`, background: "transparent", cursor: "pointer", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 4, padding: 6 }}>
+                <div style={{ width: 14, height: 2, borderRadius: 1, background: c.textDim, transition: "all 0.2s", transform: mobileMenuOpen ? "rotate(45deg) translateY(3px)" : "none" }} />
+                <div style={{ width: 14, height: 2, borderRadius: 1, background: c.textDim, transition: "all 0.2s", opacity: mobileMenuOpen ? 0 : 1 }} />
+                <div style={{ width: 14, height: 2, borderRadius: 1, background: c.textDim, transition: "all 0.2s", transform: mobileMenuOpen ? "rotate(-45deg) translateY(-3px)" : "none" }} />
+              </button>
+            )}
             {/* Breadcrumb */}
             {navHistory.length > 1 && (
               <div style={{ display: "flex", alignItems: "center", gap: 4, marginRight: 4 }}>
@@ -4157,7 +4252,7 @@ export default function FinanceOS() {
             </div>
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-            <div onClick={() => setCmdOpen(true)} style={{
+            <div onClick={() => setCmdOpen(true)} aria-label="Search — press Command K" role="button" tabIndex={0} onKeyDown={e => e.key === "Enter" && setCmdOpen(true)} style={{
               display: "flex", alignItems: "center", gap: 6, background: c.surfaceAlt, border: `1px solid ${c.border}`,
               borderRadius: 8, padding: "6px 12px", fontSize: 12, color: c.textDim, width: 200, cursor: "pointer", transition: "border-color 0.15s",
             }}
@@ -4167,7 +4262,7 @@ export default function FinanceOS() {
               <Search size={13} /> Search... <kbd style={{ marginLeft: "auto", fontSize: 9, padding: "1px 5px", borderRadius: 3, background: c.bg2, border: `1px solid ${c.borderSub}`, color: c.textFaint }}>⌘K</kbd>
             </div>
             <div style={{ position: "relative" }}>
-              <div style={{ cursor: "pointer", position: "relative" }} onClick={() => setNotifOpen(!notifOpen)}>
+              <div style={{ cursor: "pointer", position: "relative" }} role="button" aria-label="Notifications" tabIndex={0} onClick={() => setNotifOpen(!notifOpen)} onKeyDown={e => e.key === "Enter" && setNotifOpen(!notifOpen)}>
                 <Bell size={18} color={notifOpen ? c.accent : c.textDim} />
                 <div style={{ position: "absolute", top: -3, right: -4, minWidth: 14, height: 14, borderRadius: 7, background: c.red, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 8, fontWeight: 800, color: "#fff", border: `2px solid ${c.bg2}` }}>4</div>
               </div>
@@ -4203,7 +4298,7 @@ export default function FinanceOS() {
         </div>
 
         {/* Content */}
-        <div key={viewLoading ? "loading" : view} className="view-fade" style={{ flex: 1, overflow: "auto", background: "transparent", position: "relative", zIndex: 1 }}>
+        <div key={viewLoading ? "loading" : view} data-content-area className="view-fade" style={{ flex: 1, overflow: "auto", background: "transparent", position: "relative", zIndex: 1 }}>
           {viewLoading ? <LoadingSkeleton c={c} /> : (<>
           {view === "dashboard" && <SectionBoundary bg={c.surface} borderColor={c.border} textColor={c.textDim}><DashboardView c={c} onNav={navigate} toast={toast} onDrawer={setDrawerKpi} userName={user.name} /></SectionBoundary>}
           {view === "copilot" && <SectionBoundary bg={c.surface} borderColor={c.border} textColor={c.textDim}><CopilotView c={c} toast={toast} /></SectionBoundary>}
