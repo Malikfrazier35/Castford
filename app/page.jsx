@@ -1660,25 +1660,47 @@ const CONNECTORS = [
 const IntegrationsView = ({ c, toast }) => {
   const [conns, setConns] = useState(CONNECTORS);
   const [filter, setFilter] = useState("all");
+  const [search, setSearch] = useState("");
   const cats = ["all", ...new Set(CONNECTORS.map(co => co.cat))];
 
   const toggleConnect = (name) => {
     const conn = conns.find(co => co.name === name);
     const wasConnected = conn?.status === "connected";
-    setConns(prev => prev.map(co => co.name === name ? { ...co, status: wasConnected ? "available" : "connected", records: wasConnected ? null : "Syncing..." } : co));
+    setConns(prev => prev.map(co => co.name === name ? { ...co, status: wasConnected ? "available" : "connected", records: wasConnected ? null : "Syncing...", lastSync: wasConnected ? null : "Just now" } : co));
     toast(wasConnected ? `Disconnected ${name}` : `Connected ${name} — syncing records...`, wasConnected ? "warning" : "success");
   };
 
-  const filtered = filter === "all" ? conns : conns.filter(co => co.cat === filter);
+  const filtered = (filter === "all" ? conns : conns.filter(co => co.cat === filter)).filter(co => !search || co.name.toLowerCase().includes(search.toLowerCase()));
+  const connected = conns.filter(co => co.status === "connected");
 
   return (
     <div style={{ padding: 32 }}>
-      {/* Stats */}
-      <div style={{ display: "flex", gap: 16, marginBottom: 20 }}>
-        {[{ label: "Connected", value: conns.filter(co => co.status === "connected").length, color: c.green }, { label: "Available", value: conns.filter(co => co.status === "available").length, color: c.textDim }, { label: "Total Records", value: "3.2M+", color: c.accent }].map(s => (
-          <div key={s.label} style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 10, padding: "12px 20px" }}>
-            <div style={{ fontSize: 20, fontWeight: 800, color: s.color }}>{s.value}</div>
-            <div style={{ fontSize: 10, color: c.textDim }}>{s.label}</div>
+      {/* Header */}
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 24 }}>
+        <div>
+          <div style={{ fontSize: 18, fontWeight: 800, color: c.text, letterSpacing: "-0.02em", marginBottom: 4 }}>Integrations</div>
+          <div style={{ fontSize: 12, color: c.textDim }}>Connect your stack. Bi-directional sync with real-time freshness indicators.</div>
+        </div>
+        <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search integrations..."
+          style={{ fontSize: 12, padding: "8px 14px", borderRadius: 8, border: `1px solid ${c.border}`, background: c.surfaceAlt, color: c.text, fontFamily: "inherit", outline: "none", width: 200 }}
+          onFocus={e => e.target.style.borderColor = c.accent} onBlur={e => e.target.style.borderColor = c.border}
+        />
+      </div>
+
+      {/* Health overview bar */}
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 12, marginBottom: 20 }}>
+        {[
+          { label: "Connected", value: connected.length, icon: "●", color: c.green },
+          { label: "Available", value: conns.filter(co => co.status === "available").length, icon: "○", color: c.textDim },
+          { label: "Total Records", value: "3.2M+", icon: "◆", color: c.accent },
+          { label: "Avg Freshness", value: "< 4 min", icon: "⚡", color: c.amber },
+        ].map(s => (
+          <div key={s.label} style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 12, padding: "14px 18px", boxShadow: c.cardGlow }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 6 }}>
+              <span style={{ color: s.color, fontSize: 8 }}>{s.icon}</span>
+              <span style={{ fontSize: 9, color: c.textDim, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.04em" }}>{s.label}</span>
+            </div>
+            <div style={{ fontSize: 22, fontWeight: 800, color: c.text, fontFamily: "'JetBrains Mono', monospace" }}>{s.value}</div>
           </div>
         ))}
       </div>
@@ -1697,27 +1719,33 @@ const IntegrationsView = ({ c, toast }) => {
       {/* Connector grid */}
       <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 16 }}>
         {filtered.map(co => (
-          <div key={co.name} style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, padding: 20, boxShadow: c.cardGlow, transition: "border-color 0.15s" }}
-            onMouseEnter={e => e.currentTarget.style.borderColor = co.color}
-            onMouseLeave={e => e.currentTarget.style.borderColor = c.border}
+          <div key={co.name} style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, padding: 20, boxShadow: c.cardGlow, transition: "all 0.2s" }}
+            onMouseEnter={e => { e.currentTarget.style.borderColor = co.color; e.currentTarget.style.transform = "translateY(-2px)"; }}
+            onMouseLeave={e => { e.currentTarget.style.borderColor = c.border; e.currentTarget.style.transform = "none"; }}
           >
-            <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 10 }}>
-              <div style={{ width: 32, height: 32, borderRadius: 8, background: `${co.color}20`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 13, fontWeight: 800, color: co.color }}>{co.name[0]}</div>
-              <div>
+            <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12 }}>
+              <div style={{ width: 36, height: 36, borderRadius: 10, background: `${co.color}15`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 14, fontWeight: 800, color: co.color }}>{co.name[0]}</div>
+              <div style={{ flex: 1 }}>
                 <div style={{ fontSize: 13, fontWeight: 700, color: c.text }}>{co.name}</div>
                 <div style={{ fontSize: 10, color: c.textDim }}>{co.cat}</div>
               </div>
+              {co.status === "connected" && (
+                <div style={{ width: 8, height: 8, borderRadius: "50%", background: c.green, boxShadow: `0 0 6px ${c.green}60`, animation: "pulse 2s infinite" }} />
+              )}
             </div>
             {co.status === "connected" && (
-              <div style={{ fontSize: 10, color: c.green, fontWeight: 600, marginBottom: 8, display: "flex", alignItems: "center", gap: 5 }}><span style={{ width: 6, height: 6, borderRadius: "50%", background: c.green, display: "inline-block" }} /> Connected · {co.records} records</div>
+              <div style={{ display: "flex", justifyContent: "space-between", fontSize: 10, marginBottom: 10, padding: "6px 10px", borderRadius: 6, background: c.surfaceAlt }}>
+                <span style={{ color: c.green, fontWeight: 600 }}>{co.records} records</span>
+                <span style={{ color: c.textFaint }}>Synced {co.lastSync || "3 min ago"}</span>
+              </div>
             )}
             <div style={{ display: "flex", gap: 6 }}>
               <button onClick={() => toggleConnect(co.name)} style={{
-                flex: 1, fontSize: 10, padding: "7px 0", borderRadius: 6, border: "none", fontFamily: "inherit", fontWeight: 700, cursor: "pointer",
-                background: co.status === "connected" ? c.redDim : c.green, color: co.status === "connected" ? c.red : "#fff",
+                flex: 1, fontSize: 10, padding: "8px 0", borderRadius: 8, border: "none", fontFamily: "inherit", fontWeight: 700, cursor: "pointer", transition: "all 0.15s",
+                background: co.status === "connected" ? c.redDim : `linear-gradient(135deg, ${co.color}, ${co.color}cc)`, color: co.status === "connected" ? c.red : "#fff",
               }}>{co.status === "connected" ? "Disconnect" : "Connect"}</button>
               {co.status === "connected" && (
-                <button onClick={() => toast(`Syncing ${co.name}...`, "success")} style={{ fontSize: 10, padding: "7px 12px", borderRadius: 6, border: `1px solid ${c.border}`, background: "transparent", color: c.textSec, cursor: "pointer", fontFamily: "inherit" }}>Sync</button>
+                <button onClick={() => toast(`Syncing ${co.name}...`, "success")} style={{ fontSize: 10, padding: "8px 14px", borderRadius: 8, border: `1px solid ${c.border}`, background: "transparent", color: c.textSec, cursor: "pointer", fontFamily: "inherit", fontWeight: 600 }}>Sync</button>
               )}
             </div>
           </div>
@@ -2087,36 +2115,119 @@ const AdminView = ({ c, toast, onNav }) => {
 };
 
 const ScenariosView = ({ c, toast }) => {
-  const [selected, setSelected] = useState(null);
+  const [selected, setSelected] = useState(0);
+  const [compare, setCompare] = useState([0, 2]); // side-by-side compare indices
+  const [drivers, setDrivers] = useState({ ndr: 118, pipeline: 42, churn: 2.1, headcount: 128 });
+  const [showCompare, setShowCompare] = useState(false);
+
+  const scenarios = SCENARIOS_LIST.map((s, i) => i === 0 ? {
+    ...s,
+    revenue: +(s.revenue * (drivers.ndr / 118) * (drivers.pipeline / 42)).toFixed(1),
+    opex: +(s.opex * (drivers.headcount / 128)).toFixed(1),
+    get ebitda() { return +((this.revenue - this.opex) / this.revenue * 100).toFixed(1); }
+  } : s);
+
+  const active = scenarios[selected];
+  const barMax = Math.max(...scenarios.map(s => s.revenue));
 
   return (
     <div style={{ padding: 32 }}>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
-        <div style={{ fontSize: 12, color: c.textSec }}>{SCENARIOS_LIST.length} scenarios · Compare up to 4 side-by-side</div>
-        <button onClick={() => toast("New scenario created — customize assumptions below", "success")} style={{ fontSize: 11, padding: "8px 16px", borderRadius: 8, border: "none", background: c.accent, color: "#fff", fontWeight: 700, cursor: "pointer", fontFamily: "inherit" }}>+ New Scenario</button>
+      {/* Header */}
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 24 }}>
+        <div>
+          <div style={{ fontSize: 18, fontWeight: 800, color: c.text, letterSpacing: "-0.02em", marginBottom: 4 }}>Scenario Modeling</div>
+          <div style={{ fontSize: 12, color: c.textDim }}>{scenarios.length} scenarios · Drag sliders to model assumptions in real-time</div>
+        </div>
+        <div style={{ display: "flex", gap: 8 }}>
+          <button onClick={() => setShowCompare(!showCompare)} style={{ fontSize: 11, padding: "8px 16px", borderRadius: 8, border: `1px solid ${showCompare ? c.accent : c.border}`, background: showCompare ? c.accentDim : "transparent", color: showCompare ? c.accent : c.textSec, fontWeight: 700, cursor: "pointer", fontFamily: "inherit" }}>Compare</button>
+          <button onClick={() => toast("New scenario created", "success")} style={{ fontSize: 11, padding: "8px 16px", borderRadius: 8, border: "none", background: c.accent, color: "#fff", fontWeight: 700, cursor: "pointer", fontFamily: "inherit" }}>+ New Scenario</button>
+        </div>
       </div>
 
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 12 }}>
-        {SCENARIOS_LIST.map((s, i) => (
-          <div key={s.name} onClick={() => setSelected(i === selected ? null : i)} style={{
-            background: c.surface, border: `1px solid ${selected === i ? c.accent : c.border}`, borderRadius: 14, padding: 22, boxShadow: c.cardGlow,
-            cursor: "pointer", transition: "border-color 0.15s",
-          }}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
-              <span style={{ fontSize: 14, fontWeight: 800, color: c.text }}>{s.name}</span>
-              <span style={{ fontSize: 9, fontWeight: 700, padding: "3px 8px", borderRadius: 4, background: s.status === "Active" ? c.greenDim : c.surfaceAlt, color: s.status === "Active" ? c.green : c.textDim }}>{s.status}</span>
+      {/* Horizontal bar comparison */}
+      <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, padding: 22, marginBottom: 16, boxShadow: c.cardGlow }}>
+        <div style={{ fontSize: 11, fontWeight: 700, color: c.textDim, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 14 }}>Revenue Comparison</div>
+        {scenarios.map((s, i) => (
+          <div key={s.name} onClick={() => setSelected(i)} style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 10, cursor: "pointer", opacity: selected === i ? 1 : 0.6, transition: "opacity 0.15s" }}>
+            <div style={{ width: 120, fontSize: 11, fontWeight: selected === i ? 700 : 500, color: selected === i ? c.text : c.textDim, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{s.name}</div>
+            <div style={{ flex: 1, height: 24, background: c.surfaceAlt, borderRadius: 6, overflow: "hidden", position: "relative" }}>
+              <div style={{ height: "100%", width: `${(s.revenue / barMax) * 100}%`, background: s.status === "Active" ? `linear-gradient(90deg, ${c.accent}, ${c.accentMid || c.accent}80)` : c.borderBright, borderRadius: 6, transition: "width 0.6s cubic-bezier(0.22,1,0.36,1)", display: "flex", alignItems: "center", justifyContent: "flex-end", paddingRight: 8 }}>
+                <span style={{ fontSize: 10, fontWeight: 800, color: s.status === "Active" ? "#fff" : c.textDim, fontFamily: "'JetBrains Mono', monospace" }}>${s.revenue}M</span>
+              </div>
             </div>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 10 }}>
-              {[{ label: "Revenue", value: s.revenue, color: c.text }, { label: "OpEx", value: s.opex, color: c.amber }, { label: "EBITDA Margin", value: s.ebitda, color: s.ebitda > 5 ? c.green : c.red }].map(m => (
-                <div key={m.label}>
-                  <div style={{ fontSize: 9, color: c.textDim, textTransform: "uppercase", letterSpacing: "0.04em" }}>{m.label}</div>
-                  <div style={{ fontSize: 18, fontWeight: 800, color: m.color }}>${m.value}M</div>
+            <div style={{ width: 60, fontSize: 10, fontWeight: 600, color: s.ebitda > 5 ? c.green : s.ebitda > 0 ? c.amber : c.red, textAlign: "right", fontFamily: "'JetBrains Mono', monospace" }}>{typeof s.ebitda === 'number' ? s.ebitda : s.ebitda}%</div>
+          </div>
+        ))}
+      </div>
+
+      <div style={{ display: "grid", gridTemplateColumns: showCompare ? "1fr 1fr" : "1fr 280px", gap: 16 }}>
+        {/* Scenario cards or comparison */}
+        {showCompare ? compare.map(idx => {
+          const s = scenarios[idx];
+          return (
+            <div key={idx} style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, padding: 22, boxShadow: c.cardGlow }}>
+              <div style={{ fontSize: 14, fontWeight: 800, color: c.text, marginBottom: 16 }}>{s.name}</div>
+              {[{ l: "Revenue", v: `$${s.revenue}M`, color: c.text }, { l: "OpEx", v: `$${s.opex}M`, color: c.amber }, { l: "EBITDA Margin", v: `${typeof s.ebitda === 'number' ? s.ebitda : s.ebitda}%`, color: (typeof s.ebitda === 'number' ? s.ebitda : parseFloat(s.ebitda)) > 5 ? c.green : c.red }, { l: "Status", v: s.status, color: s.status === "Active" ? c.green : c.textDim }].map(r => (
+                <div key={r.l} style={{ display: "flex", justifyContent: "space-between", padding: "10px 0", borderBottom: `1px solid ${c.borderSub}`, fontSize: 12 }}>
+                  <span style={{ color: c.textDim }}>{r.l}</span>
+                  <span style={{ fontWeight: 700, color: r.color, fontFamily: "'JetBrains Mono', monospace" }}>{r.v}</span>
                 </div>
               ))}
             </div>
-            <div style={{ fontSize: 9, color: c.textFaint, marginTop: 8 }}>Updated {s.updated}</div>
-          </div>
-        ))}
+          );
+        }) : (
+          <>
+            {/* Scenario cards */}
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+              {scenarios.map((s, i) => (
+                <div key={s.name} onClick={() => setSelected(i)} style={{
+                  background: c.surface, border: `1px solid ${selected === i ? c.accent : c.border}`, borderRadius: 14, padding: 18, boxShadow: c.cardGlow,
+                  cursor: "pointer", transition: "border-color 0.15s, transform 0.15s",
+                }}
+                  onMouseEnter={e => e.currentTarget.style.transform = "translateY(-2px)"}
+                  onMouseLeave={e => e.currentTarget.style.transform = "none"}
+                >
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
+                    <span style={{ fontSize: 13, fontWeight: 800, color: c.text }}>{s.name}</span>
+                    <span style={{ fontSize: 9, fontWeight: 700, padding: "3px 8px", borderRadius: 4, background: s.status === "Active" ? c.greenDim : c.surfaceAlt, color: s.status === "Active" ? c.green : c.textDim }}>{s.status}</span>
+                  </div>
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8 }}>
+                    {[{ l: "Rev", v: `$${s.revenue}M` }, { l: "OpEx", v: `$${s.opex}M` }, { l: "EBITDA", v: `${typeof s.ebitda === 'number' ? s.ebitda : s.ebitda}%` }].map(m => (
+                      <div key={m.l}>
+                        <div style={{ fontSize: 8, color: c.textDim, textTransform: "uppercase", letterSpacing: "0.04em" }}>{m.l}</div>
+                        <div style={{ fontSize: 15, fontWeight: 800, color: c.text, fontFamily: "'JetBrains Mono', monospace" }}>{m.v}</div>
+                      </div>
+                    ))}
+                  </div>
+                  <div style={{ fontSize: 9, color: c.textFaint, marginTop: 8 }}>Updated {s.updated}</div>
+                </div>
+              ))}
+            </div>
+
+            {/* Sensitivity sliders */}
+            <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, padding: 22, boxShadow: c.cardGlow }}>
+              <div style={{ fontSize: 12, fontWeight: 700, color: c.text, marginBottom: 16 }}>Assumption Drivers</div>
+              {[
+                { key: "ndr", label: "Net Dollar Retention", value: drivers.ndr, min: 80, max: 150, unit: "%", color: c.accent },
+                { key: "pipeline", label: "Pipeline ($M)", value: drivers.pipeline, min: 10, max: 80, unit: "M", color: c.green },
+                { key: "churn", label: "Gross Churn Rate", value: drivers.churn, min: 0.5, max: 8, unit: "%", color: c.red, step: 0.1 },
+                { key: "headcount", label: "Headcount", value: drivers.headcount, min: 80, max: 200, unit: "", color: c.amber },
+              ].map(d => (
+                <div key={d.key} style={{ marginBottom: 16 }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", fontSize: 10, marginBottom: 6 }}>
+                    <span style={{ color: c.textDim, fontWeight: 600 }}>{d.label}</span>
+                    <span style={{ color: d.color, fontWeight: 800, fontFamily: "'JetBrains Mono', monospace" }}>{d.value}{d.unit}</span>
+                  </div>
+                  <input type="range" min={d.min} max={d.max} step={d.step || 1} value={d.value}
+                    onChange={e => setDrivers(prev => ({ ...prev, [d.key]: parseFloat(e.target.value) }))}
+                    style={{ width: "100%", height: 4, appearance: "none", background: c.surfaceAlt, borderRadius: 4, outline: "none", accentColor: d.color }}
+                  />
+                </div>
+              ))}
+              <div style={{ fontSize: 9, color: c.textFaint, marginTop: 8, lineHeight: 1.5 }}>Drivers apply to Base Case. Drag sliders to model impact on revenue and margin.</div>
+            </div>
+          </>
+        )}
       </div>
     </div>
   );
