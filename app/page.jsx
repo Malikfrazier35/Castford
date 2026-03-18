@@ -2105,44 +2105,54 @@ const InvestorView = ({ c, toast }) => (
     </div>
 
     {/* Benchmark Scorecard */}
-    <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, padding: "16px 22px", marginBottom: 20, boxShadow: c.cardGlow, display: "flex", alignItems: "center", gap: 20 }}>
-      <div style={{ fontSize: 12, fontWeight: 700, color: c.text, whiteSpace: "nowrap" }}>Series A Readiness</div>
-      <div style={{ flex: 1, display: "flex", gap: 4 }}>
+    <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, padding: "18px 24px", marginBottom: 20, boxShadow: c.cardGlow, display: "flex", alignItems: "center", gap: 20, position: "relative", overflow: "hidden" }}>
+      <div style={{ position: "absolute", top: 0, left: "10%", right: "10%", height: 2, background: `linear-gradient(90deg, transparent, ${c.green}35, transparent)`, borderRadius: "0 0 2px 2px" }} />
+      <div style={{ fontSize: 12, fontWeight: 800, color: c.text, whiteSpace: "nowrap" }}>Series A Readiness</div>
+      <div style={{ flex: 1, display: "flex", gap: 3 }}>
         {[
-          { label: "ARR", pass: true }, { label: "NDR", pass: true }, { label: "Rule of 40", pass: true },
-          { label: "Burn", pass: true }, { label: "Margin", pass: true }, { label: "CAC", pass: true },
-          { label: "LTV/CAC", pass: true }, { label: "Runway", pass: true },
+          { label: "ARR", pass: true }, { label: "NDR", pass: true }, { label: "R40", pass: true },
+          { label: "Burn", pass: true }, { label: "GM", pass: true }, { label: "CAC", pass: true },
+          { label: "LTV", pass: true }, { label: "Cash", pass: true },
         ].map(b => (
-          <div key={b.label} style={{ flex: 1, height: 6, borderRadius: 3, background: b.pass ? c.green : c.red, opacity: 0.7, transition: "opacity 0.15s" }}
-            title={`${b.label}: ${b.pass ? "Above benchmark" : "Below benchmark"}`}
-          />
+          <div key={b.label} style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", gap: 3 }}>
+            <div style={{ width: "100%", height: 6, borderRadius: 3, background: b.pass ? `linear-gradient(90deg, ${c.green}, ${c.green}bb)` : c.red, transition: "all 0.3s" }} />
+            <span style={{ fontSize: 7, fontWeight: 700, color: c.textFaint, letterSpacing: "0.04em" }}>{b.label}</span>
+          </div>
         ))}
       </div>
-      <div style={{ fontSize: 11, fontWeight: 800, color: c.green, fontFamily: "'JetBrains Mono', monospace" }}>8/8 ✓</div>
+      <div style={{ fontSize: 12, fontWeight: 800, color: c.green, fontFamily: "'JetBrains Mono', monospace", padding: "4px 10px", background: c.greenDim, borderRadius: 6, border: `1px solid ${c.green}12` }}>8/8 ✓</div>
     </div>
 
     {/* Fundraising KPIs */}
     <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 14, marginBottom: 24 }}>
       {[
-        { label: "ARR", value: "$48.6M", sub: "+24% YoY", color: c.accent },
-        { label: "Net Dollar Retention", value: "118%", sub: "Best-in-class >110%", color: c.green },
-        { label: "Rule of 40", value: "52.1", sub: "Growth 47.8% + Margin 4.3%", color: c.purple },
-        { label: "Burn Multiple", value: "0.8x", sub: "Efficient: <1.0x target", color: c.green },
-        { label: "Gross Margin", value: "84.7%", sub: "SaaS benchmark: 70-80%", color: c.accent },
-        { label: "CAC Payback", value: "14 mo", sub: "Target: <18 months", color: c.green },
-        { label: "LTV/CAC", value: "4.2x", sub: "Healthy: >3.0x", color: c.green },
-        { label: "Cash Runway", value: "34 mo", sub: "$12.8M cash on hand", color: c.accent },
-      ].map(k => (
-        <div key={k.label} style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, padding: "18px 20px", boxShadow: c.cardGlow, position: "relative", overflow: "hidden", transition: "all 0.2s" }}
-          onMouseEnter={e => { e.currentTarget.style.borderColor = k.color + "30"; e.currentTarget.style.transform = "translateY(-2px)"; }}
-          onMouseLeave={e => { e.currentTarget.style.borderColor = c.border; e.currentTarget.style.transform = "none"; }}
+        { label: "ARR", value: "$48.6M", sub: "+24% YoY", color: c.accent, icon: DollarSign },
+        { label: "Net Dollar Retention", value: "118%", sub: "Best-in-class >110%", color: c.green, icon: TrendingUp },
+        { label: "Rule of 40", value: "52.1", sub: "Growth 47.8% + Margin 4.3%", color: c.purple, icon: Zap },
+        { label: "Burn Multiple", value: "0.8x", sub: "Efficient: <1.0x target", color: c.green, icon: Activity },
+        { label: "Gross Margin", value: "84.7%", sub: "SaaS benchmark: 70-80%", color: c.accent, icon: Target },
+        { label: "CAC Payback", value: "14 mo", sub: "Target: <18 months", color: c.green, icon: Activity },
+        { label: "LTV/CAC", value: "4.2x", sub: "Healthy: >3.0x", color: c.green, icon: TrendingUp },
+        { label: "Cash Runway", value: "34 mo", sub: "$12.8M cash on hand", color: c.accent, icon: Shield },
+      ].map(k => {
+        const Icon = k.icon;
+        return (
+        <div key={k.label} style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, padding: "20px 22px", boxShadow: c.cardGlow, position: "relative", overflow: "hidden", transition: "all 0.25s cubic-bezier(0.22,1,0.36,1)" }}
+          onMouseEnter={e => { e.currentTarget.style.borderColor = `${k.color}35`; e.currentTarget.style.transform = "translateY(-3px)"; e.currentTarget.style.boxShadow = `0 8px 28px ${k.color}10, ${c.cardGlow}`; }}
+          onMouseLeave={e => { e.currentTarget.style.borderColor = c.border; e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = c.cardGlow; }}
         >
           <div style={{ position: "absolute", top: 0, left: "15%", right: "15%", height: 2, background: `linear-gradient(90deg, transparent, ${k.color}30, transparent)`, borderRadius: "0 0 2px 2px" }} />
-          <div style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", color: c.textFaint, marginBottom: 8 }}>{k.label}</div>
-          <div style={{ fontSize: 26, fontWeight: 800, color: c.text, fontFamily: "'JetBrains Mono', monospace", marginBottom: 4 }}>{k.value}</div>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 10 }}>
+            <div style={{ fontSize: 9, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.1em", color: c.textFaint }}>{k.label}</div>
+            <div style={{ width: 26, height: 26, borderRadius: 8, background: `linear-gradient(135deg, ${k.color}15, ${k.color}06)`, border: `1px solid ${k.color}10`, display: "flex", alignItems: "center", justifyContent: "center" }}>
+              <Icon size={12} color={k.color} />
+            </div>
+          </div>
+          <div style={{ fontSize: 28, fontWeight: 800, color: c.text, fontFamily: "'JetBrains Mono', monospace", letterSpacing: "-0.02em", marginBottom: 4 }}>{k.value}</div>
           <div style={{ fontSize: 10, color: k.color, fontWeight: 600 }}>{k.sub}</div>
         </div>
-      ))}
+        );
+      })}
     </div>
 
     {/* Cohort & Unit Economics */}
@@ -2690,21 +2700,22 @@ const SettingsView = ({ c, onLogout, toast, mode }) => {
       )}
 
       {activeTab === "billing" && (
-        <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, padding: "22px 24px", boxShadow: c.cardGlow }}>
-          <div style={{ fontSize: 14, fontWeight: 700, color: c.text, marginBottom: 14 }}>Billing & Subscription</div>
+        <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, padding: "24px 24px 18px", boxShadow: c.cardGlow, position: "relative", overflow: "hidden" }}>
+          <div style={{ position: "absolute", top: 0, left: "10%", right: "10%", height: 2, background: `linear-gradient(90deg, transparent, ${c.accent}30, transparent)`, borderRadius: "0 0 2px 2px" }} />
+          <div style={{ fontSize: 14, fontWeight: 800, color: c.text, marginBottom: 16 }}>Billing & Subscription</div>
           <div style={{ display: "flex", gap: 12, marginBottom: 16 }}>
-            <div style={{ flex: 1, padding: 14, borderRadius: 10, background: c.accentDim, border: `1px solid ${c.accent}20` }}>
-              <div style={{ fontSize: 10, color: c.accent, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 4 }}>Current Plan</div>
+            <div style={{ flex: 1, padding: "16px 16px", borderRadius: 12, background: `linear-gradient(135deg, ${c.accent}08, ${c.purple}04)`, border: `1px solid ${c.accent}15` }}>
+              <div style={{ fontSize: 9, color: c.accent, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 6 }}>Current Plan</div>
               <div style={{ fontSize: 18, fontWeight: 800, color: c.text }}>Growth</div>
-              <div style={{ fontSize: 11, color: c.textDim, marginTop: 2 }}>$1,799/mo · Annual billing</div>
+              <div style={{ fontSize: 11, color: c.textDim, marginTop: 3, fontFamily: "'JetBrains Mono', monospace" }}>$1,799/mo · Annual</div>
             </div>
-            <div style={{ flex: 1, padding: 14, borderRadius: 10, background: c.greenDim, border: `1px solid ${c.green}20` }}>
-              <div style={{ fontSize: 10, color: c.green, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 4 }}>Next Invoice</div>
-              <div style={{ fontSize: 18, fontWeight: 800, color: c.text }}>$17,988</div>
-              <div style={{ fontSize: 11, color: c.textDim, marginTop: 2 }}>January 15, 2026</div>
+            <div style={{ flex: 1, padding: "16px 16px", borderRadius: 12, background: `linear-gradient(135deg, ${c.green}08, ${c.cyan}04)`, border: `1px solid ${c.green}15` }}>
+              <div style={{ fontSize: 9, color: c.green, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 6 }}>Next Invoice</div>
+              <div style={{ fontSize: 18, fontWeight: 800, color: c.text, fontFamily: "'JetBrains Mono', monospace" }}>$17,988</div>
+              <div style={{ fontSize: 11, color: c.textDim, marginTop: 3 }}>January 15, 2026</div>
             </div>
           </div>
-          <div style={{ fontSize: 12, color: c.textDim, marginBottom: 14 }}>Payment: Visa ending 4242 · Billing contact: finance@acme.io</div>
+          <div style={{ fontSize: 11, color: c.textDim, marginBottom: 14, padding: "8px 12px", background: c.surfaceAlt, borderRadius: 8 }}>💳 Visa ····4242 · Billing: finance@acme.io</div>
           <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
             {[
               { label: "Manage Subscription", url: "https://billing.stripe.com/p/login/bIY00B0b37cMbWo3cc" },
@@ -4179,6 +4190,12 @@ export default function FinanceOS() {
         details summary { list-style: none; }
         details[open] summary svg { transform: rotate(180deg); }
         /* Smooth scrolling */
+        html { scroll-behavior: smooth; }
+        /* Premium input/button transitions */
+        input, select, textarea { transition: border-color 0.2s, box-shadow 0.2s; }
+        button { transition: all 0.15s cubic-bezier(0.22,1,0.36,1); }
+        /* Card hover lift default */
+        [data-card]:hover { transform: translateY(-2px); }
         /* ENV 4: Accessibility + Theme Refinement */
         :focus-visible { outline: 2px solid ${c.accent}; outline-offset: 2px; }
         @media (prefers-reduced-motion: reduce) {
