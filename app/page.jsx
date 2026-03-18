@@ -1235,6 +1235,17 @@ const CopilotView = ({ c, toast }) => {
 
       {/* Messages */}
       <div style={{ flex: 1, overflow: "auto", padding: "20px 24px", display: "flex", flexDirection: "column", gap: 16 }}>
+        {messages.length === 0 && (
+          <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center" }}>
+            <div style={{ textAlign: "center", maxWidth: 320 }}>
+              <div style={{ width: 56, height: 56, borderRadius: 16, background: `linear-gradient(135deg, ${c.purple}15, ${c.accent}08)`, border: `1px solid ${c.purple}10`, display: "inline-flex", alignItems: "center", justifyContent: "center", marginBottom: 16 }}>
+                <Sparkles size={24} color={c.purple} />
+              </div>
+              <div style={{ fontSize: 16, fontWeight: 800, color: c.text, marginBottom: 6 }}>Ask me anything</div>
+              <div style={{ fontSize: 12, color: c.textDim, lineHeight: 1.6 }}>I can analyze your P&L variances, forecast revenue, compare scenarios, and surface hidden patterns in your data.</div>
+            </div>
+          </div>
+        )}
         {messages.map((m, i) => (
           <div key={i} style={{ display: "flex", gap: 10, alignSelf: m.role === "user" ? "flex-end" : "flex-start", maxWidth: "82%", flexDirection: m.role === "user" ? "row-reverse" : "row" }}>
             {/* Avatar */}
@@ -4238,8 +4249,11 @@ export default function FinanceOS() {
           >
             <FosLogo size={32} />
             {!sidebarCollapsed && <div>
-              <span style={{ fontWeight: 800, fontSize: 15, color: c.text, letterSpacing: "-0.3px", whiteSpace: "nowrap" }}>Finance<span style={{ fontWeight: 400, opacity: 0.6 }}>OS</span></span>
-              <div style={{ fontSize: 9, color: c.textFaint, marginTop: 1, whiteSpace: "nowrap" }}>Acme SaaS Corp · FY2025</div>
+              <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                <span style={{ fontWeight: 800, fontSize: 15, color: c.text, letterSpacing: "-0.3px", whiteSpace: "nowrap" }}>Finance<span style={{ fontWeight: 400, opacity: 0.6 }}>OS</span></span>
+                <span style={{ fontSize: 7, fontWeight: 800, padding: "2px 5px", borderRadius: 3, background: user.plan === "demo" ? c.amberDim : `${c.green}12`, color: user.plan === "demo" ? c.amber : c.green, letterSpacing: "0.06em", textTransform: "uppercase" }}>{user.plan === "demo" ? "DEMO" : user.plan || "PRO"}</span>
+              </div>
+              <div style={{ fontSize: 9, color: c.textFaint, marginTop: 2, whiteSpace: "nowrap" }}>Acme SaaS Corp · FY2025</div>
             </div>}
           </div>
           {!sidebarCollapsed && (
