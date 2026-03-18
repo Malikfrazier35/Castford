@@ -2149,11 +2149,15 @@ const AuthModal = ({ mode: initialMode, onClose, onAuth }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     setLoading(true);
-    setTimeout(() => { setLoading(false); onAuth({ email, name, company, role, method: "email" }); }, 1200);
+    setTimeout(() => {
+      onAuth({ email, name, company, role, method: "email" });
+    }, 1200);
   };
   const handleSSO = (provider) => {
     setLoading(true);
-    setTimeout(() => { setLoading(false); onAuth({ method: provider }); }, 800);
+    setTimeout(() => {
+      onAuth({ method: provider });
+    }, 800);
   };
 
   const inputStyle = {
@@ -2286,7 +2290,9 @@ const LandingPage = ({ onLogin }) => {
   const [authModal, setAuthModal] = useState(null);
 
   const handleAuth = (data) => {
-    setAuthModal(null);
+    // Don't setAuthModal(null) — onLogin unmounts LandingPage entirely
+    // which cleans up the modal naturally. Calling setState on an
+    // unmounting component causes the "Something went wrong" crash.
     onLogin(data);
   };
 
