@@ -866,6 +866,8 @@ const DashboardView = ({ c, onNav, toast, onDrawer, userName }) => {
   const [hiddenSeries, setHiddenSeries] = useState({});
   const toggleSeries = (key) => setHiddenSeries(prev => ({ ...prev, [key]: !prev[key] }));
   const displayName = userName && userName !== "Guest" ? userName.split(" ")[0] : null;
+  const [chartPeriod, setChartPeriod] = useState("YTD");
+  const chartData = chartPeriod === "QTD" ? REVENUE_DATA.slice(-6) : chartPeriod === "12M" ? REVENUE_DATA : REVENUE_DATA;
 
   return (
   <div style={{ padding: 32 }}>
@@ -904,13 +906,13 @@ const DashboardView = ({ c, onNav, toast, onDrawer, userName }) => {
           </div>
           {/* Chart period mini-selector (Blueprint Section 6: 3+ options) */}
           <div style={{ display: "flex", gap: 2 }}>
-            {["QTD", "YTD", "12M"].map((p, i) => (
-              <span key={p} style={{ fontSize: 9, fontWeight: 600, padding: "3px 8px", borderRadius: 4, background: i === 1 ? c.accentMid : "transparent", color: i === 1 ? c.accent : c.textFaint, cursor: "pointer" }}>{p}</span>
+            {["QTD", "YTD", "12M"].map(p => (
+              <span key={p} onClick={() => setChartPeriod(p)} style={{ fontSize: 9, fontWeight: 600, padding: "3px 8px", borderRadius: 4, background: chartPeriod === p ? c.accentMid : "transparent", color: chartPeriod === p ? c.accent : c.textFaint, cursor: "pointer", transition: "all 0.15s" }}>{p}</span>
             ))}
           </div>
         </div>
         <ResponsiveContainer width="100%" height={220}>
-          <ComposedChart data={REVENUE_DATA} margin={{ top: 5, right: 5, bottom: 0, left: -15 }}>
+          <ComposedChart data={chartData} margin={{ top: 5, right: 5, bottom: 0, left: -15 }}>
             <defs>
               <linearGradient id="gAct" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor={c.accent} stopOpacity={0.15} /><stop offset="100%" stopColor={c.accent} stopOpacity={0} /></linearGradient>
               <linearGradient id="gFc" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor={c.green} stopOpacity={0.1} /><stop offset="100%" stopColor={c.green} stopOpacity={0} /></linearGradient>
@@ -1241,13 +1243,21 @@ const PnlView = ({ c, onNav, toast }) => {
     const v = variance(actual, budget);
     const vp = variancePct(actual, budget);
     const fav = revenue ? v >= 0 : v <= 0;
+    const [hover, setHover] = useState(false);
     return (
-      <td style={{ textAlign: "right", padding: "7px 12px", fontWeight: 600, color: fav ? c.green : c.red, cursor: "pointer", fontFamily: "'JetBrains Mono', monospace", fontSize: 11 }}
+      <td style={{ textAlign: "right", padding: "7px 12px", fontWeight: 600, color: fav ? c.green : c.red, cursor: "pointer", fontFamily: "'JetBrains Mono', monospace", fontSize: 11, position: "relative" }}
         onClick={() => onNav("copilot")}
-        onMouseEnter={e => e.currentTarget.style.textDecoration = "underline"}
-        onMouseLeave={e => e.currentTarget.style.textDecoration = "none"}
+        onMouseEnter={() => setHover(true)}
+        onMouseLeave={() => setHover(false)}
       >
-        {v >= 0 ? "+" : ""}{fmt(v)}
+        <span style={{ textDecoration: hover ? "underline" : "none" }}>{v >= 0 ? "+" : ""}{fmt(v)}</span>
+        <span style={{ fontSize: 9, opacity: 0.7, marginLeft: 4 }}>({vp >= 0 ? "+" : ""}{vp.toFixed(1)}%)</span>
+        {hover && (
+          <div style={{ position: "absolute", bottom: "calc(100% + 6px)", right: 0, background: c.surface, border: `1px solid ${c.border}`, borderRadius: 8, padding: "8px 12px", boxShadow: "0 8px 24px rgba(0,0,0,0.3)", zIndex: 50, whiteSpace: "nowrap", fontSize: 10, color: c.textSec, pointerEvents: "none", animation: "fadeIn 0.1s" }}>
+            <div style={{ color: fav ? c.green : c.red, fontWeight: 700, marginBottom: 2 }}>{fav ? "Favorable" : "Unfavorable"} variance</div>
+            <div>Click to ask AI Copilot why</div>
+          </div>
+        )}
       </td>
     );
   };
@@ -3432,6 +3442,7 @@ export default function FinanceOS() {
   const [drawerKpi, setDrawerKpi] = useState(null);
   const [period, setPeriod] = useState("FY2025 YTD");
   const [periodOpen, setPeriodOpen] = useState(false);
+  const [notifOpen, setNotifOpen] = useState(false);
   const [navHistory, setNavHistory] = useState(["dashboard"]);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const isMobile = useMediaQuery("(max-width: 768px)");
@@ -3568,7 +3579,7 @@ export default function FinanceOS() {
   useEffect(() => {
     const handler = (e) => {
       if ((e.metaKey || e.ctrlKey) && e.key === "k") { e.preventDefault(); setCmdOpen(true); }
-      if (e.key === "Escape") { setCmdOpen(false); setDrawerKpi(null); }
+      if (e.key === "Escape") { setCmdOpen(false); setDrawerKpi(null); setNotifOpen(false); }
     };
     window.addEventListener("keydown", handler);
     return () => window.removeEventListener("keydown", handler);
@@ -3911,10 +3922,37 @@ export default function FinanceOS() {
               <Search size={13} /> Search... <kbd style={{ marginLeft: "auto", fontSize: 9, padding: "1px 5px", borderRadius: 3, background: c.bg2, border: `1px solid ${c.borderSub}`, color: c.textFaint }}>⌘K</kbd>
             </div>
             <div style={{ position: "relative" }}>
-              <div style={{ cursor: "pointer", position: "relative" }} onClick={() => toast("4 unread notifications", "info")}>
-                <Bell size={18} color={c.textDim} />
+              <div style={{ cursor: "pointer", position: "relative" }} onClick={() => setNotifOpen(!notifOpen)}>
+                <Bell size={18} color={notifOpen ? c.accent : c.textDim} />
                 <div style={{ position: "absolute", top: -3, right: -4, minWidth: 14, height: 14, borderRadius: 7, background: c.red, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 8, fontWeight: 800, color: "#fff", border: `2px solid ${c.bg2}` }}>4</div>
               </div>
+              {notifOpen && (
+                <div style={{ position: "absolute", top: "calc(100% + 8px)", right: 0, width: 340, background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, boxShadow: "0 12px 40px rgba(0,0,0,0.3)", overflow: "hidden", zIndex: 200, animation: "cmdIn 0.15s cubic-bezier(0.22,1,0.36,1)" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "14px 16px", borderBottom: `1px solid ${c.borderSub}` }}>
+                    <span style={{ fontSize: 13, fontWeight: 700, color: c.text }}>Notifications</span>
+                    <span onClick={() => { setNotifOpen(false); toast("All marked as read", "success"); }} style={{ fontSize: 10, color: c.accent, fontWeight: 600, cursor: "pointer" }}>Mark all read</span>
+                  </div>
+                  {[
+                    { text: "Revenue variance detected: +$2.09M above budget", time: "2 min ago", type: "alert", color: c.green },
+                    { text: "S&M spend $730K over — review recommended", time: "12 min ago", type: "warning", color: c.amber },
+                    { text: "February close: 3 tasks still pending", time: "1 hr ago", type: "task", color: c.accent },
+                    { text: "Model retrained — MAPE improved to 2.9%", time: "3 hr ago", type: "info", color: c.purple },
+                  ].map((n, i) => (
+                    <div key={i} onClick={() => { setNotifOpen(false); navigate(i < 2 ? "copilot" : i === 2 ? "close" : "forecast"); }} style={{
+                      display: "flex", gap: 10, padding: "12px 16px", cursor: "pointer", borderBottom: `1px solid ${c.borderSub}`, transition: "background 0.1s",
+                    }}
+                    onMouseEnter={e => e.currentTarget.style.background = c.surfaceAlt}
+                    onMouseLeave={e => e.currentTarget.style.background = "transparent"}
+                    >
+                      <div style={{ width: 8, height: 8, borderRadius: "50%", background: n.color, marginTop: 5, flexShrink: 0 }} />
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <div style={{ fontSize: 12, color: c.text, lineHeight: 1.5 }}>{n.text}</div>
+                        <div style={{ fontSize: 10, color: c.textFaint, marginTop: 2 }}>{n.time}</div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
         </div>
