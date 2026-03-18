@@ -862,17 +862,18 @@ const InsightRow = ({ item, c, onClick }) => {
 // ══════════════════════════════════════════════════════════════
 // DASHBOARD VIEW
 // ══════════════════════════════════════════════════════════════
-const DashboardView = ({ c, onNav, toast, onDrawer }) => {
+const DashboardView = ({ c, onNav, toast, onDrawer, userName }) => {
   const [hiddenSeries, setHiddenSeries] = useState({});
   const toggleSeries = (key) => setHiddenSeries(prev => ({ ...prev, [key]: !prev[key] }));
+  const displayName = userName && userName !== "Guest" ? userName.split(" ")[0] : null;
 
   return (
   <div style={{ padding: 32 }}>
     {/* Welcome header */}
     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 24 }}>
       <div>
-        <div style={{ fontSize: 22, fontWeight: 800, color: c.text, letterSpacing: "-0.02em" }}>Good {new Date().getHours() < 12 ? "morning" : new Date().getHours() < 17 ? "afternoon" : "evening"}, Sarah</div>
-        <div style={{ fontSize: 13, color: c.textDim, marginTop: 4 }}>Here's your financial snapshot for {new Date().toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}.</div>
+        <div style={{ fontSize: 22, fontWeight: 800, color: c.text, letterSpacing: "-0.02em" }}>Good {new Date().getHours() < 12 ? "morning" : new Date().getHours() < 17 ? "afternoon" : "evening"}{displayName ? `, ${displayName}` : ""}</div>
+        <div style={{ fontSize: 13, color: c.textDim, marginTop: 4 }}>Revenue is ahead by $2.09M · Rule of 40 at 52.1 · 4 variances need attention</div>
       </div>
       <div style={{ display: "flex", gap: 8 }}>
         <div style={{ padding: "8px 14px", borderRadius: 8, background: c.surfaceAlt, border: `1px solid ${c.border}`, fontSize: 11, color: c.textSec, fontWeight: 600, cursor: "pointer", display: "flex", alignItems: "center", gap: 6 }} onClick={() => onNav("copilot")}>
@@ -3724,7 +3725,7 @@ export default function FinanceOS() {
             <Settings size={13} color={c.textFaint} />
           </div>
           ) : (
-          <div style={{ textAlign: "center", marginTop: 4 }} onClick={() => navigate("settings")} title="Sarah Chen · Settings">
+          <div style={{ textAlign: "center", marginTop: 4 }} onClick={() => navigate("settings")} title={`${user.name || "Guest"} · Settings`}>
             <div style={{ width: 30, height: 30, borderRadius: 10, display: "inline-flex", alignItems: "center", justifyContent: "center", background: "linear-gradient(135deg, #10b981, #22d3ee)", fontSize: 10, fontWeight: 800, color: "#fff", cursor: "pointer" }}>{(user.name || "G").split(" ").map(w => w[0]).join("").slice(0,2).toUpperCase() || "G"}</div>
           </div>
           )}
@@ -3810,9 +3811,11 @@ export default function FinanceOS() {
             >
               <Search size={13} /> Search... <kbd style={{ marginLeft: "auto", fontSize: 9, padding: "1px 5px", borderRadius: 3, background: c.bg2, border: `1px solid ${c.borderSub}`, color: c.textFaint }}>⌘K</kbd>
             </div>
-            <div style={{ position: "relative", cursor: "pointer" }} onClick={() => toast("4 unread notifications", "info")}>
-              <Bell size={18} color={c.textDim} />
-              <div style={{ position: "absolute", top: -2, right: -2, width: 7, height: 7, borderRadius: "50%", background: c.red }} />
+            <div style={{ position: "relative" }}>
+              <div style={{ cursor: "pointer", position: "relative" }} onClick={() => toast("4 unread notifications", "info")}>
+                <Bell size={18} color={c.textDim} />
+                <div style={{ position: "absolute", top: -3, right: -4, minWidth: 14, height: 14, borderRadius: 7, background: c.red, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 8, fontWeight: 800, color: "#fff", border: `2px solid ${c.bg2}` }}>4</div>
+              </div>
             </div>
           </div>
         </div>
@@ -3820,7 +3823,7 @@ export default function FinanceOS() {
         {/* Content */}
         <div key={viewLoading ? "loading" : view} className="view-fade" style={{ flex: 1, overflow: "auto", background: "transparent", position: "relative", zIndex: 1 }}>
           {viewLoading ? <LoadingSkeleton c={c} /> : (<>
-          {view === "dashboard" && <SectionBoundary bg={c.surface} borderColor={c.border} textColor={c.textDim}><DashboardView c={c} onNav={navigate} toast={toast} onDrawer={setDrawerKpi} /></SectionBoundary>}
+          {view === "dashboard" && <SectionBoundary bg={c.surface} borderColor={c.border} textColor={c.textDim}><DashboardView c={c} onNav={navigate} toast={toast} onDrawer={setDrawerKpi} userName={user.name} /></SectionBoundary>}
           {view === "copilot" && <SectionBoundary bg={c.surface} borderColor={c.border} textColor={c.textDim}><CopilotView c={c} toast={toast} /></SectionBoundary>}
           {view === "pnl" && <SectionBoundary bg={c.surface} borderColor={c.border} textColor={c.textDim}><PnlView c={c} onNav={navigate} toast={toast} /></SectionBoundary>}
           {view === "forecast" && <SectionBoundary bg={c.surface} borderColor={c.border} textColor={c.textDim}><ForecastView c={c} /></SectionBoundary>}
