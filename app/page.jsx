@@ -704,13 +704,17 @@ const QuickActions = ({ c, onNav, toast }) => (
       { label: "Close Tasks", icon: CheckSquare, action: () => onNav("close"), color: c.amber },
     ].map(a => (
       <button key={a.label} onClick={a.action} style={{
-        display: "flex", alignItems: "center", gap: 6, fontSize: 11, padding: "8px 14px", borderRadius: 8,
+        display: "flex", alignItems: "center", gap: 8, fontSize: 11, padding: "10px 18px", borderRadius: 12,
         border: `1px solid ${c.border}`, background: c.surface, color: c.textSec,
-        cursor: "pointer", fontFamily: "inherit", fontWeight: 600, transition: "all 0.15s",
+        cursor: "pointer", fontFamily: "inherit", fontWeight: 600, transition: "all 0.25s cubic-bezier(0.22,1,0.36,1)",
+        boxShadow: c.cardGlow,
       }}
-      onMouseEnter={e => { e.currentTarget.style.borderColor = a.color; e.currentTarget.style.color = a.color; e.currentTarget.style.boxShadow = `0 4px 12px ${a.color}15`; }}
-      onMouseLeave={e => { e.currentTarget.style.borderColor = c.border; e.currentTarget.style.color = c.textSec; e.currentTarget.style.boxShadow = "none"; }}
-      ><a.icon size={13} />{a.label}</button>
+      onMouseEnter={e => { e.currentTarget.style.borderColor = `${a.color}40`; e.currentTarget.style.color = a.color; e.currentTarget.style.background = `${a.color}06`; e.currentTarget.style.boxShadow = `0 6px 20px ${a.color}10, 0 0 0 1px ${a.color}15`; e.currentTarget.style.transform = "translateY(-2px)"; }}
+      onMouseLeave={e => { e.currentTarget.style.borderColor = c.border; e.currentTarget.style.color = c.textSec; e.currentTarget.style.background = c.surface; e.currentTarget.style.boxShadow = c.cardGlow; e.currentTarget.style.transform = "none"; }}
+      >
+        <span style={{ width: 22, height: 22, borderRadius: 7, background: `linear-gradient(135deg, ${a.color}15, ${a.color}08)`, border: `1px solid ${a.color}10`, display: "inline-flex", alignItems: "center", justifyContent: "center" }}><a.icon size={12} color={a.color} /></span>
+        {a.label}
+      </button>
     ))}
   </div>
 );
@@ -1078,29 +1082,37 @@ const DashboardView = ({ c, onNav, toast, onDrawer, userName }) => {
       </div>
     </div>
 
-    {/* Cross-sell banner — Blueprint required */}
+    {/* Cross-sell banner */}
     <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginTop: 24 }}>
       {/* Referral */}
-      <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, padding: "22px 24px", boxShadow: c.cardGlow, display: "flex", alignItems: "center", gap: 16 }}>
-        <div style={{ width: 40, height: 40, borderRadius: 10, background: c.greenDim, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+      <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, padding: "22px 24px", boxShadow: c.cardGlow, display: "flex", alignItems: "center", gap: 16, transition: "all 0.2s", cursor: "pointer", position: "relative", overflow: "hidden" }}
+        onClick={() => toast("Referral link copied to clipboard", "success")}
+        onMouseEnter={e => { e.currentTarget.style.borderColor = `${c.green}40`; e.currentTarget.style.transform = "translateY(-2px)"; }}
+        onMouseLeave={e => { e.currentTarget.style.borderColor = c.border; e.currentTarget.style.transform = "none"; }}
+      >
+        <div style={{ width: 42, height: 42, borderRadius: 12, background: `linear-gradient(135deg, ${c.green}18, ${c.green}08)`, border: `1px solid ${c.green}12`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
           <Users size={18} color={c.green} />
         </div>
         <div style={{ flex: 1 }}>
-          <div style={{ fontSize: 13, fontWeight: 700, color: c.text, marginBottom: 2 }}>Refer a finance team</div>
-          <div style={{ fontSize: 11, color: c.textDim }}>They get 20% off first month. You get $100 credit.</div>
+          <div style={{ fontSize: 13, fontWeight: 800, color: c.text, marginBottom: 3 }}>Refer a finance team</div>
+          <div style={{ fontSize: 11, color: c.textDim, lineHeight: 1.4 }}>They get 20% off. You get $100 credit.</div>
         </div>
-        <button onClick={() => toast("Referral link copied to clipboard", "success")} style={{ fontSize: 10, padding: "7px 14px", borderRadius: 6, border: `1px solid ${c.border}`, background: "transparent", color: c.textSec, fontWeight: 600, cursor: "pointer", whiteSpace: "nowrap", fontFamily: "inherit" }}>Copy Link</button>
+        <div style={{ fontSize: 10, padding: "7px 14px", borderRadius: 8, border: `1px solid ${c.green}20`, background: c.greenDim, color: c.green, fontWeight: 700, whiteSpace: "nowrap", fontFamily: "inherit" }}>Copy Link</div>
       </div>
       {/* Ecosystem */}
-      <div style={{ background: `linear-gradient(135deg, ${c.accent}08, ${c.purple}06)`, border: `1px solid ${c.accent}20`, borderRadius: 16, padding: 22, display: "flex", alignItems: "center", gap: 16 }}>
-        <div style={{ width: 40, height: 40, borderRadius: 10, background: c.purpleDim, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+      <div style={{ background: `linear-gradient(135deg, ${c.accent}06, ${c.purple}04)`, border: `1px solid ${c.accent}15`, borderRadius: 16, padding: "22px 24px", display: "flex", alignItems: "center", gap: 16, transition: "all 0.2s", cursor: "pointer", position: "relative", overflow: "hidden" }}
+        onClick={() => window.open("https://vaultline.vercel.app", "_blank")}
+        onMouseEnter={e => { e.currentTarget.style.borderColor = `${c.accent}40`; e.currentTarget.style.transform = "translateY(-2px)"; }}
+        onMouseLeave={e => { e.currentTarget.style.borderColor = `${c.accent}15`; e.currentTarget.style.transform = "none"; }}
+      >
+        <div style={{ width: 42, height: 42, borderRadius: 12, background: `linear-gradient(135deg, ${c.purple}18, ${c.accent}08)`, border: `1px solid ${c.purple}12`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
           <Layers size={18} color={c.purple} />
         </div>
         <div style={{ flex: 1 }}>
-          <div style={{ fontSize: 13, fontWeight: 700, color: c.text, marginBottom: 2 }}>Vaultline Suite</div>
-          <div style={{ fontSize: 11, color: c.textDim }}>Add Treasury or Compliance. Save 15% with the bundle.</div>
+          <div style={{ fontSize: 13, fontWeight: 800, color: c.text, marginBottom: 3 }}>Vaultline Suite</div>
+          <div style={{ fontSize: 11, color: c.textDim, lineHeight: 1.4 }}>Add Treasury or Compliance. Save 15% with bundle.</div>
         </div>
-        <button onClick={() => window.open("https://vaultline.vercel.app", "_blank")} style={{ fontSize: 10, padding: "7px 14px", borderRadius: 6, background: c.accent, color: "#fff", fontWeight: 700, cursor: "pointer", whiteSpace: "nowrap", border: "none", fontFamily: "inherit" }}>Explore</button>
+        <div style={{ fontSize: 10, padding: "7px 14px", borderRadius: 8, background: `linear-gradient(135deg, ${c.accent}, ${c.purple})`, color: "#fff", fontWeight: 700, whiteSpace: "nowrap", fontFamily: "inherit" }}>Explore</div>
       </div>
     </div>
   </div>
@@ -1320,15 +1332,16 @@ const PnlView = ({ c, onNav, toast }) => {
         onCSV={() => { const rows = PNL_DATA.flatMap(s => [...s.rows.map(r => [s.section, r.name, r.actual, r.budget, r.actual - r.budget, r.note || ""]), [s.section, s.total.name, s.total.actual, s.total.budget, s.total.actual - s.total.budget, ""]]); downloadCSV("financeos-pnl-fy2025.csv", ["Section","Line Item","Actual ($K)","Budget ($K)","Variance ($K)","Notes"], rows); toast("P&L exported as CSV", "success"); }}
         onPDF={() => { window.print(); toast("Use Save as PDF in the print dialog", "info"); }}
       />
-      <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, overflow: "hidden" }}>
+      <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, overflow: "hidden", position: "relative" }}>
+        <div style={{ position: "absolute", top: 0, left: "10%", right: "10%", height: 2, background: `linear-gradient(90deg, transparent, ${c.accent}30, transparent)`, borderRadius: "0 0 2px 2px", zIndex: 3 }} />
         <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12 }}>
           <thead>
             <tr style={{ borderBottom: `2px solid ${c.borderBright}` }}>
               {["Line Item", "Actual", "Budget", "Variance", "% Rev", "Notes"].map(h => (
                 <th key={h} style={{
-                  padding: "10px 12px", fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.04em",
-                  color: c.textDim, textAlign: h === "Line Item" || h === "Notes" ? "left" : "right",
-                  background: c.bg2, position: "sticky", top: 0, zIndex: 2,
+                  padding: "12px 14px", fontSize: 9, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.08em",
+                  color: c.textFaint, textAlign: h === "Line Item" || h === "Notes" ? "left" : "right",
+                  background: c.surfaceAlt, position: "sticky", top: 0, zIndex: 2,
                 }}>{h}</th>
               ))}
             </tr>
@@ -1372,20 +1385,20 @@ const PnlView = ({ c, onNav, toast }) => {
               ];
             }).flat().filter(Boolean)}
             {/* Grand totals */}
-            <tr style={{ borderTop: `3px double ${c.textDim}` }}>
-              <td style={{ padding: "10px 12px", fontWeight: 800, fontSize: 13, color: c.text }}>Gross Profit</td>
-              <td style={{ textAlign: "right", padding: "10px 12px", fontWeight: 800, color: c.text, fontFamily: "'JetBrains Mono', monospace" }}>{fmt(43370)}</td>
-              <td style={{ textAlign: "right", padding: "10px 12px", color: c.textDim, fontFamily: "'JetBrains Mono', monospace" }}>{fmt(41735)}</td>
-              <td style={{ textAlign: "right", padding: "10px 12px", fontWeight: 700, color: c.green, fontFamily: "'JetBrains Mono', monospace" }}>+{fmt(1635)}</td>
-              <td style={{ textAlign: "right", padding: "10px 12px", fontWeight: 800, color: c.text }}>84.7%</td>
+            <tr style={{ borderTop: `2px solid ${c.borderBright}`, background: `${c.accent}05` }}>
+              <td style={{ padding: "12px 14px", fontWeight: 800, fontSize: 13, color: c.text, letterSpacing: "-0.01em" }}>Gross Profit</td>
+              <td style={{ textAlign: "right", padding: "12px 14px", fontWeight: 800, color: c.text, fontFamily: "'JetBrains Mono', monospace", fontSize: 12 }}>{fmt(43370)}</td>
+              <td style={{ textAlign: "right", padding: "12px 14px", color: c.textDim, fontFamily: "'JetBrains Mono', monospace", fontSize: 12 }}>{fmt(41735)}</td>
+              <td style={{ textAlign: "right", padding: "12px 14px", fontWeight: 800, color: c.green, fontFamily: "'JetBrains Mono', monospace", fontSize: 12 }}>+{fmt(1635)}</td>
+              <td style={{ textAlign: "right", padding: "12px 14px", fontWeight: 800, color: c.text, fontFamily: "'JetBrains Mono', monospace", fontSize: 12 }}>84.7%</td>
               <td />
             </tr>
-            <tr style={{ borderTop: `3px double ${c.textDim}` }}>
-              <td style={{ padding: "10px 12px", fontWeight: 800, fontSize: 13, color: c.text }}>EBITDA</td>
-              <td style={{ textAlign: "right", padding: "10px 12px", fontWeight: 800, color: c.green, fontFamily: "'JetBrains Mono', monospace" }}>{fmt(3780)}</td>
-              <td style={{ textAlign: "right", padding: "10px 12px", color: c.textDim, fontFamily: "'JetBrains Mono', monospace" }}>{fmt(2342)}</td>
-              <td style={{ textAlign: "right", padding: "10px 12px", fontWeight: 700, color: c.green, fontFamily: "'JetBrains Mono', monospace" }}>+{fmt(1438)}</td>
-              <td style={{ textAlign: "right", padding: "10px 12px", fontWeight: 800, color: c.text }}>7.4%</td>
+            <tr style={{ borderTop: `2px solid ${c.borderBright}`, background: `linear-gradient(90deg, ${c.green}06, transparent)` }}>
+              <td style={{ padding: "12px 14px", fontWeight: 800, fontSize: 13, color: c.green, letterSpacing: "-0.01em" }}>EBITDA</td>
+              <td style={{ textAlign: "right", padding: "12px 14px", fontWeight: 800, color: c.green, fontFamily: "'JetBrains Mono', monospace", fontSize: 13 }}>{fmt(3780)}</td>
+              <td style={{ textAlign: "right", padding: "12px 14px", color: c.textDim, fontFamily: "'JetBrains Mono', monospace", fontSize: 12 }}>{fmt(2342)}</td>
+              <td style={{ textAlign: "right", padding: "12px 14px", fontWeight: 800, color: c.green, fontFamily: "'JetBrains Mono', monospace", fontSize: 12 }}>+{fmt(1438)}</td>
+              <td style={{ textAlign: "right", padding: "12px 14px", fontWeight: 800, color: c.green, fontFamily: "'JetBrains Mono', monospace", fontSize: 12 }}>7.4%</td>
               <td />
             </tr>
           </tbody>
@@ -1631,7 +1644,12 @@ const ConsolidationView = ({ c, onNav, toast }) => {
                 <span style={{ fontSize: 9, fontWeight: 800, padding: "3px 10px", borderRadius: 6, background: `${statusColor}12`, color: statusColor, border: `1px solid ${statusColor}18`, letterSpacing: "0.03em" }}>{displayStatus}</span>
               </div>
               <div style={{ fontSize: 26, fontWeight: 800, color: c.text, marginBottom: 2, fontFamily: "'JetBrains Mono', monospace" }}>{fmt(e.revenue)}</div>
-              <div style={{ fontSize: 10, color: c.textDim, marginBottom: 12 }}>Revenue · {((e.revenue / 51190) * 100).toFixed(1)}% consolidated</div>
+              <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 10, color: c.textDim, marginBottom: 12 }}>
+                <span>Revenue · {((e.revenue / 51190) * 100).toFixed(1)}%</span>
+                <div style={{ flex: 1, height: 4, background: c.bg2, borderRadius: 2, overflow: "hidden" }}>
+                  <div style={{ width: `${((e.revenue / 51190) * 100)}%`, height: "100%", background: `linear-gradient(90deg, ${statusColor}, ${statusColor}80)`, borderRadius: 2, transition: "width 0.6s cubic-bezier(0.22,1,0.36,1)" }} />
+                </div>
+              </div>
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, fontSize: 10, marginBottom: 14, padding: "10px 12px", background: c.surfaceAlt, borderRadius: 10 }}>
                 <div><span style={{ color: c.textFaint, fontSize: 9, fontWeight: 600 }}>EBITDA</span><br /><span style={{ color: c.green, fontWeight: 800, fontFamily: "'JetBrains Mono', monospace" }}>{fmt(e.ebitda)}</span></div>
                 <div><span style={{ color: c.textFaint, fontSize: 9, fontWeight: 600 }}>Headcount</span><br /><span style={{ color: c.text, fontWeight: 800, fontFamily: "'JetBrains Mono', monospace" }}>{e.hc}</span></div>
@@ -1735,8 +1753,10 @@ const CloseView = ({ c, toast }) => {
           <span style={{ fontSize: 14, fontWeight: 800, color: c.text, letterSpacing: "-0.02em" }}>February Close — {pct}% Complete</span>
           <span style={{ fontSize: 11, color: c.textDim, fontFamily: "'JetBrains Mono', monospace" }}>{doneCount}/{tasks.length} tasks</span>
         </div>
-        <div style={{ height: 8, background: c.bg2, borderRadius: 4, overflow: "hidden", position: "relative" }}>
-          <div style={{ width: `${pct}%`, height: "100%", background: pct === 100 ? c.green : `linear-gradient(90deg, ${c.accent}, ${c.green})`, borderRadius: 4, transition: "width 0.6s cubic-bezier(0.22,1,0.36,1)", boxShadow: `0 0 12px ${c.accent}40` }} />
+        <div style={{ height: 10, background: c.bg2, borderRadius: 5, overflow: "hidden", position: "relative" }}>
+          <div style={{ width: `${pct}%`, height: "100%", background: pct === 100 ? `linear-gradient(90deg, ${c.green}, ${c.green}cc)` : `linear-gradient(90deg, ${c.accent}, ${c.green}cc)`, borderRadius: 5, transition: "width 0.6s cubic-bezier(0.22,1,0.36,1)", boxShadow: `0 0 16px ${pct === 100 ? c.green : c.accent}30`, position: "relative" }}>
+            {pct > 15 && <div style={{ position: "absolute", right: 6, top: "50%", transform: "translateY(-50%)", fontSize: 7, fontWeight: 800, color: "#fff", fontFamily: "'JetBrains Mono', monospace" }}>{pct}%</div>}
+          </div>
         </div>
       </div>
 
@@ -4176,17 +4196,18 @@ export default function FinanceOS() {
             return (
               <div key={item.id}>
                 {showSection && !sidebarCollapsed && (
-                  <div style={{ fontSize: 9, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.12em", color: c.textFaint, padding: "16px 18px 6px" }}>
-                    {item.section}
+                  <div style={{ fontSize: 8, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.14em", color: c.textFaint, padding: "18px 18px 6px", display: "flex", alignItems: "center", gap: 8 }}>
+                    <span>{item.section}</span>
+                    <div style={{ flex: 1, height: 1, background: c.borderSub }} />
                   </div>
                 )}
-                {showSection && sidebarCollapsed && <div style={{ height: 6 }} />}
+                {showSection && sidebarCollapsed && <div style={{ height: 8 }} />}
                 <div onClick={() => navigate(item.id)} title={sidebarCollapsed ? item.label : undefined} style={{
                   display: "flex", alignItems: "center", gap: 10,
                   padding: sidebarCollapsed ? "10px 0" : "10px 16px",
                   margin: sidebarCollapsed ? "1px 8px" : "1px 10px",
                   justifyContent: sidebarCollapsed ? "center" : "flex-start",
-                  cursor: "pointer", fontSize: 13, fontWeight: active ? 600 : 400, borderRadius: 8,
+                  cursor: "pointer", fontSize: 13, fontWeight: active ? 600 : 400, borderRadius: 10,
                   color: active ? c.text : c.textDim,
                   background: active ? c.accentMid : "transparent",
                   boxShadow: active ? `0 0 0 1px ${c.accent}20, inset 0 1px 0 ${c.accent}10` : "none",
