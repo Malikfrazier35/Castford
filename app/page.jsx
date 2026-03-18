@@ -668,6 +668,34 @@ const QuickActions = ({ c, onNav, toast }) => (
   </div>
 );
 
+// ── FINANCEOS BRAND MARK ─────────────────────────────────────
+const FosLogo = ({ size = 32 }) => (
+  <div style={{
+    width: size, height: size, borderRadius: size * 0.3, display: "flex", alignItems: "center", justifyContent: "center",
+    background: "linear-gradient(135deg, #60a5fa, #818cf8, #a78bfa)", flexShrink: 0,
+    boxShadow: "0 4px 14px rgba(96,165,250,0.25), inset 0 1px 0 rgba(255,255,255,0.15)",
+  }}>
+    <svg width={size * 0.55} height={size * 0.55} viewBox="0 0 24 24" fill="none">
+      {/* Stylized "F" with chart bar motif */}
+      <rect x="3" y="2" width="3.5" height="20" rx="1.5" fill="white" opacity="0.95" />
+      <rect x="3" y="2" width="16" height="3.2" rx="1.5" fill="white" opacity="0.95" />
+      <rect x="3" y="9.5" width="11" height="2.8" rx="1.2" fill="white" opacity="0.65" />
+      {/* Rising chart bars */}
+      <rect x="14" y="14" width="2.8" height="8" rx="1" fill="white" opacity="0.4" />
+      <rect x="18" y="10" width="2.8" height="12" rx="1" fill="white" opacity="0.55" />
+    </svg>
+  </div>
+);
+
+const FosLogoFull = ({ size = 32, c }) => (
+  <div style={{ display: "flex", alignItems: "center", gap: size * 0.3 }}>
+    <FosLogo size={size} />
+    <div>
+      <span style={{ fontWeight: 800, fontSize: size * 0.47, color: c?.text || "#f0f2f5", letterSpacing: "-0.3px", whiteSpace: "nowrap" }}>Finance<span style={{ fontWeight: 400, opacity: 0.6 }}>OS</span></span>
+    </div>
+  </div>
+);
+
 // ── HELPERS ───────────────────────────────────────────────────
 const fmt = (n) => {
   if (Math.abs(n) >= 1e6) return `$${(n / 1e6).toFixed(1)}M`;
@@ -1022,6 +1050,8 @@ const CopilotView = ({ c, toast }) => {
   const [input, setInput] = useState("");
   const [thinking, setThinking] = useState(false);
   const bottomRef = useRef(null);
+  const mountedRef = useRef(true);
+  useEffect(() => () => { mountedRef.current = false; }, []);
 
   useEffect(() => { bottomRef.current?.scrollIntoView({ behavior: "smooth" }); }, [messages, thinking]);
 
@@ -1047,7 +1077,7 @@ const CopilotView = ({ c, toast }) => {
       if (!res.ok) throw new Error("API unavailable");
       const data = await res.json();
       const reply = data.content?.map(b => b.text || "").join("\n") || "I couldn't process that request.";
-      setMessages(prev => [...prev, { role: "assistant", content: reply }]);
+      if (mountedRef.current) setMessages(prev => [...prev, { role: "assistant", content: reply }]);
     } catch (e) {
       // Demo fallback
       const q = userMsg.toLowerCase();
@@ -1056,12 +1086,13 @@ const CopilotView = ({ c, toast }) => {
       else if (q.includes("pigment") || q.includes("competitor") || q.includes("compare")) response = COPILOT_RESPONSES.pigment;
       else if (q.includes("guidance") || q.includes("raise") || q.includes("should we")) response = COPILOT_RESPONSES.guidance;
       setTimeout(() => {
+        if (!mountedRef.current) return;
         setMessages(prev => [...prev, { role: "assistant", content: response }]);
         setThinking(false);
       }, 800);
       return;
     }
-    setThinking(false);
+    if (mountedRef.current) setThinking(false);
   }, [input, thinking]);
 
   return (
@@ -1288,6 +1319,8 @@ const ForecastView = ({ c }) => {
   const [churn, setChurn] = useState(82);
   const [retrained, setRetrained] = useState(false);
   const [retraining, setRetraining] = useState(false);
+  const mountedRef = useRef(true);
+  useEffect(() => () => { mountedRef.current = false; }, []);
 
   const base = 62.8;
   const ndrImpact = (ndr - 118) * 0.35;
@@ -1298,7 +1331,7 @@ const ForecastView = ({ c }) => {
 
   const handleRetrain = () => {
     setRetraining(true);
-    setTimeout(() => { setRetraining(false); setRetrained(true); setTimeout(() => setRetrained(false), 3000); }, 2000);
+    setTimeout(() => { if (!mountedRef.current) return; setRetraining(false); setRetrained(true); setTimeout(() => { if (mountedRef.current) setRetrained(false); }, 3000); }, 2000);
   };
 
   return (
@@ -1416,11 +1449,14 @@ const CONS_PNL = [
 
 const ConsolidationView = ({ c, onNav, toast }) => {
   const [entityStatus, setEntityStatus] = useState({});
+  const mountedRef = useRef(true);
+  useEffect(() => () => { mountedRef.current = false; }, []);
   const statusColors = { "Closed": c.green, "In Review": c.accent, "Pending": c.amber };
 
   const approve = (name) => {
     setEntityStatus(prev => ({ ...prev, [name]: "closing" }));
     setTimeout(() => {
+      if (!mountedRef.current) return;
       setEntityStatus(prev => ({ ...prev, [name]: "Closed" }));
       toast(`${name} approved and closed`, "success");
     }, 1200);
@@ -2417,8 +2453,8 @@ const LandingPage = ({ onLogin }) => {
       {/* Nav */}
       <nav style={{ position: "relative", zIndex: 10, display: "flex", justifyContent: "space-between", alignItems: "center", padding: "20px 48px", maxWidth: 1200, margin: "0 auto" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-          <div style={{ width: 32, height: 32, borderRadius: 10, background: "linear-gradient(135deg, #60a5fa, #a78bfa)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 14, fontWeight: 900, color: "#fff" }}>F</div>
-          <span style={{ fontWeight: 800, fontSize: 18, letterSpacing: "-0.3px" }}>FinanceOS</span>
+          <FosLogo size={32} />
+          <span style={{ fontWeight: 800, fontSize: 18, letterSpacing: "-0.3px" }}>Finance<span style={{ fontWeight: 400, opacity: 0.6 }}>OS</span></span>
         </div>
         <div style={{ display: "flex", gap: 24, alignItems: "center" }}>
           <a href="#features" style={{ fontSize: 13, color: "#9ca3b0", textDecoration: "none", fontWeight: 500 }}>Features</a>
@@ -2642,8 +2678,8 @@ const LandingPage = ({ onLogin }) => {
         <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr 1fr 1fr 1fr", gap: 32, marginBottom: 32 }}>
           <div>
             <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
-              <div style={{ width: 28, height: 28, borderRadius: 8, background: "linear-gradient(135deg, #60a5fa, #a78bfa)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12, fontWeight: 900, color: "#fff" }}>F</div>
-              <span style={{ fontSize: 15, fontWeight: 800 }}>FinanceOS</span>
+              <FosLogo size={28} />
+              <span style={{ fontSize: 15, fontWeight: 800 }}>Finance<span style={{ fontWeight: 400, opacity: 0.6 }}>OS</span></span>
             </div>
             <p style={{ fontSize: 12, color: "#44495a", lineHeight: 1.7, maxWidth: 240 }}>AI-powered financial planning for modern finance teams. Part of the Vaultline Suite.</p>
           </div>
@@ -2760,7 +2796,15 @@ export default function FinanceOS() {
   if (!appReady) {
     return (
       <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: "#09090b", flexDirection: "column", gap: 16 }}>
-        <div style={{ width: 48, height: 48, borderRadius: 14, background: "linear-gradient(135deg, #60a5fa, #a78bfa)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 20, fontWeight: 900, color: "#fff" }}>F</div>
+        <div style={{ width: 56, height: 56, borderRadius: 16, background: "linear-gradient(135deg, #60a5fa, #818cf8, #a78bfa)", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 4px 14px rgba(96,165,250,0.25), inset 0 1px 0 rgba(255,255,255,0.15)" }}>
+          <svg width="30" height="30" viewBox="0 0 24 24" fill="none">
+            <rect x="3" y="2" width="3.5" height="20" rx="1.5" fill="white" opacity="0.95" />
+            <rect x="3" y="2" width="16" height="3.2" rx="1.5" fill="white" opacity="0.95" />
+            <rect x="3" y="9.5" width="11" height="2.8" rx="1.2" fill="white" opacity="0.65" />
+            <rect x="14" y="14" width="2.8" height="8" rx="1" fill="white" opacity="0.4" />
+            <rect x="18" y="10" width="2.8" height="12" rx="1" fill="white" opacity="0.55" />
+          </svg>
+        </div>
         <div style={{ width: 120, height: 3, borderRadius: 2, background: "#131316", overflow: "hidden" }}>
           <div style={{ width: "40%", height: "100%", background: "linear-gradient(90deg, #60a5fa, #a78bfa)", borderRadius: 2, animation: "shimmer 1.5s ease-in-out infinite" }} />
         </div>
@@ -2886,14 +2930,9 @@ export default function FinanceOS() {
             onMouseLeave={e => e.currentTarget.style.opacity = "1"}
             title="Back to FinanceOS.com"
           >
-            <div style={{
-              width: 32, height: 32, borderRadius: 10, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
-              background: mode === "dark" ? "linear-gradient(135deg, #0ea5e9, #7c3aed)" : "linear-gradient(135deg, #0369a1, #6d28d9)",
-              fontSize: 14, fontWeight: 900, color: "#fff",
-              boxShadow: mode === "dark" ? "0 4px 12px rgba(14,165,233,0.25)" : "0 4px 12px rgba(3,105,161,0.2)",
-            }}>F</div>
+            <FosLogo size={32} />
             {!sidebarCollapsed && <div>
-              <span style={{ fontWeight: 800, fontSize: 15, color: c.text, letterSpacing: "-0.3px", whiteSpace: "nowrap" }}>FinanceOS</span>
+              <span style={{ fontWeight: 800, fontSize: 15, color: c.text, letterSpacing: "-0.3px", whiteSpace: "nowrap" }}>Finance<span style={{ fontWeight: 400, opacity: 0.6 }}>OS</span></span>
               <div style={{ fontSize: 9, color: c.textFaint, marginTop: 1, whiteSpace: "nowrap" }}>Acme SaaS Corp · FY2025</div>
             </div>}
           </div>
