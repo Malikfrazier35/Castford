@@ -455,7 +455,11 @@ const InsightRow = ({ item, c, onClick }) => (
 // ══════════════════════════════════════════════════════════════
 // DASHBOARD VIEW
 // ══════════════════════════════════════════════════════════════
-const DashboardView = ({ c, onNav, toast, onDrawer }) => (
+const DashboardView = ({ c, onNav, toast, onDrawer }) => {
+  const [hiddenSeries, setHiddenSeries] = useState({});
+  const toggleSeries = (key) => setHiddenSeries(prev => ({ ...prev, [key]: !prev[key] }));
+
+  return (
   <div style={{ padding: 32 }}>
     {/* Welcome header */}
     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 24 }}>
@@ -506,28 +510,32 @@ const DashboardView = ({ c, onNav, toast, onDrawer }) => (
             <Tooltip content={<ChartTooltip c={c} />} />
             {/* Blueprint Section 6: Reference line (AVG) */}
             <ReferenceLine y={7800} stroke={c.amber} strokeDasharray="6 4" strokeWidth={1} label={{ value: "AVG", fill: c.amber, fontSize: 9, fontWeight: 700, position: "right" }} />
-            <Area type="monotone" dataKey="actual" stroke={c.accent} fill="url(#gAct)" strokeWidth={2.5} name="Actual" dot={{ r: 3, fill: c.accent }} connectNulls={false} />
-            <Line type="monotone" dataKey="budget" stroke={c.textDim} strokeWidth={1} strokeDasharray="4 4" name="Budget" dot={false} />
-            <Area type="monotone" dataKey="forecast" stroke={c.green} fill="url(#gFc)" strokeWidth={2} strokeDasharray="6 3" name="Forecast" dot={{ r: 3, fill: c.green }} connectNulls={false} />
+            {!hiddenSeries.actual && <Area type="monotone" dataKey="actual" stroke={c.accent} fill="url(#gAct)" strokeWidth={2.5} name="Actual" dot={{ r: 3, fill: c.accent }} connectNulls={false} />}
+            {!hiddenSeries.budget && <Line type="monotone" dataKey="budget" stroke={c.textDim} strokeWidth={1} strokeDasharray="4 4" name="Budget" dot={false} />}
+            {!hiddenSeries.forecast && <Area type="monotone" dataKey="forecast" stroke={c.green} fill="url(#gFc)" strokeWidth={2} strokeDasharray="6 3" name="Forecast" dot={{ r: 3, fill: c.green }} connectNulls={false} />}
           </ComposedChart>
         </ResponsiveContainer>
-        {/* Interactive legend + Today marker */}
-        <div style={{ display: "flex", gap: 16, marginTop: 10, fontSize: 10, color: c.textDim, alignItems: "center" }}>
-          <span style={{ display: "flex", alignItems: "center", gap: 4, cursor: "pointer" }}><span style={{ width: 16, height: 2.5, background: c.accent, borderRadius: 1, display: "inline-block" }} /> Actual</span>
-          <span style={{ display: "flex", alignItems: "center", gap: 4, cursor: "pointer" }}><span style={{ width: 16, height: 1, background: c.textDim, borderRadius: 1, display: "inline-block", borderTop: "1px dashed " + c.textDim }} /> Budget</span>
-          <span style={{ display: "flex", alignItems: "center", gap: 4, cursor: "pointer" }}><span style={{ width: 16, height: 2, background: c.green, borderRadius: 1, display: "inline-block", opacity: 0.7 }} /> Forecast</span>
-          <span style={{ display: "flex", alignItems: "center", gap: 4 }}><span style={{ width: 16, height: 1, background: c.amber, borderRadius: 1, display: "inline-block", borderTop: "1px dashed " + c.amber }} /> AVG</span>
+        {/* Interactive legend — Blueprint Section 6: Click to toggle series */}
+        <div style={{ display: "flex", gap: 14, marginTop: 10, fontSize: 10, color: c.textDim, alignItems: "center" }}>
+          {[
+            { key: "actual", label: "Actual", color: c.accent, style: { width: 16, height: 2.5, background: c.accent, borderRadius: 1 } },
+            { key: "budget", label: "Budget", color: c.textDim, style: { width: 16, height: 0, borderTop: `2px dashed ${c.textDim}` } },
+            { key: "forecast", label: "Forecast", color: c.green, style: { width: 16, height: 2, background: c.green, borderRadius: 1, opacity: 0.7 } },
+          ].map(s => (
+            <span key={s.key} onClick={() => toggleSeries(s.key)} style={{
+              display: "flex", alignItems: "center", gap: 5, cursor: "pointer", padding: "2px 6px", borderRadius: 4,
+              opacity: hiddenSeries[s.key] ? 0.35 : 1, textDecoration: hiddenSeries[s.key] ? "line-through" : "none",
+              transition: "opacity 0.2s",
+            }}>
+              <span style={{ ...s.style, display: "inline-block" }} />
+              {s.label}
+            </span>
+          ))}
+          <span style={{ display: "flex", alignItems: "center", gap: 5 }}><span style={{ width: 16, height: 0, borderTop: `2px dashed ${c.amber}`, display: "inline-block" }} /> AVG</span>
           <span style={{ marginLeft: "auto", fontWeight: 600, color: c.accent }}>Today: Jun 2025</span>
         </div>
-        {/* Terminal status bar — Blueprint required */}
-        <div style={{ display: "flex", alignItems: "center", gap: 12, marginTop: 8, padding: "6px 10px", background: c.bg2, borderRadius: 6, fontSize: 9, color: c.textFaint }}>
-          <span style={{ display: "flex", alignItems: "center", gap: 4 }}><span style={{ width: 5, height: 5, borderRadius: "50%", background: c.green, animation: "pulse 2s infinite" }} /> LIVE</span>
-          <span>12 data points</span>
-          <span>Period: FY2025 YTD</span>
-          <span>Mode: Actual + Forecast</span>
-        </div>
-        {/* Terminal status bar (Blueprint Section 6: Required) */}
-        <div style={{ display: "flex", gap: 12, marginTop: 10, padding: "8px 12px", background: c.bg2, borderRadius: 6, fontSize: 9, color: c.textFaint, alignItems: "center" }}>
+        {/* Terminal status bar */}
+        <div style={{ display: "flex", gap: 12, marginTop: 8, padding: "7px 12px", background: c.bg2, borderRadius: 6, fontSize: 9, color: c.textFaint, alignItems: "center" }}>
           <span style={{ display: "flex", alignItems: "center", gap: 4 }}><span style={{ width: 5, height: 5, borderRadius: "50%", background: c.green, display: "inline-block", animation: "pulse 2s infinite" }} /> LIVE</span>
           <span>12 data points</span>
           <span>Period: FY2025 YTD</span>
@@ -600,9 +608,14 @@ const DashboardView = ({ c, onNav, toast, onDrawer }) => (
             <Bar dataKey="budget" fill={c.textFaint} radius={[0, 4, 4, 0]} barSize={14} name="Budget" opacity={0.4} />
           </BarChart>
         </ResponsiveContainer>
+        {/* Terminal status bar */}
+        <div style={{ display: "flex", alignItems: "center", gap: 12, marginTop: 8, padding: "6px 10px", background: c.bg2, borderRadius: 6, fontSize: 9, color: c.textFaint }}>
+          <span style={{ display: "flex", alignItems: "center", gap: 4 }}><span style={{ width: 5, height: 5, borderRadius: "50%", background: c.green, animation: "pulse 2s infinite" }} /> LIVE</span>
+          <span>5 categories</span>
+          <span>Period: FY2025 YTD</span>
+          <span>Mode: Actual vs Budget</span>
+        </div>
       </div>
-
-      {/* AI Insights Feed */}
       <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, padding: 22, boxShadow: c.cardGlow, position: "relative", overflow: "hidden" }}>
         <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 1, background: `linear-gradient(90deg, transparent, ${c.purple}30, transparent)` }} />
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
@@ -646,7 +659,8 @@ const DashboardView = ({ c, onNav, toast, onDrawer }) => (
       </div>
     </div>
   </div>
-);
+  );
+};
 
 // ══════════════════════════════════════════════════════════════
 // COPILOT VIEW
@@ -974,6 +988,14 @@ const ForecastView = ({ c }) => {
             <Line type="monotone" dataKey="bear" stroke={c.red} strokeWidth={1} strokeDasharray="3 3" name="Bear" dot={false} connectNulls={false} opacity={0.5} />
           </ComposedChart>
         </ResponsiveContainer>
+        {/* Terminal status bar */}
+        <div style={{ display: "flex", alignItems: "center", gap: 12, marginTop: 8, padding: "6px 10px", background: c.bg2, borderRadius: 6, fontSize: 9, color: c.textFaint }}>
+          <span style={{ display: "flex", alignItems: "center", gap: 4 }}><span style={{ width: 5, height: 5, borderRadius: "50%", background: c.green, animation: "pulse 2s infinite" }} /> LIVE</span>
+          <span>12 data points</span>
+          <span>Model: ETS + XGBoost + Linear</span>
+          <span>Mode: Base + Bull/Bear</span>
+          <span style={{ marginLeft: "auto" }}>MAPE: 3.2%</span>
+        </div>
       </div>
 
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
