@@ -25,39 +25,46 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_KEY, {
 
 const THEME = {
   dark: {
-    bg: "#09090b", bg2: "#0c0c0f", surface: "#131316", surfaceAlt: "#1a1a1f",
-    border: "#23232a", borderSub: "#1b1b20", borderBright: "#33333a",
-    text: "#f0f2f5", textSec: "#9ca3b0", textDim: "#6b7280", textFaint: "#44495a",
-    accent: "#60a5fa", accentDim: "rgba(96,165,250,0.08)", accentMid: "rgba(96,165,250,0.15)",
-    green: "#34d399", greenDim: "rgba(52,211,153,0.08)",
-    red: "#f87171", redDim: "rgba(248,113,113,0.08)",
-    amber: "#fbbf24", amberDim: "rgba(251,191,36,0.08)",
-    purple: "#a78bfa", purpleDim: "rgba(167,139,250,0.08)",
-    cyan: "#22d3ee",
-    // Depth system
-    shadow1: "0 1px 2px rgba(0,0,0,0.3), 0 1px 3px rgba(0,0,0,0.15)",
-    shadow2: "0 4px 12px rgba(0,0,0,0.25), 0 1px 3px rgba(0,0,0,0.15)",
-    shadow3: "0 8px 30px rgba(0,0,0,0.3), 0 2px 8px rgba(0,0,0,0.2)",
-    cardGlow: "0 0 0 1px rgba(96,165,250,0.06), 0 4px 16px rgba(0,0,0,0.2)",
-    cardHoverGlow: "0 0 0 1px rgba(96,165,250,0.15), 0 8px 30px rgba(96,165,250,0.08), 0 4px 12px rgba(0,0,0,0.25)",
-    sidebarBg: "linear-gradient(180deg, #0c0c0f 0%, #08080a 100%)",
+    bg: "#07080a", bg2: "#0b0c10", surface: "#111318", surfaceAlt: "#181b22",
+    border: "#1e2230", borderSub: "#171b25", borderBright: "#2a2f3d",
+    text: "#eef0f6", textSec: "#9ea5b8", textDim: "#636d84", textFaint: "#3d4558",
+    accent: "#5b9cf5", accentDim: "rgba(91,156,245,0.07)", accentMid: "rgba(91,156,245,0.14)",
+    green: "#3dd9a0", greenDim: "rgba(61,217,160,0.07)",
+    red: "#f06b6b", redDim: "rgba(240,107,107,0.07)",
+    amber: "#f5b731", amberDim: "rgba(245,183,49,0.07)",
+    purple: "#a181f7", purpleDim: "rgba(161,129,247,0.07)",
+    cyan: "#2dd4d0",
+    // Chart colors — richer palette for data viz
+    chart1: "#5b9cf5", chart2: "#3dd9a0", chart3: "#a181f7", chart4: "#f5b731", chart5: "#f06b6b", chart6: "#2dd4d0",
+    chartGrid: "#181d2a", chartAxis: "#3d4558",
+    // Depth system — deeper, more atmospheric
+    shadow1: "0 1px 3px rgba(0,0,0,0.4), 0 1px 2px rgba(0,0,0,0.2)",
+    shadow2: "0 4px 16px rgba(0,0,0,0.35), 0 2px 4px rgba(0,0,0,0.2)",
+    shadow3: "0 12px 40px rgba(0,0,0,0.45), 0 4px 12px rgba(0,0,0,0.25)",
+    cardGlow: "0 0 0 1px rgba(91,156,245,0.04), 0 2px 12px rgba(0,0,0,0.25)",
+    cardHoverGlow: "0 0 0 1px rgba(91,156,245,0.12), 0 8px 32px rgba(91,156,245,0.06), 0 4px 16px rgba(0,0,0,0.3)",
+    sidebarBg: "linear-gradient(180deg, #0b0c10 0%, #070810 100%)",
   },
   light: {
-    bg: "#f7f8fa", bg2: "#eef0f4", surface: "#ffffff", surfaceAlt: "#f3f4f7",
-    border: "#dfe2e8", borderSub: "#e8eaef", borderBright: "#cdd1d8",
-    text: "#0c0e14", textSec: "#3d4455", textDim: "#5c6478", textFaint: "#8b92a5",
-    accent: "#0369a1", accentDim: "rgba(3,105,161,0.06)", accentMid: "rgba(3,105,161,0.12)",
-    green: "#047857", greenDim: "rgba(4,120,87,0.06)",
-    red: "#b91c1c", redDim: "rgba(185,28,28,0.06)",
-    amber: "#b45309", amberDim: "rgba(180,83,9,0.06)",
-    purple: "#6d28d9", purpleDim: "rgba(109,40,217,0.06)",
-    cyan: "#0e7490",
-    shadow1: "0 1px 3px rgba(0,0,0,0.05), 0 1px 2px rgba(0,0,0,0.03)",
-    shadow2: "0 4px 14px rgba(0,0,0,0.07), 0 2px 4px rgba(0,0,0,0.04)",
-    shadow3: "0 10px 35px rgba(0,0,0,0.1), 0 4px 10px rgba(0,0,0,0.05)",
-    cardGlow: "0 1px 3px rgba(0,0,0,0.04), 0 0 0 1px rgba(0,0,0,0.03)",
-    cardHoverGlow: "0 8px 28px rgba(3,105,161,0.08), 0 0 0 1px rgba(3,105,161,0.12), 0 4px 14px rgba(0,0,0,0.06)",
-    sidebarBg: "linear-gradient(180deg, #eef0f4 0%, #e4e6eb 100%)",
+    bg: "#f4f5f8", bg2: "#eaecf2", surface: "#ffffff", surfaceAlt: "#f0f1f5",
+    border: "#d4d8e1", borderSub: "#e2e5ec", borderBright: "#c0c5d1",
+    text: "#0a0d15", textSec: "#3a4259", textDim: "#576175", textFaint: "#8792a8",
+    accent: "#1d6ec1", accentDim: "rgba(29,110,193,0.05)", accentMid: "rgba(29,110,193,0.10)",
+    green: "#0d9467", greenDim: "rgba(13,148,103,0.05)",
+    red: "#c93131", redDim: "rgba(201,49,49,0.05)",
+    amber: "#c27a0e", amberDim: "rgba(194,122,14,0.05)",
+    purple: "#7341d4", purpleDim: "rgba(115,65,212,0.05)",
+    cyan: "#0a7f8c",
+    // Chart colors — punchy but not neon
+    chart1: "#1d6ec1", chart2: "#0d9467", chart3: "#7341d4", chart4: "#c27a0e", chart5: "#c93131", chart6: "#0a7f8c",
+    chartGrid: "#e8eaf0", chartAxis: "#8792a8",
+    // Depth system — crisp, elevated
+    shadow1: "0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04)",
+    shadow2: "0 4px 16px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.04)",
+    shadow3: "0 12px 40px rgba(0,0,0,0.12), 0 4px 12px rgba(0,0,0,0.06)",
+    cardGlow: "0 1px 4px rgba(0,0,0,0.05), 0 0 0 1px rgba(0,0,0,0.04)",
+    cardHoverGlow: "0 8px 32px rgba(29,110,193,0.08), 0 0 0 1px rgba(29,110,193,0.10), 0 4px 16px rgba(0,0,0,0.07)",
+    sidebarBg: "linear-gradient(180deg, #eaecf2 0%, #dfe1e9 100%)",
   },
 };
 
@@ -752,17 +759,19 @@ const ChartTooltip = ({ active, payload, label, c }) => {
   if (!active || !payload?.length) return null;
   return (
     <div style={{
-      background: `${c.surface}ee`, border: `1px solid ${c.border}`, borderRadius: 12, padding: "12px 16px",
-      fontSize: 12, boxShadow: c.shadow3, backdropFilter: "blur(12px)", minWidth: 160,
+      background: `${c.surface}f0`, border: `1px solid ${c.borderBright}`, borderRadius: 14, padding: "14px 18px",
+      fontSize: 12, boxShadow: `${c.shadow3}, 0 0 0 1px ${c.accent}08`, backdropFilter: "blur(16px)", WebkitBackdropFilter: "blur(16px)",
+      minWidth: 180, position: "relative", overflow: "hidden",
     }}>
-      <div style={{ fontWeight: 700, color: c.text, marginBottom: 8, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.04em" }}>{label}</div>
+      <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 2, background: `linear-gradient(90deg, ${c.accent}60, ${c.purple}40, transparent)` }} />
+      <div style={{ fontWeight: 800, color: c.text, marginBottom: 10, fontSize: 10, textTransform: "uppercase", letterSpacing: "0.08em" }}>{label}</div>
       {payload.filter(p => p.value != null).map((p, i) => (
-        <div key={i} style={{ display: "flex", justifyContent: "space-between", gap: 20, padding: "3px 0", alignItems: "center" }}>
-          <span style={{ display: "flex", alignItems: "center", gap: 6, color: c.textSec }}>
-            <span style={{ width: 8, height: 3, borderRadius: 1, background: p.color, display: "inline-block" }} />
+        <div key={i} style={{ display: "flex", justifyContent: "space-between", gap: 24, padding: "4px 0", alignItems: "center" }}>
+          <span style={{ display: "flex", alignItems: "center", gap: 7, color: c.textSec, fontWeight: 500 }}>
+            <span style={{ width: 10, height: 10, borderRadius: 3, background: `${p.color}30`, border: `2px solid ${p.color}`, display: "inline-block" }} />
             {p.name}
           </span>
-          <span style={{ fontWeight: 700, fontFamily: "'JetBrains Mono', monospace", color: c.text }}>{typeof p.value === "number" ? fmt(p.value) : p.value}</span>
+          <span style={{ fontWeight: 800, fontFamily: "'JetBrains Mono', monospace", color: c.text, fontSize: 12 }}>{typeof p.value === "number" ? fmt(p.value) : p.value}</span>
         </div>
       ))}
     </div>
@@ -899,104 +908,101 @@ const DashboardView = ({ c, onNav, toast, onDrawer, userName }) => {
     {/* Charts Row */}
     <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1.6fr 1fr", gap: 16, marginBottom: 24 }}>
       {/* Revenue Chart */}
-      <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, padding: 22, boxShadow: c.cardGlow, position: "relative", overflow: "hidden" }}>
-        <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 1, background: `linear-gradient(90deg, transparent, ${c.border}, transparent)` }} />
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-            <div style={{ width: 24, height: 24, borderRadius: 6, background: c.accentDim, display: "flex", alignItems: "center", justifyContent: "center" }}>
-              <TrendingUp size={13} color={c.accent} />
+      <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, padding: "24px 24px 18px", boxShadow: c.cardGlow, position: "relative", overflow: "hidden" }}>
+        {/* Gradient accent top edge */}
+        <div style={{ position: "absolute", top: 0, left: "10%", right: "10%", height: 2, background: `linear-gradient(90deg, transparent, ${c.accent}50, ${c.purple}30, transparent)`, borderRadius: "0 0 2px 2px" }} />
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 18 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+            <div style={{ width: 28, height: 28, borderRadius: 8, background: `linear-gradient(135deg, ${c.accent}18, ${c.purple}10)`, border: `1px solid ${c.accent}15`, display: "flex", alignItems: "center", justifyContent: "center" }}>
+              <TrendingUp size={14} color={c.accent} />
             </div>
-            <span style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.04em", color: c.textDim }}>Revenue — Actual vs Budget vs Forecast</span>
+            <div>
+              <div style={{ fontSize: 13, fontWeight: 800, color: c.text, letterSpacing: "-0.01em" }}>Revenue Performance</div>
+              <div style={{ fontSize: 10, color: c.textDim, marginTop: 1 }}>Actual vs Budget vs Forecast ($K)</div>
+            </div>
           </div>
-          {/* Chart period mini-selector (Blueprint Section 6: 3+ options) */}
-          <div style={{ display: "flex", gap: 2 }}>
+          <div style={{ display: "flex", gap: 2, background: c.surfaceAlt, borderRadius: 8, padding: 2, border: `1px solid ${c.borderSub}` }}>
             {["QTD", "YTD", "12M"].map(p => (
-              <span key={p} onClick={() => setChartPeriod(p)} style={{ fontSize: 9, fontWeight: 600, padding: "3px 8px", borderRadius: 4, background: chartPeriod === p ? c.accentMid : "transparent", color: chartPeriod === p ? c.accent : c.textFaint, cursor: "pointer", transition: "all 0.15s" }}>{p}</span>
+              <span key={p} onClick={() => setChartPeriod(p)} style={{ fontSize: 9, fontWeight: 700, padding: "4px 10px", borderRadius: 6, background: chartPeriod === p ? c.accent : "transparent", color: chartPeriod === p ? "#fff" : c.textFaint, cursor: "pointer", transition: "all 0.15s" }}>{p}</span>
             ))}
           </div>
         </div>
-        <ResponsiveContainer width="100%" height={220}>
-          <ComposedChart data={chartData} margin={{ top: 5, right: 5, bottom: 0, left: -15 }}>
+        <ResponsiveContainer width="100%" height={230}>
+          <ComposedChart data={chartData} margin={{ top: 5, right: 10, bottom: 0, left: -10 }}>
             <defs>
-              <linearGradient id="gAct" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor={c.accent} stopOpacity={0.15} /><stop offset="100%" stopColor={c.accent} stopOpacity={0} /></linearGradient>
-              <linearGradient id="gFc" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor={c.green} stopOpacity={0.1} /><stop offset="100%" stopColor={c.green} stopOpacity={0} /></linearGradient>
+              <linearGradient id="gAct" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor={c.accent} stopOpacity={0.2} /><stop offset="60%" stopColor={c.accent} stopOpacity={0.05} /><stop offset="100%" stopColor={c.accent} stopOpacity={0} /></linearGradient>
+              <linearGradient id="gFc" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor={c.green} stopOpacity={0.15} /><stop offset="100%" stopColor={c.green} stopOpacity={0} /></linearGradient>
             </defs>
-            <CartesianGrid stroke={c.borderSub} strokeDasharray="3 3" />
-            <XAxis dataKey="month" tick={{ fontSize: 10, fill: c.textDim }} axisLine={false} tickLine={false} />
-            <YAxis tick={{ fontSize: 10, fill: c.textDim }} axisLine={false} tickLine={false} tickFormatter={v => `${v / 1000}M`} />
-            <Tooltip content={<ChartTooltip c={c} />} />
-            {/* Blueprint Section 6: Reference line (AVG) */}
-            <ReferenceLine y={7800} stroke={c.amber} strokeDasharray="6 4" strokeWidth={1} label={{ value: "AVG", fill: c.amber, fontSize: 9, fontWeight: 700, position: "right" }} />
-            {!hiddenSeries.actual && <Area type="monotone" dataKey="actual" stroke={c.accent} fill="url(#gAct)" strokeWidth={2.5} name="Actual" dot={{ r: 3, fill: c.accent }} connectNulls={false} />}
-            {!hiddenSeries.budget && <Line type="monotone" dataKey="budget" stroke={c.textDim} strokeWidth={1} strokeDasharray="4 4" name="Budget" dot={false} />}
-            {!hiddenSeries.forecast && <Area type="monotone" dataKey="forecast" stroke={c.green} fill="url(#gFc)" strokeWidth={2} strokeDasharray="6 3" name="Forecast" dot={{ r: 3, fill: c.green }} connectNulls={false} />}
+            <CartesianGrid stroke={c.chartGrid} strokeDasharray="3 6" vertical={false} />
+            <XAxis dataKey="month" tick={{ fontSize: 10, fill: c.chartAxis, fontWeight: 600 }} axisLine={false} tickLine={false} />
+            <YAxis tick={{ fontSize: 10, fill: c.chartAxis }} axisLine={false} tickLine={false} tickFormatter={v => `$${v / 1000}M`} />
+            <Tooltip content={<ChartTooltip c={c} />} cursor={{ stroke: c.accent, strokeWidth: 1, strokeDasharray: "3 3", strokeOpacity: 0.3 }} />
+            <ReferenceLine y={7800} stroke={c.amber} strokeDasharray="8 4" strokeWidth={1} strokeOpacity={0.5} label={{ value: "AVG", fill: c.amber, fontSize: 8, fontWeight: 800, position: "right" }} />
+            {!hiddenSeries.actual && <Area type="monotone" dataKey="actual" stroke={c.accent} fill="url(#gAct)" strokeWidth={2.5} name="Actual" dot={{ r: 4, fill: c.surface, stroke: c.accent, strokeWidth: 2.5 }} activeDot={{ r: 6, fill: c.accent, stroke: c.surface, strokeWidth: 2 }} connectNulls={false} />}
+            {!hiddenSeries.budget && <Line type="monotone" dataKey="budget" stroke={c.textFaint} strokeWidth={1.5} strokeDasharray="5 5" name="Budget" dot={false} />}
+            {!hiddenSeries.forecast && <Area type="monotone" dataKey="forecast" stroke={c.green} fill="url(#gFc)" strokeWidth={2} strokeDasharray="8 4" name="Forecast" dot={{ r: 3.5, fill: c.surface, stroke: c.green, strokeWidth: 2 }} connectNulls={false} />}
           </ComposedChart>
         </ResponsiveContainer>
-        {/* Interactive legend — Blueprint Section 6: Click to toggle series */}
-        <div style={{ display: "flex", gap: 14, marginTop: 10, fontSize: 10, color: c.textDim, alignItems: "center" }}>
+        {/* Legend row */}
+        <div style={{ display: "flex", gap: 16, marginTop: 12, fontSize: 10, color: c.textDim, alignItems: "center", paddingTop: 10, borderTop: `1px solid ${c.borderSub}` }}>
           {[
-            { key: "actual", label: "Actual", color: c.accent, style: { width: 16, height: 2.5, background: c.accent, borderRadius: 1 } },
-            { key: "budget", label: "Budget", color: c.textDim, style: { width: 16, height: 0, borderTop: `2px dashed ${c.textDim}` } },
-            { key: "forecast", label: "Forecast", color: c.green, style: { width: 16, height: 2, background: c.green, borderRadius: 1, opacity: 0.7 } },
+            { key: "actual", label: "Actual", color: c.accent, bar: true },
+            { key: "budget", label: "Budget", color: c.textFaint, dashed: true },
+            { key: "forecast", label: "Forecast", color: c.green, dashed: true },
           ].map(s => (
             <span key={s.key} onClick={() => toggleSeries(s.key)} style={{
-              display: "flex", alignItems: "center", gap: 5, cursor: "pointer", padding: "2px 6px", borderRadius: 4,
-              opacity: hiddenSeries[s.key] ? 0.35 : 1, textDecoration: hiddenSeries[s.key] ? "line-through" : "none",
-              transition: "opacity 0.2s",
+              display: "flex", alignItems: "center", gap: 6, cursor: "pointer", padding: "3px 8px", borderRadius: 5,
+              opacity: hiddenSeries[s.key] ? 0.3 : 1, background: hiddenSeries[s.key] ? "transparent" : `${s.color}08`,
+              transition: "all 0.2s", fontWeight: 600,
             }}>
-              <span style={{ ...s.style, display: "inline-block" }} />
+              <span style={{ width: 12, height: 12, borderRadius: 3, background: `${s.color}20`, border: `2px solid ${s.color}`, display: "inline-block", opacity: hiddenSeries[s.key] ? 0.3 : 1 }} />
               {s.label}
             </span>
           ))}
-          <span style={{ display: "flex", alignItems: "center", gap: 5 }}><span style={{ width: 16, height: 0, borderTop: `2px dashed ${c.amber}`, display: "inline-block" }} /> AVG</span>
-          <span style={{ marginLeft: "auto", fontWeight: 600, color: c.accent }}>Today: Jun 2025</span>
-        </div>
-        {/* Terminal status bar */}
-        <div style={{ display: "flex", gap: 12, marginTop: 8, padding: "7px 12px", background: c.bg2, borderRadius: 6, fontSize: 9, color: c.textFaint, alignItems: "center" }}>
-          <span style={{ display: "flex", alignItems: "center", gap: 4 }}><span style={{ width: 5, height: 5, borderRadius: "50%", background: c.green, display: "inline-block", animation: "pulse 2s infinite" }} /> LIVE</span>
-          <span>12 data points</span>
-          <span>Period: FY2025 YTD</span>
-          <span>Mode: Actual + Forecast</span>
-          <span style={{ marginLeft: "auto", fontFamily: "'JetBrains Mono', monospace" }}>H: $9.8M  L: $6.8M  AVG: $7.8M</span>
+          <span style={{ marginLeft: "auto", fontWeight: 700, color: c.accent, fontSize: 11, fontFamily: "'JetBrains Mono', monospace" }}>H: $10.4M  L: $6.8M</span>
         </div>
       </div>
 
       {/* Segment Donut */}
-      <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, padding: 22, boxShadow: c.cardGlow, position: "relative", overflow: "hidden" }}>
-        <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 1, background: `linear-gradient(90deg, transparent, ${c.border}, transparent)` }} />
-        <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 16 }}>
-          <div style={{ width: 24, height: 24, borderRadius: 6, background: c.purpleDim, display: "flex", alignItems: "center", justifyContent: "center" }}>
-            <Target size={13} color={c.purple} />
+      <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, padding: "24px 24px 18px", boxShadow: c.cardGlow, position: "relative", overflow: "hidden" }}>
+        <div style={{ position: "absolute", top: 0, left: "10%", right: "10%", height: 2, background: `linear-gradient(90deg, transparent, ${c.purple}40, transparent)`, borderRadius: "0 0 2px 2px" }} />
+        <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 18 }}>
+          <div style={{ width: 28, height: 28, borderRadius: 8, background: `linear-gradient(135deg, ${c.purple}18, ${c.cyan}10)`, border: `1px solid ${c.purple}15`, display: "flex", alignItems: "center", justifyContent: "center" }}>
+            <Target size={14} color={c.purple} />
           </div>
-          <span style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.04em", color: c.textDim }}>Revenue by Segment</span>
+          <div>
+            <div style={{ fontSize: 13, fontWeight: 800, color: c.text }}>Revenue by Segment</div>
+            <div style={{ fontSize: 10, color: c.textDim, marginTop: 1 }}>FY2025 YTD distribution</div>
+          </div>
         </div>
-        <ResponsiveContainer width="100%" height={160}>
+        <ResponsiveContainer width="100%" height={170}>
           <PieChart>
-            <Pie data={SEGMENT_DATA} cx="50%" cy="50%" innerRadius={45} outerRadius={70} paddingAngle={3} dataKey="value" stroke="none">
-              {SEGMENT_DATA.map((s, i) => <Cell key={i} fill={s.color} />)}
+            <defs>
+              {SEGMENT_DATA.map((s, i) => (
+                <linearGradient key={i} id={`seg${i}`} x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stopColor={s.color} stopOpacity={1} /><stop offset="100%" stopColor={s.color} stopOpacity={0.7} /></linearGradient>
+              ))}
+            </defs>
+            <Pie data={SEGMENT_DATA} cx="50%" cy="50%" innerRadius={48} outerRadius={72} paddingAngle={4} dataKey="value" stroke="none" cornerRadius={3}>
+              {SEGMENT_DATA.map((s, i) => <Cell key={i} fill={`url(#seg${i})`} />)}
             </Pie>
             <Tooltip content={<ChartTooltip c={c} />} />
-            {/* Center label */}
-            <text x="50%" y="46%" textAnchor="middle" fill={c.text} fontSize={18} fontWeight={800} fontFamily="'JetBrains Mono', monospace">$51.2M</text>
-            <text x="50%" y="58%" textAnchor="middle" fill={c.textDim} fontSize={9} fontWeight={600}>TOTAL REV</text>
+            <text x="50%" y="44%" textAnchor="middle" fill={c.text} fontSize={20} fontWeight={800} fontFamily="'JetBrains Mono', monospace">$51.2M</text>
+            <text x="50%" y="58%" textAnchor="middle" fill={c.textDim} fontSize={9} fontWeight={700} letterSpacing="0.1em">TOTAL</text>
           </PieChart>
         </ResponsiveContainer>
-        <div style={{ display: "flex", flexDirection: "column", gap: 8, marginTop: 8 }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 10, marginTop: 8 }}>
           {SEGMENT_DATA.map(s => {
             const total = SEGMENT_DATA.reduce((a, b) => a + b.value, 0);
             const pct = ((s.value / total) * 100).toFixed(0);
             return (
-              <div key={s.name} style={{ fontSize: 11 }}>
-                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 3 }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                    <div style={{ width: 8, height: 8, borderRadius: 3, background: s.color }} />
-                    <span style={{ color: c.textSec, fontWeight: 500 }}>{s.name}</span>
-                  </div>
-                  <span style={{ fontWeight: 700, color: c.text, fontFamily: "'JetBrains Mono', monospace", fontSize: 11 }}>{pct}%</span>
+              <div key={s.name} style={{ display: "flex", alignItems: "center", gap: 10, fontSize: 11 }}>
+                <div style={{ width: 10, height: 10, borderRadius: 4, background: `linear-gradient(135deg, ${s.color}, ${s.color}aa)`, boxShadow: `0 0 6px ${s.color}30`, flexShrink: 0 }} />
+                <span style={{ color: c.textSec, fontWeight: 500, flex: 1 }}>{s.name}</span>
+                <span style={{ fontWeight: 700, color: c.textSec, fontFamily: "'JetBrains Mono', monospace", fontSize: 10 }}>{fmt(s.value)}</span>
+                <div style={{ width: 48, height: 4, background: c.bg2, borderRadius: 2, overflow: "hidden" }}>
+                  <div style={{ width: `${pct}%`, height: "100%", background: `linear-gradient(90deg, ${s.color}, ${s.color}80)`, borderRadius: 2 }} />
                 </div>
-                <div style={{ height: 3, background: c.bg2, borderRadius: 2, overflow: "hidden" }}>
-                  <div style={{ width: `${pct}%`, height: "100%", background: s.color, borderRadius: 2 }} />
-                </div>
+                <span style={{ fontWeight: 800, color: c.text, fontFamily: "'JetBrains Mono', monospace", fontSize: 11, width: 32, textAlign: "right" }}>{pct}%</span>
               </div>
             );
           })}
@@ -1007,42 +1013,58 @@ const DashboardView = ({ c, onNav, toast, onDrawer, userName }) => {
     {/* Expense Bars + Insights */}
     <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
       {/* Expense Breakdown */}
-      <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, padding: 22, boxShadow: c.cardGlow, position: "relative", overflow: "hidden" }}>
-        <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 1, background: `linear-gradient(90deg, transparent, ${c.border}, transparent)` }} />
-        <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 16 }}>
-          <div style={{ width: 24, height: 24, borderRadius: 6, background: c.amberDim, display: "flex", alignItems: "center", justifyContent: "center" }}>
-            <DollarSign size={13} color={c.amber} />
+      <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, padding: "24px 24px 18px", boxShadow: c.cardGlow, position: "relative", overflow: "hidden" }}>
+        <div style={{ position: "absolute", top: 0, left: "10%", right: "10%", height: 2, background: `linear-gradient(90deg, transparent, ${c.amber}40, transparent)`, borderRadius: "0 0 2px 2px" }} />
+        <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 18 }}>
+          <div style={{ width: 28, height: 28, borderRadius: 8, background: `linear-gradient(135deg, ${c.amber}18, ${c.red}08)`, border: `1px solid ${c.amber}15`, display: "flex", alignItems: "center", justifyContent: "center" }}>
+            <DollarSign size={14} color={c.amber} />
           </div>
-          <span style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.04em", color: c.textDim }}>OpEx Breakdown — Actual vs Budget</span>
+          <div>
+            <div style={{ fontSize: 13, fontWeight: 800, color: c.text }}>OpEx Breakdown</div>
+            <div style={{ fontSize: 10, color: c.textDim, marginTop: 1 }}>Actual vs Budget · FY2025 YTD</div>
+          </div>
         </div>
         <ResponsiveContainer width="100%" height={180}>
-          <BarChart data={EXPENSE_DATA} layout="vertical" margin={{ top: 0, right: 5, bottom: 0, left: 0 }}>
-            <CartesianGrid stroke={c.borderSub} strokeDasharray="3 3" horizontal={false} />
-            <XAxis type="number" tick={{ fontSize: 10, fill: c.textDim }} axisLine={false} tickLine={false} tickFormatter={v => `${v / 1000}K`} />
-            <YAxis type="category" dataKey="name" tick={{ fontSize: 11, fill: c.textSec }} axisLine={false} tickLine={false} width={40} />
-            <Tooltip content={<ChartTooltip c={c} />} />
-            <Bar dataKey="actual" fill={c.accent} radius={[0, 4, 4, 0]} barSize={14} name="Actual" />
-            <Bar dataKey="budget" fill={c.textFaint} radius={[0, 4, 4, 0]} barSize={14} name="Budget" opacity={0.4} />
+          <BarChart data={EXPENSE_DATA} layout="vertical" margin={{ top: 0, right: 10, bottom: 0, left: 0 }}>
+            <defs>
+              <linearGradient id="gExpAct" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stopColor={c.accent} stopOpacity={0.9} /><stop offset="100%" stopColor={c.accent} stopOpacity={0.6} /></linearGradient>
+              <linearGradient id="gExpBud" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stopColor={c.textFaint} stopOpacity={0.35} /><stop offset="100%" stopColor={c.textFaint} stopOpacity={0.15} /></linearGradient>
+            </defs>
+            <CartesianGrid stroke={c.chartGrid} strokeDasharray="3 6" horizontal={false} />
+            <XAxis type="number" tick={{ fontSize: 10, fill: c.chartAxis }} axisLine={false} tickLine={false} tickFormatter={v => `$${v / 1000}K`} />
+            <YAxis type="category" dataKey="name" tick={{ fontSize: 11, fill: c.textSec, fontWeight: 600 }} axisLine={false} tickLine={false} width={40} />
+            <Tooltip content={<ChartTooltip c={c} />} cursor={{ fill: `${c.accent}06` }} />
+            <Bar dataKey="actual" fill="url(#gExpAct)" radius={[0, 6, 6, 0]} barSize={16} name="Actual" />
+            <Bar dataKey="budget" fill="url(#gExpBud)" radius={[0, 6, 6, 0]} barSize={16} name="Budget" />
           </BarChart>
         </ResponsiveContainer>
-        {/* Terminal status bar */}
-        <div style={{ display: "flex", alignItems: "center", gap: 12, marginTop: 8, padding: "6px 10px", background: c.bg2, borderRadius: 6, fontSize: 9, color: c.textFaint }}>
-          <span style={{ display: "flex", alignItems: "center", gap: 4 }}><span style={{ width: 5, height: 5, borderRadius: "50%", background: c.green, animation: "pulse 2s infinite" }} /> LIVE</span>
-          <span>5 categories</span>
-          <span>Period: FY2025 YTD</span>
-          <span>Mode: Actual vs Budget</span>
+        {/* Variance summary */}
+        <div style={{ display: "flex", gap: 8, marginTop: 12, paddingTop: 10, borderTop: `1px solid ${c.borderSub}` }}>
+          {EXPENSE_DATA.map(d => {
+            const v = d.actual - d.budget;
+            const over = v > 0;
+            return (
+              <div key={d.name} style={{ flex: 1, padding: "6px 8px", borderRadius: 6, background: over ? c.redDim : c.greenDim, textAlign: "center" }}>
+                <div style={{ fontSize: 9, color: c.textDim, fontWeight: 600, marginBottom: 2 }}>{d.name}</div>
+                <div style={{ fontSize: 10, fontWeight: 800, color: over ? c.red : c.green, fontFamily: "'JetBrains Mono', monospace" }}>{over ? "+" : ""}{fmt(v)}</div>
+              </div>
+            );
+          })}
         </div>
       </div>
-      <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, padding: 22, boxShadow: c.cardGlow, position: "relative", overflow: "hidden" }}>
-        <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 1, background: `linear-gradient(90deg, transparent, ${c.purple}30, transparent)` }} />
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-            <div style={{ width: 24, height: 24, borderRadius: 6, background: c.purpleDim, display: "flex", alignItems: "center", justifyContent: "center" }}>
-              <Sparkles size={13} color={c.purple} />
+      <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, padding: "24px 24px 18px", boxShadow: c.cardGlow, position: "relative", overflow: "hidden" }}>
+        <div style={{ position: "absolute", top: 0, left: "10%", right: "10%", height: 2, background: `linear-gradient(90deg, transparent, ${c.purple}40, transparent)`, borderRadius: "0 0 2px 2px" }} />
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 18 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+            <div style={{ width: 28, height: 28, borderRadius: 8, background: `linear-gradient(135deg, ${c.purple}18, ${c.accent}10)`, border: `1px solid ${c.purple}15`, display: "flex", alignItems: "center", justifyContent: "center" }}>
+              <Sparkles size={14} color={c.purple} />
             </div>
-            <span style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.04em", color: c.textDim }}>AI Insights</span>
+            <div>
+              <div style={{ fontSize: 13, fontWeight: 800, color: c.text }}>AI Insights</div>
+              <div style={{ fontSize: 10, color: c.textDim, marginTop: 1 }}>Real-time variance detection</div>
+            </div>
           </div>
-          <div style={{ fontSize: 9, fontWeight: 700, padding: "3px 10px", borderRadius: 6, background: c.purpleDim, color: c.purple, border: `1px solid ${c.purple}20` }}>4 active</div>
+          <div style={{ fontSize: 9, fontWeight: 800, padding: "4px 12px", borderRadius: 8, background: `linear-gradient(135deg, ${c.purple}15, ${c.accent}08)`, color: c.purple, border: `1px solid ${c.purple}18`, letterSpacing: "0.04em" }}>4 ACTIVE</div>
         </div>
         {AI_INSIGHTS_ENRICHED.map((ins, i) => <InsightRow key={i} item={ins} c={c} onClick={() => onNav("copilot")} />)}
       </div>
