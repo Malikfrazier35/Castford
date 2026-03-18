@@ -547,6 +547,115 @@ const AuditEntry = ({ entry, c }) => (
   </div>
 );
 
+// ══════════════════════════════════════════════════════════════
+// ENV 5: CUSTOMER DESKTOP PLATFORM
+// ══════════════════════════════════════════════════════════════
+const OfflineIndicator = ({ c }) => {
+  const [online, setOnline] = useState(true);
+  useEffect(() => {
+    const on = () => setOnline(true);
+    const off = () => setOnline(false);
+    window.addEventListener("online", on);
+    window.addEventListener("offline", off);
+    setOnline(navigator.onLine);
+    return () => { window.removeEventListener("online", on); window.removeEventListener("offline", off); };
+  }, []);
+  if (online) return null;
+  return (
+    <div style={{ position: "fixed", top: 0, left: 0, right: 0, zIndex: 10000, padding: "8px 0", textAlign: "center", fontSize: 11, fontWeight: 700, background: c.amber, color: "#000", letterSpacing: "0.02em" }}>
+      You are offline. Changes will sync when connection is restored.
+    </div>
+  );
+};
+
+const PWAInstallPrompt = ({ c }) => {
+  const [prompt, setPrompt] = useState(null);
+  const [show, setShow] = useState(false);
+  useEffect(() => {
+    const handler = (e) => { e.preventDefault(); setPrompt(e); setShow(true); };
+    window.addEventListener("beforeinstallprompt", handler);
+    return () => window.removeEventListener("beforeinstallprompt", handler);
+  }, []);
+  if (!show) return null;
+  return (
+    <div style={{ position: "fixed", bottom: 80, right: 20, zIndex: 9999, background: c.surface, border: `1px solid ${c.border}`, borderRadius: 12, padding: "16px 20px", boxShadow: c.shadow3, maxWidth: 280, animation: "fadeSlideUp 0.3s ease-out" }}>
+      <div style={{ fontSize: 13, fontWeight: 700, color: c.text, marginBottom: 4 }}>Install FinanceOS</div>
+      <div style={{ fontSize: 11, color: c.textDim, marginBottom: 12, lineHeight: 1.5 }}>Add to your desktop for instant access — works offline.</div>
+      <div style={{ display: "flex", gap: 6 }}>
+        <button onClick={() => { prompt?.prompt(); setShow(false); }} style={{ fontSize: 11, padding: "7px 14px", borderRadius: 6, border: "none", background: c.accent, color: "#fff", fontWeight: 700, cursor: "pointer", fontFamily: "inherit" }}>Install</button>
+        <button onClick={() => setShow(false)} style={{ fontSize: 11, padding: "7px 14px", borderRadius: 6, border: `1px solid ${c.border}`, background: "transparent", color: c.textDim, cursor: "pointer", fontFamily: "inherit" }}>Later</button>
+      </div>
+    </div>
+  );
+};
+
+// ══════════════════════════════════════════════════════════════
+// ENV 7: LIVE DEMO PIPELINE
+// ══════════════════════════════════════════════════════════════
+const DemoBanner = ({ c }) => (
+  <div style={{
+    display: "flex", alignItems: "center", justifyContent: "center", gap: 12, padding: "7px 16px",
+    background: `linear-gradient(90deg, ${c.accent}15, ${c.purple}10)`, borderBottom: `1px solid ${c.accent}20`,
+    fontSize: 11, color: c.textSec, flexShrink: 0,
+  }}>
+    <span style={{ fontSize: 8, fontWeight: 800, padding: "2px 6px", borderRadius: 3, background: c.accentDim, color: c.accent, letterSpacing: "0.06em" }}>DEMO</span>
+    <span>You are viewing sample data for <strong style={{ color: c.text }}>Acme SaaS Corp</strong>. Connect your own data to get started.</span>
+    <span style={{ fontSize: 10, color: c.accent, fontWeight: 700, cursor: "pointer" }}>Connect ERP</span>
+  </div>
+);
+
+const FeatureTooltip = ({ text, c, children }) => {
+  const [show, setShow] = useState(false);
+  return (
+    <div style={{ position: "relative", display: "inline-block" }} onMouseEnter={() => setShow(true)} onMouseLeave={() => setShow(false)}>
+      {children}
+      {show && (
+        <div style={{ position: "absolute", bottom: "calc(100% + 8px)", left: "50%", transform: "translateX(-50%)", padding: "8px 12px", borderRadius: 8, background: c.surface, border: `1px solid ${c.border}`, boxShadow: c.shadow2, fontSize: 11, color: c.text, whiteSpace: "nowrap", zIndex: 100, animation: "fadeIn 0.15s" }}>
+          {text}
+          <div style={{ position: "absolute", top: "100%", left: "50%", transform: "translateX(-50%)", width: 8, height: 4, background: c.surface, clipPath: "polygon(0 0, 100% 0, 50% 100%)" }} />
+        </div>
+      )}
+    </div>
+  );
+};
+
+// ══════════════════════════════════════════════════════════════
+// ENV 8: AUTOSAVE/PREFERENCE AUTOMATION
+// ══════════════════════════════════════════════════════════════
+const usePreferences = (key, defaultVal) => {
+  const [value, setValue] = useState(() => {
+    try { const stored = localStorage.getItem(`fos_${key}`); return stored ? JSON.parse(stored) : defaultVal; }
+    catch { return defaultVal; }
+  });
+  useEffect(() => {
+    try { localStorage.setItem(`fos_${key}`, JSON.stringify(value)); } catch {}
+  }, [key, value]);
+  return [value, setValue];
+};
+
+// ══════════════════════════════════════════════════════════════
+// ENV 9: PREMIUM DASHBOARD FUNCTIONS — Quick Actions
+// ══════════════════════════════════════════════════════════════
+const QuickActions = ({ c, onNav, toast }) => (
+  <div style={{ display: "flex", gap: 8, marginBottom: 20, flexWrap: "wrap" }}>
+    {[
+      { label: "New Forecast", icon: TrendingUp, action: () => onNav("forecast"), color: c.accent },
+      { label: "Run Variance", icon: Search, action: () => onNav("copilot"), color: c.purple },
+      { label: "Export P&L", icon: FileText, action: () => { onNav("pnl"); toast("P&L ready for export", "success"); }, color: c.green },
+      { label: "Close Tasks", icon: CheckSquare, action: () => onNav("close"), color: c.amber },
+    ].map(a => (
+      <button key={a.label} onClick={a.action} style={{
+        display: "flex", alignItems: "center", gap: 6, fontSize: 11, padding: "8px 14px", borderRadius: 8,
+        border: `1px solid ${c.border}`, background: c.surface, color: c.textSec,
+        cursor: "pointer", fontFamily: "inherit", fontWeight: 600, transition: "all 0.15s",
+      }}
+      onMouseEnter={e => { e.currentTarget.style.borderColor = a.color; e.currentTarget.style.color = a.color; e.currentTarget.style.boxShadow = `0 4px 12px ${a.color}15`; }}
+      onMouseLeave={e => { e.currentTarget.style.borderColor = c.border; e.currentTarget.style.color = c.textSec; e.currentTarget.style.boxShadow = "none"; }}
+      ><a.icon size={13} />{a.label}</button>
+    ))}
+  </div>
+);
+
 // ── HELPERS ───────────────────────────────────────────────────
 const fmt = (n) => {
   if (Math.abs(n) >= 1e6) return `$${(n / 1e6).toFixed(1)}M`;
@@ -604,21 +713,26 @@ const Spark = ({ data, color, width = 64, height = 24 }) => {
 // ── KPI CARD ─────────────────────────────────────────────────
 const KpiCard = ({ kpi, c, onClick, index = 0 }) => {
   const Icon = kpi.icon;
+  const [hovered, setHovered] = useState(false);
   return (
     <div onClick={onClick} style={{
-      background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, padding: "20px 22px",
-      cursor: "pointer", transition: "all 0.2s cubic-bezier(0.22,1,0.36,1)",
-      position: "relative", overflow: "hidden", boxShadow: c.cardGlow,
+      background: c.surface, border: `1px solid ${hovered ? c[kpi.accent] + "50" : c.border}`, borderRadius: 14, padding: "20px 22px",
+      cursor: "pointer", transition: "all 0.25s cubic-bezier(0.22,1,0.36,1)",
+      position: "relative", overflow: "hidden",
+      boxShadow: hovered ? `0 8px 28px ${c[kpi.accent]}15, 0 0 0 1px ${c[kpi.accent]}20` : c.cardGlow,
+      transform: hovered ? "translateY(-3px)" : "none",
       animation: `fadeSlideUp 0.4s cubic-bezier(0.22,1,0.36,1) ${index * 0.06}s both`,
     }}
-    onMouseEnter={e => { e.currentTarget.style.borderColor = c.accent; e.currentTarget.style.transform = "translateY(-3px)"; e.currentTarget.style.boxShadow = c.cardHoverGlow; }}
-    onMouseLeave={e => { e.currentTarget.style.borderColor = c.border; e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = c.cardGlow; }}
+    onMouseEnter={() => setHovered(true)}
+    onMouseLeave={() => setHovered(false)}
     >
-      {/* Subtle top accent line */}
-      <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 2, background: `linear-gradient(90deg, ${c[kpi.accent]}00, ${c[kpi.accent]}40, ${c[kpi.accent]}00)`, opacity: 0.5 }} />
+      {/* Subtle top accent line — brightens on hover */}
+      <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 2, background: `linear-gradient(90deg, ${c[kpi.accent]}00, ${c[kpi.accent]}${hovered ? "80" : "40"}, ${c[kpi.accent]}00)`, transition: "all 0.3s" }} />
+      {/* Ambient corner glow on hover */}
+      {hovered && <div style={{ position: "absolute", top: -30, right: -30, width: 80, height: 80, borderRadius: "50%", background: `radial-gradient(circle, ${c[kpi.accent]}12 0%, transparent 70%)`, pointerEvents: "none" }} />}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 12 }}>
-        <div style={{ fontSize: 10, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.06em", color: c.textFaint }}>{kpi.label}</div>
-        <div style={{ width: 30, height: 30, borderRadius: 8, background: `${c[kpi.accent]}15`, display: "flex", alignItems: "center", justifyContent: "center" }}>
+        <div style={{ fontSize: 10, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.06em", color: hovered ? c.textSec : c.textFaint, transition: "color 0.2s" }}>{kpi.label}</div>
+        <div style={{ width: 30, height: 30, borderRadius: 8, background: `${c[kpi.accent]}${hovered ? "22" : "15"}`, display: "flex", alignItems: "center", justifyContent: "center", transition: "background 0.2s" }}>
           <Icon size={14} color={c[kpi.accent]} strokeWidth={2} />
         </div>
       </div>
@@ -690,7 +804,10 @@ const DashboardView = ({ c, onNav, toast, onDrawer }) => {
       </div>
     </div>
 
-    {/* KPI Grid */}
+    {/* Quick Actions — ENV 9 */}
+    <QuickActions c={c} onNav={onNav} toast={toast} />
+
+    {/* KPI Grid — ENV 10: Premium hover glow */}
     <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 16, marginBottom: 24 }}>
       {KPIS.map((k, i) => <KpiCard key={k.label} kpi={k} c={c} onClick={() => onDrawer(k.label)} index={i} />)}
     </div>
@@ -1576,57 +1693,128 @@ const ScenariosView = ({ c }) => {
 // ══════════════════════════════════════════════════════════════
 // SETTINGS VIEW (minimal)
 // ══════════════════════════════════════════════════════════════
-const SettingsView = ({ c, onLogout, toast }) => {
+// ══════════════════════════════════════════════════════════════
+// ENV 11: CUSTOMER SIGN-IN / SIGN-OUT / ACCOUNT DELETION
+// ══════════════════════════════════════════════════════════════
+const SettingsView = ({ c, onLogout, toast, mode }) => {
   const [deleteConfirm, setDeleteConfirm] = useState(false);
+  const [deleteText, setDeleteText] = useState("");
+  const [activeTab, setActiveTab] = useState("org");
+  const [sessionExpanded, setSessionExpanded] = useState(false);
+  const tabs = [
+    { id: "org", label: "Organization" },
+    { id: "billing", label: "Billing" },
+    { id: "security", label: "Security" },
+    { id: "session", label: "Session" },
+  ];
   return (
-    <div style={{ padding: 32, maxWidth: 680 }}>
-      <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, padding: 22, boxShadow: c.cardGlow, marginBottom: 16 }}>
-        <div style={{ fontSize: 14, fontWeight: 700, color: c.text, marginBottom: 14 }}>Organization</div>
-        {[{ label: "Company", value: "Acme SaaS Corp" }, { label: "Fiscal Year End", value: "December 31" }, { label: "Currency", value: "USD" }, { label: "Plan", value: "Growth — $1,799/mo billed annually" }, { label: "Seats", value: "12 of 25 used" }].map(f => (
-          <div key={f.label} style={{ display: "flex", justifyContent: "space-between", padding: "11px 0", borderBottom: `1px solid ${c.borderSub}`, fontSize: 12 }}>
-            <span style={{ color: c.textDim }}>{f.label}</span>
-            <span style={{ color: c.text, fontWeight: 600 }}>{f.value}</span>
-          </div>
+    <div style={{ padding: 32, maxWidth: 720 }}>
+      {/* Tab bar */}
+      <div style={{ display: "flex", gap: 4, marginBottom: 20, background: c.surfaceAlt, borderRadius: 10, padding: 3, border: `1px solid ${c.borderSub}` }}>
+        {tabs.map(t => (
+          <button key={t.id} onClick={() => setActiveTab(t.id)} style={{
+            flex: 1, fontSize: 11, padding: "8px 0", borderRadius: 7, border: "none",
+            background: activeTab === t.id ? c.surface : "transparent",
+            color: activeTab === t.id ? c.text : c.textDim,
+            fontWeight: activeTab === t.id ? 700 : 500, cursor: "pointer", fontFamily: "inherit",
+            boxShadow: activeTab === t.id ? c.shadow1 : "none", transition: "all 0.15s",
+          }}>{t.label}</button>
         ))}
       </div>
-      <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, padding: 22, boxShadow: c.cardGlow, marginBottom: 16 }}>
-        <div style={{ fontSize: 14, fontWeight: 700, color: c.text, marginBottom: 14 }}>Billing</div>
-        <div style={{ fontSize: 12, color: c.textSec, lineHeight: 1.7, marginBottom: 14 }}>Your Growth plan renews annually on January 15. Next charge: $17,988. Payment method: Visa ending 4242.</div>
-        <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-          <button style={{ fontSize: 11, padding: "9px 18px", borderRadius: 8, border: `1px solid ${c.border}`, background: "transparent", color: c.textSec, cursor: "pointer", fontFamily: "inherit", fontWeight: 600, transition: "all 0.15s" }}
-            onMouseEnter={e => { e.currentTarget.style.borderColor = c.accent; e.currentTarget.style.color = c.accent; }}
-            onMouseLeave={e => { e.currentTarget.style.borderColor = c.border; e.currentTarget.style.color = c.textSec; }}
-          >Manage Subscription</button>
-          <button style={{ fontSize: 11, padding: "9px 18px", borderRadius: 8, border: `1px solid ${c.border}`, background: "transparent", color: c.textSec, cursor: "pointer", fontFamily: "inherit", fontWeight: 600, transition: "all 0.15s" }}
-            onMouseEnter={e => { e.currentTarget.style.borderColor = c.accent; e.currentTarget.style.color = c.accent; }}
-            onMouseLeave={e => { e.currentTarget.style.borderColor = c.border; e.currentTarget.style.color = c.textSec; }}
-          >View Invoices</button>
+
+      {activeTab === "org" && (
+        <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, padding: 22, boxShadow: c.cardGlow }}>
+          <div style={{ fontSize: 14, fontWeight: 700, color: c.text, marginBottom: 14 }}>Organization</div>
+          {[{ label: "Company", value: "Acme SaaS Corp" }, { label: "Fiscal Year End", value: "December 31" }, { label: "Currency", value: "USD" }, { label: "Plan", value: "Growth — $1,799/mo billed annually" }, { label: "Seats", value: "12 of 25 used" }, { label: "Data Region", value: "US-East (Virginia)" }, { label: "SSO Provider", value: "Not configured" }].map(f => (
+            <div key={f.label} style={{ display: "flex", justifyContent: "space-between", padding: "11px 0", borderBottom: `1px solid ${c.borderSub}`, fontSize: 12 }}>
+              <span style={{ color: c.textDim }}>{f.label}</span>
+              <span style={{ color: c.text, fontWeight: 600 }}>{f.value}</span>
+            </div>
+          ))}
         </div>
-      </div>
-      {/* Session */}
-      <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, padding: 22, boxShadow: c.cardGlow, marginBottom: 16 }}>
-        <div style={{ fontSize: 14, fontWeight: 700, color: c.text, marginBottom: 14 }}>Session</div>
-        <div style={{ display: "flex", gap: 8 }}>
-          <button onClick={onLogout} style={{ fontSize: 11, padding: "9px 18px", borderRadius: 8, border: `1px solid ${c.border}`, background: "transparent", color: c.textSec, cursor: "pointer", fontFamily: "inherit", fontWeight: 600, display: "flex", alignItems: "center", gap: 6, transition: "all 0.15s" }}
-            onMouseEnter={e => { e.currentTarget.style.borderColor = c.amber; e.currentTarget.style.color = c.amber; }}
-            onMouseLeave={e => { e.currentTarget.style.borderColor = c.border; e.currentTarget.style.color = c.textSec; }}
-          ><LogOut size={13} /> Sign Out</button>
-        </div>
-      </div>
-      {/* Danger Zone */}
-      <div style={{ background: c.surface, border: `1px solid ${c.red}30`, borderRadius: 14, padding: 22, boxShadow: c.cardGlow }}>
-        <div style={{ fontSize: 14, fontWeight: 700, color: c.red, marginBottom: 8 }}>Danger Zone</div>
-        <div style={{ fontSize: 12, color: c.textDim, lineHeight: 1.7, marginBottom: 14 }}>Permanently delete your account and all associated data. This action cannot be undone.</div>
-        {!deleteConfirm ? (
-          <button onClick={() => setDeleteConfirm(true)} style={{ fontSize: 11, padding: "9px 18px", borderRadius: 8, border: `1px solid ${c.red}40`, background: c.redDim, color: c.red, cursor: "pointer", fontFamily: "inherit", fontWeight: 700 }}>Delete Account</button>
-        ) : (
-          <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
-            <span style={{ fontSize: 11, color: c.red, fontWeight: 600 }}>Are you sure?</span>
-            <button onClick={() => { setDeleteConfirm(false); toast("Account deletion requested — confirmation email sent.", "warning"); }} style={{ fontSize: 11, padding: "9px 18px", borderRadius: 8, border: "none", background: c.red, color: "#fff", cursor: "pointer", fontFamily: "inherit", fontWeight: 700 }}>Yes, Delete Everything</button>
-            <button onClick={() => setDeleteConfirm(false)} style={{ fontSize: 11, padding: "9px 18px", borderRadius: 8, border: `1px solid ${c.border}`, background: "transparent", color: c.textSec, cursor: "pointer", fontFamily: "inherit", fontWeight: 600 }}>Cancel</button>
+      )}
+
+      {activeTab === "billing" && (
+        <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, padding: 22, boxShadow: c.cardGlow }}>
+          <div style={{ fontSize: 14, fontWeight: 700, color: c.text, marginBottom: 14 }}>Billing & Subscription</div>
+          <div style={{ display: "flex", gap: 12, marginBottom: 16 }}>
+            <div style={{ flex: 1, padding: 14, borderRadius: 10, background: c.accentDim, border: `1px solid ${c.accent}20` }}>
+              <div style={{ fontSize: 10, color: c.accent, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 4 }}>Current Plan</div>
+              <div style={{ fontSize: 18, fontWeight: 800, color: c.text }}>Growth</div>
+              <div style={{ fontSize: 11, color: c.textDim, marginTop: 2 }}>$1,799/mo · Annual billing</div>
+            </div>
+            <div style={{ flex: 1, padding: 14, borderRadius: 10, background: c.greenDim, border: `1px solid ${c.green}20` }}>
+              <div style={{ fontSize: 10, color: c.green, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 4 }}>Next Invoice</div>
+              <div style={{ fontSize: 18, fontWeight: 800, color: c.text }}>$17,988</div>
+              <div style={{ fontSize: 11, color: c.textDim, marginTop: 2 }}>January 15, 2026</div>
+            </div>
           </div>
-        )}
-      </div>
+          <div style={{ fontSize: 12, color: c.textDim, marginBottom: 14 }}>Payment: Visa ending 4242 · Billing contact: finance@acme.io</div>
+          <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+            {["Manage Subscription", "View Invoices", "Update Payment Method"].map(label => (
+              <button key={label} style={{ fontSize: 11, padding: "9px 18px", borderRadius: 8, border: `1px solid ${c.border}`, background: "transparent", color: c.textSec, cursor: "pointer", fontFamily: "inherit", fontWeight: 600, transition: "all 0.15s" }}
+                onMouseEnter={e => { e.currentTarget.style.borderColor = c.accent; e.currentTarget.style.color = c.accent; }}
+                onMouseLeave={e => { e.currentTarget.style.borderColor = c.border; e.currentTarget.style.color = c.textSec; }}
+                onClick={() => toast(`${label} — opens Stripe portal`, "success")}
+              >{label}</button>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {activeTab === "security" && (
+        <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, padding: 22, boxShadow: c.cardGlow }}>
+          <div style={{ fontSize: 14, fontWeight: 700, color: c.text, marginBottom: 14 }}>Security & Access</div>
+          {[{ label: "Two-Factor Authentication", value: "Enabled (TOTP)", status: "green" }, { label: "Last Password Change", value: "42 days ago", status: "amber" }, { label: "Active Sessions", value: "2 devices", status: "accent" }, { label: "API Keys", value: "1 active (created Mar 2)", status: "accent" }, { label: "Audit Log", value: "312 events this month", status: "accent" }].map(f => (
+            <div key={f.label} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "11px 0", borderBottom: `1px solid ${c.borderSub}`, fontSize: 12 }}>
+              <span style={{ color: c.textDim }}>{f.label}</span>
+              <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                <span style={{ width: 6, height: 6, borderRadius: "50%", background: c[f.status] }} />
+                <span style={{ color: c.text, fontWeight: 600 }}>{f.value}</span>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {activeTab === "session" && (<>
+        {/* Sign Out */}
+        <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, padding: 22, boxShadow: c.cardGlow, marginBottom: 16 }}>
+          <div style={{ fontSize: 14, fontWeight: 700, color: c.text, marginBottom: 6 }}>Active Session</div>
+          <div style={{ fontSize: 11, color: c.textDim, marginBottom: 14 }}>Signed in as <span style={{ color: c.text, fontWeight: 600 }}>sarah.chen@acme.io</span> · VP Finance</div>
+          <div style={{ display: "flex", gap: 8, marginBottom: 12 }}>
+            {[{ label: "Device", value: "MacBook Pro" }, { label: "Browser", value: "Chrome 122" }, { label: "Location", value: "San Francisco, CA" }, { label: "IP", value: "192.168.1.***" }].map(d => (
+              <div key={d.label} style={{ flex: 1, padding: "8px 10px", borderRadius: 6, background: c.surfaceAlt, fontSize: 10 }}>
+                <div style={{ color: c.textFaint, marginBottom: 2 }}>{d.label}</div>
+                <div style={{ color: c.text, fontWeight: 600 }}>{d.value}</div>
+              </div>
+            ))}
+          </div>
+          <button onClick={onLogout} style={{ fontSize: 11, padding: "9px 18px", borderRadius: 8, border: `1px solid ${c.amber}40`, background: c.amberDim, color: c.amber, cursor: "pointer", fontFamily: "inherit", fontWeight: 700, display: "flex", alignItems: "center", gap: 6 }}>
+            <LogOut size={13} /> Sign Out of This Device
+          </button>
+        </div>
+        {/* Delete Account */}
+        <div style={{ background: c.surface, border: `1px solid ${c.red}30`, borderRadius: 14, padding: 22, boxShadow: c.cardGlow }}>
+          <div style={{ fontSize: 14, fontWeight: 700, color: c.red, marginBottom: 6 }}>Delete Account</div>
+          <div style={{ fontSize: 12, color: c.textDim, lineHeight: 1.7, marginBottom: 14 }}>Permanently delete your organization, all users, financial data, integrations, and AI conversation history. This action is irreversible and takes effect within 24 hours.</div>
+          {!deleteConfirm ? (
+            <button onClick={() => setDeleteConfirm(true)} style={{ fontSize: 11, padding: "9px 18px", borderRadius: 8, border: `1px solid ${c.red}40`, background: c.redDim, color: c.red, cursor: "pointer", fontFamily: "inherit", fontWeight: 700 }}>Delete Account</button>
+          ) : (
+            <div>
+              <div style={{ fontSize: 11, color: c.red, fontWeight: 600, marginBottom: 8 }}>Type "DELETE ACME SAAS CORP" to confirm:</div>
+              <input value={deleteText} onChange={e => setDeleteText(e.target.value)} placeholder="DELETE ACME SAAS CORP" style={{
+                width: "100%", fontSize: 12, padding: "9px 14px", borderRadius: 8, border: `1px solid ${c.red}40`,
+                background: c.bg2, color: c.text, fontFamily: "'JetBrains Mono', monospace", outline: "none", marginBottom: 10,
+              }} />
+              <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+                <button disabled={deleteText !== "DELETE ACME SAAS CORP"} onClick={() => { setDeleteConfirm(false); setDeleteText(""); toast("Account deletion scheduled. Confirmation email sent.", "warning"); }} style={{ fontSize: 11, padding: "9px 18px", borderRadius: 8, border: "none", background: deleteText === "DELETE ACME SAAS CORP" ? c.red : c.textFaint, color: "#fff", cursor: deleteText === "DELETE ACME SAAS CORP" ? "pointer" : "not-allowed", fontFamily: "inherit", fontWeight: 700, opacity: deleteText === "DELETE ACME SAAS CORP" ? 1 : 0.4 }}>Permanently Delete</button>
+                <button onClick={() => { setDeleteConfirm(false); setDeleteText(""); }} style={{ fontSize: 11, padding: "9px 18px", borderRadius: 8, border: `1px solid ${c.border}`, background: "transparent", color: c.textSec, cursor: "pointer", fontFamily: "inherit", fontWeight: 600 }}>Cancel</button>
+              </div>
+            </div>
+          )}
+        </div>
+      </>)}
     </div>
   );
 };
@@ -1831,7 +2019,10 @@ const LandingPage = ({ onLogin }) => {
         </div>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 16 }}>
           {plans.map(p => (
-            <div key={p.name} style={{ background: "#131316", border: `1px solid ${p.popular ? "#60a5fa" : "#23232a"}`, borderRadius: 14, padding: 28, position: "relative", boxShadow: p.popular ? "0 0 0 1px rgba(96,165,250,0.15), 0 8px 30px rgba(96,165,250,0.08)" : "none" }}>
+            <div key={p.name} style={{ background: "#131316", border: `1px solid ${p.popular ? "#60a5fa" : "#23232a"}`, borderRadius: 14, padding: 28, position: "relative", boxShadow: p.popular ? "0 0 0 1px rgba(96,165,250,0.15), 0 8px 30px rgba(96,165,250,0.08)" : "none", transition: "all 0.25s cubic-bezier(0.22,1,0.36,1)" }}
+              onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-4px)"; e.currentTarget.style.boxShadow = p.popular ? "0 0 0 1px rgba(96,165,250,0.25), 0 16px 48px rgba(96,165,250,0.15)" : "0 12px 40px rgba(0,0,0,0.3)"; e.currentTarget.style.borderColor = p.popular ? "#60a5fa" : "#33384a"; }}
+              onMouseLeave={e => { e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = p.popular ? "0 0 0 1px rgba(96,165,250,0.15), 0 8px 30px rgba(96,165,250,0.08)" : "none"; e.currentTarget.style.borderColor = p.popular ? "#60a5fa" : "#23232a"; }}
+            >
               {p.popular && <div style={{ position: "absolute", top: -10, left: "50%", transform: "translateX(-50%)", padding: "4px 12px", borderRadius: 6, background: "linear-gradient(135deg, #60a5fa, #a78bfa)", fontSize: 10, fontWeight: 700, color: "#fff" }}>MOST POPULAR</div>}
               <div style={{ fontSize: 18, fontWeight: 700, marginBottom: 4 }}>{p.name}</div>
               <div style={{ display: "flex", alignItems: "baseline", gap: 4, marginBottom: 16 }}>
@@ -2264,6 +2455,9 @@ export default function FinanceOS() {
           <div style={{ position: "absolute", bottom: "-15%", left: "-5%", width: "50%", height: "50%", borderRadius: "50%", background: `radial-gradient(circle, ${c.purple}${mode === "dark" ? "06" : "03"} 0%, transparent 70%)`, filter: "blur(80px)", transition: "background 0.6s ease" }} />
         </div>
 
+        {/* Demo data banner — ENV 7 */}
+        <DemoBanner c={c} />
+
         {/* Topbar — frosted glass */}
         <div className="theme-transition" style={{
           height: 56, borderBottom: `1px solid ${c.border}`, display: "flex", alignItems: "center",
@@ -2339,7 +2533,7 @@ export default function FinanceOS() {
           {view === "models" && <ScenariosView c={c} />}
           {view === "close" && <CloseView c={c} toast={toast} />}
           {view === "integrations" && <IntegrationsView c={c} toast={toast} />}
-          {view === "settings" && <SettingsView c={c} onLogout={handleLogout} toast={toast} />}
+          {view === "settings" && <SettingsView c={c} onLogout={handleLogout} toast={toast} mode={mode} />}
           </>)}
         </div>
       </div>
@@ -2348,6 +2542,9 @@ export default function FinanceOS() {
       {drawerKpi && <DetailDrawer kpi={drawerKpi} c={c} onClose={() => setDrawerKpi(null)} />}
       {cmdOpen && <CommandPalette c={c} onSelect={handleCmd} onClose={() => setCmdOpen(false)} />}
       <ToastContainer toasts={toasts} c={c} />
+      {/* ENV 5: Desktop Platform */}
+      <OfflineIndicator c={c} />
+      <PWAInstallPrompt c={c} />
     </div>
   );
 }
