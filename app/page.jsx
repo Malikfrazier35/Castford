@@ -1208,16 +1208,19 @@ const CopilotView = ({ c, toast }) => {
       </div>
 
       {/* Input */}
-      <div style={{ padding: "14px 24px", borderTop: `1px solid ${c.border}`, display: "flex", gap: 10, background: `${c.bg2}cc`, backdropFilter: "blur(8px)" }}>
-        <input value={input} onChange={e => setInput(e.target.value)} onKeyDown={e => e.key === "Enter" && send()}
-          placeholder="Ask about forecasts, variance, scenarios..."
-          style={{
-            flex: 1, padding: "12px 16px", borderRadius: 10, border: `1px solid ${c.border}`, background: c.surface,
-            color: c.text, fontSize: 13, outline: "none", fontFamily: "inherit", transition: "border-color 0.15s, box-shadow 0.15s",
-          }}
-          onFocus={e => { e.target.style.borderColor = c.accent; e.target.style.boxShadow = `0 0 0 3px ${c.accent}15`; }}
-          onBlur={e => { e.target.style.borderColor = c.border; e.target.style.boxShadow = "none"; }}
-        />
+      <div style={{ padding: "14px 24px", borderTop: `1px solid ${c.border}`, display: "flex", gap: 10, alignItems: "center", background: `${c.bg2}cc`, backdropFilter: "blur(8px)" }}>
+        <div style={{ flex: 1, position: "relative" }}>
+          <input value={input} onChange={e => setInput(e.target.value)} onKeyDown={e => e.key === "Enter" && send()}
+            placeholder="Ask about forecasts, variance, scenarios..."
+            style={{
+              width: "100%", padding: "12px 16px", paddingRight: 60, borderRadius: 10, border: `1px solid ${c.border}`, background: c.surface,
+              color: c.text, fontSize: 13, outline: "none", fontFamily: "inherit", transition: "border-color 0.15s, box-shadow 0.15s",
+            }}
+            onFocus={e => { e.target.style.borderColor = c.accent; e.target.style.boxShadow = `0 0 0 3px ${c.accent}15`; }}
+            onBlur={e => { e.target.style.borderColor = c.border; e.target.style.boxShadow = "none"; }}
+          />
+          {input.trim() && <kbd style={{ position: "absolute", right: 12, top: "50%", transform: "translateY(-50%)", fontSize: 9, padding: "2px 6px", borderRadius: 4, background: c.bg2, border: `1px solid ${c.borderSub}`, color: c.textFaint }}>↵ Enter</kbd>}
+        </div>
         <button onClick={send} style={{
           background: `linear-gradient(135deg, ${c.accent}, ${c.purple})`, border: "none", borderRadius: 10, padding: "12px 20px", color: "#fff",
           fontWeight: 700, fontSize: 13, cursor: "pointer", display: "flex", alignItems: "center", gap: 6, fontFamily: "inherit",
@@ -1618,14 +1621,14 @@ const ConsolidationView = ({ c, onNav, toast }) => {
 // CLOSE TASKS VIEW
 // ══════════════════════════════════════════════════════════════
 const CLOSE_TASKS = [
-  { id: 1, task: "Reconcile bank accounts (3 accounts)", owner: "Sarah Chen", status: "done", due: "Mar 3" },
-  { id: 2, task: "Review accrued expenses > $10K", owner: "Mike Rodriguez", status: "done", due: "Mar 4" },
-  { id: 3, task: "Post depreciation entries", owner: "Sarah Chen", status: "progress", due: "Mar 5" },
-  { id: 4, task: "Intercompany eliminations review", owner: "David Park", status: "progress", due: "Mar 5" },
-  { id: 5, task: "Revenue recognition — ASC 606 review", owner: "Sarah Chen", status: "progress", due: "Mar 6" },
-  { id: 6, task: "Finalize headcount report", owner: "Talent Ops", status: "notstarted", due: "Mar 7" },
-  { id: 7, task: "Close sub-ledgers (AP/AR/FA)", owner: "Mike Rodriguez", status: "notstarted", due: "Mar 7" },
-  { id: 8, task: "Management review sign-off", owner: "CFO", status: "notstarted", due: "Mar 8" },
+  { id: 1, task: "Reconcile bank accounts (3 accounts)", owner: "Sarah Chen", status: "done", due: "Mar 3", priority: "high", cat: "Accounting" },
+  { id: 2, task: "Review accrued expenses > $10K", owner: "Mike Rodriguez", status: "done", due: "Mar 4", priority: "high", cat: "Accounting" },
+  { id: 3, task: "Post depreciation entries", owner: "Sarah Chen", status: "progress", due: "Mar 5", priority: "med", cat: "Accounting" },
+  { id: 4, task: "Intercompany eliminations review", owner: "David Park", status: "progress", due: "Mar 5", priority: "high", cat: "Consolidation" },
+  { id: 5, task: "Revenue recognition — ASC 606 review", owner: "Sarah Chen", status: "progress", due: "Mar 6", priority: "high", cat: "Compliance" },
+  { id: 6, task: "Finalize headcount report", owner: "Talent Ops", status: "notstarted", due: "Mar 7", priority: "low", cat: "Reporting" },
+  { id: 7, task: "Close sub-ledgers (AP/AR/FA)", owner: "Mike Rodriguez", status: "notstarted", due: "Mar 7", priority: "high", cat: "Accounting" },
+  { id: 8, task: "Management review sign-off", owner: "CFO", status: "notstarted", due: "Mar 8", priority: "med", cat: "Review" },
 ];
 
 const CloseView = ({ c, toast }) => {
@@ -1672,31 +1675,40 @@ const CloseView = ({ c, toast }) => {
 
       {/* Task list */}
       <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, overflow: "hidden" }}>
-        {tasks.map((t, i) => (
+        {tasks.map((t, i) => {
+          const priorityColors = { high: c.red, med: c.amber, low: c.textFaint };
+          return (
           <div key={t.id} style={{
-            display: "flex", alignItems: "center", gap: 12, padding: "12px 18px",
+            display: "flex", alignItems: "center", gap: 12, padding: "14px 18px",
             borderBottom: i < tasks.length - 1 ? `1px solid ${c.borderSub}` : "none",
-            opacity: t.status === "done" ? 0.55 : 1, cursor: t.status !== "done" ? "pointer" : "default",
-            transition: "opacity 0.3s, background 0.15s",
+            opacity: t.status === "done" ? 0.5 : 1, cursor: t.status !== "done" ? "pointer" : "default",
+            transition: "all 0.2s", borderLeft: `3px solid ${t.status === "done" ? c.green : priorityColors[t.priority] || c.accent}`,
           }}
           onClick={() => t.status !== "done" && complete(t.id)}
-          onMouseEnter={e => { if (t.status !== "done") e.currentTarget.style.background = c.accentDim; }}
-          onMouseLeave={e => e.currentTarget.style.background = "transparent"}
+          onMouseEnter={e => { if (t.status !== "done") { e.currentTarget.style.background = c.accentDim; e.currentTarget.style.transform = "translateX(2px)"; }}}
+          onMouseLeave={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.transform = "none"; }}
           >
             <div style={{
-              width: 20, height: 20, borderRadius: 6, border: `2px solid ${t.status === "done" ? c.green : c.border}`,
+              width: 22, height: 22, borderRadius: 7, border: `2px solid ${t.status === "done" ? c.green : c.border}`,
               background: t.status === "done" ? c.green : "transparent", display: "flex", alignItems: "center", justifyContent: "center",
-              flexShrink: 0, transition: "all 0.2s",
+              flexShrink: 0, transition: "all 0.25s cubic-bezier(0.22,1,0.36,1)",
             }}>
               {t.status === "done" && <Check size={12} color="#fff" strokeWidth={3} />}
             </div>
             <div style={{ flex: 1, minWidth: 0 }}>
-              <div style={{ fontSize: 12.5, fontWeight: 600, color: c.text, textDecoration: t.status === "done" ? "line-through" : "none" }}>{t.task}</div>
-              <div style={{ fontSize: 10, color: c.textDim, marginTop: 2 }}>{t.owner} · Due {t.due}</div>
+              <div style={{ fontSize: 13, fontWeight: 600, color: c.text, textDecoration: t.status === "done" ? "line-through" : "none", marginBottom: 3 }}>{t.task}</div>
+              <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 10, color: c.textDim }}>
+                <span>{t.owner}</span>
+                <span style={{ width: 3, height: 3, borderRadius: "50%", background: c.textFaint }} />
+                <span>Due {t.due}</span>
+                <span style={{ padding: "1px 6px", borderRadius: 3, background: `${priorityColors[t.priority]}12`, color: priorityColors[t.priority], fontWeight: 700, fontSize: 8, textTransform: "uppercase", letterSpacing: "0.04em" }}>{t.priority}</span>
+                <span style={{ padding: "1px 6px", borderRadius: 3, background: c.surfaceAlt, color: c.textFaint, fontWeight: 600, fontSize: 8 }}>{t.cat}</span>
+              </div>
             </div>
-            <span style={{ fontSize: 9, fontWeight: 700, padding: "3px 8px", borderRadius: 4, background: `${statusColor[t.status]}15`, color: statusColor[t.status] }}>{statusLabel[t.status]}</span>
+            <span style={{ fontSize: 9, fontWeight: 700, padding: "4px 10px", borderRadius: 6, background: `${statusColor[t.status]}15`, color: statusColor[t.status], border: `1px solid ${statusColor[t.status]}20` }}>{statusLabel[t.status]}</span>
           </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );
@@ -1843,6 +1855,23 @@ const InvestorView = ({ c, toast }) => (
         <button onClick={() => { downloadCSV("financeos-investor-metrics.csv", ["Metric","Value","Benchmark","Notes"], [["ARR","$48.6M","+24% YoY",""],["NDR","118%",">110%","Best-in-class"],["Rule of 40","52.1","Growth 47.8% + Margin 4.3%",""],["Burn Multiple","0.8x","<1.0x","Efficient"],["Gross Margin","84.7%","70-80%","SaaS benchmark"],["CAC Payback","14 mo","<18 months",""],["LTV/CAC","4.2x",">3.0x","Healthy"],["Cash Runway","34 mo","$12.8M cash",""]]); toast("Investor metrics exported as CSV", "success"); }} style={{ fontSize: 11, padding: "8px 14px", borderRadius: 8, border: `1px solid ${c.border}`, background: "transparent", color: c.textSec, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }}>Export CSV</button>
         <button onClick={() => { window.print(); toast("Use Save as PDF in the print dialog", "info"); }} style={{ fontSize: 11, padding: "8px 14px", borderRadius: 8, border: "none", background: c.accent, color: "#fff", fontWeight: 700, cursor: "pointer", fontFamily: "inherit" }}>Export PDF</button>
       </div>
+    </div>
+
+    {/* Benchmark Scorecard */}
+    <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, padding: "16px 22px", marginBottom: 20, boxShadow: c.cardGlow, display: "flex", alignItems: "center", gap: 20 }}>
+      <div style={{ fontSize: 12, fontWeight: 700, color: c.text, whiteSpace: "nowrap" }}>Series A Readiness</div>
+      <div style={{ flex: 1, display: "flex", gap: 4 }}>
+        {[
+          { label: "ARR", pass: true }, { label: "NDR", pass: true }, { label: "Rule of 40", pass: true },
+          { label: "Burn", pass: true }, { label: "Margin", pass: true }, { label: "CAC", pass: true },
+          { label: "LTV/CAC", pass: true }, { label: "Runway", pass: true },
+        ].map(b => (
+          <div key={b.label} style={{ flex: 1, height: 6, borderRadius: 3, background: b.pass ? c.green : c.red, opacity: 0.7, transition: "opacity 0.15s" }}
+            title={`${b.label}: ${b.pass ? "Above benchmark" : "Below benchmark"}`}
+          />
+        ))}
+      </div>
+      <div style={{ fontSize: 11, fontWeight: 800, color: c.green, fontFamily: "'JetBrains Mono', monospace" }}>8/8 ✓</div>
     </div>
 
     {/* Fundraising KPIs */}
