@@ -3582,7 +3582,7 @@ export default function FinanceOS() {
         </div>
 
         {/* Demo data banner — ENV 7 */}
-        <DemoBanner c={c} onNav={navigate} />
+        {user.plan === "demo" && <DemoBanner c={c} onNav={navigate} />}
 
         {/* Topbar — frosted glass */}
         <div className="theme-transition" style={{
