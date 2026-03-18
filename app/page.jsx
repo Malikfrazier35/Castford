@@ -868,6 +868,7 @@ const DashboardView = ({ c, onNav, toast, onDrawer, userName }) => {
   const displayName = userName && userName !== "Guest" ? userName.split(" ")[0] : null;
   const [chartPeriod, setChartPeriod] = useState("YTD");
   const chartData = chartPeriod === "QTD" ? REVENUE_DATA.slice(-6) : chartPeriod === "12M" ? REVENUE_DATA : REVENUE_DATA;
+  const isMobile = useMediaQuery("(max-width: 768px)");
 
   return (
   <div style={{ padding: 32 }}>
@@ -888,12 +889,12 @@ const DashboardView = ({ c, onNav, toast, onDrawer, userName }) => {
     <QuickActions c={c} onNav={onNav} toast={toast} />
 
     {/* KPI Grid — ENV 10: Premium hover glow */}
-    <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 16, marginBottom: 24 }}>
+    <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr 1fr" : "repeat(3, 1fr)", gap: isMobile ? 10 : 16, marginBottom: 24 }}>
       {KPIS.map((k, i) => <KpiCard key={k.label} kpi={k} c={c} onClick={() => onDrawer(k.label)} index={i} />)}
     </div>
 
     {/* Charts Row */}
-    <div style={{ display: "grid", gridTemplateColumns: "1.6fr 1fr", gap: 16, marginBottom: 24 }}>
+    <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1.6fr 1fr", gap: 16, marginBottom: 24 }}>
       {/* Revenue Chart */}
       <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, padding: 22, boxShadow: c.cardGlow, position: "relative", overflow: "hidden" }}>
         <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 1, background: `linear-gradient(90deg, transparent, ${c.border}, transparent)` }} />
@@ -3414,7 +3415,7 @@ const LandingPage = ({ onLogin }) => {
           ))}
         </div>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", paddingTop: 20, borderTop: "1px solid #1b1b20", fontSize: 11, color: "#33384a" }}>
-          <span>© 2026 Vaultline, Inc. · All rights reserved</span>
+          <span>© {new Date().getFullYear()} Vaultline, Inc. · All rights reserved</span>
           <span>Built with care in New Hampshire</span>
         </div>
       </div>
@@ -3449,6 +3450,15 @@ export default function FinanceOS() {
   const isTablet = useMediaQuery("(max-width: 1024px)");
   const [showOnboarding, setShowOnboarding] = useState(false);
   const { toasts, toast } = useToast();
+
+  // Close dropdowns when clicking outside
+  useEffect(() => {
+    const handleClickOutside = () => { setPeriodOpen(false); setNotifOpen(false); };
+    if (periodOpen || notifOpen) {
+      const timer = setTimeout(() => document.addEventListener("click", handleClickOutside, { once: true }), 0);
+      return () => { clearTimeout(timer); document.removeEventListener("click", handleClickOutside); };
+    }
+  }, [periodOpen, notifOpen]);
 
   // Listen for Supabase auth state changes (handles OAuth redirects)
   useEffect(() => {
