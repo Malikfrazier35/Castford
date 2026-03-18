@@ -857,28 +857,29 @@ const KpiCard = ({ kpi, c, onClick, index = 0 }) => {
 // ── INSIGHT ROW ──────────────────────────────────────────────
 const InsightRow = ({ item, c, onClick }) => {
   const sev = INSIGHT_SEVERITY[item.severity] || {};
+  const sevColor = c[sev.color] || c.accent;
   return (
     <div onClick={onClick} style={{
-      display: "flex", gap: 12, alignItems: "flex-start", padding: "11px 14px",
-      background: c.surfaceAlt, border: `1px solid ${c.borderSub}`, borderRadius: 10,
-      cursor: "pointer", transition: "all 0.15s", marginBottom: 8,
+      display: "flex", gap: 12, alignItems: "flex-start", padding: "12px 16px",
+      background: c.surfaceAlt, border: `1px solid ${c.borderSub}`, borderRadius: 12,
+      cursor: "pointer", transition: "all 0.2s cubic-bezier(0.22,1,0.36,1)", marginBottom: 8,
       borderLeft: `3px solid ${item.color}`, boxShadow: c.shadow1,
-      position: "relative",
+      position: "relative", overflow: "hidden",
     }}
-    onMouseEnter={e => { e.currentTarget.style.borderColor = c.accent; e.currentTarget.style.borderLeftColor = item.color; e.currentTarget.style.boxShadow = c.shadow2; e.currentTarget.style.transform = "translateX(2px)"; }}
+    onMouseEnter={e => { e.currentTarget.style.borderColor = `${c.accent}40`; e.currentTarget.style.borderLeftColor = item.color; e.currentTarget.style.boxShadow = c.shadow2; e.currentTarget.style.transform = "translateX(3px)"; }}
     onMouseLeave={e => { e.currentTarget.style.borderColor = c.borderSub; e.currentTarget.style.boxShadow = c.shadow1; e.currentTarget.style.transform = "none"; }}
     >
       <div style={{ flex: 1, minWidth: 0 }}>
         <div style={{ fontSize: 12.5, color: c.text, lineHeight: 1.55, fontWeight: 500 }}>{item.text}</div>
-        <div style={{ fontSize: 10, color: c.textDim, marginTop: 3, display: "flex", alignItems: "center", gap: 6, flexWrap: "wrap" }}>
+        <div style={{ fontSize: 10, color: c.textDim, marginTop: 4, display: "flex", alignItems: "center", gap: 6, flexWrap: "wrap" }}>
           <span style={{ fontWeight: 600 }}>{item.source}</span>
           <span style={{ width: 3, height: 3, borderRadius: "50%", background: c.textFaint, display: "inline-block" }} />
           <span>{item.time} ago</span>
-          {item.severity && <span style={{ fontSize: 8, fontWeight: 800, padding: "1px 5px", borderRadius: 3, background: `${c[sev.color]}15`, color: c[sev.color], letterSpacing: "0.04em" }}>{sev.label}</span>}
-          {item.action && <span style={{ fontSize: 9, color: c.accent, fontWeight: 600 }}>{item.action}</span>}
+          {item.severity && <span style={{ fontSize: 8, fontWeight: 800, padding: "2px 7px", borderRadius: 4, background: `${sevColor}12`, color: sevColor, letterSpacing: "0.04em", border: `1px solid ${sevColor}10` }}>{sev.label}</span>}
+          {item.action && <span style={{ fontSize: 9, color: c.accent, fontWeight: 700, background: `${c.accent}08`, padding: "1px 6px", borderRadius: 3 }}>{item.action}</span>}
         </div>
       </div>
-      <ChevronRight size={14} color={c.textFaint} style={{ flexShrink: 0, marginTop: 2 }} />
+      <ChevronRight size={14} color={c.textFaint} style={{ flexShrink: 0, marginTop: 4, transition: "transform 0.15s" }} />
     </div>
   );
 };
@@ -899,12 +900,25 @@ const DashboardView = ({ c, onNav, toast, onDrawer, userName }) => {
     {/* Welcome header */}
     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 24 }}>
       <div>
-        <div style={{ fontSize: 22, fontWeight: 800, color: c.text, letterSpacing: "-0.02em" }}>Good {new Date().getHours() < 12 ? "morning" : new Date().getHours() < 17 ? "afternoon" : "evening"}{displayName ? `, ${displayName}` : ""}</div>
-        <div style={{ fontSize: 13, color: c.textDim, marginTop: 4 }}>Revenue is ahead by $2.09M · Rule of 40 at 52.1 · 4 variances need attention</div>
+        <div style={{ fontSize: 10, fontWeight: 700, color: c.textFaint, textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 6 }}>
+          {new Date().toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric" })}
+        </div>
+        <div style={{ fontSize: 24, fontWeight: 800, color: c.text, letterSpacing: "-0.03em", lineHeight: 1.2 }}>Good {new Date().getHours() < 12 ? "morning" : new Date().getHours() < 17 ? "afternoon" : "evening"}{displayName ? `, ${displayName}` : ""}</div>
+        <div style={{ fontSize: 12, color: c.textDim, marginTop: 6, display: "flex", alignItems: "center", gap: 6, flexWrap: "wrap" }}>
+          <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}><span style={{ width: 6, height: 6, borderRadius: "50%", background: c.green, display: "inline-block", animation: "pulse 2s infinite" }} />Revenue ahead by $2.09M</span>
+          <span style={{ color: c.textFaint }}>·</span>
+          <span>Rule of 40 at 52.1</span>
+          <span style={{ color: c.textFaint }}>·</span>
+          <span style={{ color: c.amber, fontWeight: 600 }}>4 variances need attention</span>
+        </div>
       </div>
-      <div style={{ display: "flex", gap: 8 }}>
-        <div style={{ padding: "8px 14px", borderRadius: 8, background: c.surfaceAlt, border: `1px solid ${c.border}`, fontSize: 11, color: c.textSec, fontWeight: 600, cursor: "pointer", display: "flex", alignItems: "center", gap: 6 }} onClick={() => onNav("copilot")}>
-          <Sparkles size={13} color={c.purple} /> Ask AI
+      <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+        <div style={{ padding: "8px 16px", borderRadius: 10, background: `linear-gradient(135deg, ${c.purple}10, ${c.accent}06)`, border: `1px solid ${c.purple}18`, fontSize: 11, color: c.purple, fontWeight: 700, cursor: "pointer", display: "flex", alignItems: "center", gap: 6, transition: "all 0.2s" }}
+          onClick={() => onNav("copilot")}
+          onMouseEnter={e => { e.currentTarget.style.borderColor = `${c.purple}40`; e.currentTarget.style.transform = "translateY(-1px)"; }}
+          onMouseLeave={e => { e.currentTarget.style.borderColor = `${c.purple}18`; e.currentTarget.style.transform = "none"; }}
+        >
+          <Sparkles size={13} /> Ask AI
         </div>
       </div>
     </div>
@@ -1195,12 +1209,14 @@ const CopilotView = ({ c, toast }) => {
     <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
       {/* View Header */}
       <div style={{ padding: "20px 24px 0", display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
-        <div>
-          <div style={{ fontSize: 18, fontWeight: 800, color: c.text, letterSpacing: "-0.02em", marginBottom: 4, display: "flex", alignItems: "center", gap: 8 }}>
-            <div style={{ width: 24, height: 24, borderRadius: 7, background: c.purpleDim, display: "flex", alignItems: "center", justifyContent: "center" }}><Sparkles size={13} color={c.purple} /></div>
-            AI Copilot
+        <div style={{ display: "flex", alignItems: "flex-start", gap: 12 }}>
+          <div style={{ width: 32, height: 32, borderRadius: 10, background: `linear-gradient(135deg, ${c.purple}20, ${c.accent}10)`, border: `1px solid ${c.purple}12`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, marginTop: 2 }}>
+            <Sparkles size={15} color={c.purple} />
           </div>
-          <div style={{ fontSize: 12, color: c.textDim }}>Ask anything about your financials · Visible reasoning · Cited sources</div>
+          <div>
+            <div style={{ fontSize: 20, fontWeight: 800, color: c.text, letterSpacing: "-0.03em" }}>AI Copilot</div>
+            <div style={{ fontSize: 12, color: c.textDim, marginTop: 2 }}>Ask anything about your financials · Visible reasoning · Cited sources</div>
+          </div>
         </div>
         <div style={{ fontSize: 10, padding: "5px 10px", borderRadius: 6, background: c.greenDim, color: c.green, fontWeight: 700, border: `1px solid ${c.green}20` }}>● Online</div>
       </div>
@@ -1218,44 +1234,48 @@ const CopilotView = ({ c, toast }) => {
       </div>
 
       {/* Messages */}
-      <div style={{ flex: 1, overflow: "auto", padding: "20px 24px", display: "flex", flexDirection: "column", gap: 14 }}>
+      <div style={{ flex: 1, overflow: "auto", padding: "20px 24px", display: "flex", flexDirection: "column", gap: 16 }}>
         {messages.map((m, i) => (
-          <div key={i} style={{
-            alignSelf: m.role === "user" ? "flex-end" : "flex-start", maxWidth: "82%",
-            padding: m.role === "user" ? "12px 18px" : "16px 20px",
-            borderRadius: m.role === "user" ? "16px 16px 4px 16px" : "16px 16px 16px 4px",
-            background: m.role === "user" ? c.accentMid : `${c.surface}dd`,
-            border: `1px solid ${m.role === "user" ? c.accent + "40" : c.border}`,
-            boxShadow: m.role === "user" ? "none" : c.shadow1,
-            backdropFilter: m.role === "assistant" ? "blur(8px)" : "none",
-            fontSize: 13, lineHeight: 1.75, color: c.text, whiteSpace: "pre-wrap",
-          }}>
-            {m.role === "assistant" && <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 10, fontSize: 10, color: c.purple, fontWeight: 700, letterSpacing: "0.02em" }}>
-              <div style={{ width: 18, height: 18, borderRadius: 5, background: c.purpleDim, display: "flex", alignItems: "center", justifyContent: "center" }}>
-                <Sparkles size={10} color={c.purple} />
-              </div>
-              FinanceOS Copilot
-            </div>}
-            {m.content.split("\n").map((line, j) => {
-              if (line.startsWith("**") && line.endsWith("**")) return <div key={j} style={{ fontWeight: 700, color: c.text, marginTop: 8, marginBottom: 2, fontSize: 13.5 }}>{line.replace(/\*\*/g, "")}</div>;
-              if (line.match(/^\*\*.*\*\*$/)) return <div key={j} style={{ fontWeight: 700, color: c.text, marginTop: 8, marginBottom: 2 }}>{line.replace(/\*\*/g, "")}</div>;
-              if (line.startsWith("• ")) return <div key={j} style={{ paddingLeft: 14, color: c.textSec, position: "relative", marginBottom: 2 }}><span style={{ position: "absolute", left: 0, color: c.accent }}>•</span>{line.slice(2)}</div>;
-              return <div key={j}>{line || <br />}</div>;
-            })}
+          <div key={i} style={{ display: "flex", gap: 10, alignSelf: m.role === "user" ? "flex-end" : "flex-start", maxWidth: "82%", flexDirection: m.role === "user" ? "row-reverse" : "row" }}>
+            {/* Avatar */}
+            <div style={{ width: 28, height: 28, borderRadius: 8, flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", marginTop: 2, background: m.role === "user" ? `linear-gradient(135deg, ${c.green}, ${c.cyan})` : `linear-gradient(135deg, ${c.purple}25, ${c.accent}15)`, border: m.role === "user" ? "none" : `1px solid ${c.purple}15`, fontSize: 10, fontWeight: 800, color: m.role === "user" ? "#fff" : c.purple }}>
+              {m.role === "user" ? "Y" : <Sparkles size={12} />}
+            </div>
+            <div style={{
+              padding: m.role === "user" ? "12px 18px" : "16px 20px",
+              borderRadius: m.role === "user" ? "14px 14px 4px 14px" : "14px 14px 14px 4px",
+              background: m.role === "user" ? c.accentMid : c.surface,
+              border: `1px solid ${m.role === "user" ? c.accent + "30" : c.border}`,
+              boxShadow: m.role === "user" ? "none" : c.shadow1,
+              fontSize: 13, lineHeight: 1.75, color: c.text, whiteSpace: "pre-wrap", flex: 1,
+            }}>
+              {m.role === "assistant" && <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 10, fontSize: 10, color: c.purple, fontWeight: 700, letterSpacing: "0.02em" }}>
+                FinanceOS Copilot
+                <span style={{ fontSize: 8, padding: "1px 5px", borderRadius: 3, background: c.greenDim, color: c.green, fontWeight: 800 }}>AI</span>
+              </div>}
+              {m.content.split("\n").map((line, j) => {
+                if (line.startsWith("**") && line.endsWith("**")) return <div key={j} style={{ fontWeight: 700, color: c.text, marginTop: 8, marginBottom: 2, fontSize: 13.5 }}>{line.replace(/\*\*/g, "")}</div>;
+                if (line.match(/^\*\*.*\*\*$/)) return <div key={j} style={{ fontWeight: 700, color: c.text, marginTop: 8, marginBottom: 2 }}>{line.replace(/\*\*/g, "")}</div>;
+                if (line.startsWith("• ")) return <div key={j} style={{ paddingLeft: 14, color: c.textSec, position: "relative", marginBottom: 2 }}><span style={{ position: "absolute", left: 0, color: c.accent }}>•</span>{line.slice(2)}</div>;
+                return <div key={j}>{line || <br />}</div>;
+              })}
+            </div>
           </div>
         ))}
         {thinking && (
-          <div style={{
-            alignSelf: "flex-start", padding: "14px 20px", borderRadius: "16px 16px 16px 4px",
-            background: `${c.surface}dd`, border: `1px solid ${c.border}`, boxShadow: c.shadow1,
-            backdropFilter: "blur(8px)", display: "flex", alignItems: "center", gap: 10,
-          }}>
-            <div style={{ width: 18, height: 18, borderRadius: 5, background: c.purpleDim, display: "flex", alignItems: "center", justifyContent: "center" }}>
-              <Sparkles size={10} color={c.purple} />
+          <div style={{ display: "flex", gap: 10, alignSelf: "flex-start", maxWidth: "82%" }}>
+            <div style={{ width: 28, height: 28, borderRadius: 8, flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", marginTop: 2, background: `linear-gradient(135deg, ${c.purple}25, ${c.accent}15)`, border: `1px solid ${c.purple}15` }}>
+              <Sparkles size={12} color={c.purple} />
             </div>
-            <span style={{ fontSize: 12, color: c.textDim }}>Analyzing financials...</span>
-            <div style={{ display: "flex", gap: 3 }}>
-              {[0, 1, 2].map(i => <div key={i} style={{ width: 5, height: 5, borderRadius: "50%", background: c.purple, opacity: 0.5, animation: `pulse 1.2s ease-in-out ${i * 0.2}s infinite` }} />)}
+            <div style={{
+              padding: "14px 20px", borderRadius: "14px 14px 14px 4px",
+              background: c.surface, border: `1px solid ${c.border}`, boxShadow: c.shadow1,
+              display: "flex", alignItems: "center", gap: 10,
+            }}>
+              <span style={{ fontSize: 12, color: c.textDim }}>Analyzing financials</span>
+              <div style={{ display: "flex", gap: 4 }}>
+                {[0, 1, 2].map(i => <div key={i} style={{ width: 5, height: 5, borderRadius: "50%", background: c.purple, animation: `pulse 1.2s ease-in-out ${i * 0.2}s infinite` }} />)}
+              </div>
             </div>
           </div>
         )}
@@ -1324,9 +1344,14 @@ const PnlView = ({ c, onNav, toast }) => {
   return (
     <div style={{ padding: 32, overflow: "auto" }}>
       {/* View Header */}
-      <div style={{ marginBottom: 20 }}>
-        <div style={{ fontSize: 18, fontWeight: 800, color: c.text, letterSpacing: "-0.02em", marginBottom: 4 }}>P&L Statement</div>
-        <div style={{ fontSize: 12, color: c.textDim, marginBottom: 16 }}>FY2025 YTD · Click any variance to ask AI Copilot for root cause analysis</div>
+      <div style={{ marginBottom: 20, display: "flex", alignItems: "flex-start", gap: 14 }}>
+        <div style={{ width: 36, height: 36, borderRadius: 10, background: `linear-gradient(135deg, ${c.accent}15, ${c.green}08)`, border: `1px solid ${c.accent}10`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, marginTop: 2 }}>
+          <FileText size={17} color={c.accent} />
+        </div>
+        <div>
+          <div style={{ fontSize: 20, fontWeight: 800, color: c.text, letterSpacing: "-0.03em" }}>P&L Statement</div>
+          <div style={{ fontSize: 12, color: c.textDim, marginTop: 2 }}>FY2025 YTD · Click any variance to ask AI Copilot for root cause analysis</div>
+        </div>
       </div>
       <ExportBar c={c} title=""
         onCSV={() => { const rows = PNL_DATA.flatMap(s => [...s.rows.map(r => [s.section, r.name, r.actual, r.budget, r.actual - r.budget, r.note || ""]), [s.section, s.total.name, s.total.actual, s.total.budget, s.total.actual - s.total.budget, ""]]); downloadCSV("financeos-pnl-fy2025.csv", ["Section","Line Item","Actual ($K)","Budget ($K)","Variance ($K)","Notes"], rows); toast("P&L exported as CSV", "success"); }}
@@ -1462,9 +1487,14 @@ const ForecastView = ({ c }) => {
     <div style={{ padding: 32 }}>
       {/* View Header */}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 20 }}>
-        <div>
-          <div style={{ fontSize: 18, fontWeight: 800, color: c.text, letterSpacing: "-0.02em", marginBottom: 4 }}>Forecast Optimizer</div>
-          <div style={{ fontSize: 12, color: c.textDim }}>ML ensemble with live sensitivity sliders · MAPE {retrained ? "2.9%" : "3.2%"} · 14 drivers</div>
+        <div style={{ display: "flex", alignItems: "flex-start", gap: 14 }}>
+          <div style={{ width: 36, height: 36, borderRadius: 10, background: `linear-gradient(135deg, ${c.green}15, ${c.purple}08)`, border: `1px solid ${c.green}10`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, marginTop: 2 }}>
+            <Brain size={17} color={c.green} />
+          </div>
+          <div>
+            <div style={{ fontSize: 20, fontWeight: 800, color: c.text, letterSpacing: "-0.03em" }}>Forecast Optimizer</div>
+            <div style={{ fontSize: 12, color: c.textDim, marginTop: 2 }}>ML ensemble with live sensitivity sliders · MAPE {retrained ? "2.9%" : "3.2%"} · 14 drivers</div>
+          </div>
         </div>
         <button onClick={handleRetrain} disabled={retraining} style={{
           fontSize: 11, fontWeight: 700, padding: "8px 16px", borderRadius: 8, border: "none", cursor: retraining ? "wait" : "pointer", fontFamily: "inherit",
@@ -1620,9 +1650,14 @@ const ConsolidationView = ({ c, onNav, toast }) => {
     <div style={{ padding: 32 }}>
       {/* View Header */}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 24 }}>
-        <div>
-          <div style={{ fontSize: 18, fontWeight: 800, color: c.text, letterSpacing: "-0.02em", marginBottom: 4 }}>Multi-Entity Consolidation</div>
-          <div style={{ fontSize: 12, color: c.textDim }}>{ENTITIES.length} entities · Auto IC elimination · {ENTITIES.filter(e => (entityStatus[e.name] || e.status) === "Closed").length} closed · FX: Real-time</div>
+        <div style={{ display: "flex", alignItems: "flex-start", gap: 14 }}>
+          <div style={{ width: 36, height: 36, borderRadius: 10, background: `linear-gradient(135deg, ${c.cyan}15, ${c.accent}08)`, border: `1px solid ${c.cyan}10`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, marginTop: 2 }}>
+            <Layers size={17} color={c.cyan} />
+          </div>
+          <div>
+            <div style={{ fontSize: 20, fontWeight: 800, color: c.text, letterSpacing: "-0.03em" }}>Multi-Entity Consolidation</div>
+            <div style={{ fontSize: 12, color: c.textDim, marginTop: 2 }}>{ENTITIES.length} entities · Auto IC elimination · {ENTITIES.filter(e => (entityStatus[e.name] || e.status) === "Closed").length} closed · FX: Real-time</div>
+          </div>
         </div>
         <button onClick={() => { ENTITIES.forEach(e => { if ((entityStatus[e.name] || e.status) !== "Closed") approve(e.name); }); }} style={{ fontSize: 11, padding: "8px 16px", borderRadius: 8, border: "none", background: c.green, color: "#fff", fontWeight: 700, cursor: "pointer", fontFamily: "inherit" }}>Close All Pending</button>
       </div>
@@ -1733,9 +1768,14 @@ const CloseView = ({ c, toast }) => {
     <div style={{ padding: 32 }}>
       {/* View Header */}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 24 }}>
-        <div>
-          <div style={{ fontSize: 18, fontWeight: 800, color: c.text, letterSpacing: "-0.02em", marginBottom: 4 }}>Month-End Close</div>
-          <div style={{ fontSize: 12, color: c.textDim }}>February close · {tasks.length - doneCount} tasks remaining · Est. {Math.max(0, (tasks.length - doneCount) * 0.5).toFixed(1)}h to complete</div>
+        <div style={{ display: "flex", alignItems: "flex-start", gap: 14 }}>
+          <div style={{ width: 36, height: 36, borderRadius: 10, background: `linear-gradient(135deg, ${c.amber}15, ${c.green}08)`, border: `1px solid ${c.amber}10`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, marginTop: 2 }}>
+            <CheckSquare size={17} color={c.amber} />
+          </div>
+          <div>
+            <div style={{ fontSize: 20, fontWeight: 800, color: c.text, letterSpacing: "-0.03em" }}>Month-End Close</div>
+            <div style={{ fontSize: 12, color: c.textDim, marginTop: 2 }}>February close · {tasks.length - doneCount} tasks remaining · Est. {Math.max(0, (tasks.length - doneCount) * 0.5).toFixed(1)}h to complete</div>
+          </div>
         </div>
         <div style={{ display: "flex", gap: 8 }}>
           {Object.entries(statusLabel).map(([key, label]) => {
@@ -1876,9 +1916,14 @@ const IntegrationsView = ({ c, toast }) => {
     <div style={{ padding: 32 }}>
       {/* Header */}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 24 }}>
-        <div>
-          <div style={{ fontSize: 18, fontWeight: 800, color: c.text, letterSpacing: "-0.02em", marginBottom: 4 }}>Integrations</div>
-          <div style={{ fontSize: 12, color: c.textDim }}>Connect your stack. Bi-directional sync with real-time freshness indicators.</div>
+        <div style={{ display: "flex", alignItems: "flex-start", gap: 14 }}>
+          <div style={{ width: 36, height: 36, borderRadius: 10, background: `linear-gradient(135deg, ${c.accent}15, ${c.cyan}08)`, border: `1px solid ${c.accent}10`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, marginTop: 2 }}>
+            <Plug size={17} color={c.accent} />
+          </div>
+          <div>
+            <div style={{ fontSize: 20, fontWeight: 800, color: c.text, letterSpacing: "-0.03em" }}>Integrations</div>
+            <div style={{ fontSize: 12, color: c.textDim, marginTop: 2 }}>Connect your stack · Bi-directional sync · Real-time freshness</div>
+          </div>
         </div>
         <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search integrations..."
           style={{ fontSize: 12, padding: "8px 14px", borderRadius: 8, border: `1px solid ${c.border}`, background: c.surfaceAlt, color: c.text, fontFamily: "inherit", outline: "none", width: 200 }}
@@ -2026,9 +2071,14 @@ const InvestorView = ({ c, toast }) => (
   <div style={{ padding: 32 }}>
     {/* View Header */}
     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 20 }}>
-      <div>
-        <div style={{ fontSize: 18, fontWeight: 800, color: c.text, letterSpacing: "-0.02em", marginBottom: 4 }}>Investor Metrics</div>
-        <div style={{ fontSize: 12, color: c.textDim }}>Series A readiness scorecard · 8 SaaS benchmarks · Board-ready exports</div>
+      <div style={{ display: "flex", alignItems: "flex-start", gap: 14 }}>
+        <div style={{ width: 36, height: 36, borderRadius: 10, background: `linear-gradient(135deg, ${c.green}15, ${c.accent}08)`, border: `1px solid ${c.green}10`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, marginTop: 2 }}>
+          <TrendingUp size={17} color={c.green} />
+        </div>
+        <div>
+          <div style={{ fontSize: 20, fontWeight: 800, color: c.text, letterSpacing: "-0.03em" }}>Investor Metrics</div>
+          <div style={{ fontSize: 12, color: c.textDim, marginTop: 2 }}>Series A readiness scorecard · 8 SaaS benchmarks · Board-ready exports</div>
+        </div>
       </div>
       <div style={{ display: "flex", gap: 8 }}>
         <button onClick={() => { downloadCSV("financeos-investor-metrics.csv", ["Metric","Value","Benchmark","Notes"], [["ARR","$48.6M","+24% YoY",""],["NDR","118%",">110%","Best-in-class"],["Rule of 40","52.1","Growth 47.8% + Margin 4.3%",""],["Burn Multiple","0.8x","<1.0x","Efficient"],["Gross Margin","84.7%","70-80%","SaaS benchmark"],["CAC Payback","14 mo","<18 months",""],["LTV/CAC","4.2x",">3.0x","Healthy"],["Cash Runway","34 mo","$12.8M cash",""]]); toast("Investor metrics exported as CSV", "success"); }} style={{ fontSize: 11, padding: "8px 14px", borderRadius: 8, border: `1px solid ${c.border}`, background: "transparent", color: c.textSec, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }}>Export CSV</button>
@@ -2199,9 +2249,14 @@ const AdminView = ({ c, toast, onNav }) => {
     <div style={{ padding: 32 }}>
       {/* View Header */}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 20 }}>
-        <div>
-          <div style={{ fontSize: 18, fontWeight: 800, color: c.text, letterSpacing: "-0.02em", marginBottom: 4 }}>Admin Console</div>
-          <div style={{ fontSize: 12, color: c.textDim }}>{users.length} users · {users.filter(u => u.status === "active").length} active · {events.length} events today</div>
+        <div style={{ display: "flex", alignItems: "flex-start", gap: 14 }}>
+          <div style={{ width: 36, height: 36, borderRadius: 10, background: `linear-gradient(135deg, ${c.amber}15, ${c.red}08)`, border: `1px solid ${c.amber}10`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, marginTop: 2 }}>
+            <Shield size={17} color={c.amber} />
+          </div>
+          <div>
+            <div style={{ fontSize: 20, fontWeight: 800, color: c.text, letterSpacing: "-0.03em" }}>Admin Console</div>
+            <div style={{ fontSize: 12, color: c.textDim, marginTop: 2 }}>{users.length} users · {users.filter(u => u.status === "active").length} active · {events.length} events today</div>
+          </div>
         </div>
         <button onClick={() => setInviteOpen(true)} style={{ fontSize: 11, padding: "8px 16px", borderRadius: 8, border: "none", background: c.accent, color: "#fff", fontWeight: 700, cursor: "pointer", fontFamily: "inherit" }}>+ Invite User</button>
       </div>
@@ -2454,9 +2509,14 @@ const ScenariosView = ({ c, toast }) => {
     <div style={{ padding: 32 }}>
       {/* Header */}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 24 }}>
-        <div>
-          <div style={{ fontSize: 18, fontWeight: 800, color: c.text, letterSpacing: "-0.02em", marginBottom: 4 }}>Scenario Modeling</div>
-          <div style={{ fontSize: 12, color: c.textDim }}>{scenarios.length} scenarios · Drag sliders to model assumptions in real-time</div>
+        <div style={{ display: "flex", alignItems: "flex-start", gap: 14 }}>
+          <div style={{ width: 36, height: 36, borderRadius: 10, background: `linear-gradient(135deg, ${c.purple}15, ${c.accent}08)`, border: `1px solid ${c.purple}10`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, marginTop: 2 }}>
+            <GitBranch size={17} color={c.purple} />
+          </div>
+          <div>
+            <div style={{ fontSize: 20, fontWeight: 800, color: c.text, letterSpacing: "-0.03em" }}>Scenario Modeling</div>
+            <div style={{ fontSize: 12, color: c.textDim, marginTop: 2 }}>{scenarios.length} scenarios · Drag sliders to model assumptions in real-time</div>
+          </div>
         </div>
         <div style={{ display: "flex", gap: 8 }}>
           <button onClick={() => setShowCompare(!showCompare)} style={{ fontSize: 11, padding: "8px 16px", borderRadius: 8, border: `1px solid ${showCompare ? c.accent : c.border}`, background: showCompare ? c.accentDim : "transparent", color: showCompare ? c.accent : c.textSec, fontWeight: 700, cursor: "pointer", fontFamily: "inherit" }}>Compare</button>
@@ -2577,9 +2637,14 @@ const SettingsView = ({ c, onLogout, toast, mode }) => {
   return (
     <div style={{ padding: 32, maxWidth: 720 }}>
       {/* View Header */}
-      <div style={{ marginBottom: 20 }}>
-        <div style={{ fontSize: 18, fontWeight: 800, color: c.text, letterSpacing: "-0.02em", marginBottom: 4 }}>Settings</div>
-        <div style={{ fontSize: 12, color: c.textDim }}>Manage your account, billing, notifications, and preferences</div>
+      <div style={{ marginBottom: 20, display: "flex", alignItems: "flex-start", gap: 14 }}>
+        <div style={{ width: 36, height: 36, borderRadius: 10, background: `linear-gradient(135deg, ${c.textDim}15, ${c.accent}06)`, border: `1px solid ${c.textDim}10`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, marginTop: 2 }}>
+          <Settings size={17} color={c.textDim} />
+        </div>
+        <div>
+          <div style={{ fontSize: 20, fontWeight: 800, color: c.text, letterSpacing: "-0.03em" }}>Settings</div>
+          <div style={{ fontSize: 12, color: c.textDim, marginTop: 2 }}>Manage your account, billing, notifications, and preferences</div>
+        </div>
       </div>
       {/* Tab bar */}
       <div style={{ display: "flex", gap: 4, marginBottom: 20, background: c.surfaceAlt, borderRadius: 10, padding: 3, border: `1px solid ${c.borderSub}` }}>
