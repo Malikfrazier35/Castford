@@ -34,7 +34,7 @@ export default function Error({ error, reset }) {
         }}>Clear Cache &amp; Reload</button>
       </div>
       <p style={{ fontSize: 11, color: "#33384a", maxWidth: 400, textAlign: "center", lineHeight: 1.5, margin: 0 }}>
-        If this keeps happening, clear your browser cache or try an incognito window. Contact support at support@financeos.com.
+        If this keeps happening, clear your browser cache or try an incognito window. Contact support at support@finance-os.app.
       </p>
     </div>
   );
