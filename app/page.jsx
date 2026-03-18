@@ -2745,7 +2745,7 @@ const CookieConsent = ({ c }) => {
         </div>
       )}
       <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
-        <button onClick={() => accept("all")} style={{ fontSize: 12, padding: "9px 18px", borderRadius: 8, border: "none", background: "linear-gradient(135deg, #60a5fa, #a78bfa)", color: "#fff", fontWeight: 700, cursor: "pointer", fontFamily: "inherit" }}>Accept All</button>
+        <button onClick={() => accept("all")} style={{ fontSize: 12, padding: "9px 18px", borderRadius: 8, border: "none", background: `linear-gradient(135deg, ${c?.accent || "#5b9cf5"}, ${c?.purple || "#a181f7"})`, color: "#fff", fontWeight: 700, cursor: "pointer", fontFamily: "inherit" }}>Accept All</button>
         <button onClick={() => accept("essential")} style={{ fontSize: 12, padding: "9px 18px", borderRadius: 8, border: `1px solid ${c?.border || "#23232a"}`, background: "transparent", color: c?.textSec || "#9ca3b0", fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }}>Essential Only</button>
         <button onClick={() => setPrefs(!prefs)} style={{ fontSize: 11, padding: "9px 12px", borderRadius: 8, border: "none", background: "transparent", color: c?.textDim || "#6b7280", fontWeight: 500, cursor: "pointer", fontFamily: "inherit" }}>{prefs ? "Hide" : "Manage"}</button>
         <a href="#" style={{ marginLeft: "auto", fontSize: 10, color: c?.textFaint || "#44495a" }}>Privacy Policy</a>
@@ -3859,7 +3859,6 @@ const LandingPage = ({ onLogin }) => {
       </div>
 
       {/* Auth Modal */}
-      {/* Auth Modal */}
       {authModal && <AuthModal mode={authModal} onAuth={handleAuth} onClose={() => setAuthModal(null)} />}
 
       {/* Privacy Pipeline — Cookie Consent */}
@@ -4295,7 +4294,7 @@ export default function FinanceOS() {
             <div style={{ position: "relative" }}>
               <div style={{
                 width: 30, height: 30, borderRadius: 10, display: "flex", alignItems: "center", justifyContent: "center",
-                background: "linear-gradient(135deg, #10b981, #22d3ee)", fontSize: 10, fontWeight: 800, color: "#fff",
+                background: `linear-gradient(135deg, ${c.green}, ${c.cyan})`, fontSize: 10, fontWeight: 800, color: "#fff",
                 boxShadow: mode === "dark" ? "0 2px 8px rgba(16,185,129,0.3)" : "0 2px 8px rgba(4,120,87,0.2)",
               }}>{(user.name || "G").split(" ").map(w => w[0]).join("").slice(0,2).toUpperCase() || "G"}</div>
               <div style={{ position: "absolute", bottom: -1, right: -1, width: 8, height: 8, borderRadius: "50%", background: c.green, border: `2px solid ${c.bg}` }} />
@@ -4308,7 +4307,7 @@ export default function FinanceOS() {
           </div>
           ) : (
           <div style={{ textAlign: "center", marginTop: 4 }} onClick={() => navigate("settings")} title={`${user.name || "Guest"} · Settings`}>
-            <div style={{ width: 30, height: 30, borderRadius: 10, display: "inline-flex", alignItems: "center", justifyContent: "center", background: "linear-gradient(135deg, #10b981, #22d3ee)", fontSize: 10, fontWeight: 800, color: "#fff", cursor: "pointer" }}>{(user.name || "G").split(" ").map(w => w[0]).join("").slice(0,2).toUpperCase() || "G"}</div>
+            <div style={{ width: 30, height: 30, borderRadius: 10, display: "inline-flex", alignItems: "center", justifyContent: "center", background: `linear-gradient(135deg, ${c.green}, ${c.cyan})`, fontSize: 10, fontWeight: 800, color: "#fff", cursor: "pointer" }}>{(user.name || "G").split(" ").map(w => w[0]).join("").slice(0,2).toUpperCase() || "G"}</div>
           </div>
           )}
           {/* Logout */}
