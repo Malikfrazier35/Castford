@@ -624,6 +624,7 @@ const FeatureTooltip = ({ text, c, children }) => {
 // ══════════════════════════════════════════════════════════════
 const usePreferences = (key, defaultVal) => {
   const [value, setValue] = useState(() => {
+    if (typeof window === "undefined") return defaultVal;
     try { const stored = localStorage.getItem(`fos_${key}`); return stored ? JSON.parse(stored) : defaultVal; }
     catch { return defaultVal; }
   });
@@ -1826,8 +1827,16 @@ const SettingsView = ({ c, onLogout, toast, mode }) => {
 // PIPELINE 2: PRIVACY — Cookie Consent + GDPR/CCPA
 // ══════════════════════════════════════════════════════════════
 const CookieConsent = ({ c }) => {
-  const [visible, setVisible] = useState(true);
+  const [visible, setVisible] = useState(() => {
+    if (typeof window === "undefined") return false;
+    try { return localStorage.getItem("fos_cookie_consent") !== "accepted"; }
+    catch { return true; }
+  });
   const [prefs, setPrefs] = useState(false);
+  const accept = (level) => {
+    setVisible(false);
+    try { localStorage.setItem("fos_cookie_consent", "accepted"); localStorage.setItem("fos_cookie_level", level); } catch {}
+  };
   if (!visible) return null;
   return (
     <div style={{
@@ -1861,8 +1870,8 @@ const CookieConsent = ({ c }) => {
         </div>
       )}
       <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
-        <button onClick={() => setVisible(false)} style={{ fontSize: 12, padding: "9px 18px", borderRadius: 8, border: "none", background: "linear-gradient(135deg, #60a5fa, #a78bfa)", color: "#fff", fontWeight: 700, cursor: "pointer", fontFamily: "inherit" }}>Accept All</button>
-        <button onClick={() => { setVisible(false); }} style={{ fontSize: 12, padding: "9px 18px", borderRadius: 8, border: `1px solid ${c?.border || "#23232a"}`, background: "transparent", color: c?.textSec || "#9ca3b0", fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }}>Essential Only</button>
+        <button onClick={() => accept("all")} style={{ fontSize: 12, padding: "9px 18px", borderRadius: 8, border: "none", background: "linear-gradient(135deg, #60a5fa, #a78bfa)", color: "#fff", fontWeight: 700, cursor: "pointer", fontFamily: "inherit" }}>Accept All</button>
+        <button onClick={() => accept("essential")} style={{ fontSize: 12, padding: "9px 18px", borderRadius: 8, border: `1px solid ${c?.border || "#23232a"}`, background: "transparent", color: c?.textSec || "#9ca3b0", fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }}>Essential Only</button>
         <button onClick={() => setPrefs(!prefs)} style={{ fontSize: 11, padding: "9px 12px", borderRadius: 8, border: "none", background: "transparent", color: c?.textDim || "#6b7280", fontWeight: 500, cursor: "pointer", fontFamily: "inherit" }}>{prefs ? "Hide" : "Manage"}</button>
         <a href="#" style={{ marginLeft: "auto", fontSize: 10, color: c?.textFaint || "#44495a" }}>Privacy Policy</a>
       </div>
@@ -2041,7 +2050,7 @@ const LandingPage = ({ onLogin }) => {
                   flex: 1, fontSize: 12, padding: "11px 0", borderRadius: 8, border: `1px solid #23232a`, cursor: "pointer", fontFamily: "inherit", fontWeight: 600,
                   background: "transparent", color: "#9ca3b0",
                 }}>Try Demo</button>
-                <button onClick={() => window.open(billing === "annual" ? p.linkAnnual : p.linkMonthly, "_blank")} style={{
+                <button onClick={() => { try { window.open(billing === "annual" ? p.linkAnnual : p.linkMonthly, "_blank"); } catch {} }} style={{
                   flex: 2, fontSize: 12, padding: "11px 0", borderRadius: 8, border: "none", cursor: "pointer", fontFamily: "inherit", fontWeight: 700,
                   background: p.popular ? "linear-gradient(135deg, #60a5fa, #a78bfa)" : "#23232a", color: "#fff",
                 }}>Subscribe</button>
@@ -2212,6 +2221,7 @@ export default function FinanceOS() {
 
   // View loading state — shows skeleton on view switch
   const [viewLoading, setViewLoading] = useState(false);
+  const loadingTimer = useRef(null);
 
   // Show marketing page when not logged in
   if (!loggedIn) {
@@ -2223,9 +2233,12 @@ export default function FinanceOS() {
     if (v === view) return;
     setPrevView(view);
     setViewLoading(true);
-    setTimeout(() => {
+    // Clear any pending timer to prevent race conditions
+    if (loadingTimer.current) clearTimeout(loadingTimer.current);
+    loadingTimer.current = setTimeout(() => {
       setView(v);
       setViewLoading(false);
+      loadingTimer.current = null;
     }, 280);
     setNavHistory(prev => {
       const next = [...prev];
