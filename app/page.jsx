@@ -46,25 +46,25 @@ const THEME = {
     sidebarBg: "linear-gradient(180deg, #0b0c10 0%, #070810 100%)",
   },
   light: {
-    bg: "#f4f5f8", bg2: "#eaecf2", surface: "#ffffff", surfaceAlt: "#f0f1f5",
-    border: "#d4d8e1", borderSub: "#e2e5ec", borderBright: "#c0c5d1",
+    bg: "#f3f4f8", bg2: "#e8eaf1", surface: "#ffffff", surfaceAlt: "#eef0f5",
+    border: "#cdd2de", borderSub: "#dde1ea", borderBright: "#b5bccb",
     text: "#0a0d15", textSec: "#3a4259", textDim: "#576175", textFaint: "#8792a8",
-    accent: "#1d6ec1", accentDim: "rgba(29,110,193,0.05)", accentMid: "rgba(29,110,193,0.10)",
-    green: "#0d9467", greenDim: "rgba(13,148,103,0.05)",
-    red: "#c93131", redDim: "rgba(201,49,49,0.05)",
-    amber: "#c27a0e", amberDim: "rgba(194,122,14,0.05)",
-    purple: "#7341d4", purpleDim: "rgba(115,65,212,0.05)",
+    accent: "#1d6ec1", accentDim: "rgba(29,110,193,0.09)", accentMid: "rgba(29,110,193,0.15)",
+    green: "#0d9467", greenDim: "rgba(13,148,103,0.09)",
+    red: "#c93131", redDim: "rgba(201,49,49,0.09)",
+    amber: "#c27a0e", amberDim: "rgba(194,122,14,0.09)",
+    purple: "#7341d4", purpleDim: "rgba(115,65,212,0.09)",
     cyan: "#0a7f8c",
     // Chart colors — punchy but not neon
     chart1: "#1d6ec1", chart2: "#0d9467", chart3: "#7341d4", chart4: "#c27a0e", chart5: "#c93131", chart6: "#0a7f8c",
-    chartGrid: "#e8eaf0", chartAxis: "#8792a8",
-    // Depth system — crisp, elevated
-    shadow1: "0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04)",
-    shadow2: "0 4px 16px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.04)",
-    shadow3: "0 12px 40px rgba(0,0,0,0.12), 0 4px 12px rgba(0,0,0,0.06)",
-    cardGlow: "0 1px 4px rgba(0,0,0,0.05), 0 0 0 1px rgba(0,0,0,0.04)",
-    cardHoverGlow: "0 8px 32px rgba(29,110,193,0.08), 0 0 0 1px rgba(29,110,193,0.10), 0 4px 16px rgba(0,0,0,0.07)",
-    sidebarBg: "linear-gradient(180deg, #eaecf2 0%, #dfe1e9 100%)",
+    chartGrid: "#e2e5ed", chartAxis: "#8792a8",
+    // Depth system — crisp, elevated, with inset highlights
+    shadow1: "0 1px 3px rgba(0,0,0,0.07), 0 1px 2px rgba(0,0,0,0.05)",
+    shadow2: "0 4px 16px rgba(0,0,0,0.09), 0 2px 4px rgba(0,0,0,0.05)",
+    shadow3: "0 12px 40px rgba(0,0,0,0.14), 0 4px 12px rgba(0,0,0,0.07)",
+    cardGlow: "0 1px 4px rgba(0,0,0,0.06), 0 0 0 1px rgba(0,0,0,0.05), inset 0 1px 0 rgba(255,255,255,0.7)",
+    cardHoverGlow: "0 8px 32px rgba(29,110,193,0.10), 0 0 0 1px rgba(29,110,193,0.14), 0 4px 16px rgba(0,0,0,0.08), inset 0 1px 0 rgba(255,255,255,0.7)",
+    sidebarBg: "linear-gradient(180deg, #e8eaf1 0%, #dde0e8 100%)",
   },
 };
 
@@ -3082,11 +3082,13 @@ const OnboardingWizard = ({ c, userName, onComplete }) => {
   );
 };
 
-const PlanPicker = ({ userName, onSkip, onSelect, isDemo }) => {
+const PlanPicker = ({ c, userName, onSkip, onSelect, isDemo }) => {
   const [billing, setBilling] = useState("annual");
   const [hoveredPlan, setHoveredPlan] = useState(null);
-  const [checkoutPending, setCheckoutPending] = useState(null); // plan name if checkout in progress
+  const [checkoutPending, setCheckoutPending] = useState(null);
   const annualSavings = { Starter: 1200, Growth: 3600, Business: 9600 };
+  // Theme helper — uses dashboard theme if available, falls back to dark
+  const t = { bg: c?.surface || "#111318", bg2: c?.bg2 || "#0b0c10", alt: c?.surfaceAlt || "#181b22", bdr: c?.border || "#1e2230", bdrSub: c?.borderSub || "#171b25", bdrBright: c?.borderBright || "#2a2f3d", tx: c?.text || "#eef0f6", txD: c?.textDim || "#636d84", txF: c?.textFaint || "#3d4558", txS: c?.textSec || "#9ea5b8", ac: c?.accent || "#5b9cf5", pu: c?.purple || "#a181f7", gn: c?.green || "#3dd9a0", rd: c?.red || "#f06b6b" };
 
   const features = [
     { name: "Entities", values: ["3", "10", "Unlimited"] },
@@ -3102,21 +3104,20 @@ const PlanPicker = ({ userName, onSkip, onSelect, isDemo }) => {
   ];
 
   return (
-    <div style={{ position: "fixed", inset: 0, zIndex: 10000, background: "rgba(0,0,0,0.7)", backdropFilter: "blur(12px)", display: "flex", alignItems: "center", justifyContent: "center", animation: "fadeIn 0.2s" }}>
-      <div style={{ width: 800, maxHeight: "94vh", overflow: "auto", background: "#111114", border: "1px solid #23232a", borderRadius: 20, boxShadow: "0 24px 80px rgba(0,0,0,0.5)", animation: "cmdIn 0.25s cubic-bezier(0.22,1,0.36,1)" }}>
+    <div style={{ position: "fixed", inset: 0, zIndex: 10000, background: "rgba(0,0,0,0.6)", backdropFilter: "blur(12px)", display: "flex", alignItems: "center", justifyContent: "center", animation: "fadeIn 0.2s" }}>
+      <div style={{ width: 800, maxHeight: "94vh", overflow: "auto", background: t.bg, border: `1px solid ${t.bdr}`, borderRadius: 20, boxShadow: "0 24px 80px rgba(0,0,0,0.4)", animation: "cmdIn 0.25s cubic-bezier(0.22,1,0.36,1)" }}>
         {/* Header */}
         <div style={{ padding: "32px 40px 0", textAlign: "center" }}>
-          <div style={{ display: "inline-block", padding: "4px 12px", borderRadius: 20, background: "rgba(52,211,153,0.08)", border: "1px solid rgba(52,211,153,0.15)", fontSize: 10, fontWeight: 700, color: "#34d399", marginBottom: 12, letterSpacing: "0.04em" }}>30-DAY MONEY-BACK GUARANTEE</div>
-          <div style={{ fontSize: 24, fontWeight: 800, letterSpacing: "-0.02em", marginBottom: 6 }}>
+          <div style={{ display: "inline-block", padding: "4px 12px", borderRadius: 20, background: `${t.gn}10`, border: `1px solid ${t.gn}18`, fontSize: 10, fontWeight: 700, color: t.gn, marginBottom: 12, letterSpacing: "0.04em" }}>30-DAY MONEY-BACK GUARANTEE</div>
+          <div style={{ fontSize: 24, fontWeight: 800, letterSpacing: "-0.02em", marginBottom: 6, color: t.tx }}>
             {userName && userName !== "Guest" ? `Welcome, ${userName.split(" ")[0]}!` : "Choose your plan"}
           </div>
-          <div style={{ fontSize: 13, color: "#6b7280", marginBottom: 16 }}>All plans include a 14-day free trial. Upgrade, downgrade, or cancel anytime.</div>
-          {/* Billing toggle */}
-          <div style={{ display: "inline-flex", background: "#0c0c0f", borderRadius: 10, padding: 3, border: "1px solid #23232a" }}>
-            <button onClick={() => setBilling("monthly")} style={{ fontSize: 12, padding: "8px 20px", borderRadius: 8, border: "none", background: billing === "monthly" ? "#23232a" : "transparent", color: billing === "monthly" ? "#f0f2f5" : "#6b7280", cursor: "pointer", fontFamily: "inherit", fontWeight: 600, transition: "all 0.15s" }}>Monthly</button>
-            <button onClick={() => setBilling("annual")} style={{ fontSize: 12, padding: "8px 20px", borderRadius: 8, border: "none", background: billing === "annual" ? "#23232a" : "transparent", color: billing === "annual" ? "#f0f2f5" : "#6b7280", cursor: "pointer", fontFamily: "inherit", fontWeight: 600, transition: "all 0.15s", position: "relative" }}>
+          <div style={{ fontSize: 13, color: t.txD, marginBottom: 16 }}>All plans include a 14-day free trial. Upgrade, downgrade, or cancel anytime.</div>
+          <div style={{ display: "inline-flex", background: t.bg2, borderRadius: 10, padding: 3, border: `1px solid ${t.bdr}` }}>
+            <button onClick={() => setBilling("monthly")} style={{ fontSize: 12, padding: "8px 20px", borderRadius: 8, border: "none", background: billing === "monthly" ? t.bdr : "transparent", color: billing === "monthly" ? t.tx : t.txD, cursor: "pointer", fontFamily: "inherit", fontWeight: 600, transition: "all 0.15s" }}>Monthly</button>
+            <button onClick={() => setBilling("annual")} style={{ fontSize: 12, padding: "8px 20px", borderRadius: 8, border: "none", background: billing === "annual" ? t.bdr : "transparent", color: billing === "annual" ? t.tx : t.txD, cursor: "pointer", fontFamily: "inherit", fontWeight: 600, transition: "all 0.15s", position: "relative" }}>
               Annual
-              <span style={{ marginLeft: 6, fontSize: 9, fontWeight: 800, padding: "2px 6px", borderRadius: 4, background: "rgba(52,211,153,0.12)", color: "#34d399" }}>SAVE 17%</span>
+              <span style={{ marginLeft: 6, fontSize: 9, fontWeight: 800, padding: "2px 6px", borderRadius: 4, background: `${t.gn}14`, color: t.gn }}>SAVE 17%</span>
             </button>
           </div>
         </div>
@@ -3128,33 +3129,33 @@ const PlanPicker = ({ userName, onSkip, onSelect, isDemo }) => {
               const isHovered = hoveredPlan === idx;
               return (
               <div key={p.name} onMouseEnter={() => setHoveredPlan(idx)} onMouseLeave={() => setHoveredPlan(null)} style={{
-                background: p.popular ? "linear-gradient(180deg, rgba(96,165,250,0.06) 0%, #0c0c0f 100%)" : "#0c0c0f",
-                border: `1px solid ${p.popular ? "#60a5fa" : isHovered ? "#33384a" : "#1b1b20"}`,
+                background: p.popular ? `linear-gradient(180deg, ${t.ac}08 0%, ${t.bg2} 100%)` : t.bg2,
+                border: `1px solid ${p.popular ? t.ac : isHovered ? t.bdrBright : t.bdrSub}`,
                 borderRadius: 16, padding: "24px 20px", position: "relative", transition: "all 0.25s cubic-bezier(0.22,1,0.36,1)",
                 transform: isHovered ? "translateY(-4px)" : "none",
-                boxShadow: p.popular ? "0 0 0 1px rgba(96,165,250,0.15), 0 8px 30px rgba(96,165,250,0.08)" : isHovered ? "0 12px 40px rgba(0,0,0,0.3)" : "none",
+                boxShadow: p.popular ? `0 0 0 1px ${t.ac}18, 0 8px 30px ${t.ac}10` : isHovered ? "0 12px 40px rgba(0,0,0,0.25)" : "none",
               }}>
-                {p.popular && <div style={{ position: "absolute", top: -10, left: "50%", transform: "translateX(-50%)", padding: "4px 14px", borderRadius: 8, background: "linear-gradient(135deg, #60a5fa, #a78bfa)", fontSize: 9, fontWeight: 800, color: "#fff", letterSpacing: "0.04em" }}>MOST POPULAR</div>}
-                <div style={{ fontSize: 16, fontWeight: 800, marginBottom: 4, color: "#f0f2f5" }}>{p.name}</div>
+                {p.popular && <div style={{ position: "absolute", top: -10, left: "50%", transform: "translateX(-50%)", padding: "4px 14px", borderRadius: 8, background: `linear-gradient(135deg, ${t.ac}, ${t.pu})`, fontSize: 9, fontWeight: 800, color: "#fff", letterSpacing: "0.04em" }}>MOST POPULAR</div>}
+                <div style={{ fontSize: 16, fontWeight: 800, marginBottom: 4, color: t.tx }}>{p.name}</div>
                 <div style={{ display: "flex", alignItems: "baseline", gap: 4, marginBottom: 4 }}>
-                  <span style={{ fontSize: 36, fontWeight: 800, fontFamily: "'JetBrains Mono', monospace", color: "#f0f2f5" }}>{billing === "annual" ? p.annual : p.price}</span>
-                  <span style={{ fontSize: 13, color: "#6b7280" }}>/mo</span>
+                  <span style={{ fontSize: 36, fontWeight: 800, fontFamily: "'JetBrains Mono', monospace", color: t.tx }}>{billing === "annual" ? p.annual : p.price}</span>
+                  <span style={{ fontSize: 13, color: t.txD }}>/mo</span>
                 </div>
                 {billing === "annual" && (
-                  <div style={{ fontSize: 11, color: "#34d399", fontWeight: 600, marginBottom: 10 }}>Save ${annualSavings[p.name]?.toLocaleString()}/year</div>
+                  <div style={{ fontSize: 11, color: t.gn, fontWeight: 600, marginBottom: 10 }}>Save ${annualSavings[p.name]?.toLocaleString()}/year</div>
                 )}
                 {billing === "monthly" && <div style={{ height: 18 }} />}
-                <div style={{ fontSize: 11, color: "#6b7280", lineHeight: 1.6, marginBottom: 16, minHeight: 36 }}>{p.desc}</div>
+                <div style={{ fontSize: 11, color: t.txD, lineHeight: 1.6, marginBottom: 16, minHeight: 36 }}>{p.desc}</div>
                 <button onClick={() => {
                   setCheckoutPending(p.name);
                   try { window.open(billing === "annual" ? p.annualLink : p.monthlyLink, "_blank"); } catch {}
                 }} style={{
                   width: "100%", padding: "12px", borderRadius: 10, border: "none", cursor: "pointer", fontFamily: "inherit", fontSize: 13, fontWeight: 700,
-                  background: p.popular ? "linear-gradient(135deg, #60a5fa, #a78bfa)" : isHovered ? "#33384a" : "#23232a", color: "#fff",
-                  transition: "all 0.2s", boxShadow: p.popular ? "0 4px 16px rgba(96,165,250,0.2)" : "none",
+                  background: p.popular ? `linear-gradient(135deg, ${t.ac}, ${t.pu})` : isHovered ? t.bdrBright : t.bdr, color: "#fff",
+                  transition: "all 0.2s", boxShadow: p.popular ? `0 4px 16px ${t.ac}25` : "none",
                 }}
-                onMouseEnter={e => { if (!p.popular) e.currentTarget.style.background = "#33384a"; }}
-                onMouseLeave={e => { if (!p.popular) e.currentTarget.style.background = "#23232a"; }}
+                onMouseEnter={e => { if (!p.popular) e.currentTarget.style.background = t.bdrBright; }}
+                onMouseLeave={e => { if (!p.popular) e.currentTarget.style.background = t.bdr; }}
                 >Start {p.name} Trial</button>
               </div>
               );
@@ -3165,24 +3166,24 @@ const PlanPicker = ({ userName, onSkip, onSelect, isDemo }) => {
         {/* Checkout confirmation gate */}
         {checkoutPending && (
           <div style={{ padding: "24px 40px", textAlign: "center" }}>
-            <div style={{ background: "linear-gradient(135deg, rgba(96,165,250,0.06), rgba(167,139,250,0.04))", border: "1px solid rgba(96,165,250,0.2)", borderRadius: 16, padding: "32px 28px" }}>
-              <div style={{ width: 48, height: 48, borderRadius: 14, background: "linear-gradient(135deg, #60a5fa, #a78bfa)", display: "inline-flex", alignItems: "center", justifyContent: "center", marginBottom: 16 }}>
+            <div style={{ background: `linear-gradient(135deg, ${t.ac}08, ${t.pu}05)`, border: `1px solid ${t.ac}20`, borderRadius: 16, padding: "32px 28px" }}>
+              <div style={{ width: 48, height: 48, borderRadius: 14, background: `linear-gradient(135deg, ${t.ac}, ${t.pu})`, display: "inline-flex", alignItems: "center", justifyContent: "center", marginBottom: 16 }}>
                 <span style={{ fontSize: 20 }}>💳</span>
               </div>
-              <div style={{ fontSize: 18, fontWeight: 800, color: "#f0f2f5", marginBottom: 6 }}>Complete your {checkoutPending} checkout</div>
-              <div style={{ fontSize: 13, color: "#6b7280", lineHeight: 1.6, marginBottom: 20, maxWidth: 400, margin: "0 auto 20px" }}>
+              <div style={{ fontSize: 18, fontWeight: 800, color: t.tx, marginBottom: 6 }}>Complete your {checkoutPending} checkout</div>
+              <div style={{ fontSize: 13, color: t.txD, lineHeight: 1.6, marginBottom: 20, maxWidth: 400, margin: "0 auto 20px" }}>
                 A Stripe checkout tab has opened. Complete your payment there, then return here to confirm.
               </div>
               <div style={{ display: "flex", gap: 10, justifyContent: "center" }}>
                 <button onClick={() => onSelect(checkoutPending)} style={{
                   fontSize: 14, padding: "12px 28px", borderRadius: 10, border: "none", cursor: "pointer", fontFamily: "inherit", fontWeight: 700,
-                  background: "linear-gradient(135deg, #34d399, #22d3ee)", color: "#fff", boxShadow: "0 4px 16px rgba(52,211,153,0.2)",
+                  background: `linear-gradient(135deg, ${t.gn}, ${t.ac})`, color: "#fff", boxShadow: `0 4px 16px ${t.gn}25`,
                 }}>I've Completed Payment</button>
                 <button onClick={() => setCheckoutPending(null)} style={{
-                  fontSize: 13, padding: "12px 20px", borderRadius: 10, border: "1px solid #23232a", background: "transparent", color: "#6b7280", cursor: "pointer", fontFamily: "inherit", fontWeight: 600,
+                  fontSize: 13, padding: "12px 20px", borderRadius: 10, border: `1px solid ${t.bdr}`, background: "transparent", color: t.txD, cursor: "pointer", fontFamily: "inherit", fontWeight: 600,
                 }}>Go Back</button>
               </div>
-              <div style={{ fontSize: 10, color: "#44495a", marginTop: 14 }}>Your subscription will be verified. If payment is not found, you'll be asked to retry.</div>
+              <div style={{ fontSize: 10, color: t.txF, marginTop: 14 }}>Your subscription will be verified. If payment is not found, you'll be asked to retry.</div>
             </div>
           </div>
         )}
@@ -3190,13 +3191,13 @@ const PlanPicker = ({ userName, onSkip, onSelect, isDemo }) => {
         {/* Feature comparison */}
         {!checkoutPending && (
         <div style={{ padding: "24px 40px 0" }}>
-          <div style={{ fontSize: 11, fontWeight: 700, color: "#44495a", textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 10 }}>Feature Comparison</div>
-          <div style={{ background: "#0c0c0f", border: "1px solid #1b1b20", borderRadius: 12, overflow: "hidden" }}>
+          <div style={{ fontSize: 11, fontWeight: 700, color: t.txF, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 10 }}>Feature Comparison</div>
+          <div style={{ background: t.bg2, border: `1px solid ${t.bdrSub}`, borderRadius: 12, overflow: "hidden" }}>
             {features.map((f, i) => (
-              <div key={f.name} style={{ display: "grid", gridTemplateColumns: "1.2fr 1fr 1fr 1fr", borderBottom: i < features.length - 1 ? "1px solid #1b1b20" : "none", fontSize: 11 }}>
-                <div style={{ padding: "8px 14px", color: "#9ca3b0", fontWeight: 500 }}>{f.name}</div>
+              <div key={f.name} style={{ display: "grid", gridTemplateColumns: "1.2fr 1fr 1fr 1fr", borderBottom: i < features.length - 1 ? `1px solid ${t.bdrSub}` : "none", fontSize: 11 }}>
+                <div style={{ padding: "8px 14px", color: t.txS, fontWeight: 500 }}>{f.name}</div>
                 {f.values.map((v, j) => (
-                  <div key={j} style={{ padding: "8px 14px", textAlign: "center", color: v === true ? "#34d399" : v === false ? "#33384a" : "#f0f2f5", fontWeight: v === true || v === false ? 400 : 600, fontFamily: typeof v === "string" ? "'JetBrains Mono', monospace" : "inherit" }}>
+                  <div key={j} style={{ padding: "8px 14px", textAlign: "center", color: v === true ? t.gn : v === false ? t.txF : t.tx, fontWeight: v === true || v === false ? 400 : 600, fontFamily: typeof v === "string" ? "'JetBrains Mono', monospace" : "inherit" }}>
                     {v === true ? "✓" : v === false ? "—" : v}
                   </div>
                 ))}
@@ -3210,13 +3211,13 @@ const PlanPicker = ({ userName, onSkip, onSelect, isDemo }) => {
         {!checkoutPending && (
         <div style={{ padding: "20px 40px 28px", textAlign: "center" }}>
           {isDemo ? (
-            <button onClick={onSkip} style={{ fontSize: 12, color: "#6b7280", background: "none", border: "none", cursor: "pointer", fontFamily: "inherit", textDecoration: "underline", marginBottom: 12 }}>Continue with demo — explore with sample data</button>
+            <button onClick={onSkip} style={{ fontSize: 12, color: t.txD, background: "none", border: "none", cursor: "pointer", fontFamily: "inherit", textDecoration: "underline", marginBottom: 12 }}>Continue with demo — explore with sample data</button>
           ) : (
-            <div style={{ fontSize: 11, color: "#44495a", marginBottom: 12 }}>All plans include: SOC 2 compliance · AES-256 encryption · 24/7 monitoring · Email support</div>
+            <div style={{ fontSize: 11, color: t.txF, marginBottom: 12 }}>All plans include: SOC 2 compliance · AES-256 encryption · 24/7 monitoring · Email support</div>
           )}
           <div style={{ display: "flex", justifyContent: "center", gap: 20 }}>
             {["2,400+ demo users", "NPS 72", "$840K pipeline"].map(s => (
-              <div key={s} style={{ fontSize: 10, color: "#44495a", fontWeight: 600 }}>{s}</div>
+              <div key={s} style={{ fontSize: 10, color: t.txF, fontWeight: 600 }}>{s}</div>
             ))}
           </div>
         </div>
@@ -4473,7 +4474,7 @@ export default function FinanceOS() {
       <OfflineIndicator c={c} />
       <PWAInstallPrompt c={c} />
       {/* Plan Picker — shows after signup */}
-      {showPlanPicker && <PlanPicker userName={user.name} isDemo={user.plan === "demo"} onSkip={() => setShowPlanPicker(false)} onSelect={(plan) => { setUser(prev => ({ ...prev, plan })); setShowPlanPicker(false); setShowOnboarding(true); }} />}
+      {showPlanPicker && <PlanPicker c={c} userName={user.name} isDemo={user.plan === "demo"} onSkip={() => setShowPlanPicker(false)} onSelect={(plan) => { setUser(prev => ({ ...prev, plan })); setShowPlanPicker(false); setShowOnboarding(true); }} />}
       {showOnboarding && <OnboardingWizard c={c} userName={user.name} onComplete={(org) => { setShowOnboarding(false); toast(`Welcome to FinanceOS${org.name ? ` — ${org.name}` : ""}`, "success"); }} />}
     </div>
   );
