@@ -189,6 +189,7 @@ const CMD_ITEMS = [
   { id: "close", label: "Close Tasks", section: "Navigate", icon: CheckSquare },
   { id: "integrations", label: "Integrations", section: "Navigate", icon: Plug },
   { id: "admin", label: "Admin Console", section: "Navigate", icon: Shield },
+  { id: "investor", label: "Investor Metrics", section: "Navigate", icon: Target },
   { id: "ask-revenue", label: "Ask: What drove the revenue beat?", section: "AI Copilot", icon: Sparkles },
   { id: "ask-benchmark", label: "Ask: Show benchmark scorecard", section: "AI Copilot", icon: Sparkles },
   { id: "ask-risk", label: "Ask: Top H2 risks", section: "AI Copilot", icon: Sparkles },
@@ -337,6 +338,7 @@ const NAV_ITEMS = [
   { id: "close", label: "Close Tasks", icon: CheckSquare, section: "Planning" },
   { id: "integrations", label: "Integrations", icon: Plug, section: "Platform" },
   { id: "admin", label: "Admin", icon: Shield, section: "Platform" },
+  { id: "investor", label: "Investor Metrics", icon: Target, section: "Platform" },
   { id: "settings", label: "Settings", icon: Settings, section: "Platform" },
 ];
 
@@ -1656,6 +1658,108 @@ const SCENARIOS_LIST = [
 ];
 
 // ══════════════════════════════════════════════════════════════
+// INVESTOR METRICS — Fundraising & Investor Marketing
+// ══════════════════════════════════════════════════════════════
+const InvestorView = ({ c, toast }) => (
+  <div style={{ padding: 32 }}>
+    <ExportBar c={c} title="Investor Dashboard — Series A Readiness"
+      onCSV={() => toast("Investor metrics exported as CSV", "success")}
+      onPDF={() => toast("Investor deck data exported as PDF", "success")}
+    />
+
+    {/* Fundraising KPIs */}
+    <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 14, marginBottom: 24 }}>
+      {[
+        { label: "ARR", value: "$48.6M", sub: "+24% YoY", color: c.accent },
+        { label: "Net Dollar Retention", value: "118%", sub: "Best-in-class >110%", color: c.green },
+        { label: "Rule of 40", value: "52.1", sub: "Growth 47.8% + Margin 4.3%", color: c.purple },
+        { label: "Burn Multiple", value: "0.8x", sub: "Efficient: <1.0x target", color: c.green },
+        { label: "Gross Margin", value: "84.7%", sub: "SaaS benchmark: 70-80%", color: c.accent },
+        { label: "CAC Payback", value: "14 mo", sub: "Target: <18 months", color: c.green },
+        { label: "LTV/CAC", value: "4.2x", sub: "Healthy: >3.0x", color: c.green },
+        { label: "Cash Runway", value: "34 mo", sub: "$12.8M cash on hand", color: c.accent },
+      ].map(k => (
+        <div key={k.label} style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 12, padding: "16px 18px", boxShadow: c.cardGlow }}>
+          <div style={{ fontSize: 10, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.06em", color: c.textFaint, marginBottom: 6 }}>{k.label}</div>
+          <div style={{ fontSize: 24, fontWeight: 800, color: c.text, fontFamily: "'JetBrains Mono', monospace", marginBottom: 2 }}>{k.value}</div>
+          <div style={{ fontSize: 10, color: k.color, fontWeight: 600 }}>{k.sub}</div>
+        </div>
+      ))}
+    </div>
+
+    {/* Cohort & Unit Economics */}
+    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 24 }}>
+      <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, padding: 22, boxShadow: c.cardGlow }}>
+        <div style={{ fontSize: 12, fontWeight: 700, color: c.text, marginBottom: 14 }}>Revenue Cohort Analysis</div>
+        {[
+          { cohort: "Q1 2023", initial: "$2.1M", current: "$3.8M", retention: "181%", color: c.green },
+          { cohort: "Q2 2023", initial: "$2.8M", current: "$4.6M", retention: "164%", color: c.green },
+          { cohort: "Q3 2023", initial: "$3.2M", current: "$4.9M", retention: "153%", color: c.green },
+          { cohort: "Q4 2023", initial: "$3.9M", current: "$5.4M", retention: "138%", color: c.green },
+          { cohort: "Q1 2024", initial: "$4.5M", current: "$5.8M", retention: "129%", color: c.accent },
+          { cohort: "Q2 2024", initial: "$5.2M", current: "$6.1M", retention: "117%", color: c.accent },
+        ].map(r => (
+          <div key={r.cohort} style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 0", borderBottom: `1px solid ${c.borderSub}` }}>
+            <span style={{ fontSize: 11, color: c.textDim, width: 60 }}>{r.cohort}</span>
+            <span style={{ fontSize: 11, color: c.textSec, fontFamily: "'JetBrains Mono', monospace", width: 55 }}>{r.initial}</span>
+            <div style={{ flex: 1, height: 6, background: c.bg2, borderRadius: 3, overflow: "hidden" }}>
+              <div style={{ width: `${Math.min(parseInt(r.retention), 200) / 2}%`, height: "100%", background: r.color, borderRadius: 3 }} />
+            </div>
+            <span style={{ fontSize: 11, fontWeight: 700, color: r.color, fontFamily: "'JetBrains Mono', monospace", width: 45, textAlign: "right" }}>{r.retention}</span>
+          </div>
+        ))}
+      </div>
+
+      <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, padding: 22, boxShadow: c.cardGlow }}>
+        <div style={{ fontSize: 12, fontWeight: 700, color: c.text, marginBottom: 14 }}>Competitive Positioning</div>
+        {[
+          { metric: "ARR Growth Rate", us: "47.8%", benchmark: "30-40%", verdict: "Above" },
+          { metric: "Gross Margin", us: "84.7%", benchmark: "70-80%", verdict: "Above" },
+          { metric: "NDR", us: "118%", benchmark: "110-120%", verdict: "Inline" },
+          { metric: "Burn Multiple", us: "0.8x", benchmark: "1.0-2.0x", verdict: "Above" },
+          { metric: "Magic Number", us: "1.2", benchmark: "0.7-1.0", verdict: "Above" },
+          { metric: "CAC Payback", us: "14 mo", benchmark: "12-18 mo", verdict: "Inline" },
+        ].map(m => (
+          <div key={m.metric} style={{ display: "flex", alignItems: "center", padding: "10px 0", borderBottom: `1px solid ${c.borderSub}`, fontSize: 11 }}>
+            <span style={{ flex: 1, color: c.textSec }}>{m.metric}</span>
+            <span style={{ fontFamily: "'JetBrains Mono', monospace", fontWeight: 700, color: c.text, width: 55, textAlign: "right" }}>{m.us}</span>
+            <span style={{ color: c.textDim, width: 75, textAlign: "right", fontSize: 10 }}>{m.benchmark}</span>
+            <span style={{ width: 50, textAlign: "right", fontSize: 9, fontWeight: 700, padding: "2px 6px", borderRadius: 3, background: m.verdict === "Above" ? c.greenDim : c.accentDim, color: m.verdict === "Above" ? c.green : c.accent, marginLeft: 8 }}>{m.verdict}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+
+    {/* Fundraising Readiness */}
+    <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, padding: 22, boxShadow: c.cardGlow }}>
+      <div style={{ fontSize: 12, fontWeight: 700, color: c.text, marginBottom: 14 }}>Series A Readiness Checklist</div>
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
+        {[
+          { item: "ARR > $10M", done: true },
+          { item: "NDR > 110%", done: true },
+          { item: "Gross Margin > 75%", done: true },
+          { item: "Rule of 40 > 40", done: true },
+          { item: "3+ enterprise logos", done: false, note: "Design partners in progress" },
+          { item: "SOC 2 Type II certified", done: false, note: "Architecture ready, audit pending" },
+          { item: "12+ months runway", done: true },
+          { item: "Repeatable sales motion", done: false, note: "PLG + outbound building" },
+          { item: "Product-market fit signal", done: true, note: "118% NDR confirms" },
+          { item: "Competitive moat identified", done: true, note: "Suite bundle — unique in market" },
+        ].map(c2 => (
+          <div key={c2.item} style={{ display: "flex", alignItems: "flex-start", gap: 8, padding: "8px 12px", borderRadius: 8, background: c2.done ? c.greenDim : c.amberDim, border: `1px solid ${c2.done ? c.green : c.amber}15` }}>
+            <Check size={14} color={c2.done ? c.green : c.amber} strokeWidth={2.5} style={{ marginTop: 1, flexShrink: 0 }} />
+            <div>
+              <div style={{ fontSize: 12, fontWeight: 600, color: c.text }}>{c2.item}</div>
+              {c2.note && <div style={{ fontSize: 10, color: c.textDim, marginTop: 1 }}>{c2.note}</div>}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+);
+
+// ══════════════════════════════════════════════════════════════
 // SUPER-ADMIN DASHBOARD
 // ══════════════════════════════════════════════════════════════
 const AdminView = ({ c, toast, onNav }) => {
@@ -2583,14 +2687,16 @@ const LandingPage = ({ onLogin }) => {
 // APP SHELL
 // ══════════════════════════════════════════════════════════════
 export default function FinanceOS() {
-  const [loggedIn, setLoggedIn] = useState(false);
-  const [view, setView] = useState("dashboard");
+  const [loggedIn, setLoggedIn] = usePreferences("loggedIn", false);
+  const [view, setView] = usePreferences("lastView", "dashboard");
   const [prevView, setPrevView] = useState(null);
   const [cmdOpen, setCmdOpen] = useState(false);
   const [drawerKpi, setDrawerKpi] = useState(null);
   const [period, setPeriod] = useState("FY2025 YTD");
   const [periodOpen, setPeriodOpen] = useState(false);
   const [navHistory, setNavHistory] = useState(["dashboard"]);
+  const [sidebarCollapsed, setSidebarCollapsed] = usePreferences("sidebarCollapsed", false);
+  const [showOnboarding, setShowOnboarding] = useState(false);
   const { toasts, toast } = useToast();
 
   // Sunset-aware auto theme: dark after 6:30pm, light after 6:30am, respects OS preference
@@ -2685,7 +2791,7 @@ export default function FinanceOS() {
     else { navigate(item.id); }
   };
 
-  const viewTitles = { dashboard: "Dashboard", copilot: "AI Copilot", pnl: "P&L Statement", forecast: "Forecast Optimizer", consolidation: "Multi-Entity Consolidation", models: "Scenario Models", close: "Close Tasks", integrations: "Integrations", admin: "Admin Console", settings: "Settings" };
+  const viewTitles = { dashboard: "Dashboard", copilot: "AI Copilot", pnl: "P&L Statement", forecast: "Forecast Optimizer", consolidation: "Multi-Entity Consolidation", models: "Scenario Models", close: "Close Tasks", integrations: "Integrations", admin: "Admin Console", investor: "Investor Metrics", settings: "Settings" };
 
   let currentSection = "";
 
@@ -2750,31 +2856,45 @@ export default function FinanceOS() {
 
       {/* ── SIDEBAR ── */}
       <div data-sidebar className="theme-transition" style={{
-        width: 230, minHeight: "100vh", background: c.sidebarBg,
+        width: sidebarCollapsed ? 64 : 230, minHeight: "100vh", background: c.sidebarBg,
         borderRight: `1px solid ${c.border}`, display: "flex", flexDirection: "column", flexShrink: 0,
         boxShadow: mode === "dark" ? "4px 0 20px rgba(0,0,0,0.15)" : "4px 0 20px rgba(0,0,0,0.04)",
-        transition: "background 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease",
+        transition: "width 0.25s cubic-bezier(0.22,1,0.36,1), background 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease",
+        overflow: "hidden",
       }}>
-        {/* Logo */}
-        <div style={{ padding: "22px 20px 18px", borderBottom: `1px solid ${c.borderSub}` }}>
-          <div onClick={handleLogout} style={{ display: "flex", alignItems: "center", gap: 10, cursor: "pointer", transition: "opacity 0.15s" }}
+        {/* Logo + Collapse Toggle */}
+        <div style={{ padding: sidebarCollapsed ? "22px 12px 18px" : "22px 20px 18px", borderBottom: `1px solid ${c.borderSub}`, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+          <div onClick={handleLogout} style={{ display: "flex", alignItems: "center", gap: 10, cursor: "pointer", transition: "opacity 0.15s", overflow: "hidden" }}
             onMouseEnter={e => e.currentTarget.style.opacity = "0.8"}
             onMouseLeave={e => e.currentTarget.style.opacity = "1"}
             title="Back to FinanceOS.com"
           >
             <div style={{
-              width: 32, height: 32, borderRadius: 10, display: "flex", alignItems: "center", justifyContent: "center",
+              width: 32, height: 32, borderRadius: 10, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
               background: mode === "dark" ? "linear-gradient(135deg, #0ea5e9, #7c3aed)" : "linear-gradient(135deg, #0369a1, #6d28d9)",
               fontSize: 14, fontWeight: 900, color: "#fff",
               boxShadow: mode === "dark" ? "0 4px 12px rgba(14,165,233,0.25)" : "0 4px 12px rgba(3,105,161,0.2)",
-              transition: "background 0.4s ease, box-shadow 0.4s ease",
             }}>F</div>
-            <div>
-              <span style={{ fontWeight: 800, fontSize: 15, color: c.text, letterSpacing: "-0.3px" }}>FinanceOS</span>
-              <div style={{ fontSize: 9, color: c.textFaint, marginTop: 1 }}>Acme SaaS Corp · FY2025</div>
-            </div>
+            {!sidebarCollapsed && <div>
+              <span style={{ fontWeight: 800, fontSize: 15, color: c.text, letterSpacing: "-0.3px", whiteSpace: "nowrap" }}>FinanceOS</span>
+              <div style={{ fontSize: 9, color: c.textFaint, marginTop: 1, whiteSpace: "nowrap" }}>Acme SaaS Corp · FY2025</div>
+            </div>}
           </div>
+          {!sidebarCollapsed && (
+            <button onClick={() => setSidebarCollapsed(true)} title="Collapse sidebar" style={{ width: 24, height: 24, borderRadius: 6, border: `1px solid ${c.borderSub}`, background: "transparent", color: c.textFaint, cursor: "pointer", fontFamily: "inherit", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, transition: "all 0.15s" }}
+              onMouseEnter={e => { e.currentTarget.style.borderColor = c.accent; e.currentTarget.style.color = c.accent; }}
+              onMouseLeave={e => { e.currentTarget.style.borderColor = c.borderSub; e.currentTarget.style.color = c.textFaint; }}
+            ><ChevronRight size={12} style={{ transform: "rotate(180deg)" }} /></button>
+          )}
         </div>
+        {sidebarCollapsed && (
+          <div style={{ padding: "6px 0", textAlign: "center", borderBottom: `1px solid ${c.borderSub}` }}>
+            <button onClick={() => setSidebarCollapsed(false)} title="Expand sidebar" style={{ width: 36, height: 24, borderRadius: 6, border: `1px solid ${c.borderSub}`, background: "transparent", color: c.textFaint, cursor: "pointer", fontFamily: "inherit", display: "inline-flex", alignItems: "center", justifyContent: "center", transition: "all 0.15s" }}
+              onMouseEnter={e => { e.currentTarget.style.borderColor = c.accent; e.currentTarget.style.color = c.accent; }}
+              onMouseLeave={e => { e.currentTarget.style.borderColor = c.borderSub; e.currentTarget.style.color = c.textFaint; }}
+            ><ChevronRight size={12} /></button>
+          </div>
+        )}
 
         {/* Nav */}
         <div style={{ flex: 1, padding: "8px 0", overflow: "auto" }}>
@@ -2785,28 +2905,31 @@ export default function FinanceOS() {
             const active = view === item.id;
             return (
               <div key={item.id}>
-                {showSection && (
+                {showSection && !sidebarCollapsed && (
                   <div style={{ fontSize: 9, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.12em", color: c.textFaint, padding: "16px 18px 6px" }}>
                     {item.section}
                   </div>
                 )}
-                <div onClick={() => navigate(item.id)} style={{
-                  display: "flex", alignItems: "center", gap: 10, padding: "10px 16px", margin: "1px 10px", cursor: "pointer",
-                  fontSize: 13, fontWeight: active ? 600 : 400, borderRadius: 8,
+                {showSection && sidebarCollapsed && <div style={{ height: 6 }} />}
+                <div onClick={() => navigate(item.id)} title={sidebarCollapsed ? item.label : undefined} style={{
+                  display: "flex", alignItems: "center", gap: 10,
+                  padding: sidebarCollapsed ? "10px 0" : "10px 16px",
+                  margin: sidebarCollapsed ? "1px 8px" : "1px 10px",
+                  justifyContent: sidebarCollapsed ? "center" : "flex-start",
+                  cursor: "pointer", fontSize: 13, fontWeight: active ? 600 : 400, borderRadius: 8,
                   color: active ? c.text : c.textDim,
                   background: active ? c.accentMid : "transparent",
                   boxShadow: active ? `0 0 0 1px ${c.accent}20, inset 0 1px 0 ${c.accent}10` : "none",
                   transition: "all 0.15s cubic-bezier(0.22,1,0.36,1)",
-                  position: "relative",
                 }}
                 onMouseEnter={e => { if (!active) { e.currentTarget.style.color = c.textSec; e.currentTarget.style.background = `${c.accent}06`; }}}
                 onMouseLeave={e => { if (!active) { e.currentTarget.style.color = c.textDim; e.currentTarget.style.background = "transparent"; }}}
                 >
                   <Icon size={16} strokeWidth={active ? 2.5 : 1.5} />
-                  {item.label}
-                  {item.id === "copilot" && <Sparkles size={10} color={c.purple} style={{ marginLeft: "auto" }} />}
-                  {item.id === "close" && <span style={{ marginLeft: "auto", fontSize: 9, fontWeight: 700, padding: "1px 6px", borderRadius: 4, background: c.amberDim, color: c.amber }}>3</span>}
-                  {item.id === "dashboard" && <span style={{ marginLeft: "auto", fontSize: 9, fontWeight: 700, padding: "1px 6px", borderRadius: 4, background: c.redDim, color: c.red }}>4</span>}
+                  {!sidebarCollapsed && item.label}
+                  {!sidebarCollapsed && item.id === "copilot" && <Sparkles size={10} color={c.purple} style={{ marginLeft: "auto" }} />}
+                  {!sidebarCollapsed && item.id === "close" && <span style={{ marginLeft: "auto", fontSize: 9, fontWeight: 700, padding: "1px 6px", borderRadius: 4, background: c.amberDim, color: c.amber }}>3</span>}
+                  {!sidebarCollapsed && item.id === "dashboard" && <span style={{ marginLeft: "auto", fontSize: 9, fontWeight: 700, padding: "1px 6px", borderRadius: 4, background: c.redDim, color: c.red }}>4</span>}
                 </div>
               </div>
             );
@@ -2814,6 +2937,7 @@ export default function FinanceOS() {
         </div>
 
         {/* Suite Cross-Sell */}
+        {!sidebarCollapsed && (
         <div style={{ padding: "8px 14px", borderTop: `1px solid ${c.borderSub}` }}>
           <div style={{ fontSize: 9, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.12em", color: c.textFaint, padding: "8px 4px 6px" }}>Vaultline Suite</div>
           {[
@@ -2833,12 +2957,15 @@ export default function FinanceOS() {
             </div>
           ))}
         </div>
+        )}
 
         {/* Theme + User */}
-        <div style={{ padding: "12px 14px", borderTop: `1px solid ${c.borderSub}` }}>
+        <div style={{ padding: sidebarCollapsed ? "8px 8px" : "12px 14px", borderTop: `1px solid ${c.borderSub}` }}>
           <div onClick={toggleMode} style={{
-            display: "flex", alignItems: "center", gap: 10, padding: "8px 10px", borderRadius: 8,
+            display: "flex", alignItems: "center", gap: sidebarCollapsed ? 0 : 10,
+            padding: sidebarCollapsed ? "8px 0" : "8px 10px", borderRadius: 8,
             cursor: "pointer", fontSize: 12, color: c.textSec, transition: "all 0.2s",
+            justifyContent: sidebarCollapsed ? "center" : "flex-start",
           }}
           onMouseEnter={e => { e.currentTarget.style.background = c.surfaceAlt; e.currentTarget.style.color = c.text; }}
           onMouseLeave={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = c.textSec; }}
@@ -2862,9 +2989,10 @@ export default function FinanceOS() {
                 {mode === "dark" ? <Moon size={8} color="#1e293b" strokeWidth={2.5} /> : <Sun size={8} color="#fff" strokeWidth={2.5} />}
               </div>
             </div>
-            <span style={{ flex: 1, fontSize: 11, fontWeight: 500 }}>{mode === "dark" ? "Dark" : "Light"}</span>
-            {autoTheme && <span style={{ fontSize: 8, fontWeight: 700, padding: "2px 5px", borderRadius: 3, background: c.accentDim, color: c.accent, letterSpacing: "0.05em" }}>AUTO</span>}
+            <span style={{ flex: 1, fontSize: 11, fontWeight: 500, display: sidebarCollapsed ? "none" : "block" }}>{mode === "dark" ? "Dark" : "Light"}</span>
+            {autoTheme && !sidebarCollapsed && <span style={{ fontSize: 8, fontWeight: 700, padding: "2px 5px", borderRadius: 3, background: c.accentDim, color: c.accent, letterSpacing: "0.05em" }}>AUTO</span>}
           </div>
+          {!sidebarCollapsed ? (
           <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 10px", marginTop: 4, borderRadius: 8, cursor: "pointer", transition: "background 0.15s" }}
             onMouseEnter={e => e.currentTarget.style.background = c.surfaceAlt}
             onMouseLeave={e => e.currentTarget.style.background = "transparent"}
@@ -2884,15 +3012,21 @@ export default function FinanceOS() {
             </div>
             <Settings size={13} color={c.textFaint} />
           </div>
+          ) : (
+          <div style={{ textAlign: "center", marginTop: 4 }} onClick={() => navigate("settings")} title="Sarah Chen · Settings">
+            <div style={{ width: 30, height: 30, borderRadius: 10, display: "inline-flex", alignItems: "center", justifyContent: "center", background: "linear-gradient(135deg, #10b981, #22d3ee)", fontSize: 10, fontWeight: 800, color: "#fff", cursor: "pointer" }}>SC</div>
+          </div>
+          )}
           {/* Logout */}
           <div onClick={handleLogout} style={{
             display: "flex", alignItems: "center", gap: 8, padding: "8px 10px", marginTop: 4, borderRadius: 8,
             cursor: "pointer", fontSize: 12, color: c.textDim, transition: "all 0.15s",
+            justifyContent: sidebarCollapsed ? "center" : "flex-start",
           }}
           onMouseEnter={e => { e.currentTarget.style.background = c.redDim; e.currentTarget.style.color = c.red; }}
           onMouseLeave={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = c.textDim; }}
           >
-            <LogOut size={14} /> Sign Out
+            <LogOut size={14} /> {!sidebarCollapsed && "Sign Out"}
           </div>
         </div>
       </div>
@@ -2984,6 +3118,7 @@ export default function FinanceOS() {
           {view === "close" && <CloseView c={c} toast={toast} />}
           {view === "integrations" && <IntegrationsView c={c} toast={toast} />}
           {view === "admin" && <AdminView c={c} toast={toast} onNav={navigate} />}
+          {view === "investor" && <InvestorView c={c} toast={toast} />}
           {view === "settings" && <SettingsView c={c} onLogout={handleLogout} toast={toast} mode={mode} />}
           </>)}
         </div>
