@@ -2459,6 +2459,7 @@ const LandingPage = ({ onLogin }) => {
           <a href="#features" style={{ fontSize: 13, color: "#9ca3b0", textDecoration: "none", fontWeight: 500 }}>Features</a>
           <a href="#security" style={{ fontSize: 13, color: "#9ca3b0", textDecoration: "none", fontWeight: 500 }}>Security</a>
           <a href="#pricing" style={{ fontSize: 13, color: "#9ca3b0", textDecoration: "none", fontWeight: 500 }}>Pricing</a>
+          <a href="#invest" style={{ fontSize: 13, color: "#60a5fa", textDecoration: "none", fontWeight: 600 }}>Investors</a>
           <button onClick={() => setAuthModal("login")} style={{ fontSize: 13, padding: "9px 20px", borderRadius: 8, border: "1px solid #23232a", background: "transparent", color: "#f0f2f5", cursor: "pointer", fontFamily: "inherit", fontWeight: 600 }}>Sign In</button>
           <button onClick={enterDemo} style={{ fontSize: 13, padding: "9px 20px", borderRadius: 8, border: "none", background: "linear-gradient(135deg, #60a5fa, #a78bfa)", color: "#fff", cursor: "pointer", fontFamily: "inherit", fontWeight: 700, boxShadow: "0 4px 16px rgba(96,165,250,0.25)" }}>Start Free Trial</button>
         </div>
@@ -2669,6 +2670,138 @@ const LandingPage = ({ onLogin }) => {
             <span style={{ fontSize: 14, color: "#6b7280" }}>/mo · Save 15%</span>
           </div>
           <button onClick={enterDemo} style={{ fontSize: 14, padding: "12px 28px", borderRadius: 10, border: "none", background: "linear-gradient(135deg, #60a5fa, #a78bfa)", color: "#fff", cursor: "pointer", fontFamily: "inherit", fontWeight: 700, boxShadow: "0 6px 24px rgba(96,165,250,0.25)" }}>Start Suite Trial</button>
+        </div>
+      </div>
+
+      {/* ═══ FUNDRAISER — Seed Round ═══ */}
+      <div id="invest" style={{ padding: "80px 48px", maxWidth: 1100, margin: "0 auto" }}>
+        <div style={{ background: "linear-gradient(135deg, rgba(96,165,250,0.06), rgba(167,139,250,0.06))", border: "1px solid rgba(96,165,250,0.12)", borderRadius: 20, padding: "48px", position: "relative", overflow: "hidden" }}>
+          {/* Ambient glow */}
+          <div style={{ position: "absolute", top: "-50%", right: "-20%", width: "60%", height: "100%", borderRadius: "50%", background: "radial-gradient(circle, rgba(96,165,250,0.08), transparent 70%)", filter: "blur(60px)", pointerEvents: "none" }} />
+
+          <div style={{ position: "relative", zIndex: 1 }}>
+            <div style={{ display: "inline-block", padding: "6px 14px", borderRadius: 20, background: "rgba(96,165,250,0.1)", border: "1px solid rgba(96,165,250,0.2)", fontSize: 10, fontWeight: 700, color: "#60a5fa", marginBottom: 20, letterSpacing: "0.08em", textTransform: "uppercase" }}>Now Raising — Seed Round</div>
+            <h2 style={{ fontSize: 36, fontWeight: 800, letterSpacing: "-0.03em", marginBottom: 10 }}>Invest in the future of FP&A</h2>
+            <p style={{ fontSize: 15, color: "#6b7280", maxWidth: 560, lineHeight: 1.7, marginBottom: 36 }}>FinanceOS is raising a seed round to accelerate product development, hire key engineering talent, and expand into enterprise mid-market. Join us as we build the operating system for modern finance.</p>
+
+            {/* Funding Progress */}
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 32, marginBottom: 36 }}>
+              <div>
+                <div style={{ fontSize: 11, fontWeight: 600, color: "#6b7280", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 12 }}>Funding Progress</div>
+                <div style={{ display: "flex", alignItems: "baseline", gap: 8, marginBottom: 8 }}>
+                  <span style={{ fontSize: 36, fontWeight: 800, fontFamily: "'JetBrains Mono', monospace" }}>$1.2M</span>
+                  <span style={{ fontSize: 14, color: "#6b7280" }}>of $3M target</span>
+                </div>
+                <div style={{ width: "100%", height: 8, background: "#131316", borderRadius: 4, overflow: "hidden", marginBottom: 12 }}>
+                  <div style={{ width: "40%", height: "100%", background: "linear-gradient(90deg, #60a5fa, #a78bfa)", borderRadius: 4, transition: "width 1s ease" }} />
+                </div>
+                <div style={{ display: "flex", justifyContent: "space-between", fontSize: 11, color: "#44495a" }}>
+                  <span>40% committed</span>
+                  <span>12 investors</span>
+                </div>
+              </div>
+
+              <div>
+                <div style={{ fontSize: 11, fontWeight: 600, color: "#6b7280", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 12 }}>Use of Funds</div>
+                {[
+                  { label: "Engineering & Product", pct: 45, color: "#60a5fa" },
+                  { label: "Go-to-Market", pct: 25, color: "#a78bfa" },
+                  { label: "Infrastructure & Security", pct: 15, color: "#34d399" },
+                  { label: "Operations & Legal", pct: 15, color: "#fbbf24" },
+                ].map(f => (
+                  <div key={f.label} style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 6 }}>
+                    <div style={{ width: 8, height: 8, borderRadius: 2, background: f.color, flexShrink: 0 }} />
+                    <span style={{ fontSize: 12, color: "#9ca3b0", flex: 1 }}>{f.label}</span>
+                    <div style={{ width: 100, height: 4, background: "#131316", borderRadius: 2, overflow: "hidden" }}>
+                      <div style={{ width: `${f.pct}%`, height: "100%", background: f.color, borderRadius: 2 }} />
+                    </div>
+                    <span style={{ fontSize: 11, fontWeight: 700, color: f.color, fontFamily: "'JetBrains Mono', monospace", width: 30, textAlign: "right" }}>{f.pct}%</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Round Terms */}
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 12, marginBottom: 32 }}>
+              {[
+                { label: "Instrument", value: "SAFE", sub: "Post-money" },
+                { label: "Valuation Cap", value: "$15M", sub: "Pre-money" },
+                { label: "Minimum Check", value: "$25K", sub: "Accredited investors" },
+                { label: "Target Close", value: "Q3 2026", sub: "Rolling close" },
+              ].map(t => (
+                <div key={t.label} style={{ background: "#0c0c0f", border: "1px solid #1b1b20", borderRadius: 12, padding: "16px 18px" }}>
+                  <div style={{ fontSize: 10, fontWeight: 600, color: "#44495a", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 6 }}>{t.label}</div>
+                  <div style={{ fontSize: 20, fontWeight: 800, fontFamily: "'JetBrains Mono', monospace", marginBottom: 2 }}>{t.value}</div>
+                  <div style={{ fontSize: 10, color: "#6b7280" }}>{t.sub}</div>
+                </div>
+              ))}
+            </div>
+
+            <div style={{ display: "flex", gap: 12 }}>
+              <button onClick={() => window.open("mailto:investors@financeos.com?subject=FinanceOS%20Seed%20Round%20Interest", "_blank")} style={{ fontSize: 14, padding: "14px 28px", borderRadius: 10, border: "none", background: "linear-gradient(135deg, #60a5fa, #a78bfa)", color: "#fff", cursor: "pointer", fontFamily: "inherit", fontWeight: 700, boxShadow: "0 6px 24px rgba(96,165,250,0.25)" }}>Request Investor Deck</button>
+              <button onClick={() => window.open("mailto:investors@financeos.com?subject=FinanceOS%20Meeting%20Request", "_blank")} style={{ fontSize: 14, padding: "14px 28px", borderRadius: 10, border: "1px solid #23232a", background: "transparent", color: "#9ca3b0", cursor: "pointer", fontFamily: "inherit", fontWeight: 600 }}>Schedule a Call</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* ═══ INVESTOR TRACTION — Why Now ═══ */}
+      <div style={{ padding: "0 48px 80px", maxWidth: 1100, margin: "0 auto" }}>
+        <div style={{ textAlign: "center", marginBottom: 40 }}>
+          <h2 style={{ fontSize: 36, fontWeight: 800, letterSpacing: "-0.03em", marginBottom: 12 }}>Traction & market timing</h2>
+          <p style={{ fontSize: 15, color: "#6b7280", maxWidth: 560, margin: "0 auto" }}>The $50B EPM market is ripe for disruption. Legacy players charge 6-figure ACVs with 6-month implementations. We're 10x faster at 10x less.</p>
+        </div>
+
+        {/* Traction KPIs */}
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(5, 1fr)", gap: 12, marginBottom: 32 }}>
+          {[
+            { label: "Live Demo Users", value: "2,400+", delta: "+180% MoM" },
+            { label: "Pipeline Value", value: "$840K", delta: "ARR qualified" },
+            { label: "Design Partners", value: "6", delta: "LOI signed" },
+            { label: "Waitlist", value: "1,200+", delta: "Finance teams" },
+            { label: "NPS Score", value: "72", delta: "Top quartile" },
+          ].map(k => (
+            <div key={k.label} style={{ background: "#131316", border: "1px solid #23232a", borderRadius: 14, padding: "20px 18px", textAlign: "center" }}>
+              <div style={{ fontSize: 28, fontWeight: 800, fontFamily: "'JetBrains Mono', monospace", marginBottom: 4 }}>{k.value}</div>
+              <div style={{ fontSize: 11, fontWeight: 600, color: "#6b7280", marginBottom: 2 }}>{k.label}</div>
+              <div style={{ fontSize: 10, color: "#34d399", fontWeight: 600 }}>{k.delta}</div>
+            </div>
+          ))}
+        </div>
+
+        {/* Market + Differentiators */}
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
+          <div style={{ background: "#131316", border: "1px solid #23232a", borderRadius: 14, padding: 24 }}>
+            <div style={{ fontSize: 14, fontWeight: 700, marginBottom: 14 }}>Market Opportunity</div>
+            {[
+              { metric: "Total Addressable Market", value: "$50B", note: "EPM/CPM global market" },
+              { metric: "Serviceable Market", value: "$8.2B", note: "Mid-market FP&A SaaS" },
+              { metric: "Target Segment", value: "$2.1B", note: "5-500 employee companies" },
+              { metric: "Growth Rate", value: "14.2%", note: "CAGR 2024-2030" },
+            ].map(m => (
+              <div key={m.metric} style={{ display: "flex", alignItems: "center", padding: "10px 0", borderBottom: "1px solid #1b1b20" }}>
+                <span style={{ flex: 1, fontSize: 12, color: "#9ca3b0" }}>{m.metric}</span>
+                <span style={{ fontSize: 13, fontWeight: 800, fontFamily: "'JetBrains Mono', monospace", color: "#f0f2f5", marginRight: 10 }}>{m.value}</span>
+                <span style={{ fontSize: 10, color: "#44495a", width: 140 }}>{m.note}</span>
+              </div>
+            ))}
+          </div>
+
+          <div style={{ background: "#131316", border: "1px solid #23232a", borderRadius: 14, padding: 24 }}>
+            <div style={{ fontSize: 14, fontWeight: 700, marginBottom: 14 }}>Why FinanceOS Wins</div>
+            {[
+              { point: "AI-native architecture", detail: "Built on Claude — not bolted on. Visible reasoning, not black box." },
+              { point: "Suite bundling moat", detail: "FP&A + Treasury + Compliance — only unified mid-market stack." },
+              { point: "10x faster deployment", detail: "Days to value vs 3-6 month implementations at Anaplan/Pigment." },
+              { point: "Transparent pricing", detail: "$599/mo published. Competitors hide behind 'contact sales'." },
+              { point: "Founder-market fit", detail: "Built by banking + fintech operators who lived the FP&A pain." },
+            ].map(w => (
+              <div key={w.point} style={{ marginBottom: 12 }}>
+                <div style={{ fontSize: 12, fontWeight: 700, color: "#f0f2f5", marginBottom: 2 }}>{w.point}</div>
+                <div style={{ fontSize: 11, color: "#6b7280", lineHeight: 1.5 }}>{w.detail}</div>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
 
@@ -3136,17 +3269,17 @@ export default function FinanceOS() {
         {/* Content */}
         <div key={viewLoading ? "loading" : view} className="view-fade" style={{ flex: 1, overflow: "auto", background: "transparent", position: "relative", zIndex: 1 }}>
           {viewLoading ? <LoadingSkeleton c={c} /> : (<>
-          {view === "dashboard" && <DashboardView c={c} onNav={navigate} toast={toast} onDrawer={setDrawerKpi} />}
-          {view === "copilot" && <CopilotView c={c} toast={toast} />}
-          {view === "pnl" && <PnlView c={c} onNav={navigate} toast={toast} />}
-          {view === "forecast" && <ForecastView c={c} />}
-          {view === "consolidation" && <ConsolidationView c={c} onNav={navigate} toast={toast} />}
-          {view === "models" && <ScenariosView c={c} toast={toast} />}
-          {view === "close" && <CloseView c={c} toast={toast} />}
-          {view === "integrations" && <IntegrationsView c={c} toast={toast} />}
-          {view === "admin" && <AdminView c={c} toast={toast} onNav={navigate} />}
-          {view === "investor" && <InvestorView c={c} toast={toast} />}
-          {view === "settings" && <SettingsView c={c} onLogout={handleLogout} toast={toast} mode={mode} />}
+          {view === "dashboard" && <SectionBoundary bg={c.surface} borderColor={c.border} textColor={c.textDim}><DashboardView c={c} onNav={navigate} toast={toast} onDrawer={setDrawerKpi} /></SectionBoundary>}
+          {view === "copilot" && <SectionBoundary bg={c.surface} borderColor={c.border} textColor={c.textDim}><CopilotView c={c} toast={toast} /></SectionBoundary>}
+          {view === "pnl" && <SectionBoundary bg={c.surface} borderColor={c.border} textColor={c.textDim}><PnlView c={c} onNav={navigate} toast={toast} /></SectionBoundary>}
+          {view === "forecast" && <SectionBoundary bg={c.surface} borderColor={c.border} textColor={c.textDim}><ForecastView c={c} /></SectionBoundary>}
+          {view === "consolidation" && <SectionBoundary bg={c.surface} borderColor={c.border} textColor={c.textDim}><ConsolidationView c={c} onNav={navigate} toast={toast} /></SectionBoundary>}
+          {view === "models" && <SectionBoundary bg={c.surface} borderColor={c.border} textColor={c.textDim}><ScenariosView c={c} toast={toast} /></SectionBoundary>}
+          {view === "close" && <SectionBoundary bg={c.surface} borderColor={c.border} textColor={c.textDim}><CloseView c={c} toast={toast} /></SectionBoundary>}
+          {view === "integrations" && <SectionBoundary bg={c.surface} borderColor={c.border} textColor={c.textDim}><IntegrationsView c={c} toast={toast} /></SectionBoundary>}
+          {view === "admin" && <SectionBoundary bg={c.surface} borderColor={c.border} textColor={c.textDim}><AdminView c={c} toast={toast} onNav={navigate} /></SectionBoundary>}
+          {view === "investor" && <SectionBoundary bg={c.surface} borderColor={c.border} textColor={c.textDim}><InvestorView c={c} toast={toast} /></SectionBoundary>}
+          {view === "settings" && <SectionBoundary bg={c.surface} borderColor={c.border} textColor={c.textDim}><SettingsView c={c} onLogout={handleLogout} toast={toast} mode={mode} /></SectionBoundary>}
           </>)}
         </div>
       </div>
