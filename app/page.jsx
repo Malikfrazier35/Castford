@@ -1971,6 +1971,14 @@ const AdminView = ({ c, toast, onNav }) => {
 
   return (
     <div style={{ padding: 32 }}>
+      {/* View Header */}
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 20 }}>
+        <div>
+          <div style={{ fontSize: 18, fontWeight: 800, color: c.text, letterSpacing: "-0.02em", marginBottom: 4 }}>Admin Console</div>
+          <div style={{ fontSize: 12, color: c.textDim }}>{users.length} users · {users.filter(u => u.status === "active").length} active · {events.length} events today</div>
+        </div>
+        <button onClick={() => toast("Invite sent", "success")} style={{ fontSize: 11, padding: "8px 16px", borderRadius: 8, border: "none", background: c.accent, color: "#fff", fontWeight: 700, cursor: "pointer", fontFamily: "inherit" }}>+ Invite User</button>
+      </div>
       {/* Tab bar */}
       <div style={{ display: "flex", gap: 4, marginBottom: 24, background: c.surfaceAlt, borderRadius: 10, padding: 3, border: `1px solid ${c.borderSub}`, maxWidth: 480 }}>
         {tabs.map(t => (
@@ -2698,6 +2706,95 @@ const PLAN_OPTIONS = [
   { name: "Business", price: "$4,799", annual: "$3,999", desc: "Unlimited · Custom ML · SSO + RBAC · Dedicated CSM",
     monthlyLink: "https://buy.stripe.com/7sY8wPbdd04a8nE9ANdwc0s", annualLink: "https://buy.stripe.com/dRmaEX811dV0eM23cpdwc0t" },
 ];
+
+// ── ONBOARDING WIZARD ────────────────────────────────────────
+const OnboardingWizard = ({ c, userName, onComplete }) => {
+  const [step, setStep] = useState(0);
+  const [org, setOrg] = useState({ name: "", industry: "", fy: "December", currency: "USD", erp: "" });
+  const steps = [
+    { title: "Set up your organization", sub: "Basic details to customize your experience" },
+    { title: "Connect your data", sub: "Link your ERP, CRM, or billing system" },
+    { title: "You're all set", sub: "Your workspace is ready" },
+  ];
+  const erps = ["NetSuite", "QuickBooks", "Xero", "SAP", "Sage Intacct", "Workday", "Other", "Skip for now"];
+  const inputStyle = { width: "100%", fontSize: 13, padding: "11px 14px", borderRadius: 10, border: `1px solid ${c?.border || "#23232a"}`, background: c?.surfaceAlt || "#0c0c0f", color: c?.text || "#f0f2f5", fontFamily: "inherit", outline: "none", transition: "border-color 0.2s" };
+
+  return (
+    <div style={{ position: "fixed", inset: 0, zIndex: 10001, background: "rgba(0,0,0,0.7)", backdropFilter: "blur(12px)", display: "flex", alignItems: "center", justifyContent: "center", animation: "fadeIn 0.2s" }}>
+      <div style={{ width: 500, background: c?.surface || "#131316", border: `1px solid ${c?.border || "#23232a"}`, borderRadius: 20, boxShadow: "0 24px 80px rgba(0,0,0,0.5)", padding: "36px 40px", animation: "cmdIn 0.25s cubic-bezier(0.22,1,0.36,1)" }}>
+        {/* Progress dots */}
+        <div style={{ display: "flex", gap: 6, justifyContent: "center", marginBottom: 24 }}>
+          {steps.map((_, i) => (
+            <div key={i} style={{ width: i === step ? 24 : 8, height: 8, borderRadius: 4, background: i <= step ? (c?.accent || "#60a5fa") : (c?.borderBright || "#33384a"), transition: "all 0.3s cubic-bezier(0.22,1,0.36,1)" }} />
+          ))}
+        </div>
+
+        <div style={{ textAlign: "center", marginBottom: 28 }}>
+          <div style={{ fontSize: 20, fontWeight: 800, letterSpacing: "-0.02em", color: c?.text || "#f0f2f5", marginBottom: 6 }}>
+            {step === 2 ? `Welcome aboard${userName && userName !== "Guest" ? `, ${userName.split(" ")[0]}` : ""}!` : steps[step].title}
+          </div>
+          <div style={{ fontSize: 13, color: c?.textDim || "#6b7280" }}>{steps[step].sub}</div>
+        </div>
+
+        {step === 0 && (
+          <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+            <input value={org.name} onChange={e => setOrg(p => ({ ...p, name: e.target.value }))} placeholder="Company name" style={inputStyle} />
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
+              <select value={org.industry} onChange={e => setOrg(p => ({ ...p, industry: e.target.value }))} style={{ ...inputStyle, cursor: "pointer" }}>
+                <option value="">Industry</option>
+                {["SaaS / Software", "Financial Services", "E-commerce", "Healthcare", "Manufacturing", "Professional Services", "Other"].map(i => <option key={i} value={i}>{i}</option>)}
+              </select>
+              <select value={org.currency} onChange={e => setOrg(p => ({ ...p, currency: e.target.value }))} style={{ ...inputStyle, cursor: "pointer" }}>
+                {["USD", "EUR", "GBP", "CAD", "AUD", "JPY"].map(cur => <option key={cur} value={cur}>{cur}</option>)}
+              </select>
+            </div>
+            <select value={org.fy} onChange={e => setOrg(p => ({ ...p, fy: e.target.value }))} style={{ ...inputStyle, cursor: "pointer" }}>
+              {["January", "February", "March", "April", "June", "July", "September", "October", "December"].map(m => <option key={m} value={m}>Fiscal year ends {m}</option>)}
+            </select>
+          </div>
+        )}
+
+        {step === 1 && (
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
+            {erps.map(e => (
+              <button key={e} onClick={() => setOrg(p => ({ ...p, erp: e }))} style={{
+                padding: "14px 16px", borderRadius: 10, border: `1px solid ${org.erp === e ? (c?.accent || "#60a5fa") : (c?.border || "#23232a")}`,
+                background: org.erp === e ? (c?.accentDim || "rgba(96,165,250,0.08)") : "transparent",
+                color: org.erp === e ? (c?.accent || "#60a5fa") : (c?.textSec || "#9ca3b0"),
+                fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: "inherit", transition: "all 0.15s",
+                textAlign: "left",
+              }}>{e}</button>
+            ))}
+          </div>
+        )}
+
+        {step === 2 && (
+          <div style={{ display: "flex", flexDirection: "column", gap: 12, alignItems: "center", padding: "8px 0" }}>
+            <div style={{ width: 56, height: 56, borderRadius: 16, background: `linear-gradient(135deg, ${c?.green || "#34d399"}, ${c?.accent || "#60a5fa"})`, display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 4 }}>
+              <Check size={28} color="#fff" strokeWidth={3} />
+            </div>
+            <div style={{ fontSize: 12, color: c?.textDim || "#6b7280", textAlign: "center", lineHeight: 1.7 }}>
+              {org.name && <span>Organization: <strong style={{ color: c?.text || "#f0f2f5" }}>{org.name}</strong><br /></span>}
+              {org.erp && org.erp !== "Skip for now" && <span>Data source: <strong style={{ color: c?.text || "#f0f2f5" }}>{org.erp}</strong><br /></span>}
+              Your dashboard is loaded with sample data. Connect live data anytime from Integrations.
+            </div>
+          </div>
+        )}
+
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 28 }}>
+          {step > 0 ? (
+            <button onClick={() => setStep(s => s - 1)} style={{ fontSize: 12, color: c?.textDim || "#6b7280", background: "none", border: "none", cursor: "pointer", fontFamily: "inherit" }}>Back</button>
+          ) : <div />}
+          <button onClick={() => { if (step < 2) setStep(s => s + 1); else onComplete(org); }} style={{
+            fontSize: 13, padding: "12px 28px", borderRadius: 10, border: "none", fontWeight: 700, cursor: "pointer", fontFamily: "inherit",
+            background: step === 2 ? `linear-gradient(135deg, ${c?.green || "#34d399"}, ${c?.accent || "#60a5fa"})` : (c?.accent || "#60a5fa"), color: "#fff",
+            boxShadow: `0 4px 16px ${(c?.accent || "#60a5fa")}25`,
+          }}>{step === 2 ? "Go to Dashboard" : "Continue"}</button>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 const PlanPicker = ({ userName, onSkip, onSelect, isDemo }) => {
   const [billing, setBilling] = useState("annual");
@@ -3846,7 +3943,8 @@ export default function FinanceOS() {
       <OfflineIndicator c={c} />
       <PWAInstallPrompt c={c} />
       {/* Plan Picker — shows after signup */}
-      {showPlanPicker && <PlanPicker userName={user.name} isDemo={user.plan === "demo"} onSkip={() => setShowPlanPicker(false)} onSelect={(plan) => { setUser(prev => ({ ...prev, plan })); setShowPlanPicker(false); }} />}
+      {showPlanPicker && <PlanPicker userName={user.name} isDemo={user.plan === "demo"} onSkip={() => setShowPlanPicker(false)} onSelect={(plan) => { setUser(prev => ({ ...prev, plan })); setShowPlanPicker(false); setShowOnboarding(true); }} />}
+      {showOnboarding && <OnboardingWizard c={c} userName={user.name} onComplete={(org) => { setShowOnboarding(false); toast(`Welcome to FinanceOS${org.name ? ` — ${org.name}` : ""}`, "success"); }} />}
     </div>
   );
 }
