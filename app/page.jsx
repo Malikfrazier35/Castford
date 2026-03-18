@@ -2,6 +2,13 @@
 import { useState, useEffect, useRef, useCallback, Component } from "react";
 import { Line, Area, BarChart, Bar, ComposedChart, XAxis, YAxis, CartesianGrid, Tooltip, ReferenceLine, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
 import { LayoutDashboard, TrendingUp, MessageSquare, FileText, Layers, GitBranch, CheckSquare, Plug, Brain, Search, Bell, Sun, Moon, ChevronDown, ChevronRight, ArrowUpRight, ArrowDownRight, Zap, Shield, Users, DollarSign, Target, Activity, Send, Sparkles, Settings, LogOut, X, Check, Globe, Eye, Cpu } from "lucide-react";
+import { createClient } from "@supabase/supabase-js";
+
+// ── SUPABASE CLIENT ──────────────────────────────────────────
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL || "https://crecesswagluelvkesul.supabase.co",
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNyZWNlc3N3YWdsdWVsdmtlc3VsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM4MTI5NzYsImV4cCI6MjA4OTM4ODk3Nn0.IGEEYDStt-eH9Mf2G_DzqCPfruDjN8m_ORtAcmtSAZg"
+);
 
 // ═══════════════════════════════════════════════════════════════
 // FINANCEOS — React Production Build
@@ -2513,9 +2520,22 @@ const ProductDemo = ({ enterDemo }) => {
 const LandingPage = ({ onLogin }) => {
   const [billing, setBilling] = useState("annual");
   const [authModal, setAuthModal] = useState(null);
+  const [heroEmail, setHeroEmail] = useState("");
+  const [emailStatus, setEmailStatus] = useState(null); // null | "saving" | "saved" | "error"
 
   // Direct entry to dashboard — bypasses AuthModal entirely, zero crash risk
   const enterDemo = () => { onLogin(); };
+
+  // Inline email signup → Supabase waitlist → enter demo
+  const handleHeroSignup = async () => {
+    if (!heroEmail.trim() || !heroEmail.includes("@")) { enterDemo(); return; }
+    setEmailStatus("saving");
+    try {
+      await supabase.from("waitlist").upsert({ email: heroEmail.trim(), interest_type: "trial", source: "hero" }, { onConflict: "email" });
+      setEmailStatus("saved");
+    } catch { setEmailStatus("error"); }
+    enterDemo();
+  };
 
   // Auth modal callback — also goes straight to dashboard
   const handleAuth = () => { onLogin(); };
@@ -2562,17 +2582,26 @@ const LandingPage = ({ onLogin }) => {
         <p style={{ fontSize: 18, color: "#6b7280", lineHeight: 1.6, maxWidth: 560, margin: "0 auto 36px", fontWeight: 400 }}>
           FinanceOS connects your ERP, CRM, and billing data into a unified model with AI-powered variance detection and natural language querying.
         </p>
-        <div style={{ display: "flex", gap: 12, justifyContent: "center" }}>
-          <button onClick={enterDemo} style={{ fontSize: 15, padding: "14px 32px", borderRadius: 10, border: "none", background: "linear-gradient(135deg, #60a5fa, #a78bfa)", color: "#fff", cursor: "pointer", fontFamily: "inherit", fontWeight: 700, boxShadow: "0 8px 30px rgba(96,165,250,0.25)", transition: "transform 0.15s" }}
-            onMouseEnter={e => e.currentTarget.style.transform = "translateY(-2px)"}
-            onMouseLeave={e => e.currentTarget.style.transform = "none"}
+        <div style={{ display: "flex", gap: 0, justifyContent: "center", maxWidth: 440, margin: "0 auto" }}>
+          <input value={heroEmail} onChange={e => setHeroEmail(e.target.value)} onKeyDown={e => { if (e.key === "Enter") handleHeroSignup(); }}
+            placeholder="Work email" type="email"
+            style={{ flex: 1, fontSize: 14, padding: "14px 18px", borderRadius: "10px 0 0 10px", border: "1px solid #23232a", borderRight: "none", background: "#0c0c0f", color: "#f0f2f5", fontFamily: "inherit", outline: "none", transition: "border-color 0.2s" }}
+            onFocus={e => e.target.style.borderColor = "#60a5fa"}
+            onBlur={e => e.target.style.borderColor = "#23232a"}
+          />
+          <button onClick={handleHeroSignup} style={{ fontSize: 14, padding: "14px 24px", borderRadius: "0 10px 10px 0", border: "none", background: "linear-gradient(135deg, #60a5fa, #a78bfa)", color: "#fff", cursor: "pointer", fontFamily: "inherit", fontWeight: 700, whiteSpace: "nowrap", boxShadow: "0 8px 30px rgba(96,165,250,0.25)" }}>Get Started Free</button>
+        </div>
+        <div style={{ fontSize: 11, color: "#44495a", marginTop: 8, textAlign: "center" }}>Using a work email helps find teammates · No credit card required</div>
+        <div style={{ display: "flex", gap: 12, justifyContent: "center", marginTop: 16 }}>
+          <button onClick={enterDemo} style={{ fontSize: 13, padding: "10px 20px", borderRadius: 8, border: "1px solid #23232a", background: "transparent", color: "#9ca3b0", cursor: "pointer", fontFamily: "inherit", fontWeight: 600, transition: "all 0.15s" }}
+            onMouseEnter={e => { e.currentTarget.style.borderColor = "#33384a"; e.currentTarget.style.color = "#f0f2f5"; }}
+            onMouseLeave={e => { e.currentTarget.style.borderColor = "#23232a"; e.currentTarget.style.color = "#9ca3b0"; }}
           >Try the Live Demo</button>
-          <button onClick={() => { document.getElementById("features")?.scrollIntoView({ behavior: "smooth" }); }} style={{ fontSize: 15, padding: "14px 32px", borderRadius: 10, border: "1px solid #23232a", background: "transparent", color: "#9ca3b0", cursor: "pointer", fontFamily: "inherit", fontWeight: 600, transition: "all 0.15s" }}
-            onMouseEnter={e => { e.currentTarget.style.borderColor = "#60a5fa"; e.currentTarget.style.color = "#f0f2f5"; }}
+          <button onClick={() => { document.getElementById("features")?.scrollIntoView({ behavior: "smooth" }); }} style={{ fontSize: 13, padding: "10px 20px", borderRadius: 8, border: "1px solid #23232a", background: "transparent", color: "#9ca3b0", cursor: "pointer", fontFamily: "inherit", fontWeight: 600, transition: "all 0.15s" }}
+            onMouseEnter={e => { e.currentTarget.style.borderColor = "#33384a"; e.currentTarget.style.color = "#f0f2f5"; }}
             onMouseLeave={e => { e.currentTarget.style.borderColor = "#23232a"; e.currentTarget.style.color = "#9ca3b0"; }}
           >Watch 2-min Overview</button>
         </div>
-        <div style={{ marginTop: 16, fontSize: 12, color: "#44495a" }}>No credit card required · 30-day money-back guarantee</div>
       </div>
 
       {/* Social proof */}
