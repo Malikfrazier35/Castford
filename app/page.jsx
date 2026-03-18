@@ -333,12 +333,12 @@ const PNL_DATA = [
 const COPILOT_PROMPTS = [
   "What drove the revenue beat?",
   "Compare us vs Pigment",
+  "Gross margin analysis",
+  "Where are we over budget?",
+  "Churn & retention trends",
+  "Forecast accuracy report",
+  "Burn multiple & runway",
   "Should we raise guidance?",
-  "Rule of 40 breakdown",
-  "NDR by segment",
-  "Top H2 risks",
-  "Write a board summary",
-  "Burn multiple trend",
 ];
 
 const NAV_ITEMS = [
@@ -619,15 +619,18 @@ const PWAInstallPrompt = ({ c }) => {
 // ══════════════════════════════════════════════════════════════
 // ENV 7: LIVE DEMO PIPELINE
 // ══════════════════════════════════════════════════════════════
-const DemoBanner = ({ c, onNav }) => (
+const DemoBanner = ({ c, onNav, onUpgrade }) => (
   <div style={{
-    display: "flex", alignItems: "center", justifyContent: "center", gap: 12, padding: "7px 16px",
+    display: "flex", alignItems: "center", justifyContent: "center", gap: 12, padding: "8px 16px",
     background: `linear-gradient(90deg, ${c.accent}15, ${c.purple}10)`, borderBottom: `1px solid ${c.accent}20`,
-    fontSize: 11, color: c.textSec, flexShrink: 0,
+    fontSize: 11, color: c.textSec, flexShrink: 0, flexWrap: "wrap",
   }}>
     <span style={{ fontSize: 8, fontWeight: 800, padding: "2px 6px", borderRadius: 3, background: c.accentDim, color: c.accent, letterSpacing: "0.06em" }}>DEMO</span>
-    <span>You are viewing sample data for <strong style={{ color: c.text }}>Acme SaaS Corp</strong>. Connect your own data to get started.</span>
-    <span onClick={() => onNav("integrations")} style={{ fontSize: 10, color: c.accent, fontWeight: 700, cursor: "pointer" }}>Connect ERP</span>
+    <span>Viewing sample data for <strong style={{ color: c.text }}>Acme SaaS Corp</strong></span>
+    <span style={{ width: 3, height: 3, borderRadius: "50%", background: c.textFaint }} />
+    <span onClick={() => onNav("integrations")} style={{ fontSize: 10, color: c.accent, fontWeight: 700, cursor: "pointer" }}>Connect Your ERP</span>
+    <span style={{ width: 3, height: 3, borderRadius: "50%", background: c.textFaint }} />
+    <span onClick={onUpgrade} style={{ fontSize: 10, fontWeight: 700, padding: "3px 10px", borderRadius: 5, background: `linear-gradient(135deg, ${c.accent}, ${c.purple})`, color: "#fff", cursor: "pointer" }}>Upgrade Now</span>
   </div>
 );
 
@@ -1081,7 +1084,12 @@ const COPILOT_RESPONSES = {
   "revenue": "Revenue beat of +$2.09M (+4.3%) is driven entirely by enterprise outperformance.\n\n**Enterprise (>$100K ACV):** +$3.3M above plan (+16.9%)\n• ACV expansion: avg deal up 28% ($142K → $182K)\n• AI module attach: 34% of new deals (vs 12% planned)\n• Three unplanned $300K+ deals from inbound\n\n**Mid-market ($25K-$100K):** -$800K below plan (-4.2%)\n**SMB (<$25K):** -$400K below plan (-3.8%)\n\nNDR at 118% — expansion contributing $4.2M above initial contracts.\n\n**Recommendation:** Double down on enterprise AI module. Investigate mid-market win rate decline vs Runway.",
   "pigment": "**Acme vs Pigment — Head to Head**\n\nScale: Pigment ~$80M ARR vs our $48.6M (they're ~1.6x).\nWin rate: We win 42% of competitive deals. Was 35% two quarters ago — improving.\n\n**Where we win:**\n• Visible AI reasoning — they don't have this\n• Published pricing ($499-$3,999/mo flat vs their opaque $65K+ entry)\n• Self-serve onboarding (days vs 3-6 month implementation)\n\n**Where they win:**\n• Fortune 500 logos and enterprise references\n• Module breadth (workforce planning, SPM)\n• Larger partner ecosystem\n\nOur Rule of 40 (52.1) vs estimated 40-45 for Pigment.\n\n**Recommendation:** Focus positioning on AI transparency and TCO. Build customer advisory board for enterprise proof points.",
   "guidance": "**Raise guidance to $52-54M.**\n\nThe math:\n• YTD actual: $51.19M (+$2.09M vs plan)\n• Current run rate: $52.8M full year\n• Enterprise pipeline weighted at $38M in stages 3-5\n\nWhy it's structural:\n• Enterprise ACV up 28% — pricing power, not luck\n• AI module at 34% attach creates new revenue layer\n• NDR at 118% means base compounds\n\nScenario range:\n• Bear: $50.5M (mid-market worsens)\n• Base: $52.8M (current trajectory)\n• Bull: $54.2M (Q4 flush + AI v2)\n\n**Recommendation:** Present $52-54M range to board. Pair with competitive SWAT team request.",
-  "default": "I have Acme's full financials, SaaS metrics, benchmarks, and competitive data loaded. That's a great question — let me analyze the data.\n\nBased on the current performance:\n• Revenue: $51.19M YTD (+4.3% vs plan)\n• Gross margin: 84.7%\n• Rule of 40: 52.1 (top quartile)\n• NDR: 118%\n\nWant me to drill deeper into any specific metric or run a scenario analysis?",
+  "margin": "**Gross Margin Analysis: 84.7% (+2.1pp YoY)**\n\n**What's driving the improvement:**\n• Cloud cost optimization: moved to reserved instances → -$380K/yr\n• Support automation: AI deflection at 42% → headcount flat despite 24% growth\n• Revenue mix shift: Enterprise (87% margin) growing faster than SMB (78% margin)\n\n**Risks to watch:**\n• AI inference costs scaling with usage — currently $0.004/query, could 3x\n• Mid-market support tickets up 18% (churn signal?)\n\n**Benchmark:** SaaS median 72%. We're top-decile at 84.7%.\n\n**Recommendation:** Lock in 3-year cloud commitments while rates are favorable. Monitor AI cost per query weekly.",
+  "burn": "**Burn Multiple: 0.8x (efficient growth)**\n\nFormula: Net Burn / Net New ARR = $9.4M / $11.7M = 0.80x\n\n**Breakdown:**\n• Net new ARR: $11.7M (from $36.9M → $48.6M)\n• Total OpEx: $39.6M\n• Cash consumed: $9.4M net burn\n\n**Benchmark context:**\n• <1.0x = best-in-class efficiency (Bessemer says 'superhuman')\n• 1.0-1.5x = good\n• >2.0x = concerning\n\n**Cash position:** $12.8M with 34 months runway at current burn.\n\n**Recommendation:** Maintain below 1.0x. Selective hiring in enterprise sales only — each rep producing $1.8M ARR.",
+  "churn": "**Churn & Retention Analysis**\n\n**Logo churn:** 4.2% annualized (8 accounts lost of 192)\n• 5 were SMB (<$25K) — expected at this segment\n• 2 mid-market lost to Runway on price\n• 1 enterprise churned due to M&A (acquired company standardized)\n\n**Revenue churn:** 2.1% gross, offset by 118% NDR\n• Net revenue retention: 118% means every $1 from last year is now $1.18\n• Expansion: AI module upsell (34% attach), seat expansion, tier upgrades\n\n**Cohort trend:** 2023 cohort NDR at 124% (maturing well). 2024 cohort at 112% (still early).\n\n**Recommendation:** Launch mid-market win-back campaign targeting the 2 Runway losses. Pricing flexibility in the $25-50K band.",
+  "expense": "**Expense Variance Summary — YTD**\n\n**Over budget (action needed):**\n• S&M: +$730K over (+5.0%) — Hiring $420K ahead of plan, events $180K for re:Invent\n• Cloud/Infra: +$455K over (+12.4%) — AI inference costs scaling faster than modeled\n\n**Under budget (favorable):**\n• R&D: -$278K under (-1.4%) — two senior hires delayed to Q3\n• G&A: -$255K under (-5.0%) — legal fees lower than budgeted\n\n**Total OpEx:** $39.6M vs $39.4M budget (+$200K net, +0.5%)\n\n**Recommendation:** S&M overspend is deliberate (pipeline ROI 7.2x). Cloud costs need attention — set up inference cost alerts at $0.006/query threshold.",
+  "forecast": "**Forecast Accuracy Assessment**\n\n**Current model:** ETS + XGBoost + Linear ensemble\n• MAPE: 3.2% (industry median: 8-12%)\n• Best on: Revenue, COGS (1.8% MAPE)\n• Weakest on: S&M timing (6.1% MAPE — event spend lumpy)\n\n**14 drivers tracked:**\n• Pipeline velocity, win rates, ACV, NDR, logo churn\n• Headcount plan, cloud costs, AI usage, event calendar\n• 3 external: Fed rate, SaaS multiples, hiring index\n\n**Confidence intervals:**\n• Q3 revenue: $13.2M ± $420K (95% CI)\n• Full year: $52.8M ± $1.6M\n\n**Recommendation:** Retrain weekly during Q3 (board prep). Add competitor pricing as a driver — 2 recent losses correlated with Runway price drops.",
+  "default": "I have Acme's full financials, SaaS metrics, benchmarks, and competitive data loaded. That's a great question — let me analyze the data.\n\nBased on the current performance:\n• Revenue: $51.19M YTD (+4.3% vs plan)\n• Gross margin: 84.7%\n• Rule of 40: 52.1 (top quartile)\n• NDR: 118%\n• Burn multiple: 0.8x (efficient)\n• Cash runway: 34 months ($12.8M)\n\nI can help with variance analysis, scenario modeling, competitive benchmarks, forecasting, churn analysis, or expense deep-dives. What would you like to explore?",
 };
 
 const CopilotView = ({ c, toast }) => {
@@ -1124,8 +1132,13 @@ const CopilotView = ({ c, toast }) => {
       const q = userMsg.toLowerCase();
       let response = COPILOT_RESPONSES.default;
       if (q.includes("revenue") || q.includes("beat") || q.includes("what drove")) response = COPILOT_RESPONSES.revenue;
-      else if (q.includes("pigment") || q.includes("competitor") || q.includes("compare")) response = COPILOT_RESPONSES.pigment;
-      else if (q.includes("guidance") || q.includes("raise") || q.includes("should we")) response = COPILOT_RESPONSES.guidance;
+      else if (q.includes("pigment") || q.includes("competitor") || q.includes("compare") || q.includes("runway") || q.includes("anaplan")) response = COPILOT_RESPONSES.pigment;
+      else if (q.includes("guidance") || q.includes("raise") || q.includes("should we") || q.includes("board")) response = COPILOT_RESPONSES.guidance;
+      else if (q.includes("margin") || q.includes("gross") || q.includes("cogs") || q.includes("profit")) response = COPILOT_RESPONSES.margin;
+      else if (q.includes("burn") || q.includes("cash") || q.includes("runway") || q.includes("efficiency")) response = COPILOT_RESPONSES.burn;
+      else if (q.includes("churn") || q.includes("retention") || q.includes("ndr") || q.includes("lost") || q.includes("cancel")) response = COPILOT_RESPONSES.churn;
+      else if (q.includes("expense") || q.includes("spend") || q.includes("opex") || q.includes("cost") || q.includes("over budget")) response = COPILOT_RESPONSES.expense;
+      else if (q.includes("forecast") || q.includes("predict") || q.includes("mape") || q.includes("model") || q.includes("accuracy")) response = COPILOT_RESPONSES.forecast;
       setTimeout(() => {
         if (!mountedRef.current) return;
         setMessages(prev => [...prev, { role: "assistant", content: response }]);
@@ -2063,6 +2076,9 @@ const InvestorView = ({ c, toast }) => (
 // ══════════════════════════════════════════════════════════════
 const AdminView = ({ c, toast, onNav }) => {
   const [tab, setTab] = useState("overview");
+  const [inviteOpen, setInviteOpen] = useState(false);
+  const [inviteEmail, setInviteEmail] = useState("");
+  const [inviteRole, setInviteRole] = useState("Viewer");
   const tabs = [
     { id: "overview", label: "Overview" },
     { id: "users", label: "Users & Roles" },
@@ -2109,7 +2125,7 @@ const AdminView = ({ c, toast, onNav }) => {
           <div style={{ fontSize: 18, fontWeight: 800, color: c.text, letterSpacing: "-0.02em", marginBottom: 4 }}>Admin Console</div>
           <div style={{ fontSize: 12, color: c.textDim }}>{users.length} users · {users.filter(u => u.status === "active").length} active · {events.length} events today</div>
         </div>
-        <button onClick={() => toast("Invite sent", "success")} style={{ fontSize: 11, padding: "8px 16px", borderRadius: 8, border: "none", background: c.accent, color: "#fff", fontWeight: 700, cursor: "pointer", fontFamily: "inherit" }}>+ Invite User</button>
+        <button onClick={() => setInviteOpen(true)} style={{ fontSize: 11, padding: "8px 16px", borderRadius: 8, border: "none", background: c.accent, color: "#fff", fontWeight: 700, cursor: "pointer", fontFamily: "inherit" }}>+ Invite User</button>
       </div>
       {/* Tab bar */}
       <div style={{ display: "flex", gap: 4, marginBottom: 24, background: c.surfaceAlt, borderRadius: 10, padding: 3, border: `1px solid ${c.borderSub}`, maxWidth: 480 }}>
@@ -2305,6 +2321,29 @@ const AdminView = ({ c, toast, onNav }) => {
                   </div>
                 </div>
               ))}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Invite User Modal */}
+      {inviteOpen && (
+        <div onClick={() => setInviteOpen(false)} style={{ position: "fixed", inset: 0, zIndex: 2000, background: "rgba(0,0,0,0.5)", backdropFilter: "blur(4px)", display: "flex", alignItems: "center", justifyContent: "center", animation: "fadeIn 0.15s" }}>
+          <div onClick={e => e.stopPropagation()} style={{ width: 400, background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, boxShadow: "0 20px 60px rgba(0,0,0,0.4)", padding: "28px 32px", animation: "cmdIn 0.2s cubic-bezier(0.22,1,0.36,1)" }}>
+            <div style={{ fontSize: 18, fontWeight: 800, color: c.text, marginBottom: 4 }}>Invite Team Member</div>
+            <div style={{ fontSize: 12, color: c.textDim, marginBottom: 20 }}>They'll receive an email invite to join your workspace.</div>
+            <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+              <input value={inviteEmail} onChange={e => setInviteEmail(e.target.value)} placeholder="colleague@company.com" style={{ width: "100%", fontSize: 13, padding: "11px 14px", borderRadius: 10, border: `1px solid ${c.border}`, background: c.surfaceAlt, color: c.text, fontFamily: "inherit", outline: "none" }}
+                onFocus={e => e.target.style.borderColor = c.accent} onBlur={e => e.target.style.borderColor = c.border}
+                onKeyDown={e => { if (e.key === "Enter" && inviteEmail.trim()) { toast(`Invite sent to ${inviteEmail}`, "success"); setInviteEmail(""); setInviteOpen(false); }}}
+              />
+              <select value={inviteRole} onChange={e => setInviteRole(e.target.value)} style={{ width: "100%", fontSize: 13, padding: "11px 14px", borderRadius: 10, border: `1px solid ${c.border}`, background: c.surfaceAlt, color: c.text, fontFamily: "inherit", cursor: "pointer" }}>
+                {["Viewer", "Budget Owner", "Manager", "Admin"].map(r => <option key={r} value={r}>{r}</option>)}
+              </select>
+              <div style={{ display: "flex", gap: 8, marginTop: 4 }}>
+                <button onClick={() => setInviteOpen(false)} style={{ flex: 1, fontSize: 13, padding: "11px 0", borderRadius: 10, border: `1px solid ${c.border}`, background: "transparent", color: c.textSec, cursor: "pointer", fontFamily: "inherit" }}>Cancel</button>
+                <button onClick={() => { if (inviteEmail.trim()) { toast(`Invite sent to ${inviteEmail} as ${inviteRole}`, "success"); setInviteEmail(""); setInviteOpen(false); } else { toast("Enter an email address", "warning"); }}} style={{ flex: 1, fontSize: 13, padding: "11px 0", borderRadius: 10, border: "none", background: c.accent, color: "#fff", fontWeight: 700, cursor: "pointer", fontFamily: "inherit" }}>Send Invite</button>
+              </div>
             </div>
           </div>
         </div>
@@ -3246,12 +3285,12 @@ const LandingPage = ({ onLogin }) => {
           <a href="#pricing" style={{ fontSize: 13, color: "#9ca3b0", textDecoration: "none", fontWeight: 500 }}>Pricing</a>
           <a href="#invest" style={{ fontSize: 13, color: "#60a5fa", textDecoration: "none", fontWeight: 600 }}>Investors</a>
           <button onClick={() => setAuthModal("login")} style={{ fontSize: 13, padding: "9px 20px", borderRadius: 8, border: "1px solid #23232a", background: "transparent", color: "#f0f2f5", cursor: "pointer", fontFamily: "inherit", fontWeight: 600 }}>Sign In</button>
-          <button onClick={enterDemo} style={{ fontSize: 13, padding: "9px 20px", borderRadius: 8, border: "none", background: "linear-gradient(135deg, #60a5fa, #a78bfa)", color: "#fff", cursor: "pointer", fontFamily: "inherit", fontWeight: 700, boxShadow: "0 4px 16px rgba(96,165,250,0.25)" }}>Start Free Trial</button>
+          <button onClick={() => setAuthModal("signup")} style={{ fontSize: 13, padding: "9px 20px", borderRadius: 8, border: "none", background: "linear-gradient(135deg, #60a5fa, #a78bfa)", color: "#fff", cursor: "pointer", fontFamily: "inherit", fontWeight: 700, boxShadow: "0 4px 16px rgba(96,165,250,0.25)" }}>Start Free Trial</button>
         </div>
         ) : (
         <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
           <button onClick={() => setAuthModal("login")} style={{ fontSize: 12, padding: "8px 14px", borderRadius: 8, border: "1px solid #23232a", background: "transparent", color: "#f0f2f5", cursor: "pointer", fontFamily: "inherit", fontWeight: 600 }}>Sign In</button>
-          <button onClick={enterDemo} style={{ fontSize: 12, padding: "8px 14px", borderRadius: 8, border: "none", background: "linear-gradient(135deg, #60a5fa, #a78bfa)", color: "#fff", cursor: "pointer", fontFamily: "inherit", fontWeight: 700 }}>Try Free</button>
+          <button onClick={() => setAuthModal("signup")} style={{ fontSize: 12, padding: "8px 14px", borderRadius: 8, border: "none", background: "linear-gradient(135deg, #60a5fa, #a78bfa)", color: "#fff", cursor: "pointer", fontFamily: "inherit", fontWeight: 700 }}>Try Free</button>
         </div>
         )}
       </nav>
@@ -3756,6 +3795,7 @@ export default function FinanceOS() {
   const [period, setPeriod] = useState("FY2025 YTD");
   const [periodOpen, setPeriodOpen] = useState(false);
   const [notifOpen, setNotifOpen] = useState(false);
+  const [notifRead, setNotifRead] = useState(new Set());
   const [navHistory, setNavHistory] = useState(["dashboard"]);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -4194,7 +4234,7 @@ export default function FinanceOS() {
         </div>
 
         {/* Demo data banner — ENV 7 */}
-        {user.plan === "demo" && <DemoBanner c={c} onNav={navigate} />}
+        {user.plan === "demo" && <DemoBanner c={c} onNav={navigate} onUpgrade={() => setShowPlanPicker(true)} />}
 
         {/* Topbar — frosted glass */}
         <div className="theme-transition" style={{
@@ -4262,37 +4302,47 @@ export default function FinanceOS() {
               <Search size={13} /> Search... <kbd style={{ marginLeft: "auto", fontSize: 9, padding: "1px 5px", borderRadius: 3, background: c.bg2, border: `1px solid ${c.borderSub}`, color: c.textFaint }}>⌘K</kbd>
             </div>
             <div style={{ position: "relative" }}>
-              <div style={{ cursor: "pointer", position: "relative" }} role="button" aria-label="Notifications" tabIndex={0} onClick={() => setNotifOpen(!notifOpen)} onKeyDown={e => e.key === "Enter" && setNotifOpen(!notifOpen)}>
+              {(() => {
+                const NOTIFS = [
+                  { id: 0, text: "Revenue variance detected: +$2.09M above budget", time: "2 min ago", nav: "copilot", color: c.green },
+                  { id: 1, text: "S&M spend $730K over — review recommended", time: "12 min ago", nav: "copilot", color: c.amber },
+                  { id: 2, text: "February close: 3 tasks still pending", time: "1 hr ago", nav: "close", color: c.accent },
+                  { id: 3, text: "Model retrained — MAPE improved to 2.9%", time: "3 hr ago", nav: "forecast", color: c.purple },
+                ];
+                const unread = NOTIFS.filter(n => !notifRead.has(n.id)).length;
+                return (<>
+              <div style={{ cursor: "pointer", position: "relative" }} role="button" aria-label={`${unread} notifications`} tabIndex={0} onClick={() => setNotifOpen(!notifOpen)} onKeyDown={e => e.key === "Enter" && setNotifOpen(!notifOpen)}>
                 <Bell size={18} color={notifOpen ? c.accent : c.textDim} />
-                <div style={{ position: "absolute", top: -3, right: -4, minWidth: 14, height: 14, borderRadius: 7, background: c.red, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 8, fontWeight: 800, color: "#fff", border: `2px solid ${c.bg2}` }}>4</div>
+                {unread > 0 && <div style={{ position: "absolute", top: -3, right: -4, minWidth: 14, height: 14, borderRadius: 7, background: c.red, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 8, fontWeight: 800, color: "#fff", border: `2px solid ${c.bg2}` }}>{unread}</div>}
               </div>
               {notifOpen && (
                 <div style={{ position: "absolute", top: "calc(100% + 8px)", right: 0, width: 340, background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, boxShadow: "0 12px 40px rgba(0,0,0,0.3)", overflow: "hidden", zIndex: 200, animation: "cmdIn 0.15s cubic-bezier(0.22,1,0.36,1)" }}>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "14px 16px", borderBottom: `1px solid ${c.borderSub}` }}>
-                    <span style={{ fontSize: 13, fontWeight: 700, color: c.text }}>Notifications</span>
-                    <span onClick={() => { setNotifOpen(false); toast("All marked as read", "success"); }} style={{ fontSize: 10, color: c.accent, fontWeight: 600, cursor: "pointer" }}>Mark all read</span>
+                    <span style={{ fontSize: 13, fontWeight: 700, color: c.text }}>Notifications {unread > 0 && <span style={{ fontSize: 10, color: c.textDim, fontWeight: 500 }}>· {unread} new</span>}</span>
+                    {unread > 0 && <span onClick={() => { setNotifRead(new Set(NOTIFS.map(n => n.id))); toast("All marked as read", "success"); }} style={{ fontSize: 10, color: c.accent, fontWeight: 600, cursor: "pointer" }}>Mark all read</span>}
                   </div>
-                  {[
-                    { text: "Revenue variance detected: +$2.09M above budget", time: "2 min ago", type: "alert", color: c.green },
-                    { text: "S&M spend $730K over — review recommended", time: "12 min ago", type: "warning", color: c.amber },
-                    { text: "February close: 3 tasks still pending", time: "1 hr ago", type: "task", color: c.accent },
-                    { text: "Model retrained — MAPE improved to 2.9%", time: "3 hr ago", type: "info", color: c.purple },
-                  ].map((n, i) => (
-                    <div key={i} onClick={() => { setNotifOpen(false); navigate(i < 2 ? "copilot" : i === 2 ? "close" : "forecast"); }} style={{
+                  {NOTIFS.map(n => {
+                    const isRead = notifRead.has(n.id);
+                    return (
+                    <div key={n.id} onClick={() => { setNotifRead(prev => new Set([...prev, n.id])); setNotifOpen(false); navigate(n.nav); }} style={{
                       display: "flex", gap: 10, padding: "12px 16px", cursor: "pointer", borderBottom: `1px solid ${c.borderSub}`, transition: "background 0.1s",
+                      opacity: isRead ? 0.5 : 1,
                     }}
                     onMouseEnter={e => e.currentTarget.style.background = c.surfaceAlt}
                     onMouseLeave={e => e.currentTarget.style.background = "transparent"}
                     >
-                      <div style={{ width: 8, height: 8, borderRadius: "50%", background: n.color, marginTop: 5, flexShrink: 0 }} />
+                      <div style={{ width: 8, height: 8, borderRadius: "50%", background: isRead ? c.textFaint : n.color, marginTop: 5, flexShrink: 0, transition: "background 0.2s" }} />
                       <div style={{ flex: 1, minWidth: 0 }}>
-                        <div style={{ fontSize: 12, color: c.text, lineHeight: 1.5 }}>{n.text}</div>
+                        <div style={{ fontSize: 12, color: isRead ? c.textDim : c.text, lineHeight: 1.5 }}>{n.text}</div>
                         <div style={{ fontSize: 10, color: c.textFaint, marginTop: 2 }}>{n.time}</div>
                       </div>
                     </div>
-                  ))}
+                    );
+                  })}
                 </div>
               )}
+                </>);
+              })()}
             </div>
           </div>
         </div>
