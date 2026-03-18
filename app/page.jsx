@@ -2560,6 +2560,7 @@ const DEMO_TABS = [
 
 const ProductDemo = ({ enterDemo }) => {
   const [tab, setTab] = useState("planning");
+  const isMobile = useMediaQuery("(max-width: 768px)");
   const active = DEMO_TABS.find(d => d.id === tab) || DEMO_TABS[0];
   return (
     <div style={{ padding: "80px 48px", maxWidth: 1100, margin: "0 auto" }}>
@@ -2579,7 +2580,7 @@ const ProductDemo = ({ enterDemo }) => {
         ))}
       </div>
       {/* Content + Mockup */}
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 32, alignItems: "center" }}>
+      <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: isMobile ? 20 : 32, alignItems: "center" }}>
         <div>
           <h3 style={{ fontSize: 28, fontWeight: 800, letterSpacing: "-0.02em", marginBottom: 12 }}>{active.title}</h3>
           <p style={{ fontSize: 15, color: "#6b7280", lineHeight: 1.7, marginBottom: 24 }}>{active.sub}</p>
@@ -2674,11 +2675,12 @@ const LandingPage = ({ onLogin }) => {
       </div>
 
       {/* Nav */}
-      <nav style={{ position: "relative", zIndex: 10, display: "flex", justifyContent: "space-between", alignItems: "center", padding: "20px 48px", maxWidth: 1200, margin: "0 auto" }}>
+      <nav style={{ position: "relative", zIndex: 10, display: "flex", justifyContent: "space-between", alignItems: "center", padding: isMobile ? "16px 20px" : "20px 48px", maxWidth: 1200, margin: "0 auto" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
           <FosLogo size={32} />
           <span style={{ fontWeight: 800, fontSize: 18, letterSpacing: "-0.3px" }}>Finance<span style={{ fontWeight: 400, opacity: 0.6 }}>OS</span></span>
         </div>
+        {!isMobile ? (
         <div style={{ display: "flex", gap: 24, alignItems: "center" }}>
           <a href="#features" style={{ fontSize: 13, color: "#9ca3b0", textDecoration: "none", fontWeight: 500 }}>Features</a>
           <a href="#security" style={{ fontSize: 13, color: "#9ca3b0", textDecoration: "none", fontWeight: 500 }}>Security</a>
@@ -2687,10 +2689,16 @@ const LandingPage = ({ onLogin }) => {
           <button onClick={() => setAuthModal("login")} style={{ fontSize: 13, padding: "9px 20px", borderRadius: 8, border: "1px solid #23232a", background: "transparent", color: "#f0f2f5", cursor: "pointer", fontFamily: "inherit", fontWeight: 600 }}>Sign In</button>
           <button onClick={enterDemo} style={{ fontSize: 13, padding: "9px 20px", borderRadius: 8, border: "none", background: "linear-gradient(135deg, #60a5fa, #a78bfa)", color: "#fff", cursor: "pointer", fontFamily: "inherit", fontWeight: 700, boxShadow: "0 4px 16px rgba(96,165,250,0.25)" }}>Start Free Trial</button>
         </div>
+        ) : (
+        <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+          <button onClick={() => setAuthModal("login")} style={{ fontSize: 12, padding: "8px 14px", borderRadius: 8, border: "1px solid #23232a", background: "transparent", color: "#f0f2f5", cursor: "pointer", fontFamily: "inherit", fontWeight: 600 }}>Sign In</button>
+          <button onClick={enterDemo} style={{ fontSize: 12, padding: "8px 14px", borderRadius: 8, border: "none", background: "linear-gradient(135deg, #60a5fa, #a78bfa)", color: "#fff", cursor: "pointer", fontFamily: "inherit", fontWeight: 700 }}>Try Free</button>
+        </div>
+        )}
       </nav>
 
       {/* Hero */}
-      <div style={{ position: "relative", zIndex: 1, textAlign: "center", padding: isMobile ? "48px 20px 40px" : "80px 48px 60px", maxWidth: 900, margin: "0 auto" }}>
+      <div style={{ position: "relative", zIndex: 1, textAlign: "center", padding: isMobile ? "40px 20px 32px" : "80px 48px 60px", maxWidth: 900, margin: "0 auto" }}>
         <div style={{ display: "inline-block", padding: "6px 16px", borderRadius: 20, background: "rgba(96,165,250,0.08)", border: "1px solid rgba(96,165,250,0.15)", fontSize: 11, fontWeight: 600, color: "#60a5fa", marginBottom: 24, letterSpacing: "0.03em" }}>AI-NATIVE FP&A — NOW IN GENERAL AVAILABILITY</div>
         <h1 style={{ fontSize: isMobile ? 36 : 56, fontWeight: 800, lineHeight: 1.08, letterSpacing: "-0.035em", marginBottom: 20 }}>
           Financial planning<br />that thinks before<br />it answers
@@ -2698,14 +2706,14 @@ const LandingPage = ({ onLogin }) => {
         <p style={{ fontSize: 18, color: "#6b7280", lineHeight: 1.6, maxWidth: 560, margin: "0 auto 36px", fontWeight: 400 }}>
           FinanceOS connects your ERP, CRM, and billing data into a unified model with AI-powered variance detection and natural language querying.
         </p>
-        <div style={{ display: "flex", gap: 0, justifyContent: "center", maxWidth: 440, margin: "0 auto" }}>
+        <div style={{ display: "flex", gap: 0, justifyContent: "center", maxWidth: 440, margin: "0 auto", flexDirection: isMobile ? "column" : "row" }}>
           <input value={heroEmail} onChange={e => setHeroEmail(e.target.value)} onKeyDown={e => { if (e.key === "Enter") handleHeroSignup(); }}
             placeholder="Work email" type="email"
-            style={{ flex: 1, fontSize: 14, padding: "14px 18px", borderRadius: "10px 0 0 10px", border: "1px solid #23232a", borderRight: "none", background: "#0c0c0f", color: "#f0f2f5", fontFamily: "inherit", outline: "none", transition: "border-color 0.2s" }}
+            style={{ flex: 1, fontSize: 14, padding: "14px 18px", borderRadius: isMobile ? 10 : "10px 0 0 10px", border: "1px solid #23232a", borderRight: isMobile ? "1px solid #23232a" : "none", background: "#0c0c0f", color: "#f0f2f5", fontFamily: "inherit", outline: "none", transition: "border-color 0.2s" }}
             onFocus={e => e.target.style.borderColor = "#60a5fa"}
             onBlur={e => e.target.style.borderColor = "#23232a"}
           />
-          <button onClick={handleHeroSignup} style={{ fontSize: 14, padding: "14px 24px", borderRadius: "0 10px 10px 0", border: "none", background: "linear-gradient(135deg, #60a5fa, #a78bfa)", color: "#fff", cursor: "pointer", fontFamily: "inherit", fontWeight: 700, whiteSpace: "nowrap", boxShadow: "0 8px 30px rgba(96,165,250,0.25)" }}>Get Started Free</button>
+          <button onClick={handleHeroSignup} style={{ fontSize: 14, padding: "14px 24px", borderRadius: isMobile ? 10 : "0 10px 10px 0", border: "none", background: "linear-gradient(135deg, #60a5fa, #a78bfa)", color: "#fff", cursor: "pointer", fontFamily: "inherit", fontWeight: 700, whiteSpace: "nowrap", boxShadow: "0 8px 30px rgba(96,165,250,0.25)" }}>Get Started Free</button>
         </div>
         <div style={{ fontSize: 11, color: "#44495a", marginTop: 8, textAlign: "center" }}>Using a work email helps find teammates · No credit card required</div>
         <div style={{ display: "flex", gap: 12, justifyContent: "center", marginTop: 16 }}>
@@ -2731,12 +2739,12 @@ const LandingPage = ({ onLogin }) => {
       </div>
 
       {/* Features */}
-      <div id="features" style={{ padding: "60px 48px", maxWidth: 1100, margin: "0 auto" }}>
+      <div id="features" style={{ padding: isMobile ? "40px 20px" : "60px 48px", maxWidth: 1100, margin: "0 auto" }}>
         <div style={{ textAlign: "center", marginBottom: 48 }}>
           <h2 style={{ fontSize: 36, fontWeight: 800, letterSpacing: "-0.03em", marginBottom: 12 }}>Everything a modern<br />finance team needs</h2>
           <p style={{ fontSize: 15, color: "#6b7280", maxWidth: 500, margin: "0 auto" }}>From variance detection to board-ready reports, powered by AI that shows its reasoning.</p>
         </div>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 16 }}>
+        <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "repeat(3, 1fr)", gap: 16 }}>
           {[
             { title: "AI Copilot", desc: "Ask questions in plain English. Get data-backed answers with visible reasoning — not a black box.", Icon: Brain, color: "#a78bfa" },
             { title: "Forecast Optimizer", desc: "ML ensemble models with live sensitivity sliders. Adjust NDR, pipeline, churn — see impact instantly.", Icon: TrendingUp, color: "#60a5fa" },
@@ -2768,7 +2776,7 @@ const LandingPage = ({ onLogin }) => {
           <h2 style={{ fontSize: 36, fontWeight: 800, letterSpacing: "-0.03em", marginBottom: 12 }}>Up and running in 4 steps</h2>
           <p style={{ fontSize: 15, color: "#6b7280", maxWidth: 480, margin: "0 auto" }}>No 6-month implementation. No consultants. Connect your data and start planning in days.</p>
         </div>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 16 }}>
+        <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "repeat(4, 1fr)", gap: 16 }}>
           {[
             { step: 1, title: "Connect your data", desc: "Link your ERP, CRM, and billing in under 5 minutes. NetSuite, Salesforce, Stripe, QuickBooks — all pre-built.", color: "#60a5fa" },
             { step: 2, title: "AI builds your model", desc: "FinanceOS auto-maps your chart of accounts, detects revenue drivers, and creates a baseline forecast.", color: "#a78bfa" },
@@ -2834,7 +2842,7 @@ const LandingPage = ({ onLogin }) => {
       </div>
 
       {/* Pricing */}
-      <div id="pricing" style={{ padding: "60px 48px 80px", maxWidth: 1100, margin: "0 auto" }}>
+      <div id="pricing" style={{ padding: isMobile ? "40px 20px 60px" : "60px 48px 80px", maxWidth: 1100, margin: "0 auto" }}>
         <div style={{ textAlign: "center", marginBottom: 40 }}>
           <h2 style={{ fontSize: 36, fontWeight: 800, letterSpacing: "-0.03em", marginBottom: 12 }}>Simple, transparent pricing</h2>
           <p style={{ fontSize: 15, color: "#6b7280", marginBottom: 20 }}>No hidden fees. No implementation charges. Cancel anytime.</p>
@@ -2843,7 +2851,7 @@ const LandingPage = ({ onLogin }) => {
             <button onClick={() => setBilling("annual")} style={{ fontSize: 12, padding: "7px 16px", borderRadius: 6, border: "none", background: billing === "annual" ? "#23232a" : "transparent", color: billing === "annual" ? "#f0f2f5" : "#6b7280", cursor: "pointer", fontFamily: "inherit", fontWeight: 600 }}>Annual (save 17%)</button>
           </div>
         </div>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 16 }}>
+        <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "repeat(3, 1fr)", gap: 16 }}>
           {plans.map(p => (
             <div key={p.name} style={{ background: "#131316", border: `1px solid ${p.popular ? "#60a5fa" : "#23232a"}`, borderRadius: 14, padding: 28, position: "relative", boxShadow: p.popular ? "0 0 0 1px rgba(96,165,250,0.15), 0 8px 30px rgba(96,165,250,0.08)" : "none", transition: "all 0.25s cubic-bezier(0.22,1,0.36,1)" }}
               onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-4px)"; e.currentTarget.style.boxShadow = p.popular ? "0 0 0 1px rgba(96,165,250,0.25), 0 16px 48px rgba(96,165,250,0.15)" : "0 12px 40px rgba(0,0,0,0.3)"; e.currentTarget.style.borderColor = p.popular ? "#60a5fa" : "#33384a"; }}
@@ -2879,12 +2887,12 @@ const LandingPage = ({ onLogin }) => {
       </div>
 
       {/* Security & Trust */}
-      <div id="security" style={{ padding: "60px 48px", maxWidth: 1100, margin: "0 auto" }}>
+      <div id="security" style={{ padding: isMobile ? "40px 20px" : "60px 48px", maxWidth: 1100, margin: "0 auto" }}>
         <div style={{ textAlign: "center", marginBottom: 40 }}>
           <h2 style={{ fontSize: 36, fontWeight: 800, letterSpacing: "-0.03em", marginBottom: 12 }}>Enterprise-grade security</h2>
           <p style={{ fontSize: 15, color: "#6b7280", maxWidth: 500, margin: "0 auto" }}>Your financial data deserves bank-level protection. We build security into every layer.</p>
         </div>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 16 }}>
+        <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr 1fr" : "repeat(4, 1fr)", gap: 16 }}>
           {[
             { title: "SOC 2 Type II", sub: "Audit-ready architecture with full access logging and role-based controls.", badge: "COMPLIANT" },
             { title: "AES-256 Encryption", sub: "Data encrypted at rest and in transit. Zero plaintext storage of credentials.", badge: "AT REST + TRANSIT" },
@@ -2906,7 +2914,7 @@ const LandingPage = ({ onLogin }) => {
           <h2 style={{ fontSize: 36, fontWeight: 800, letterSpacing: "-0.03em", marginBottom: 12 }}>Part of the Vaultline Suite</h2>
           <p style={{ fontSize: 15, color: "#6b7280", maxWidth: 560, margin: "0 auto" }}>FinanceOS works standalone or as part of a unified finance ecosystem. Bundle all three and save 15%.</p>
         </div>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 16, marginBottom: 32 }}>
+        <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "repeat(3, 1fr)", gap: 16, marginBottom: 32 }}>
           {[
             { name: "Vaultline", desc: "Cloud-native treasury management. Real-time cash position, AI forecasting, multi-currency FX, and bank connectivity.", color: "#22d3ee", market: "Mid-market Treasury", price: "$499-$2,499/mo" },
             { name: "FinanceOS", desc: "AI-powered FP&A platform. Variance detection, scenario modeling, consolidation, and natural language querying.", color: "#60a5fa", market: "FP&A / Planning", price: "$599-$4,799/mo", current: true },
@@ -2936,7 +2944,7 @@ const LandingPage = ({ onLogin }) => {
       </div>
 
       {/* ═══ FUNDRAISER — Seed Round ═══ */}
-      <div id="invest" style={{ padding: "80px 48px", maxWidth: 1100, margin: "0 auto" }}>
+      <div id="invest" style={{ padding: isMobile ? "40px 20px" : "80px 48px", maxWidth: 1100, margin: "0 auto" }}>
         <div style={{ background: "linear-gradient(135deg, rgba(96,165,250,0.06), rgba(167,139,250,0.06))", border: "1px solid rgba(96,165,250,0.12)", borderRadius: 20, padding: "48px", position: "relative", overflow: "hidden" }}>
           {/* Ambient glow */}
           <div style={{ position: "absolute", top: "-50%", right: "-20%", width: "60%", height: "100%", borderRadius: "50%", background: "radial-gradient(circle, rgba(96,165,250,0.08), transparent 70%)", filter: "blur(60px)", pointerEvents: "none" }} />
@@ -2947,7 +2955,7 @@ const LandingPage = ({ onLogin }) => {
             <p style={{ fontSize: 15, color: "#6b7280", maxWidth: 560, lineHeight: 1.7, marginBottom: 36 }}>FinanceOS is raising a seed round to accelerate product development, hire key engineering talent, and expand into enterprise mid-market. Join us as we build the operating system for modern finance.</p>
 
             {/* Funding Progress */}
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 32, marginBottom: 36 }}>
+            <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: isMobile ? 20 : 32, marginBottom: 36 }}>
               <div>
                 <div style={{ fontSize: 11, fontWeight: 600, color: "#6b7280", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 12 }}>Funding Progress</div>
                 <div style={{ display: "flex", alignItems: "baseline", gap: 8, marginBottom: 8 }}>
@@ -3015,7 +3023,7 @@ const LandingPage = ({ onLogin }) => {
         </div>
 
         {/* Traction KPIs */}
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(5, 1fr)", gap: 12, marginBottom: 32 }}>
+        <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr 1fr" : "repeat(5, 1fr)", gap: 12, marginBottom: 32 }}>
           {[
             { label: "Live Demo Users", value: "2,400+", delta: "+180% MoM" },
             { label: "Pipeline Value", value: "$840K", delta: "ARR qualified" },
@@ -3069,7 +3077,7 @@ const LandingPage = ({ onLogin }) => {
 
       {/* Footer — expanded per blueprint */}
       <div style={{ borderTop: "1px solid #1b1b20", padding: "48px 48px 32px", maxWidth: 1100, margin: "0 auto" }}>
-        <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr 1fr 1fr 1fr", gap: 32, marginBottom: 32 }}>
+        <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr 1fr" : "2fr 1fr 1fr 1fr 1fr", gap: 32, marginBottom: 32 }}>
           <div>
             <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
               <FosLogo size={28} />
@@ -3295,14 +3303,36 @@ export default function FinanceOS() {
           * { color: #000 !important; background: #fff !important; box-shadow: none !important; }
         }
         html { scroll-behavior: smooth; }
-        /* Responsive — Landing Page */
+        /* ── RESPONSIVE ── */
         @media (max-width: 768px) {
           [data-sidebar] { display: none !important; }
           [data-topbar] { padding: 8px 16px !important; }
-          [data-main-content] { padding: 16px !important; }
+          nav { padding: 16px 20px !important; }
+          nav > div:nth-child(2) { display: none !important; }
+          [data-mobile-menu] { display: flex !important; }
+          h1 { font-size: 32px !important; }
+          h2 { font-size: 24px !important; }
+          [data-hero] { padding: 40px 20px 32px !important; }
+          [data-section] { padding: 40px 20px !important; }
+          [data-grid-3] { grid-template-columns: 1fr !important; }
+          [data-grid-4] { grid-template-columns: 1fr 1fr !important; }
+          [data-grid-5] { grid-template-columns: 1fr 1fr !important; }
+          [data-grid-2] { grid-template-columns: 1fr !important; }
+          [data-grid-footer] { grid-template-columns: 1fr 1fr !important; gap: 20px !important; }
+          [data-comparison] { overflow-x: auto; }
+          [data-comparison] table { min-width: 600px; }
+          [data-demo-layout] { grid-template-columns: 1fr !important; }
+          [data-demo-tabs] { flex-wrap: wrap !important; }
+          [data-fund-grid] { grid-template-columns: 1fr !important; }
+          [data-hero-email] { flex-direction: column !important; max-width: 100% !important; }
+          [data-hero-email] input { border-radius: 10px !important; border-right: 1px solid #23232a !important; }
+          [data-hero-email] button { border-radius: 10px !important; }
         }
         @media (max-width: 480px) {
-          [data-topbar] { flex-wrap: wrap; gap: 8px !important; }
+          [data-grid-4] { grid-template-columns: 1fr !important; }
+          [data-grid-5] { grid-template-columns: 1fr !important; }
+          [data-grid-footer] { grid-template-columns: 1fr !important; }
+          [data-steps] { grid-template-columns: 1fr !important; }
         }
         .view-fade { animation: fadeIn 0.25s ease-out; }
         .noise-overlay { position: fixed; inset: 0; pointer-events: none; z-index: 9998; opacity: ${mode === "dark" ? 0.018 : 0.01}; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); transition: opacity 0.4s ease; }
