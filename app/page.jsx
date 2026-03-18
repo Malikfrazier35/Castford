@@ -2298,10 +2298,50 @@ const AuthModal = ({ mode: initialMode, onClose, onAuth }) => {
   const [name, setName] = useState("");
   const [company, setCompany] = useState("");
   const [role, setRole] = useState("");
+  const [loading, setLoading] = useState(null); // null | "google" | "microsoft" | "apple" | "email"
+  const [error, setError] = useState(null);
 
-  // Direct auth — no setTimeout, no form submission, no async gaps
-  const doAuth = (method) => {
-    onAuth({ email, name, company, role, method });
+  // OAuth sign-in — redirects to provider
+  const handleOAuth = async (provider) => {
+    setLoading(provider);
+    setError(null);
+    const providerMap = { Google: "google", Microsoft: "azure", Apple: "apple" };
+    const { error: err } = await supabase.auth.signInWithOAuth({
+      provider: providerMap[provider],
+      options: { redirectTo: typeof window !== "undefined" ? window.location.origin : "https://financeos-rho.vercel.app" },
+    });
+    if (err) { setError(err.message); setLoading(null); }
+    // On success, browser redirects — no need to call onAuth
+  };
+
+  // Email sign-up or sign-in
+  const handleEmail = async () => {
+    if (!email.trim() || !password.trim()) { setError("Email and password required"); return; }
+    setLoading("email");
+    setError(null);
+    if (authMode === "signup") {
+      const { error: err } = await supabase.auth.signUp({
+        email: email.trim(), password: password.trim(),
+        options: { data: { full_name: name, company, role } },
+      });
+      if (err) { setError(err.message); setLoading(null); return; }
+      // Also add to waitlist
+      try { await supabase.from("waitlist").upsert({ email: email.trim(), full_name: name, company, role, interest_type: "trial", source: "signup_modal" }, { onConflict: "email" }); } catch {}
+    } else {
+      const { error: err } = await supabase.auth.signInWithPassword({ email: email.trim(), password: password.trim() });
+      if (err) { setError(err.message); setLoading(null); return; }
+    }
+    // onAuthStateChange in parent will handle the login
+    setLoading(null);
+  };
+
+  // Demo request — just saves to waitlist
+  const handleDemo = async () => {
+    setLoading("email");
+    setError(null);
+    try { await supabase.from("waitlist").upsert({ email: email.trim(), full_name: name, company, role, interest_type: "demo", source: "demo_modal" }, { onConflict: "email" }); } catch {}
+    setLoading(null);
+    onAuth({ method: "demo" });
   };
 
   const inputStyle = {
@@ -2334,15 +2374,20 @@ const AuthModal = ({ mode: initialMode, onClose, onAuth }) => {
           {/* SSO Buttons */}
           {(authMode === "login" || authMode === "signup") && (<>
             <div style={{ display: "flex", flexDirection: "column", gap: 8, marginBottom: 16 }}>
-              <button onClick={() => doAuth("Google")} style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 10, padding: "11px 0", borderRadius: 10, border: "1px solid #23232a", background: "#0c0c0f", color: "#f0f2f5", fontFamily: "inherit", fontSize: 13, fontWeight: 600, cursor: "pointer", transition: "all 0.15s" }}
+              <button onClick={() => handleOAuth("Google")} disabled={!!loading} style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 10, padding: "11px 0", borderRadius: 10, border: "1px solid #23232a", background: "#0c0c0f", color: "#f0f2f5", fontFamily: "inherit", fontSize: 13, fontWeight: 600, cursor: loading ? "wait" : "pointer", transition: "all 0.15s", opacity: loading && loading !== "google" ? 0.5 : 1 }}
                 onMouseEnter={e => { e.currentTarget.style.borderColor = "#33384a"; e.currentTarget.style.background = "#131316"; }}
                 onMouseLeave={e => { e.currentTarget.style.borderColor = "#23232a"; e.currentTarget.style.background = "#0c0c0f"; }}
-              ><GoogleIcon /> {authMode === "login" ? "Sign in" : "Sign up"} with Google</button>
-              <button onClick={() => doAuth("Microsoft")} style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 10, padding: "11px 0", borderRadius: 10, border: "1px solid #23232a", background: "#0c0c0f", color: "#f0f2f5", fontFamily: "inherit", fontSize: 13, fontWeight: 600, cursor: "pointer", transition: "all 0.15s" }}
+              ><GoogleIcon /> {loading === "google" ? "Redirecting..." : `${authMode === "login" ? "Sign in" : "Sign up"} with Google`}</button>
+              <button onClick={() => handleOAuth("Microsoft")} disabled={!!loading} style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 10, padding: "11px 0", borderRadius: 10, border: "1px solid #23232a", background: "#0c0c0f", color: "#f0f2f5", fontFamily: "inherit", fontSize: 13, fontWeight: 600, cursor: loading ? "wait" : "pointer", transition: "all 0.15s", opacity: loading && loading !== "microsoft" ? 0.5 : 1 }}
                 onMouseEnter={e => { e.currentTarget.style.borderColor = "#33384a"; e.currentTarget.style.background = "#131316"; }}
                 onMouseLeave={e => { e.currentTarget.style.borderColor = "#23232a"; e.currentTarget.style.background = "#0c0c0f"; }}
-              ><MicrosoftIcon /> {authMode === "login" ? "Sign in" : "Sign up"} with Microsoft</button>
+              ><MicrosoftIcon /> {loading === "microsoft" ? "Redirecting..." : `${authMode === "login" ? "Sign in" : "Sign up"} with Microsoft`}</button>
+              <button onClick={() => handleOAuth("Apple")} disabled={!!loading} style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 10, padding: "11px 0", borderRadius: 10, border: "1px solid #23232a", background: "#0c0c0f", color: "#f0f2f5", fontFamily: "inherit", fontSize: 13, fontWeight: 600, cursor: loading ? "wait" : "pointer", transition: "all 0.15s", opacity: loading && loading !== "apple" ? 0.5 : 1 }}
+                onMouseEnter={e => { if (!loading) { e.currentTarget.style.borderColor = "#33384a"; e.currentTarget.style.background = "#131316"; }}}
+                onMouseLeave={e => { e.currentTarget.style.borderColor = "#23232a"; e.currentTarget.style.background = "#0c0c0f"; }}
+              ><svg viewBox="0 0 24 24" width={16} height={16}><path fill="#fff" d="M17.05 20.28c-.98.95-2.05.88-3.08.4-1.09-.5-2.08-.48-3.24 0-1.44.62-2.2.44-3.06-.4C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/></svg> {loading === "apple" ? "Redirecting..." : `${authMode === "login" ? "Sign in" : "Sign up"} with Apple`}</button>
             </div>
+            {error && <div style={{ padding: "8px 12px", borderRadius: 8, background: "rgba(239,68,68,0.08)", border: "1px solid rgba(239,68,68,0.2)", fontSize: 12, color: "#ef4444", marginBottom: 8, textAlign: "center" }}>{error}</div>}
             {/* Divider */}
             <div style={{ display: "flex", alignItems: "center", gap: 12, margin: "4px 0 16px" }}>
               <div style={{ flex: 1, height: 1, background: "#23232a" }} />
@@ -2402,11 +2447,12 @@ const AuthModal = ({ mode: initialMode, onClose, onAuth }) => {
                 </select>
               </div>
             )}
-            <button onClick={() => doAuth("email")} style={{
-              width: "100%", padding: "13px", borderRadius: 12, fontSize: 14, fontWeight: 700, border: "none", cursor: "pointer",
+            <button onClick={() => authMode === "demo" ? handleDemo() : handleEmail()} disabled={!!loading} style={{
+              width: "100%", padding: "13px", borderRadius: 12, fontSize: 14, fontWeight: 700, border: "none", cursor: loading ? "wait" : "pointer",
               background: "linear-gradient(135deg, #60a5fa, #a78bfa)", color: "#fff", fontFamily: "inherit", marginTop: 4,
-              display: "flex", alignItems: "center", justifyContent: "center", gap: 8, transition: "all 0.2s",
+              display: "flex", alignItems: "center", justifyContent: "center", gap: 8, opacity: loading === "email" ? 0.7 : 1, transition: "all 0.2s",
             }}>
+              {loading === "email" && <span style={{ width: 14, height: 14, border: "2px solid rgba(255,255,255,0.3)", borderTopColor: "#fff", borderRadius: "50%", animation: "spin 0.6s linear infinite" }} />}
               {authMode === "login" ? "Sign In" : authMode === "signup" ? "Start Free Trial" : "Request Demo"}
             </button>
           </div>
@@ -3067,6 +3113,29 @@ export default function FinanceOS() {
   const [showOnboarding, setShowOnboarding] = useState(false);
   const { toasts, toast } = useToast();
 
+  // Listen for Supabase auth state changes (handles OAuth redirects)
+  useEffect(() => {
+    // Check for existing session on mount
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session?.user) {
+        setUser({ name: session.user.user_metadata?.full_name || session.user.email?.split("@")[0] || "User", email: session.user.email || "" });
+        setLoggedIn(true);
+      }
+    });
+    // Listen for auth changes (login, logout, token refresh)
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === "SIGNED_IN" && session?.user) {
+        setUser({ name: session.user.user_metadata?.full_name || session.user.email?.split("@")[0] || "User", email: session.user.email || "" });
+        setLoggedIn(true);
+      } else if (event === "SIGNED_OUT") {
+        setLoggedIn(false);
+        setUser({ name: "Guest", email: "" });
+        setView("dashboard");
+      }
+    });
+    return () => subscription.unsubscribe();
+  }, []);
+
   // Sunset-aware auto theme: dark after 6:30pm, light after 6:30am, respects OS preference
   const getAutoMode = useCallback(() => {
     const hour = new Date().getHours();
@@ -3110,6 +3179,7 @@ export default function FinanceOS() {
   }, []);
 
   const handleLogout = useCallback(() => {
+    supabase.auth.signOut().catch(() => {}); // Sign out from Supabase
     setLoggedIn(false);
     setUser({ name: "Guest", email: "", plan: null });
     setView("dashboard");
