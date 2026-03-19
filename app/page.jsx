@@ -995,22 +995,25 @@ const DashboardView = ({ c, onNav, toast, onDrawer, userName }) => {
           </ComposedChart>
         </ResponsiveContainer>
         {/* Legend row */}
-        <div style={{ display: "flex", gap: 16, marginTop: 12, fontSize: 10, color: c.textDim, alignItems: "center", paddingTop: 10, borderTop: `1px solid ${c.borderSub}` }}>
+        <div style={{ display: "flex", gap: 12, marginTop: 12, fontSize: 10, color: c.textDim, alignItems: "center", paddingTop: 10, borderTop: `1px solid ${c.borderSub}`, flexWrap: "wrap" }}>
           {[
-            { key: "actual", label: "Actual", color: c.accent, bar: true },
-            { key: "budget", label: "Budget", color: c.textFaint, dashed: true },
-            { key: "forecast", label: "Forecast", color: c.green, dashed: true },
+            { key: "actual", label: "Actual", color: c.accent },
+            { key: "budget", label: "Budget", color: c.textFaint },
+            { key: "forecast", label: "Forecast", color: c.green },
           ].map(s => (
             <span key={s.key} onClick={() => toggleSeries(s.key)} style={{
-              display: "flex", alignItems: "center", gap: 6, cursor: "pointer", padding: "3px 8px", borderRadius: 5,
+              display: "flex", alignItems: "center", gap: 5, cursor: "pointer", padding: "3px 8px", borderRadius: 5,
               opacity: hiddenSeries[s.key] ? 0.3 : 1, background: hiddenSeries[s.key] ? "transparent" : `${s.color}08`,
               transition: "all 0.2s", fontWeight: 600,
             }}>
-              <span style={{ width: 12, height: 12, borderRadius: 3, background: `${s.color}20`, border: `2px solid ${s.color}`, display: "inline-block", opacity: hiddenSeries[s.key] ? 0.3 : 1 }} />
+              <span style={{ width: 10, height: 10, borderRadius: 3, background: `${s.color}20`, border: `2px solid ${s.color}`, display: "inline-block", opacity: hiddenSeries[s.key] ? 0.3 : 1 }} />
               {s.label}
             </span>
           ))}
-          <span style={{ marginLeft: "auto", fontWeight: 700, color: c.accent, fontSize: 11, fontFamily: "'JetBrains Mono', monospace" }}>H: $10.4M  L: $6.8M</span>
+          <span style={{ marginLeft: "auto", display: "flex", gap: 10, alignItems: "center" }}>
+            <span style={{ fontSize: 9, fontWeight: 700, padding: "2px 7px", borderRadius: 4, background: c.greenDim, color: c.green, border: `1px solid ${c.green}10` }}>+$2.09M beat</span>
+            <span style={{ fontWeight: 700, color: c.accent, fontFamily: "'JetBrains Mono', monospace", fontSize: 10 }}>H: $10.4M · L: $6.8M</span>
+          </span>
         </div>
       </div>
 
@@ -1037,7 +1040,7 @@ const DashboardView = ({ c, onNav, toast, onDrawer, userName }) => {
               {SEGMENT_DATA.map((s, i) => <Cell key={i} fill={`url(#seg${i})`} />)}
             </Pie>
             <Tooltip content={<ChartTooltip c={c} />} />
-            <text x="50%" y="44%" textAnchor="middle" fill={c.text} fontSize={20} fontWeight={800} fontFamily="'JetBrains Mono', monospace">$51.2M</text>
+            <text x="50%" y="44%" textAnchor="middle" fill={c.text} fontSize={20} fontWeight={800} fontFamily="'JetBrains Mono', monospace">${(SEGMENT_DATA.reduce((a, b) => a + b.value, 0) / 1000).toFixed(1)}M</text>
             <text x="50%" y="58%" textAnchor="middle" fill={c.textDim} fontSize={9} fontWeight={700} letterSpacing="0.1em">TOTAL</text>
           </PieChart>
         </ResponsiveContainer>
@@ -1104,6 +1107,15 @@ const DashboardView = ({ c, onNav, toast, onDrawer, userName }) => {
               </div>
             );
           })}
+        </div>
+        {/* Total summary */}
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 8, padding: "8px 12px", background: c.surfaceAlt, borderRadius: 8, fontSize: 10 }}>
+          <span style={{ color: c.textDim, fontWeight: 600 }}>Total OpEx</span>
+          <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
+            <span style={{ fontFamily: "'JetBrains Mono', monospace", color: c.text, fontWeight: 700 }}>${(EXPENSE_DATA.reduce((a, d) => a + d.actual, 0) / 1000).toFixed(1)}K</span>
+            <span style={{ fontFamily: "'JetBrains Mono', monospace", color: c.textDim }}>vs ${(EXPENSE_DATA.reduce((a, d) => a + d.budget, 0) / 1000).toFixed(1)}K</span>
+            {(() => { const netV = EXPENSE_DATA.reduce((a, d) => a + d.actual, 0) - EXPENSE_DATA.reduce((a, d) => a + d.budget, 0); const over = netV > 0; return <span style={{ fontWeight: 800, color: over ? c.red : c.green, fontFamily: "'JetBrains Mono', monospace" }}>{over ? "+" : ""}{fmt(netV)}</span>; })()}
+          </div>
         </div>
       </div>
       <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, padding: "24px 24px 18px", boxShadow: c.cardGlow, position: "relative", overflow: "hidden" }}>
@@ -1574,7 +1586,8 @@ const ForecastView = ({ c }) => {
         <ResponsiveContainer width="100%" height={250}>
           <ComposedChart data={FORECAST_DATA} margin={{ top: 5, right: 10, bottom: 0, left: -10 }}>
             <defs>
-              <linearGradient id="gBull" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor={c.green} stopOpacity={0.12} /><stop offset="50%" stopColor={c.green} stopOpacity={0.04} /><stop offset="100%" stopColor={c.green} stopOpacity={0} /></linearGradient>
+              <linearGradient id="gBull" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor={c.green} stopOpacity={0.10} /><stop offset="50%" stopColor={c.green} stopOpacity={0.03} /><stop offset="100%" stopColor={c.green} stopOpacity={0} /></linearGradient>
+              <linearGradient id="gBear" x1="0" y1="1" x2="0" y2="0"><stop offset="0%" stopColor={c.red} stopOpacity={0.08} /><stop offset="50%" stopColor={c.red} stopOpacity={0.02} /><stop offset="100%" stopColor={c.red} stopOpacity={0} /></linearGradient>
               <linearGradient id="gActFc" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor={c.accent} stopOpacity={0.18} /><stop offset="100%" stopColor={c.accent} stopOpacity={0} /></linearGradient>
             </defs>
             <CartesianGrid stroke={c.chartGrid || c.borderSub} strokeDasharray="3 6" vertical={false} />
@@ -1582,24 +1595,28 @@ const ForecastView = ({ c }) => {
             <YAxis tick={{ fontSize: 10, fill: c.chartAxis || c.textDim }} axisLine={false} tickLine={false} tickFormatter={v => `$${(v/1000).toFixed(0)}M`} />
             <Tooltip content={<ChartTooltip c={c} />} cursor={{ stroke: c.accent, strokeWidth: 1, strokeDasharray: "3 3", strokeOpacity: 0.3 }} />
             <Area type="monotone" dataKey="bull" stroke="none" fill="url(#gBull)" name="Bull Range" />
+            <Area type="monotone" dataKey="bear" stroke="none" fill="url(#gBear)" name="Bear Range" />
             <Area type="monotone" dataKey="actual" stroke={c.accent} fill="url(#gActFc)" strokeWidth={2.5} name="Actual" dot={{ r: 4, fill: c.surface, stroke: c.accent, strokeWidth: 2.5 }} activeDot={{ r: 6, fill: c.accent, stroke: c.surface, strokeWidth: 2 }} connectNulls={false} />
             <Line type="monotone" dataKey="base" stroke={c.green} strokeWidth={2} strokeDasharray="8 4" name="Base Forecast" dot={{ r: 3.5, fill: c.surface, stroke: c.green, strokeWidth: 2 }} connectNulls={false} />
-            <Line type="monotone" dataKey="bull" stroke={c.green} strokeWidth={1} strokeDasharray="3 3" name="Bull" dot={false} connectNulls={false} opacity={0.4} />
-            <Line type="monotone" dataKey="bear" stroke={c.red} strokeWidth={1} strokeDasharray="3 3" name="Bear" dot={false} connectNulls={false} opacity={0.4} />
+            <Line type="monotone" dataKey="bull" stroke={c.green} strokeWidth={1} strokeDasharray="3 3" name="Bull" dot={false} connectNulls={false} opacity={0.35} />
+            <Line type="monotone" dataKey="bear" stroke={c.red} strokeWidth={1} strokeDasharray="3 3" name="Bear" dot={false} connectNulls={false} opacity={0.35} />
           </ComposedChart>
         </ResponsiveContainer>
         {/* Legend */}
-        <div style={{ display: "flex", gap: 14, marginTop: 12, paddingTop: 10, borderTop: `1px solid ${c.borderSub}`, fontSize: 10, color: c.textDim, alignItems: "center" }}>
+        <div style={{ display: "flex", gap: 12, marginTop: 12, paddingTop: 10, borderTop: `1px solid ${c.borderSub}`, fontSize: 10, color: c.textDim, alignItems: "center", flexWrap: "wrap" }}>
           {[
-            { label: "Actual", color: c.accent }, { label: "Base Forecast", color: c.green },
-            { label: "Bull", color: c.green, opacity: 0.4 }, { label: "Bear", color: c.red, opacity: 0.4 },
+            { label: "Actual", color: c.accent }, { label: "Base", color: c.green },
+            { label: "Bull (+20%)", color: c.green, opacity: 0.5 }, { label: "Bear (-21%)", color: c.red, opacity: 0.5 },
           ].map(s => (
-            <span key={s.label} style={{ display: "flex", alignItems: "center", gap: 6, fontWeight: 600, opacity: s.opacity || 1 }}>
+            <span key={s.label} style={{ display: "flex", alignItems: "center", gap: 5, fontWeight: 600, opacity: s.opacity || 1 }}>
               <span style={{ width: 10, height: 10, borderRadius: 3, background: `${s.color}25`, border: `2px solid ${s.color}`, display: "inline-block" }} />
               {s.label}
             </span>
           ))}
-          <span style={{ marginLeft: "auto", fontWeight: 700, fontFamily: "'JetBrains Mono', monospace", color: c.green }}>FY: ${adjusted.toFixed(1)}M</span>
+          <span style={{ marginLeft: "auto", display: "flex", gap: 10 }}>
+            <span style={{ fontWeight: 700, fontFamily: "'JetBrains Mono', monospace", color: c.green }}>Base: ${adjusted.toFixed(1)}M</span>
+            <span style={{ fontWeight: 600, fontFamily: "'JetBrains Mono', monospace", color: c.textFaint }}>Spread: ${((FORECAST_DATA[11]?.bull || 0) / 1000).toFixed(1)}M – ${((FORECAST_DATA[11]?.bear || 0) / 1000).toFixed(1)}M</span>
+          </span>
         </div>
       </div>
 
