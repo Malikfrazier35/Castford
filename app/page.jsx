@@ -3251,7 +3251,7 @@ const SettingsView = ({ c, onLogout, toast, mode }) => {
         </div>
       )}
 
-      {activeTab === "security" && (
+      {activeTab === "security" && (<>
         <div style={{ background: c.glass, backdropFilter: c.glassBlur, WebkitBackdropFilter: c.glassBlur, border: `1px solid ${c.glassBorder}`, borderRadius: 16, padding: "24px 24px 18px", boxShadow: `${c.cardGlow}, ${c.glassHighlight}`, position: "relative", overflow: "hidden" }}>
           <div style={{ position: "absolute", top: 0, left: "10%", right: "10%", height: 2, background: `linear-gradient(90deg, transparent, ${c.green}30, transparent)`, borderRadius: "0 0 2px 2px" }} />
           <div style={{ fontSize: 14, fontWeight: 800, color: c.text, marginBottom: 16 }}>Security & Access</div>
@@ -3265,7 +3265,30 @@ const SettingsView = ({ c, onLogout, toast, mode }) => {
             </div>
           ))}
         </div>
-      )}
+        {/* Password Change */}
+        <div style={{ background: c.glass, backdropFilter: c.glassBlur, WebkitBackdropFilter: c.glassBlur, border: `1px solid ${c.glassBorder}`, borderRadius: 16, padding: "22px 24px", boxShadow: `${c.cardGlow}, ${c.glassHighlight}`, marginTop: 16 }}>
+          <div style={{ fontSize: 14, fontWeight: 800, color: c.text, marginBottom: 12 }}>Change Password</div>
+          <div style={{ display: "flex", flexDirection: "column", gap: 10, maxWidth: 360 }}>
+            <input type="password" placeholder="New password (8+ characters)" style={{ fontSize: 12, padding: "10px 14px", borderRadius: 8, border: `1px solid ${c.border}`, background: c.surfaceAlt, color: c.text, fontFamily: "inherit", outline: "none" }}
+              id="pw-new" onFocus={e => e.target.style.borderColor = c.accent} onBlur={e => e.target.style.borderColor = c.border} />
+            <input type="password" placeholder="Confirm new password" style={{ fontSize: 12, padding: "10px 14px", borderRadius: 8, border: `1px solid ${c.border}`, background: c.surfaceAlt, color: c.text, fontFamily: "inherit", outline: "none" }}
+              id="pw-confirm" onFocus={e => e.target.style.borderColor = c.accent} onBlur={e => e.target.style.borderColor = c.border} />
+            <button onClick={async () => {
+              const pw = document.getElementById("pw-new")?.value;
+              const conf = document.getElementById("pw-confirm")?.value;
+              if (!pw || pw.length < 8) { toast("Password must be at least 8 characters", "error"); return; }
+              if (pw !== conf) { toast("Passwords do not match", "error"); return; }
+              try {
+                const { error } = await supabase.auth.updateUser({ password: pw });
+                if (error) throw error;
+                document.getElementById("pw-new").value = "";
+                document.getElementById("pw-confirm").value = "";
+                toast("Password updated successfully", "success");
+              } catch (err) { toast(err?.message || "Failed to update password", "error"); }
+            }} style={{ fontSize: 12, padding: "10px 18px", borderRadius: 8, border: "none", background: c.accent, color: "#fff", cursor: "pointer", fontFamily: "inherit", fontWeight: 700, alignSelf: "flex-start" }}>Update Password</button>
+          </div>
+        </div>
+      </>)}
 
       {activeTab === "session" && (<>
         {/* Sign Out */}
@@ -4760,6 +4783,13 @@ function FinanceOSApp() {
 
   const [mode, setMode] = useState("dark");
   const [autoTheme, setAutoTheme] = useState(true);
+  // Restore saved theme on mount
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem("financeos-theme");
+      if (saved === "dark" || saved === "light") { setMode(saved); setAutoTheme(false); }
+    } catch {}
+  }, []);
   const c = THEME[mode];
 
   // Check OS preference and time on mount, then recheck every 5 minutes
@@ -4784,8 +4814,12 @@ function FinanceOSApp() {
   }, [autoTheme, getAutoMode]);
 
   const toggleMode = useCallback(() => {
-    setAutoTheme(false); // Manual override disables auto
-    setMode(prev => prev === "dark" ? "light" : "dark");
+    setAutoTheme(false);
+    setMode(prev => {
+      const next = prev === "dark" ? "light" : "dark";
+      try { localStorage.setItem("financeos-theme", next); } catch {}
+      return next;
+    });
   }, []);
 
   const handleLogout = useCallback(() => {
@@ -4829,6 +4863,7 @@ function FinanceOSApp() {
   useEffect(() => {
     const handler = (e) => {
       if ((e.metaKey || e.ctrlKey) && e.key === "k") { e.preventDefault(); setCmdOpen(true); }
+      if ((e.metaKey || e.ctrlKey) && e.key === "b") { e.preventDefault(); setSidebarCollapsed(prev => !prev); }
       if (e.key === "Escape") { setCmdOpen(false); setDrawerKpi(null); setNotifOpen(false); setShortcutsOpen(false); }
       if (e.key === "?" && !e.metaKey && !e.ctrlKey && document.activeElement?.tagName !== "INPUT" && document.activeElement?.tagName !== "TEXTAREA") { setShortcutsOpen(true); }
     };
