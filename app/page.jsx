@@ -120,15 +120,18 @@ const ToastContainer = ({ toasts, c }) => (
   <div style={{ position: "fixed", bottom: 20, right: 20, zIndex: 9999, display: "flex", flexDirection: "column", gap: 8 }}>
     {toasts.map(t => {
       const bg = t.type === "success" ? c.green : t.type === "error" ? c.red : t.type === "warning" ? c.amber : c.accent;
+      const icon = t.type === "success" ? "✓" : t.type === "error" ? "✕" : t.type === "warning" ? "!" : "i";
       return (
         <div key={t.id} style={{
-          padding: "10px 16px", borderRadius: 10, background: c.surface, border: `1px solid ${bg}40`,
-          boxShadow: `0 8px 30px rgba(0,0,0,0.3), 0 0 0 1px ${bg}20`, fontSize: 12, color: c.text,
-          display: "flex", alignItems: "center", gap: 8, minWidth: 260, maxWidth: 380,
-          animation: "toastIn 0.3s cubic-bezier(0.22,1,0.36,1)",
+          padding: "12px 18px", borderRadius: 12, background: `${c.surface}f5`, border: `1px solid ${bg}30`,
+          boxShadow: `0 8px 32px rgba(0,0,0,0.25), 0 0 0 1px ${bg}15`, fontSize: 12, color: c.text, fontWeight: 500,
+          display: "flex", alignItems: "center", gap: 10, minWidth: 280, maxWidth: 400,
+          animation: "toastIn 0.3s cubic-bezier(0.22,1,0.36,1)", backdropFilter: "blur(12px)",
+          position: "relative", overflow: "hidden",
         }}>
-          <div style={{ width: 6, height: 6, borderRadius: "50%", background: bg, flexShrink: 0 }} />
-          {t.message}
+          <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, height: 2, background: `linear-gradient(90deg, ${bg}, transparent)`, animation: "shrink 3s linear forwards" }} />
+          <div style={{ width: 22, height: 22, borderRadius: 7, background: `${bg}18`, border: `1px solid ${bg}15`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, fontSize: 10, fontWeight: 800, color: bg }}>{icon}</div>
+          <span style={{ flex: 1 }}>{t.message}</span>
         </div>
       );
     })}
@@ -173,29 +176,44 @@ const DetailDrawer = ({ kpi, c, onClose }) => {
   const data = DETAIL_DATA[kpi] || DETAIL_DATA["ARR"];
   const colorMap = { green: c.green, red: c.red, amber: c.amber, accent: c.accent, text: c.text };
   return (
+    <>
+    <div onClick={onClose} style={{ position: "fixed", inset: 0, zIndex: 999, background: "rgba(0,0,0,0.3)", backdropFilter: "blur(4px)", animation: "fadeIn 0.15s" }} />
     <div style={{
-      position: "fixed", top: 0, right: 0, bottom: 0, width: 380, background: c.surface, borderLeft: `1px solid ${c.border}`,
-      zIndex: 1000, boxShadow: "-8px 0 40px rgba(0,0,0,0.3)", display: "flex", flexDirection: "column",
+      position: "fixed", top: 0, right: 0, bottom: 0, width: 400, background: c.surface, borderLeft: `1px solid ${c.border}`,
+      zIndex: 1000, boxShadow: "-12px 0 50px rgba(0,0,0,0.25)", display: "flex", flexDirection: "column",
       animation: "drawerIn 0.25s cubic-bezier(0.22,1,0.36,1)",
     }}>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "16px 20px", borderBottom: `1px solid ${c.borderSub}` }}>
-        <span style={{ fontSize: 14, fontWeight: 800, color: c.text }}>{data.title}</span>
-        <div onClick={onClose} style={{ cursor: "pointer", padding: 4 }}><X size={18} color={c.textDim} /></div>
-      </div>
-      <div style={{ flex: 1, overflow: "auto", padding: 20 }}>
-        <div style={{ fontSize: 36, fontWeight: 800, color: c.accent, letterSpacing: "-0.03em", marginBottom: 4 }}>{data.value}</div>
-        <div style={{ marginBottom: 20 }}>
-          <Spark data={data.trend} color={c.green} width={320} height={48} />
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "18px 24px", borderBottom: `1px solid ${c.borderSub}`, position: "relative" }}>
+        <div style={{ position: "absolute", bottom: 0, left: "10%", right: "10%", height: 2, background: `linear-gradient(90deg, transparent, ${c.accent}30, transparent)` }} />
+        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+          <div style={{ width: 28, height: 28, borderRadius: 8, background: `linear-gradient(135deg, ${c.accent}15, ${c.purple}08)`, border: `1px solid ${c.accent}10`, display: "flex", alignItems: "center", justifyContent: "center" }}>
+            <Activity size={14} color={c.accent} />
+          </div>
+          <span style={{ fontSize: 15, fontWeight: 800, color: c.text, letterSpacing: "-0.02em" }}>{data.title}</span>
         </div>
-        <div style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.05em", color: c.textDim, marginBottom: 12 }}>Breakdown</div>
-        {data.details.map(d => (
-          <div key={d.label} style={{ display: "flex", justifyContent: "space-between", padding: "10px 0", borderBottom: `1px solid ${c.borderSub}` }}>
-            <span style={{ fontSize: 12, color: c.textSec }}>{d.label}</span>
-            <span style={{ fontSize: 13, fontWeight: 700, color: colorMap[d.color], fontFamily: "'JetBrains Mono', monospace" }}>{d.value}</span>
+        <div onClick={onClose} style={{ cursor: "pointer", padding: 4, borderRadius: 6, transition: "background 0.15s" }}
+          onMouseEnter={e => e.currentTarget.style.background = c.surfaceAlt}
+          onMouseLeave={e => e.currentTarget.style.background = "transparent"}
+        ><X size={16} color={c.textDim} /></div>
+      </div>
+      <div style={{ flex: 1, overflow: "auto", padding: "24px 24px" }}>
+        <div style={{ fontSize: 40, fontWeight: 800, color: c.accent, letterSpacing: "-0.03em", marginBottom: 6, fontFamily: "'JetBrains Mono', monospace" }}>{data.value}</div>
+        <div style={{ marginBottom: 24, padding: "12px 0", borderBottom: `1px solid ${c.borderSub}` }}>
+          <Spark data={data.trend} color={c.green} width={340} height={52} />
+        </div>
+        <div style={{ fontSize: 9, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.1em", color: c.textFaint, marginBottom: 14, display: "flex", alignItems: "center", gap: 8 }}>
+          <span>Breakdown</span>
+          <div style={{ flex: 1, height: 1, background: c.borderSub }} />
+        </div>
+        {data.details.map((d, i) => (
+          <div key={d.label} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "12px 0", borderBottom: `1px solid ${c.borderSub}`, transition: "background 0.1s" }}>
+            <span style={{ fontSize: 12, color: c.textSec, fontWeight: 500 }}>{d.label}</span>
+            <span style={{ fontSize: 13, fontWeight: 800, color: colorMap[d.color], fontFamily: "'JetBrains Mono', monospace" }}>{d.value}</span>
           </div>
         ))}
       </div>
     </div>
+    </>
   );
 };
 
@@ -418,11 +436,11 @@ const ExportBar = ({ c, title, onCSV, onPDF }) => (
   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
     <span style={{ fontSize: 16, fontWeight: 800, color: c.text, letterSpacing: "-0.02em" }}>{title}</span>
     <div style={{ display: "flex", gap: 6 }}>
-      {[{ label: "Export CSV", fn: onCSV }, { label: "Export PDF", fn: onPDF }].map(b => (
-        <button key={b.label} onClick={b.fn} style={{ fontSize: 10, padding: "6px 12px", borderRadius: 6, border: `1px solid ${c.border}`, background: "transparent", color: c.textSec, fontWeight: 600, cursor: "pointer", fontFamily: "inherit", transition: "all 0.15s" }}
-          onMouseEnter={e => { e.currentTarget.style.borderColor = c.accent; e.currentTarget.style.color = c.accent; }}
-          onMouseLeave={e => { e.currentTarget.style.borderColor = c.border; e.currentTarget.style.color = c.textSec; }}
-        >{b.label}</button>
+      {[{ label: "CSV", fn: onCSV, icon: "↓" }, { label: "PDF", fn: onPDF, icon: "⬇" }].map(b => (
+        <button key={b.label} onClick={b.fn} style={{ fontSize: 10, padding: "6px 14px", borderRadius: 8, border: `1px solid ${c.border}`, background: c.surface, color: c.textSec, fontWeight: 700, cursor: "pointer", fontFamily: "inherit", transition: "all 0.2s cubic-bezier(0.22,1,0.36,1)", display: "flex", alignItems: "center", gap: 5 }}
+          onMouseEnter={e => { e.currentTarget.style.borderColor = `${c.accent}50`; e.currentTarget.style.color = c.accent; e.currentTarget.style.background = c.accentDim; e.currentTarget.style.transform = "translateY(-1px)"; }}
+          onMouseLeave={e => { e.currentTarget.style.borderColor = c.border; e.currentTarget.style.color = c.textSec; e.currentTarget.style.background = c.surface; e.currentTarget.style.transform = "none"; }}
+        ><span style={{ fontSize: 11 }}>{b.icon}</span> {b.label}</button>
       ))}
     </div>
   </div>
@@ -2305,15 +2323,20 @@ const AdminView = ({ c, toast, onNav }) => {
         {/* Admin KPIs */}
         <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 14, marginBottom: 24 }}>
           {adminKpis.map(k => (
-            <div key={k.label} style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, padding: "18px 20px", boxShadow: c.cardGlow, position: "relative", overflow: "hidden", transition: "all 0.2s" }}
-              onMouseEnter={e => { e.currentTarget.style.borderColor = k.color + "30"; e.currentTarget.style.transform = "translateY(-2px)"; }}
-              onMouseLeave={e => { e.currentTarget.style.borderColor = c.border; e.currentTarget.style.transform = "none"; }}
+            <div key={k.label} style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, padding: "20px 22px", boxShadow: c.cardGlow, position: "relative", overflow: "hidden", transition: "all 0.25s cubic-bezier(0.22,1,0.36,1)" }}
+              onMouseEnter={e => { e.currentTarget.style.borderColor = `${k.color}30`; e.currentTarget.style.transform = "translateY(-3px)"; e.currentTarget.style.boxShadow = `0 8px 28px ${k.color}08, ${c.cardGlow}`; }}
+              onMouseLeave={e => { e.currentTarget.style.borderColor = c.border; e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = c.cardGlow; }}
             >
-              <div style={{ position: "absolute", top: 0, left: "20%", right: "20%", height: 2, background: `linear-gradient(90deg, transparent, ${k.color}30, transparent)`, borderRadius: "0 0 2px 2px" }} />
-              <div style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", color: c.textFaint, marginBottom: 10 }}>{k.label}</div>
+              <div style={{ position: "absolute", top: 0, left: "15%", right: "15%", height: 2, background: `linear-gradient(90deg, transparent, ${k.color}30, transparent)`, borderRadius: "0 0 2px 2px" }} />
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 12 }}>
+                <div style={{ fontSize: 9, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.1em", color: c.textFaint }}>{k.label}</div>
+                <div style={{ width: 26, height: 26, borderRadius: 8, background: `linear-gradient(135deg, ${k.color}15, ${k.color}06)`, border: `1px solid ${k.color}10`, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                  <Activity size={12} color={k.color} />
+                </div>
+              </div>
               <div style={{ display: "flex", alignItems: "baseline", gap: 8 }}>
-                <span style={{ fontSize: 24, fontWeight: 800, color: c.text, fontFamily: "'JetBrains Mono', monospace" }}>{k.value}</span>
-                <span style={{ fontSize: 10, fontWeight: 700, color: k.up ? c.green : c.red, background: k.up ? c.greenDim : c.redDim, padding: "3px 8px", borderRadius: 6, border: `1px solid ${k.up ? c.green : c.red}15` }}>{k.delta}</span>
+                <span style={{ fontSize: 26, fontWeight: 800, color: c.text, fontFamily: "'JetBrains Mono', monospace", letterSpacing: "-0.02em" }}>{k.value}</span>
+                <span style={{ fontSize: 10, fontWeight: 700, color: k.up ? c.green : c.red, background: k.up ? c.greenDim : c.redDim, padding: "3px 8px", borderRadius: 6, border: `1px solid ${k.up ? c.green : c.red}12` }}>{k.delta}</span>
               </div>
             </div>
           ))}
@@ -2321,14 +2344,19 @@ const AdminView = ({ c, toast, onNav }) => {
 
         {/* Activity Feed */}
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
-          <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, padding: "22px 24px", boxShadow: c.cardGlow }}>
-            <div style={{ fontSize: 12, fontWeight: 700, color: c.text, marginBottom: 14 }}>Activity Log</div>
+          <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, padding: "22px 24px", boxShadow: c.cardGlow, position: "relative", overflow: "hidden" }}>
+            <div style={{ position: "absolute", top: 0, left: "10%", right: "10%", height: 2, background: `linear-gradient(90deg, transparent, ${c.accent}25, transparent)`, borderRadius: "0 0 2px 2px" }} />
+            <div style={{ fontSize: 13, fontWeight: 800, color: c.text, marginBottom: 14 }}>Activity Log</div>
             {events.map((e, i) => (
-              <div key={i} style={{ display: "flex", gap: 10, padding: "9px 0", borderBottom: i < events.length - 1 ? `1px solid ${c.borderSub}` : "none", alignItems: "flex-start" }}>
-                <div style={{ width: 6, height: 6, borderRadius: "50%", background: eventColors[e.type] || c.textDim, marginTop: 5, flexShrink: 0 }} />
+              <div key={i} style={{ display: "flex", gap: 10, padding: "10px 0", borderBottom: i < events.length - 1 ? `1px solid ${c.borderSub}` : "none", alignItems: "flex-start" }}>
+                <div style={{ width: 8, height: 8, borderRadius: "50%", background: eventColors[e.type] || c.textDim, marginTop: 5, flexShrink: 0, boxShadow: `0 0 4px ${(eventColors[e.type] || c.textDim)}30` }} />
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <div style={{ fontSize: 12, color: c.text, fontWeight: 500 }}>{e.action}</div>
-                  <div style={{ fontSize: 10, color: c.textDim, marginTop: 2 }}>{e.actor} · {e.time}</div>
+                  <div style={{ fontSize: 10, color: c.textDim, marginTop: 3, display: "flex", alignItems: "center", gap: 5 }}>
+                    <span style={{ fontWeight: 600 }}>{e.actor}</span>
+                    <span style={{ width: 3, height: 3, borderRadius: "50%", background: c.textFaint }} />
+                    <span>{e.time}</span>
+                  </div>
                 </div>
               </div>
             ))}
@@ -4178,6 +4206,7 @@ export default function FinanceOS() {
         @keyframes themeSwitch { 0% { opacity: 0.92; } 100% { opacity: 1; } }
         @keyframes rippleOut { 0% { transform: scale(0); opacity: 0.4; } 100% { transform: scale(4); opacity: 0; } }
         @keyframes spin { to { transform: rotate(360deg); } }
+        @keyframes shrink { from { width: 100%; } to { width: 0%; } }
         /* Premium scrollbar */
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
