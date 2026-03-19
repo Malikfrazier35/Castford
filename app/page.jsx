@@ -2362,24 +2362,25 @@ const AdminView = ({ c, toast, onNav }) => {
             ))}
           </div>
           {/* Quick Admin Actions */}
-          <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, padding: "22px 24px", boxShadow: c.cardGlow }}>
-            <div style={{ fontSize: 12, fontWeight: 700, color: c.text, marginBottom: 14 }}>Admin Actions</div>
-            <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+          <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, padding: "22px 24px", boxShadow: c.cardGlow, position: "relative", overflow: "hidden" }}>
+            <div style={{ position: "absolute", top: 0, left: "10%", right: "10%", height: 2, background: `linear-gradient(90deg, transparent, ${c.amber}25, transparent)`, borderRadius: "0 0 2px 2px" }} />
+            <div style={{ fontSize: 13, fontWeight: 800, color: c.text, marginBottom: 14 }}>Admin Actions</div>
+            <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
               {[
-                { label: "Invite User", desc: "Send invite to new team member", action: () => toast("Invite sent — check user's email", "success") },
-                { label: "Export Audit Log", desc: "Download full activity history as CSV", action: () => toast("Audit log exported — 312 events", "success") },
-                { label: "Rotate API Keys", desc: "Regenerate all active API keys", action: () => toast("API keys rotated — update integrations", "warning") },
-                { label: "Force Sync All", desc: "Trigger sync on all connected integrations", action: () => { toast("Syncing 4 integrations...", "success"); } },
-                { label: "Generate SOC 2 Report", desc: "Export compliance evidence package", action: () => toast("SOC 2 evidence package generated", "success") },
-                { label: "Purge Demo Data", desc: "Remove all sample data from organization", action: () => toast("Demo data purge requires confirmation — check Settings", "warning") },
+                { label: "Invite User", desc: "Send invite to new team member", action: () => toast("Invite sent — check user's email", "success"), color: c.accent },
+                { label: "Export Audit Log", desc: "Download full activity history as CSV", action: () => toast("Audit log exported — 312 events", "success"), color: c.green },
+                { label: "Rotate API Keys", desc: "Regenerate all active API keys", action: () => toast("API keys rotated — update integrations", "warning"), color: c.amber },
+                { label: "Force Sync All", desc: "Trigger sync on all connected integrations", action: () => { toast("Syncing 4 integrations...", "success"); }, color: c.cyan },
+                { label: "Generate SOC 2 Report", desc: "Export compliance evidence package", action: () => toast("SOC 2 evidence package generated", "success"), color: c.purple },
+                { label: "Purge Demo Data", desc: "Remove all sample data from organization", action: () => toast("Demo data purge requires confirmation — check Settings", "warning"), color: c.red },
               ].map(a => (
                 <button key={a.label} onClick={a.action} style={{
-                  display: "flex", justifyContent: "space-between", alignItems: "center", padding: "12px 14px", borderRadius: 8,
+                  display: "flex", justifyContent: "space-between", alignItems: "center", padding: "12px 14px", borderRadius: 10,
                   border: `1px solid ${c.border}`, background: "transparent", cursor: "pointer", fontFamily: "inherit", textAlign: "left",
-                  transition: "all 0.15s", color: c.text,
+                  transition: "all 0.2s cubic-bezier(0.22,1,0.36,1)", color: c.text, borderLeft: `3px solid ${a.color}20`,
                 }}
-                onMouseEnter={e => { e.currentTarget.style.borderColor = c.accent; e.currentTarget.style.background = c.accentDim; }}
-                onMouseLeave={e => { e.currentTarget.style.borderColor = c.border; e.currentTarget.style.background = "transparent"; }}
+                onMouseEnter={e => { e.currentTarget.style.borderColor = `${a.color}40`; e.currentTarget.style.borderLeftColor = a.color; e.currentTarget.style.background = `${a.color}06`; e.currentTarget.style.transform = "translateX(2px)"; }}
+                onMouseLeave={e => { e.currentTarget.style.borderColor = c.border; e.currentTarget.style.borderLeftColor = `${a.color}20`; e.currentTarget.style.background = "transparent"; e.currentTarget.style.transform = "none"; }}
                 >
                   <div>
                     <div style={{ fontSize: 12, fontWeight: 600, color: c.text }}>{a.label}</div>
