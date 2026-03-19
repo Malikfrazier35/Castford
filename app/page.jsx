@@ -1621,10 +1621,10 @@ const ForecastView = ({ c }) => {
             { label: "Pipeline Conversion", value: pipeline, set: setPipeline, min: 15, max: 65, unit: "%", color: c.cyan },
             { label: "Logo Churn", value: churn / 10, set: v => setChurn(v * 10), min: 2, max: 20, unit: "%", color: c.amber, raw: churn, setRaw: setChurn, minR: 20, maxR: 200 },
           ].map(s => (
-            <div key={s.label} style={{ marginBottom: 14 }}>
-              <div style={{ display: "flex", justifyContent: "space-between", fontSize: 11, marginBottom: 4 }}>
-                <span style={{ color: c.textSec }}>{s.label}</span>
-                <span style={{ color: s.color, fontWeight: 700, fontFamily: "'JetBrains Mono', monospace" }}>{s.label === "Logo Churn" ? (churn / 10).toFixed(1) : s.value}{s.unit}</span>
+            <div key={s.label} style={{ marginBottom: 16 }}>
+              <div style={{ display: "flex", justifyContent: "space-between", fontSize: 11, marginBottom: 6 }}>
+                <span style={{ color: c.textSec, fontWeight: 600 }}>{s.label}</span>
+                <span style={{ color: s.color, fontWeight: 800, fontFamily: "'JetBrains Mono', monospace", fontSize: 12, padding: "1px 6px", borderRadius: 4, background: `${s.color}08` }}>{s.label === "Logo Churn" ? (churn / 10).toFixed(1) : s.value}{s.unit}</span>
               </div>
               <input type="range" min={s.minR || s.min} max={s.maxR || s.max} value={s.raw || s.value}
                 onChange={e => (s.setRaw || s.set)(Number(e.target.value))}
@@ -1632,11 +1632,15 @@ const ForecastView = ({ c }) => {
             </div>
           ))}
           {/* Scenario result */}
-          <div style={{ padding: 12, background: c.bg2, borderRadius: 8, marginTop: 8 }}>
-            <div style={{ fontSize: 10, fontWeight: 700, color: c.purple, marginBottom: 4 }}>Scenario Forecast</div>
-            <div style={{ fontSize: 20, fontWeight: 800, color: c.text }}>${scenario.toFixed(1)}M</div>
-            <div style={{ fontSize: 11, color: delta >= 0 ? c.green : c.red, fontWeight: 600 }}>
-              {delta >= 0 ? "+" : ""}${Math.abs(delta).toFixed(1)}M vs base
+          <div style={{ padding: "14px 16px", background: `linear-gradient(135deg, ${c.purple}08, ${c.accent}04)`, border: `1px solid ${c.purple}12`, borderRadius: 10, marginTop: 8 }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end" }}>
+              <div>
+                <div style={{ fontSize: 9, fontWeight: 800, color: c.purple, textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 4 }}>Scenario Forecast</div>
+                <div style={{ fontSize: 22, fontWeight: 800, color: c.text, fontFamily: "'JetBrains Mono', monospace" }}>${scenario.toFixed(1)}M</div>
+              </div>
+              <div style={{ fontSize: 12, fontWeight: 800, color: delta >= 0 ? c.green : c.red, fontFamily: "'JetBrains Mono', monospace", padding: "4px 10px", borderRadius: 6, background: delta >= 0 ? c.greenDim : c.redDim }}>
+                {delta >= 0 ? "+" : ""}${Math.abs(delta).toFixed(1)}M
+              </div>
             </div>
           </div>
         </div>
@@ -2175,8 +2179,17 @@ const InvestorView = ({ c, toast }) => (
 
     {/* Cohort & Unit Economics */}
     <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 24 }}>
-      <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, padding: "22px 24px", boxShadow: c.cardGlow }}>
-        <div style={{ fontSize: 12, fontWeight: 700, color: c.text, marginBottom: 14 }}>Revenue Cohort Analysis</div>
+      <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, padding: "22px 24px", boxShadow: c.cardGlow, position: "relative", overflow: "hidden" }}>
+        <div style={{ position: "absolute", top: 0, left: "10%", right: "10%", height: 2, background: `linear-gradient(90deg, transparent, ${c.green}30, transparent)`, borderRadius: "0 0 2px 2px" }} />
+        <div style={{ fontSize: 12, fontWeight: 800, color: c.text, marginBottom: 4 }}>Revenue Cohort Analysis</div>
+        <div style={{ fontSize: 10, color: c.textDim, marginBottom: 12 }}>Net dollar retention by signup quarter</div>
+        {/* Header row */}
+        <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "6px 0", marginBottom: 4, fontSize: 8, fontWeight: 800, color: c.textFaint, textTransform: "uppercase", letterSpacing: "0.1em" }}>
+          <span style={{ width: 60 }}>Cohort</span>
+          <span style={{ width: 55 }}>Initial</span>
+          <span style={{ flex: 1 }}>Retention</span>
+          <span style={{ width: 45, textAlign: "right" }}>NDR</span>
+        </div>
         {[
           { cohort: "Q1 2023", initial: "$2.1M", current: "$3.8M", retention: "181%", color: c.green },
           { cohort: "Q2 2023", initial: "$2.8M", current: "$4.6M", retention: "164%", color: c.green },
@@ -2186,18 +2199,27 @@ const InvestorView = ({ c, toast }) => (
           { cohort: "Q2 2024", initial: "$5.2M", current: "$6.1M", retention: "117%", color: c.accent },
         ].map(r => (
           <div key={r.cohort} style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 0", borderBottom: `1px solid ${c.borderSub}` }}>
-            <span style={{ fontSize: 11, color: c.textDim, width: 60 }}>{r.cohort}</span>
+            <span style={{ fontSize: 11, color: c.textDim, width: 60, fontWeight: 500 }}>{r.cohort}</span>
             <span style={{ fontSize: 11, color: c.textSec, fontFamily: "'JetBrains Mono', monospace", width: 55 }}>{r.initial}</span>
             <div style={{ flex: 1, height: 6, background: c.bg2, borderRadius: 3, overflow: "hidden" }}>
-              <div style={{ width: `${Math.min(parseInt(r.retention), 200) / 2}%`, height: "100%", background: r.color, borderRadius: 3 }} />
+              <div style={{ width: `${Math.min(parseInt(r.retention), 200) / 2}%`, height: "100%", background: `linear-gradient(90deg, ${r.color}, ${r.color}aa)`, borderRadius: 3, transition: "width 0.5s cubic-bezier(0.22,1,0.36,1)" }} />
             </div>
-            <span style={{ fontSize: 11, fontWeight: 700, color: r.color, fontFamily: "'JetBrains Mono', monospace", width: 45, textAlign: "right" }}>{r.retention}</span>
+            <span style={{ fontSize: 11, fontWeight: 800, color: r.color, fontFamily: "'JetBrains Mono', monospace", width: 45, textAlign: "right" }}>{r.retention}</span>
           </div>
         ))}
       </div>
 
-      <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, padding: "22px 24px", boxShadow: c.cardGlow }}>
-        <div style={{ fontSize: 12, fontWeight: 700, color: c.text, marginBottom: 14 }}>Competitive Positioning</div>
+      <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, padding: "22px 24px", boxShadow: c.cardGlow, position: "relative", overflow: "hidden" }}>
+        <div style={{ position: "absolute", top: 0, left: "10%", right: "10%", height: 2, background: `linear-gradient(90deg, transparent, ${c.accent}30, transparent)`, borderRadius: "0 0 2px 2px" }} />
+        <div style={{ fontSize: 12, fontWeight: 800, color: c.text, marginBottom: 4 }}>Competitive Positioning</div>
+        <div style={{ fontSize: 10, color: c.textDim, marginBottom: 12 }}>vs SaaS median benchmarks</div>
+        {/* Header */}
+        <div style={{ display: "flex", alignItems: "center", padding: "6px 0", marginBottom: 4, fontSize: 8, fontWeight: 800, color: c.textFaint, textTransform: "uppercase", letterSpacing: "0.1em" }}>
+          <span style={{ flex: 1 }}>Metric</span>
+          <span style={{ width: 55, textAlign: "right" }}>Ours</span>
+          <span style={{ width: 75, textAlign: "right" }}>Benchmark</span>
+          <span style={{ width: 58, textAlign: "right" }}>Status</span>
+        </div>
         {[
           { metric: "ARR Growth Rate", us: "47.8%", benchmark: "30-40%", verdict: "Above" },
           { metric: "Gross Margin", us: "84.7%", benchmark: "70-80%", verdict: "Above" },
@@ -2346,16 +2368,23 @@ const AdminView = ({ c, toast, onNav }) => {
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
           <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, padding: "22px 24px", boxShadow: c.cardGlow, position: "relative", overflow: "hidden" }}>
             <div style={{ position: "absolute", top: 0, left: "10%", right: "10%", height: 2, background: `linear-gradient(90deg, transparent, ${c.accent}25, transparent)`, borderRadius: "0 0 2px 2px" }} />
-            <div style={{ fontSize: 13, fontWeight: 800, color: c.text, marginBottom: 14 }}>Activity Log</div>
+            <div style={{ fontSize: 13, fontWeight: 800, color: c.text, marginBottom: 14, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              <span>Activity Log</span>
+              <span style={{ fontSize: 8, fontWeight: 800, padding: "3px 8px", borderRadius: 5, background: c.surfaceAlt, color: c.textFaint, letterSpacing: "0.04em" }}>{events.length} EVENTS</span>
+            </div>
             {events.map((e, i) => (
-              <div key={i} style={{ display: "flex", gap: 10, padding: "10px 0", borderBottom: i < events.length - 1 ? `1px solid ${c.borderSub}` : "none", alignItems: "flex-start" }}>
-                <div style={{ width: 8, height: 8, borderRadius: "50%", background: eventColors[e.type] || c.textDim, marginTop: 5, flexShrink: 0, boxShadow: `0 0 4px ${(eventColors[e.type] || c.textDim)}30` }} />
+              <div key={i} style={{ display: "flex", gap: 10, padding: "10px 0", borderBottom: i < events.length - 1 ? `1px solid ${c.borderSub}` : "none", alignItems: "flex-start", transition: "all 0.15s" }}
+                onMouseEnter={ev => ev.currentTarget.style.paddingLeft = "4px"}
+                onMouseLeave={ev => ev.currentTarget.style.paddingLeft = "0"}
+              >
+                <div style={{ width: 8, height: 8, borderRadius: "50%", background: eventColors[e.type] || c.textDim, marginTop: 5, flexShrink: 0, boxShadow: `0 0 6px ${(eventColors[e.type] || c.textDim)}25` }} />
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <div style={{ fontSize: 12, color: c.text, fontWeight: 500 }}>{e.action}</div>
                   <div style={{ fontSize: 10, color: c.textDim, marginTop: 3, display: "flex", alignItems: "center", gap: 5 }}>
                     <span style={{ fontWeight: 600 }}>{e.actor}</span>
                     <span style={{ width: 3, height: 3, borderRadius: "50%", background: c.textFaint }} />
                     <span>{e.time}</span>
+                    <span style={{ fontSize: 7, fontWeight: 800, padding: "1px 5px", borderRadius: 3, background: `${(eventColors[e.type] || c.textDim)}10`, color: eventColors[e.type] || c.textDim, textTransform: "uppercase", letterSpacing: "0.04em" }}>{e.type}</span>
                   </div>
                 </div>
               </div>
