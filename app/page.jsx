@@ -288,31 +288,33 @@ const PERIODS = ["FY2025 YTD", "Q2 2025", "Q1 2025", "FY2024", "Q4 2024"];
 
 // ── DATA ──────────────────────────────────────────────────────
 const REVENUE_DATA = [
-  { month: "Jul", actual: 6800, budget: 6500, forecast: null },
-  { month: "Aug", actual: 7100, budget: 6800, forecast: null },
-  { month: "Sep", actual: 7600, budget: 7100, forecast: null },
-  { month: "Oct", actual: 8000, budget: 7400, forecast: null },
-  { month: "Nov", actual: 8500, budget: 7700, forecast: null },
-  { month: "Dec", actual: 8800, budget: 8000, forecast: null },
-  { month: "Jan", actual: null, budget: 8300, forecast: 9100 },
-  { month: "Feb", actual: null, budget: 8600, forecast: 9400 },
-  { month: "Mar", actual: null, budget: 8900, forecast: 9700 },
-  { month: "Apr", actual: null, budget: 9200, forecast: 9900 },
-  { month: "May", actual: null, budget: 9500, forecast: 10100 },
-  { month: "Jun", actual: null, budget: 9800, forecast: 10400 },
+  { month: "Jul", actual: 6800, budget: 6500, forecast: null, qoq: null },
+  { month: "Aug", actual: 7100, budget: 6800, forecast: null, qoq: 4.4 },
+  { month: "Sep", actual: 7600, budget: 7100, forecast: null, qoq: 7.0 },
+  { month: "Oct", actual: 8000, budget: 7400, forecast: null, qoq: 5.3 },
+  { month: "Nov", actual: 8500, budget: 7700, forecast: null, qoq: 6.3 },
+  { month: "Dec", actual: 8800, budget: 8000, forecast: null, qoq: 3.5 },
+  { month: "Jan", actual: null, budget: 8300, forecast: 9100, qoq: null },
+  { month: "Feb", actual: null, budget: 8600, forecast: 9400, qoq: null },
+  { month: "Mar", actual: null, budget: 8900, forecast: 9700, qoq: null },
+  { month: "Apr", actual: null, budget: 9200, forecast: 9900, qoq: null },
+  { month: "May", actual: null, budget: 9500, forecast: 10100, qoq: null },
+  { month: "Jun", actual: null, budget: 9800, forecast: 10400, qoq: null },
 ];
 
 const EXPENSE_DATA = [
-  { name: "R&D", actual: 19270, budget: 19548, pct: 37.6 },
-  { name: "S&M", actual: 15460, budget: 14730, pct: 30.2 },
-  { name: "COGS", actual: 7820, budget: 7365, pct: 15.3 },
-  { name: "G&A", actual: 4860, budget: 5115, pct: 9.5 },
+  { name: "R&D", actual: 19270, budget: 19548, pct: 37.6, trend: "flat" },
+  { name: "S&M", actual: 15460, budget: 14730, pct: 30.2, trend: "up" },
+  { name: "Cloud", actual: 4455, budget: 4000, pct: 8.7, trend: "up" },
+  { name: "COGS", actual: 7820, budget: 7365, pct: 15.3, trend: "flat" },
+  { name: "G&A", actual: 4860, budget: 5115, pct: 9.5, trend: "down" },
 ];
 
 const SEGMENT_DATA = [
-  { name: "Enterprise", value: 38920, color: "#0ea5e9" },
-  { name: "Mid-Market", value: 8650, color: "#a78bfa" },
-  { name: "SMB", value: 3620, color: "#22d3ee" },
+  { name: "Enterprise", value: 38920, color: "#0ea5e9", growth: 28, pct: 76 },
+  { name: "Mid-Market", value: 8650, color: "#a78bfa", growth: 14, pct: 17 },
+  { name: "SMB", value: 2420, color: "#22d3ee", growth: -4, pct: 5 },
+  { name: "Self-Serve", value: 1200, color: "#f5b731", growth: 62, pct: 2 },
 ];
 
 const KPIS = [
@@ -338,21 +340,26 @@ const PNL_DATA = [
     { name: "Usage / AI Module", actual: 1590, budget: 1600, note: "34% attach, trending up" },
   ], total: { name: "Total Revenue", actual: 51190, budget: 49100 }},
   { section: "Cost of Revenue", rows: [
-    { name: "Cloud Infrastructure", actual: 4840, budget: 4200, note: "GPU costs for AI ↑ $280K" },
+    { name: "Cloud Infrastructure", actual: 4840, budget: 4200, note: "GPU costs for AI ↑$280K" },
     { name: "Customer Success", actual: 2180, budget: 2050, note: "2 CSMs hired early" },
-    { name: "Support & Onboarding", actual: 800, budget: 1115, note: "Self-serve driving efficiency" },
+    { name: "Support & Onboarding", actual: 800, budget: 1115, note: "Self-serve efficiency" },
   ], total: { name: "Total COGS", actual: 7820, budget: 7365 }},
   { section: "Operating Expenses", rows: [
-    { name: "R&D — Engineering", actual: 14420, budget: 14650, note: "128 vs 142 planned" },
-    { name: "R&D — Product", actual: 2850, budget: 2800, note: "1 PM hire" },
+    { name: "R&D — Engineering", actual: 14420, budget: 14650, note: "128 vs 142 planned HC" },
+    { name: "R&D — Product", actual: 2850, budget: 2800, note: "+1 PM hire" },
     { name: "R&D — Data/ML", actual: 2000, budget: 2098, note: "8 ML reqs still open" },
     { name: "Sales", actual: 8920, budget: 8200, note: "3 AEs early + commissions" },
     { name: "Marketing", actual: 4340, budget: 4530, note: "Paid digital cut -$200K" },
     { name: "Revenue Operations", actual: 2200, budget: 2000, note: "SaaStr $180K unplanned" },
-    { name: "Finance & Legal", actual: 1860, budget: 1950, note: "Legal retainer -$65K" },
-    { name: "People & Admin", actual: 1720, budget: 1850, note: "Deferred office $150K" },
-    { name: "IT & Security", actual: 1280, budget: 1315, note: "SOC 2 completed" },
+    { name: "Finance & Legal", actual: 1860, budget: 1950, note: "Legal retainer saved $65K" },
+    { name: "People & Admin", actual: 1720, budget: 1850, note: "Office deferred $150K" },
+    { name: "IT & Security", actual: 1280, budget: 1315, note: "SOC 2 completed on time" },
   ], total: { name: "Total OpEx", actual: 39590, budget: 39393 }},
+  { section: "Other Income / Expense", rows: [
+    { name: "Interest Income", actual: 320, budget: 240, note: "T-bill ladder yield ↑" },
+    { name: "FX Gains / (Losses)", actual: -104, budget: -50, note: "EUR weakening vs USD" },
+    { name: "One-time Items", actual: -216, budget: 0, note: "Lease termination fee" },
+  ], total: { name: "Net Other", actual: 0, budget: 190 }},
 ];
 
 const COPILOT_PROMPTS = [
@@ -1039,14 +1046,15 @@ const DashboardView = ({ c, onNav, toast, onDrawer, userName }) => {
             const total = SEGMENT_DATA.reduce((a, b) => a + b.value, 0);
             const pct = ((s.value / total) * 100).toFixed(0);
             return (
-              <div key={s.name} style={{ display: "flex", alignItems: "center", gap: 10, fontSize: 11 }}>
+              <div key={s.name} style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 11 }}>
                 <div style={{ width: 10, height: 10, borderRadius: 4, background: `linear-gradient(135deg, ${s.color}, ${s.color}aa)`, boxShadow: `0 0 6px ${s.color}30`, flexShrink: 0 }} />
                 <span style={{ color: c.textSec, fontWeight: 500, flex: 1 }}>{s.name}</span>
+                {s.growth != null && <span style={{ fontSize: 9, fontWeight: 700, color: s.growth >= 0 ? c.green : c.red, background: s.growth >= 0 ? c.greenDim : c.redDim, padding: "1px 5px", borderRadius: 3 }}>{s.growth >= 0 ? "+" : ""}{s.growth}%</span>}
                 <span style={{ fontWeight: 700, color: c.textSec, fontFamily: "'JetBrains Mono', monospace", fontSize: 10 }}>{fmt(s.value)}</span>
-                <div style={{ width: 48, height: 4, background: c.bg2, borderRadius: 2, overflow: "hidden" }}>
+                <div style={{ width: 40, height: 4, background: c.bg2, borderRadius: 2, overflow: "hidden" }}>
                   <div style={{ width: `${pct}%`, height: "100%", background: `linear-gradient(90deg, ${s.color}, ${s.color}80)`, borderRadius: 2 }} />
                 </div>
-                <span style={{ fontWeight: 800, color: c.text, fontFamily: "'JetBrains Mono', monospace", fontSize: 11, width: 32, textAlign: "right" }}>{pct}%</span>
+                <span style={{ fontWeight: 800, color: c.text, fontFamily: "'JetBrains Mono', monospace", fontSize: 11, width: 30, textAlign: "right" }}>{pct}%</span>
               </div>
             );
           })}
@@ -1087,10 +1095,12 @@ const DashboardView = ({ c, onNav, toast, onDrawer, userName }) => {
           {EXPENSE_DATA.map(d => {
             const v = d.actual - d.budget;
             const over = v > 0;
+            const trendArrow = d.trend === "up" ? "↑" : d.trend === "down" ? "↓" : "→";
             return (
-              <div key={d.name} style={{ flex: 1, padding: "6px 8px", borderRadius: 6, background: over ? c.redDim : c.greenDim, textAlign: "center" }}>
-                <div style={{ fontSize: 9, color: c.textDim, fontWeight: 600, marginBottom: 2 }}>{d.name}</div>
+              <div key={d.name} style={{ flex: 1, padding: "8px 6px", borderRadius: 8, background: over ? c.redDim : c.greenDim, textAlign: "center", border: `1px solid ${over ? c.red : c.green}08` }}>
+                <div style={{ fontSize: 8, color: c.textDim, fontWeight: 700, marginBottom: 3, textTransform: "uppercase", letterSpacing: "0.06em" }}>{d.name}</div>
                 <div style={{ fontSize: 10, fontWeight: 800, color: over ? c.red : c.green, fontFamily: "'JetBrains Mono', monospace" }}>{over ? "+" : ""}{fmt(v)}</div>
+                <div style={{ fontSize: 8, color: c.textFaint, marginTop: 2 }}>{d.pct}% rev {trendArrow}</div>
               </div>
             );
           })}
@@ -1475,12 +1485,12 @@ const FORECAST_DATA = [
   { month: "Apr", actual: 8000, base: null, bull: null, bear: null },
   { month: "May", actual: 8500, base: null, bull: null, bear: null },
   { month: "Jun", actual: 8800, base: 8800, bull: 8800, bear: 8800 },
-  { month: "Jul", actual: null, base: 9100, bull: 9400, bear: 8700 },
-  { month: "Aug", actual: null, base: 9400, bull: 9900, bear: 8800 },
-  { month: "Sep", actual: null, base: 9700, bull: 10500, bear: 8900 },
-  { month: "Oct", actual: null, base: 9900, bull: 11000, bear: 8950 },
-  { month: "Nov", actual: null, base: 10100, bull: 11400, bear: 9000 },
-  { month: "Dec", actual: null, base: 10400, bull: 11900, bear: 9050 },
+  { month: "Jul", actual: null, base: 9100, bull: 9500, bear: 8600 },
+  { month: "Aug", actual: null, base: 9400, bull: 10100, bear: 8500 },
+  { month: "Sep", actual: null, base: 9700, bull: 10800, bear: 8400 },
+  { month: "Oct", actual: null, base: 9900, bull: 11400, bear: 8300 },
+  { month: "Nov", actual: null, base: 10100, bull: 11900, bear: 8250 },
+  { month: "Dec", actual: null, base: 10400, bull: 12500, bear: 8200 },
 ];
 
 const DRIVERS = [
