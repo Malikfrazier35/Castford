@@ -1363,24 +1363,29 @@ const CopilotView = ({ c, toast }) => {
     setInput("");
     setThinking(true);
 
-    // Try real Claude API first, fall back to demo responses
+    // Route through Supabase Edge Function (API key stays server-side)
+    // Falls back to demo responses if Edge Function unavailable
     try {
-      const res = await fetch("https://api.anthropic.com/v1/messages", {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session?.access_token) throw new Error("Not authenticated");
+      const res = await fetch(`${SUPABASE_URL}/functions/v1/copilot`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${session.access_token}`,
+          "apikey": SUPABASE_KEY,
+        },
         body: JSON.stringify({
-          model: "claude-sonnet-4-20250514",
-          max_tokens: 1000,
           system: AI_SYSTEM_PROMPT,
           messages: [{ role: "user", content: userMsg }],
         }),
       });
-      if (!res.ok) throw new Error("API unavailable");
+      if (!res.ok) throw new Error("Edge Function unavailable");
       const data = await res.json();
-      const reply = data.content?.map(b => b.text || "").join("\n") || "I couldn't process that request.";
+      const reply = data.text || "I couldn't process that request.";
       if (mountedRef.current) setMessages(prev => [...prev, { role: "assistant", content: reply }]);
     } catch (e) {
-      // Demo fallback
+      // Demo fallback — works without auth for demo users
       const q = userMsg.toLowerCase();
       let response = COPILOT_RESPONSES.default;
       if (q.includes("revenue") || q.includes("beat") || q.includes("what drove")) response = COPILOT_RESPONSES.revenue;
@@ -4770,11 +4775,13 @@ export default function FinanceOS() {
     });
   }, [view]);
 
-  // ⌘K shortcut — MUST be before early return
+  // Keyboard shortcuts
+  const [shortcutsOpen, setShortcutsOpen] = useState(false);
   useEffect(() => {
     const handler = (e) => {
       if ((e.metaKey || e.ctrlKey) && e.key === "k") { e.preventDefault(); setCmdOpen(true); }
-      if (e.key === "Escape") { setCmdOpen(false); setDrawerKpi(null); setNotifOpen(false); }
+      if (e.key === "Escape") { setCmdOpen(false); setDrawerKpi(null); setNotifOpen(false); setShortcutsOpen(false); }
+      if (e.key === "?" && !e.metaKey && !e.ctrlKey && document.activeElement?.tagName !== "INPUT" && document.activeElement?.tagName !== "TEXTAREA") { setShortcutsOpen(true); }
     };
     window.addEventListener("keydown", handler);
     return () => window.removeEventListener("keydown", handler);
@@ -5247,6 +5254,32 @@ export default function FinanceOS() {
       {/* ── OVERLAYS ── */}
       {drawerKpi && <DetailDrawer kpi={drawerKpi} c={c} onClose={() => setDrawerKpi(null)} />}
       {cmdOpen && <CommandPalette c={c} onSelect={handleCmd} onClose={() => setCmdOpen(false)} />}
+      {shortcutsOpen && (
+        <div onClick={() => setShortcutsOpen(false)} style={{ position: "fixed", inset: 0, zIndex: 2000, background: "rgba(0,0,0,0.5)", backdropFilter: "blur(4px)", display: "flex", alignItems: "center", justifyContent: "center", animation: "fadeIn 0.15s" }}>
+          <div onClick={e => e.stopPropagation()} style={{ width: 400, background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, boxShadow: "0 20px 60px rgba(0,0,0,0.4)", padding: "28px 32px", animation: "cmdIn 0.2s cubic-bezier(0.22,1,0.36,1)" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
+              <div style={{ fontSize: 16, fontWeight: 800, color: c.text }}>Keyboard Shortcuts</div>
+              <div onClick={() => setShortcutsOpen(false)} style={{ cursor: "pointer", color: c.textDim }}><X size={16} /></div>
+            </div>
+            {[
+              { keys: ["⌘", "K"], label: "Open command palette" },
+              { keys: ["?"], label: "Show this help" },
+              { keys: ["Esc"], label: "Close modals and drawers" },
+              { keys: ["⌘", "B"], label: "Toggle sidebar" },
+              { keys: ["1-9"], label: "Navigate to view (by position)" },
+            ].map(s => (
+              <div key={s.label} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "10px 0", borderBottom: `1px solid ${c.borderSub}` }}>
+                <span style={{ fontSize: 12, color: c.textSec }}>{s.label}</span>
+                <div style={{ display: "flex", gap: 4 }}>
+                  {s.keys.map(k => (
+                    <kbd key={k} style={{ fontSize: 10, fontWeight: 700, padding: "3px 8px", borderRadius: 5, background: c.surfaceAlt, border: `1px solid ${c.borderSub}`, color: c.textDim, fontFamily: "'JetBrains Mono', monospace" }}>{k}</kbd>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
       <ToastContainer toasts={toasts} c={c} />
       {/* ENV 5: Desktop Platform */}
       <OfflineIndicator c={c} />
@@ -5259,10 +5292,37 @@ export default function FinanceOS() {
         setShowPlanPicker(false);
         setShowOnboarding(true);
       }} />}
-      {showOnboarding && <OnboardingWizard c={c} userName={user.name} planStatus={user.plan} onComplete={(org) => {
-        // Only grant full plan access if payment was confirmed (plan starts with 'pending:')
-        // In production: this is where Stripe webhook confirmation would gate access
+      {showOnboarding && <OnboardingWizard c={c} userName={user.name} planStatus={user.plan} onComplete={async (org) => {
         const planName = user.plan?.startsWith("pending:") ? user.plan.replace("pending:", "") : user.plan;
+        // Write org + user to Supabase
+        try {
+          const { data: { user: authUser } } = await supabase.auth.getUser();
+          if (authUser) {
+            // Create organization
+            const { data: newOrg } = await supabase.from("organizations").insert({
+              name: org.name || `${user.name}'s Org`,
+              slug: (org.name || user.name || "org").toLowerCase().replace(/[^a-z0-9]/g, "-").slice(0, 30),
+              plan: planName || "trial",
+            }).select("id").single();
+            if (newOrg?.id) {
+              // Create user profile linked to org
+              await supabase.from("users").upsert({
+                id: authUser.id,
+                org_id: newOrg.id,
+                email: authUser.email || user.email,
+                full_name: user.name,
+                role: "owner",
+                auth_provider: authUser.app_metadata?.provider || "email",
+              }, { onConflict: "id" });
+              // Audit log
+              await supabase.from("audit_log").insert({
+                org_id: newOrg.id, user_id: authUser.id,
+                action: "org.created", resource_type: "organization", resource_id: newOrg.id,
+                metadata: { name: org.name, industry: org.industry, erp: org.erp, plan: planName },
+              });
+            }
+          }
+        } catch (err) { console.error("Onboarding write error:", err); }
         setUser(prev => ({ ...prev, plan: planName }));
         setShowOnboarding(false);
         toast(`Welcome to FinanceOS${org.name ? ` — ${org.name}` : ""}`, "success");
