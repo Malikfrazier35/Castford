@@ -4672,6 +4672,21 @@ export default function FinanceOS() {
           * { color: #000 !important; background: #fff !important; box-shadow: none !important; }
         }
         html { scroll-behavior: smooth; }
+        /* Typography system — font rendering + numeric alignment */
+        body { line-height: 1.5; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; text-rendering: optimizeLegibility; }
+        h1, h2, h3, h4, h5, h6 { line-height: 1.15; letter-spacing: -0.02em; font-weight: 800; }
+        p { line-height: 1.65; }
+        /* Default line-height for body text sizes (fills gaps where inline styles omit it) */
+        div, span, td, th, label, li { line-height: 1.45; }
+        /* Tabular numbers for all monospace and table contexts */
+        table, [style*="JetBrains"], code, pre, kbd { font-variant-numeric: tabular-nums; font-feature-settings: "tnum"; }
+        td, th { line-height: 1.4; }
+        /* Button/input inherit DM Sans explicitly */
+        button, input, select, textarea { font-family: 'DM Sans', system-ui, -apple-system, sans-serif; -webkit-font-smoothing: antialiased; letter-spacing: -0.005em; }
+        /* Large text tightening — applied via CSS since many inline styles omit it */
+        [style*="fontSize: 24"], [style*="fontSize: 26"], [style*="fontSize: 28"],
+        [style*="fontSize: 30"], [style*="fontSize: 36"], [style*="fontSize: 40"],
+        [style*="fontSize: 56"], [style*="fontSize: 60"] { letter-spacing: -0.03em; }
         /* ── RESPONSIVE ── */
         @media (max-width: 768px) {
           [data-sidebar]:not([data-mobile-open]) { display: none !important; }
