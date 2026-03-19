@@ -46,7 +46,33 @@ const nextConfig = {
           },
         ],
       },
+      {
+        // Immutable static assets — cache for 1 year
+        source: '/_next/static/(.*)',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=31536000, immutable',
+          },
+        ],
+      },
+      {
+        // Font files — cache for 1 year
+        source: '/fonts/(.*)',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=31536000, immutable',
+          },
+        ],
+      },
     ];
+  },
+  reactStrictMode: true,
+  poweredByHeader: false,
+  compress: true,
+  experimental: {
+    optimizePackageImports: ['recharts', 'lucide-react'],
   },
 };
 

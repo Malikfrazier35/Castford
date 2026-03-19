@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect, useRef, useCallback, Component } from "react";
+import { useState, useEffect, useRef, useCallback, useMemo, memo, Component } from "react";
 import { Line, Area, BarChart, Bar, ComposedChart, XAxis, YAxis, CartesianGrid, Tooltip, ReferenceLine, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
 import { LayoutDashboard, TrendingUp, MessageSquare, FileText, Layers, GitBranch, CheckSquare, Plug, Brain, Search, Bell, Sun, Moon, ChevronDown, ChevronRight, ArrowUpRight, ArrowDownRight, Zap, Shield, Users, DollarSign, Target, Activity, Send, Sparkles, Settings, LogOut, X, Check, Globe, Eye, Cpu } from "lucide-react";
 import { createClient } from "@supabase/supabase-js";
@@ -395,7 +395,7 @@ const Skeleton = ({ c, width = "100%", height = 12, radius = 6 }) => (
   }} />
 );
 
-const LoadingSkeleton = ({ c }) => (
+const LoadingSkeleton = memo(({ c }) => (
   <div style={{ padding: 32 }}>
     <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 16, marginBottom: 24 }}>
       {[0,1,2,3,4,5].map(i => (
@@ -414,7 +414,7 @@ const LoadingSkeleton = ({ c }) => (
       <Skeleton c={c} height={200} radius={8} />
     </div>
   </div>
-);
+));
 
 // ── EMPTY STATE ─────────────────────────────────────────────
 const EmptyState = ({ c, icon: Icon, title, sub, cta, onAction }) => (
@@ -651,7 +651,7 @@ const PWAInstallPrompt = ({ c }) => {
 // ══════════════════════════════════════════════════════════════
 // ENV 7: LIVE DEMO PIPELINE
 // ══════════════════════════════════════════════════════════════
-const DemoBanner = ({ c, onNav, onUpgrade }) => (
+const DemoBanner = memo(({ c, onNav, onUpgrade }) => (
   <div style={{
     display: "flex", alignItems: "center", justifyContent: "center", gap: 12, padding: "8px 16px",
     background: `linear-gradient(90deg, ${c.accent}15, ${c.purple}10)`, borderBottom: `1px solid ${c.accent}20`,
@@ -664,7 +664,7 @@ const DemoBanner = ({ c, onNav, onUpgrade }) => (
     <span style={{ width: 3, height: 3, borderRadius: "50%", background: c.textFaint }} />
     <span onClick={onUpgrade} style={{ fontSize: 10, fontWeight: 700, padding: "3px 10px", borderRadius: 5, background: `linear-gradient(135deg, ${c.accent}, ${c.purple})`, color: "#fff", cursor: "pointer" }}>Upgrade Now</span>
   </div>
-);
+));
 
 const FeatureTooltip = ({ text, c, children }) => {
   const [show, setShow] = useState(false);
@@ -720,7 +720,7 @@ const usePreferences = (key, defaultVal) => {
 // ══════════════════════════════════════════════════════════════
 // ENV 9: PREMIUM DASHBOARD FUNCTIONS — Quick Actions
 // ══════════════════════════════════════════════════════════════
-const QuickActions = ({ c, onNav, toast }) => (
+const QuickActions = memo(({ c, onNav, toast }) => (
   <div style={{ display: "flex", gap: 8, marginBottom: 20, flexWrap: "wrap" }}>
     {[
       { label: "New Forecast", icon: TrendingUp, action: () => onNav("forecast"), color: c.accent },
@@ -742,10 +742,10 @@ const QuickActions = ({ c, onNav, toast }) => (
       </button>
     ))}
   </div>
-);
+));
 
 // ── FINANCEOS BRAND MARK ─────────────────────────────────────
-const FosLogo = ({ size = 32 }) => (
+const FosLogo = memo(({ size = 32 }) => (
   <div style={{
     width: size, height: size, borderRadius: size * 0.3, display: "flex", alignItems: "center", justifyContent: "center",
     background: "linear-gradient(135deg, #60a5fa, #818cf8, #a78bfa)", flexShrink: 0,
@@ -761,16 +761,16 @@ const FosLogo = ({ size = 32 }) => (
       <rect x="18" y="10" width="2.8" height="12" rx="1" fill="white" opacity="0.55" />
     </svg>
   </div>
-);
+));
 
-const FosLogoFull = ({ size = 32, c }) => (
+const FosLogoFull = memo(({ size = 32, c }) => (
   <div style={{ display: "flex", alignItems: "center", gap: size * 0.3 }}>
     <FosLogo size={size} />
     <div>
       <span style={{ fontWeight: 800, fontSize: size * 0.47, color: c?.text || "#f0f2f5", letterSpacing: "-0.3px", whiteSpace: "nowrap" }}>Finance<span style={{ fontWeight: 400, opacity: 0.6 }}>OS</span></span>
     </div>
   </div>
-);
+));
 
 // ── HELPERS ───────────────────────────────────────────────────
 const fmt = (n) => {
@@ -784,7 +784,7 @@ const variancePct = (actual, budget) => ((actual - budget) / budget) * 100;
 const isFavorable = (actual, budget, isRevenue = false) => isRevenue ? actual >= budget : actual <= budget;
 
 // ── CUSTOM TOOLTIP ───────────────────────────────────────────
-const ChartTooltip = ({ active, payload, label, c }) => {
+const ChartTooltip = memo(({ active, payload, label, c }) => {
   if (!active || !payload?.length) return null;
   return (
     <div style={{
@@ -805,10 +805,10 @@ const ChartTooltip = ({ active, payload, label, c }) => {
       ))}
     </div>
   );
-};
+});
 
 // ── SPARKLINE ────────────────────────────────────────────────
-const Spark = ({ data, color, width = 64, height = 24 }) => {
+const Spark = memo(({ data, color, width = 64, height = 24 }) => {
   const min = Math.min(...data), max = Math.max(...data), range = max - min || 1;
   const points = data.map((v, i) => `${(i / (data.length - 1)) * width},${height - ((v - min) / range) * (height - 4) - 2}`).join(" ");
   const areaPoints = `0,${height} ${points} ${width},${height}`;
@@ -829,10 +829,10 @@ const Spark = ({ data, color, width = 64, height = 24 }) => {
       <circle cx={width} cy={lastY} r={2} fill={color} />
     </svg>
   );
-};
+});
 
 // ── KPI CARD ─────────────────────────────────────────────────
-const KpiCard = ({ kpi, c, onClick, index = 0 }) => {
+const KpiCard = memo(({ kpi, c, onClick, index = 0 }) => {
   const Icon = kpi.icon;
   const [hovered, setHovered] = useState(false);
   const accentColor = c[kpi.accent] || c.accent;
@@ -877,10 +877,10 @@ const KpiCard = ({ kpi, c, onClick, index = 0 }) => {
       </div>
     </div>
   );
-};
+});
 
 // ── INSIGHT ROW ──────────────────────────────────────────────
-const InsightRow = ({ item, c, onClick }) => {
+const InsightRow = memo(({ item, c, onClick }) => {
   const sev = INSIGHT_SEVERITY[item.severity] || {};
   const sevColor = c[sev.color] || c.accent;
   return (
@@ -907,7 +907,7 @@ const InsightRow = ({ item, c, onClick }) => {
       <ChevronRight size={14} color={c.textFaint} style={{ flexShrink: 0, marginTop: 4, transition: "transform 0.15s" }} />
     </div>
   );
-};
+});
 
 // ══════════════════════════════════════════════════════════════
 // DASHBOARD VIEW
@@ -917,8 +917,15 @@ const DashboardView = ({ c, onNav, toast, onDrawer, userName }) => {
   const toggleSeries = (key) => setHiddenSeries(prev => ({ ...prev, [key]: !prev[key] }));
   const displayName = userName && userName !== "Guest" ? userName.split(" ")[0] : null;
   const [chartPeriod, setChartPeriod] = useState("YTD");
-  const chartData = chartPeriod === "QTD" ? REVENUE_DATA.slice(-6) : chartPeriod === "12M" ? REVENUE_DATA : REVENUE_DATA;
+  const chartData = useMemo(() => chartPeriod === "QTD" ? REVENUE_DATA.slice(-6) : REVENUE_DATA, [chartPeriod]);
   const isMobile = useMediaQuery("(max-width: 768px)");
+
+  // Memoize expensive data aggregations
+  const segmentTotal = useMemo(() => SEGMENT_DATA.reduce((a, b) => a + b.value, 0), []);
+  const expenseTotals = useMemo(() => ({
+    actual: EXPENSE_DATA.reduce((a, d) => a + d.actual, 0),
+    budget: EXPENSE_DATA.reduce((a, d) => a + d.budget, 0),
+  }), []);
 
   return (
   <div style={{ padding: 32 }}>
@@ -1071,14 +1078,13 @@ const DashboardView = ({ c, onNav, toast, onDrawer, userName }) => {
               {SEGMENT_DATA.map((s, i) => <Cell key={i} fill={`url(#seg${i})`} />)}
             </Pie>
             <Tooltip content={<ChartTooltip c={c} />} />
-            <text x="50%" y="44%" textAnchor="middle" fill={c.text} fontSize={20} fontWeight={800} fontFamily="'JetBrains Mono', monospace">${(SEGMENT_DATA.reduce((a, b) => a + b.value, 0) / 1000).toFixed(1)}M</text>
+            <text x="50%" y="44%" textAnchor="middle" fill={c.text} fontSize={20} fontWeight={800} fontFamily="'JetBrains Mono', monospace">${(segmentTotal / 1000).toFixed(1)}M</text>
             <text x="50%" y="58%" textAnchor="middle" fill={c.textDim} fontSize={9} fontWeight={700} letterSpacing="0.1em">TOTAL</text>
           </PieChart>
         </ResponsiveContainer>
         <div style={{ display: "flex", flexDirection: "column", gap: 10, marginTop: 8 }}>
           {SEGMENT_DATA.map(s => {
-            const total = SEGMENT_DATA.reduce((a, b) => a + b.value, 0);
-            const pct = ((s.value / total) * 100).toFixed(0);
+            const pct = ((s.value / segmentTotal) * 100).toFixed(0);
             return (
               <div key={s.name} style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 11 }}>
                 <div style={{ width: 10, height: 10, borderRadius: 4, background: `linear-gradient(135deg, ${s.color}, ${s.color}aa)`, boxShadow: `0 0 6px ${s.color}30`, flexShrink: 0 }} />
@@ -1143,9 +1149,9 @@ const DashboardView = ({ c, onNav, toast, onDrawer, userName }) => {
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 8, padding: "8px 12px", background: c.surfaceAlt, borderRadius: 8, fontSize: 10 }}>
           <span style={{ color: c.textDim, fontWeight: 600 }}>Total OpEx</span>
           <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
-            <span style={{ fontFamily: "'JetBrains Mono', monospace", color: c.text, fontWeight: 700 }}>${(EXPENSE_DATA.reduce((a, d) => a + d.actual, 0) / 1000).toFixed(1)}K</span>
-            <span style={{ fontFamily: "'JetBrains Mono', monospace", color: c.textDim }}>vs ${(EXPENSE_DATA.reduce((a, d) => a + d.budget, 0) / 1000).toFixed(1)}K</span>
-            {(() => { const netV = EXPENSE_DATA.reduce((a, d) => a + d.actual, 0) - EXPENSE_DATA.reduce((a, d) => a + d.budget, 0); const over = netV > 0; return <span style={{ fontWeight: 800, color: over ? c.red : c.green, fontFamily: "'JetBrains Mono', monospace" }}>{over ? "+" : ""}{fmt(netV)}</span>; })()}
+            <span style={{ fontFamily: "'JetBrains Mono', monospace", color: c.text, fontWeight: 700 }}>${(expenseTotals.actual / 1000).toFixed(1)}K</span>
+            <span style={{ fontFamily: "'JetBrains Mono', monospace", color: c.textDim }}>vs ${(expenseTotals.budget / 1000).toFixed(1)}K</span>
+            {(() => { const netV = expenseTotals.actual - expenseTotals.budget; const over = netV > 0; return <span style={{ fontWeight: 800, color: over ? c.red : c.green, fontFamily: "'JetBrains Mono', monospace" }}>{over ? "+" : ""}{fmt(netV)}</span>; })()}
           </div>
         </div>
       </div>
@@ -4763,6 +4769,13 @@ export default function FinanceOS() {
         @keyframes rippleOut { 0% { transform: scale(0); opacity: 0.4; } 100% { transform: scale(4); opacity: 0; } }
         @keyframes spin { to { transform: rotate(360deg); } }
         @keyframes shrink { from { width: 100%; } to { width: 0%; } }
+        /* GPU acceleration for animated elements */
+        [style*="animation"], [style*="transition"] { will-change: transform, opacity; }
+        /* Layout containment for sidebar + content area */
+        [data-sidebar] { contain: layout style; }
+        [data-content-area] { contain: layout style; }
+        /* Reduce paint for fixed overlays */
+        [style*="position: fixed"] { will-change: opacity; }
         /* Premium scrollbar */
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
