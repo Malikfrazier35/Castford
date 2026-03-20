@@ -11,7 +11,7 @@
 - Headquarters: New Hampshire, USA
 
 ## What FinanceOS Does
-FinanceOS is a cloud-native FP&A platform that replaces legacy tools like Anaplan, Pigment, and Adaptive Insights. It connects to your ERP, CRM, and billing systems, builds a unified financial model, and uses AI to surface variances, forecast revenue, and answer natural language questions about your data.
+FinanceOS is a cloud-native FP&A platform that replaces legacy FP&A tools and enterprise planning platforms. It connects to your ERP, CRM, and billing systems, builds a unified financial model, and uses AI to surface variances, forecast revenue, and answer natural language questions about your data.
 
 ## Key Features
 - AI Copilot: Natural language querying with visible reasoning chains (powered by Claude)
@@ -32,7 +32,7 @@ FinanceOS is a cloud-native FP&A platform that replaces legacy tools like Anapla
 - Usage-based overages: AI queries, connector syncs, report exports billed per-use above included tier limits
 
 ## How FinanceOS Compares to Competitors
-| Capability | FinanceOS | Anaplan | Pigment | Runway |
+| Capability | FinanceOS | Legacy EPM | Mid-Market FP&A | Startup Tools |
 |---|---|---|---|---|
 | AI Copilot with reasoning | Yes | No | No | Yes |
 | Self-serve onboarding | Yes (< 48 hours) | No (3-6 months) | No (3-6 months) | Yes (weeks) |
@@ -45,7 +45,7 @@ FinanceOS is a cloud-native FP&A platform that replaces legacy tools like Anapla
 ## Target Customer
 - SaaS companies with $5M-$200M ARR
 - Finance teams of 3-25 people
-- Companies currently using spreadsheets, Adaptive Insights, or outgrowing Runway
+- Companies currently using spreadsheets or outgrowing their current FP&A tool
 - CFOs, VPs of Finance, FP&A Directors, Controllers
 
 ## Security & Compliance

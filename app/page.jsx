@@ -438,7 +438,7 @@ const KPIS = [
 const INSIGHTS = [
   { text: "Revenue beat $2.09M — Enterprise ACV ↑28%. AI module 34% attach.", source: "Variance Detective", time: "2 min", color: "#34d399" },
   { text: "S&M $730K over — Hiring $420K, events $180K. Pipeline ROI 7.2x.", source: "Variance Detective", time: "12 min", color: "#f87171" },
-  { text: "Mid-market win rate declining — Runway wins 58% H2H. Cycles 42→58d.", source: "Competitive Intel", time: "1 hr", color: "#fbbf24" },
+  { text: "Mid-market win rate declining — competitor wins 58% H2H. Cycles 42→58d.", source: "Competitive Intel", time: "1 hr", color: "#fbbf24" },
   { text: "R&D 14 heads behind — 8 ML reqs open. AI v2 at risk if delayed.", source: "Workforce Agent", time: "3 hr", color: "#a78bfa" },
 ];
 
@@ -473,7 +473,7 @@ const PNL_DATA = [
 
 const COPILOT_PROMPTS = [
   "What drove the revenue beat?",
-  "Compare us vs Pigment",
+  "Compare us vs the competition",
   "Gross margin analysis",
   "Where are we over budget?",
   "Churn & retention trends",
@@ -659,7 +659,7 @@ KEY METRICS (FY2025 YTD):
 
 SEGMENT PERFORMANCE:
 - Enterprise (>$100K ACV): +$3.3M above plan (+16.9%), ACV $142K->$182K (+28%)
-- Mid-market ($25K-$100K): -$800K below plan (-4.2%), win rate declining vs Runway
+- Mid-market ($25K-$100K): -$800K below plan (-4.2%), win rate declining vs mid-market competitor
 - SMB (<$25K): -$400K below plan (-3.8%)
 - AI module attach rate: 34% (vs 12% planned)
 
@@ -670,16 +670,16 @@ EXPENSE VARIANCES:
 - G&A: On plan
 
 COMPETITIVE INTEL:
-- Pigment: ~$80M ARR, $65K+ entry, we win 42% H2H (improving from 35%)
-- Runway: a16z backed, $30-100K, wins 58% mid-market H2H
-- Anaplan: $200K+ enterprise, 3-6mo implementation
+- Mid-market incumbents: $65K+ entry, we win 42% H2H (improving from 35%)
+- Mid-market disruptors: $30-100K, wins 58% mid-market H2H
+- Legacy EPM platforms: $200K+ enterprise, 3-6mo implementation
 - Our moats: visible AI reasoning, published pricing, self-serve onboarding
 
 BOARD CONTEXT:
 - Next board meeting: Q3 review
 - Current guidance: $49.1M (should raise to $52-54M)
 - Key ask: Competitive SWAT team budget ($200K)
-- Risk: Mid-market Runway threat, R&D hiring delay
+- Risk: Mid-market competitive threat, R&D hiring delay
 
 RESPONSE FORMAT:
 - Use **bold** for section headers
@@ -693,7 +693,7 @@ const INSIGHT_SEVERITY = { high: { color: "red", label: "HIGH" }, medium: { colo
 const AI_INSIGHTS_ENRICHED = [
   { text: "Revenue beat $2.09M — Enterprise ACV up 28%. AI module 34% attach.", source: "Variance Detective", time: "2 min", color: "#34d399", severity: "low", action: "Review enterprise pipeline" },
   { text: "S&M $730K over — Hiring $420K, events $180K. Pipeline ROI 7.2x.", source: "Variance Detective", time: "12 min", color: "#f87171", severity: "high", action: "Approve or defer Q3 hiring" },
-  { text: "Mid-market win rate declining — Runway wins 58% H2H. Cycles 42 to 58d.", source: "Competitive Intel", time: "1 hr", color: "#fbbf24", severity: "high", action: "Deploy competitive SWAT" },
+  { text: "Mid-market win rate declining — competitor wins 58% H2H. Cycles 42 to 58d.", source: "Competitive Intel", time: "1 hr", color: "#fbbf24", severity: "high", action: "Deploy competitive SWAT" },
   { text: "R&D 14 heads behind — 8 ML reqs open. AI v2 at risk if delayed.", source: "Workforce Agent", time: "3 hr", color: "#a78bfa", severity: "medium", action: "Escalate to VP Eng" },
 ];
 
@@ -1130,7 +1130,7 @@ const InsightRow = memo(({ item, c, onClick }) => {
 // ══════════════════════════════════════════════════════════════
 // DASHBOARD VIEW
 // ══════════════════════════════════════════════════════════════
-const DashboardView = ({ c, onNav, toast, onDrawer, userName, period }) => {
+const DashboardView = ({ c, onNav, toast, onDrawer, userName, period, closeTasks, activityLog }) => {
   const [hiddenSeries, setHiddenSeries] = useState({});
   const toggleSeries = (key) => setHiddenSeries(prev => ({ ...prev, [key]: !prev[key] }));
   const displayName = userName && userName !== "Guest" ? userName.split(" ")[0] : null;
@@ -1178,45 +1178,87 @@ const DashboardView = ({ c, onNav, toast, onDrawer, userName, period }) => {
     {/* Quick Actions — ENV 9 */}
     <QuickActions c={c} onNav={onNav} toast={toast} />
 
-    {/* Data Pipeline Status */}
-    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12, padding: "8px 14px", background: c.surfaceAlt, borderRadius: 8, border: `1px solid ${c.borderSub}`, fontSize: 9, color: c.textFaint }}>
-      <div style={{ display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
-        <span style={{ display: "flex", alignItems: "center", gap: 4 }}><span style={{ width: 5, height: 5, borderRadius: "50%", background: c.green, boxShadow: `0 0 6px ${c.green}40` }} />All systems operational</span>
-        <span>Data as of {new Date().toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" })}</span>
-        <span>5/5 connectors synced</span>
+    {/* Live System Status — ticks every second */}
+    {(() => {
+      const [tick, setTick] = useState(0);
+      const [events] = useState(() => [
+        { t: Date.now() - 120000, msg: "NetSuite sync completed — 847K records", src: "netsuite", ok: true },
+        { t: Date.now() - 45000, msg: "Salesforce pipeline refreshed — 124K records", src: "salesforce", ok: true },
+        { t: Date.now() - 60000, msg: "Stripe MRR recalculated — $4.86M", src: "stripe", ok: true },
+        { t: Date.now() - 180000, msg: "AI model retrained — MAPE 3.2% → 2.9%", src: "ai", ok: true },
+        { t: Date.now() - 240000, msg: "Snowflake warehouse query completed — 2.1M rows", src: "snowflake", ok: true },
+      ]);
+      useEffect(() => { const i = setInterval(() => setTick(t => t + 1), 1000); return () => clearInterval(i); }, []);
+      const ago = (ts) => { const s = Math.floor((Date.now() - ts) / 1000); return s < 60 ? `${s}s ago` : s < 3600 ? `${Math.floor(s/60)}m ${s%60}s ago` : `${Math.floor(s/3600)}h ago`; };
+      const latest = events[0];
+      const allOk = events.every(e => e.ok);
+      return (
+      <div style={{ marginBottom: 12, padding: "10px 16px", background: c.glass, backdropFilter: c.glassBlur, WebkitBackdropFilter: c.glassBlur, border: `1px solid ${c.glassBorder}`, borderRadius: 10, fontSize: 9, color: c.textFaint, position: "relative", overflow: "hidden" }}>
+        <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 1, background: `linear-gradient(90deg, transparent, ${allOk ? c.green : c.amber}30, transparent)` }} />
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 14, flexWrap: "wrap" }}>
+            {/* Live indicator */}
+            <span style={{ display: "flex", alignItems: "center", gap: 5 }}>
+              <span style={{ position: "relative", width: 7, height: 7 }}>
+                <span style={{ position: "absolute", inset: 0, borderRadius: "50%", background: allOk ? c.green : c.amber }} />
+                <span style={{ position: "absolute", inset: -2, borderRadius: "50%", background: allOk ? c.green : c.amber, opacity: 0.3, animation: "pulse 2s infinite" }} />
+              </span>
+              <span style={{ fontWeight: 700, color: allOk ? c.green : c.amber }}>{allOk ? "All systems live" : "Degraded"}</span>
+            </span>
+            {/* Data freshness — ticks live */}
+            <span style={{ display: "flex", alignItems: "center", gap: 4 }}>
+              <span style={{ fontFamily: "'JetBrains Mono', monospace", color: c.textDim, fontWeight: 600 }}>{ago(latest.t)}</span>
+              <span style={{ color: c.textFaint }}>last sync</span>
+            </span>
+            {/* Connector dots */}
+            <span style={{ display: "flex", alignItems: "center", gap: 3 }}>
+              {events.slice(0, 5).map((e, i) => (
+                <span key={i} title={`${e.src}: ${ago(e.t)}`} style={{ width: 5, height: 5, borderRadius: "50%", background: e.ok ? c.green : c.red, opacity: 0.6 + (i === 0 ? 0.4 : 0), transition: "all 0.3s" }} />
+              ))}
+              <span style={{ marginLeft: 2, fontWeight: 600 }}>{events.filter(e => e.ok).length}/{events.length}</span>
+            </span>
+          </div>
+          {/* Activity ticker */}
+          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+            <span style={{ color: c.textDim, maxWidth: 280, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", fontFamily: "'JetBrains Mono', monospace", fontSize: 8 }}>
+              {events[tick % events.length].msg}
+            </span>
+            <span style={{ fontWeight: 600, color: c.textDim, cursor: "pointer" }} onClick={() => onNav("integrations")}>View all →</span>
+          </div>
+        </div>
       </div>
-      <span style={{ fontWeight: 600, color: c.textDim, cursor: "pointer" }} onClick={() => onNav("integrations")}>View pipeline →</span>
-    </div>
+      );
+    })()}
 
-    {/* ═══ KPI Grid ═══ */}
-    <div onClick={() => onNav("integrations")} style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 16, padding: "10px 16px", background: c.surfaceAlt, borderRadius: 10, border: `1px solid ${c.borderSub}`, fontSize: 10, color: c.textDim, flexWrap: "wrap", cursor: "pointer", transition: "all 0.15s" }}
-      onMouseEnter={e => { e.currentTarget.style.borderColor = c.accent + "30"; e.currentTarget.style.background = c.accentDim; }}
-      onMouseLeave={e => { e.currentTarget.style.borderColor = c.borderSub; e.currentTarget.style.background = c.surfaceAlt; }}
-    >
-      <span style={{ fontWeight: 700, color: c.textSec, display: "flex", alignItems: "center", gap: 5 }}>
-        <span style={{ width: 6, height: 6, borderRadius: "50%", background: c.green, animation: "pulse 2s infinite" }} />
-        Pipeline Health
-      </span>
-      <span style={{ width: 1, height: 14, background: c.borderSub }} />
-      {[
-        { name: "NetSuite", fresh: "2m", ok: true },
-        { name: "Salesforce", fresh: "45s", ok: true },
-        { name: "Stripe", fresh: "1m", ok: true },
-        { name: "Rippling", fresh: "4m", ok: true },
-        { name: "Snowflake", fresh: "3m", ok: true },
-        { name: "HubSpot", fresh: "2m", ok: true },
-        { name: "Ramp", fresh: "5m", ok: true },
-      ].map(p => (
-        <span key={p.name} style={{ display: "flex", alignItems: "center", gap: 3 }}>
-          <span style={{ width: 5, height: 5, borderRadius: "50%", background: p.ok ? c.green : c.red }} />
-          <span style={{ fontWeight: 600 }}>{p.name}</span>
-          <span style={{ color: c.textFaint, fontFamily: "'JetBrains Mono', monospace", fontSize: 8 }}>{p.fresh}</span>
-        </span>
-      ))}
-      <span style={{ marginLeft: "auto", display: "flex", alignItems: "center", gap: 6 }}>
-        <span style={{ fontWeight: 700, fontFamily: "'JetBrains Mono', monospace", color: c.green }}>7/7</span>
-        <span style={{ fontSize: 9, color: c.textFaint }}>View all →</span>
-      </span>
+    {/* Data Flow — animated pipeline stages */}
+    <div style={{ marginBottom: 20, padding: "12px 16px", background: c.glass, backdropFilter: c.glassBlur, WebkitBackdropFilter: c.glassBlur, border: `1px solid ${c.glassBorder}`, borderRadius: 12, boxShadow: `${c.cardGlow}, ${c.glassHighlight}`, position: "relative", overflow: "hidden" }}>
+      <div style={{ position: "absolute", top: 0, left: "10%", right: "10%", height: 2, background: `linear-gradient(90deg, transparent, ${c.accent}30, transparent)`, borderRadius: "0 0 2px 2px" }} />
+      <div style={{ display: "flex", alignItems: "center", gap: 0 }}>
+        {[
+          { label: "Sources", count: "5 active", icon: "◈", color: c.cyan, detail: "ERP · CRM · Billing" },
+          { label: "Ingestion", count: "3.2M rows", icon: "→", color: c.accent, detail: "Real-time sync" },
+          { label: "Model", count: "14 drivers", icon: "◆", color: c.purple, detail: "MAPE 3.2%" },
+          { label: "Insights", count: "4 active", icon: "✦", color: c.green, detail: "AI-generated" },
+        ].map((stage, i, arr) => (
+          <React.Fragment key={stage.label}>
+            <div onClick={() => onNav(i === 0 ? "integrations" : i === 2 ? "forecast" : i === 3 ? "copilot" : "dashboard")} style={{ flex: 1, textAlign: "center", cursor: "pointer", padding: "4px 8px", borderRadius: 8, transition: "all 0.15s" }}
+              onMouseEnter={e => { e.currentTarget.style.background = `${stage.color}08`; }}
+              onMouseLeave={e => { e.currentTarget.style.background = "transparent"; }}
+            >
+              <div style={{ fontSize: 14, marginBottom: 2, color: stage.color, filter: `drop-shadow(0 0 4px ${stage.color}40)` }}>{stage.icon}</div>
+              <div style={{ fontSize: 9, fontWeight: 700, color: c.text }}>{stage.label}</div>
+              <div style={{ fontSize: 9, fontWeight: 600, color: stage.color, fontFamily: "'JetBrains Mono', monospace" }}>{stage.count}</div>
+              <div style={{ fontSize: 7, color: c.textFaint, marginTop: 1 }}>{stage.detail}</div>
+            </div>
+            {i < arr.length - 1 && (
+              <div style={{ width: 40, display: "flex", alignItems: "center", justifyContent: "center", position: "relative", flexShrink: 0 }}>
+                <div style={{ width: "100%", height: 1, background: c.borderSub }} />
+                <div style={{ position: "absolute", width: 6, height: 6, borderRadius: "50%", background: c.accent, animation: `pulse 1.5s ease-in-out ${i * 0.3}s infinite`, boxShadow: `0 0 6px ${c.accent}40` }} />
+              </div>
+            )}
+          </React.Fragment>
+        ))}
+      </div>
     </div>
 
     {/* KPI Grid — ENV 10: Premium hover glow */}
@@ -1676,6 +1718,68 @@ const DashboardView = ({ c, onNav, toast, onDrawer, userName, period }) => {
       </ChartPanel>
     </div>
 
+    {/* ═══ Live Status — Cross-View State ═══ */}
+    <div style={{ fontSize: 9, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.12em", color: c.textFaint, marginTop: 24, marginBottom: 10, display: "flex", alignItems: "center", gap: 8 }}>
+      Live Status <div style={{ width: 40, height: 1, background: c.borderSub }} /> <span style={{ position: "relative", display: "flex", alignItems: "center", gap: 4 }}><span style={{ width: 5, height: 5, borderRadius: "50%", background: c.green }}><span style={{ position: "absolute", inset: -2, borderRadius: "50%", background: c.green, opacity: 0.3, animation: "pulse 2s infinite" }} /></span><span style={{ color: c.green, fontWeight: 700, fontSize: 8 }}>LIVE</span></span>
+    </div>
+    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 24 }}>
+      {/* Close Progress — live from app state */}
+      {(() => {
+        const ct = closeTasks || [];
+        const done = ct.filter(t => t.status === "done").length;
+        const prog = ct.filter(t => t.status === "progress").length;
+        const pct = ct.length ? Math.round((done / ct.length) * 100) : 0;
+        return (
+        <div onClick={() => onNav("close")} style={{ background: c.glass, backdropFilter: c.glassBlur, WebkitBackdropFilter: c.glassBlur, border: `1px solid ${c.glassBorder}`, borderRadius: 16, padding: "20px 22px", boxShadow: `${c.cardGlow}, ${c.glassHighlight}`, cursor: "pointer", transition: "all 0.2s", position: "relative", overflow: "hidden" }}
+          onMouseEnter={e => { e.currentTarget.style.borderColor = `${c.amber}40`; e.currentTarget.style.transform = "translateY(-2px)"; }}
+          onMouseLeave={e => { e.currentTarget.style.borderColor = c.glassBorder; e.currentTarget.style.transform = "none"; }}
+        >
+          <div style={{ position: "absolute", top: 0, left: "10%", right: "10%", height: 2, background: `linear-gradient(90deg, transparent, ${pct === 100 ? c.green : c.amber}35, transparent)`, borderRadius: "0 0 2px 2px" }} />
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+              <CheckSquare size={15} color={c.amber} />
+              <span style={{ fontSize: 12, fontWeight: 700, color: c.text }}>February Close</span>
+            </div>
+            <span style={{ fontSize: 20, fontWeight: 800, fontFamily: "'JetBrains Mono', monospace", color: pct === 100 ? c.green : c.accent }}>{pct}%</span>
+          </div>
+          <div style={{ height: 6, background: c.bg2, borderRadius: 3, overflow: "hidden", marginBottom: 10 }}>
+            <div style={{ width: `${pct}%`, height: "100%", background: pct === 100 ? `linear-gradient(90deg, ${c.green}, ${c.green}cc)` : `linear-gradient(90deg, ${c.accent}, ${c.green}cc)`, borderRadius: 3, transition: "width 0.6s cubic-bezier(0.22,1,0.36,1)" }} />
+          </div>
+          <div style={{ display: "flex", gap: 12, fontSize: 10 }}>
+            <span style={{ color: c.green, fontWeight: 600 }}>{done} done</span>
+            <span style={{ color: c.accent, fontWeight: 600 }}>{prog} in progress</span>
+            <span style={{ color: c.textFaint }}>{ct.length - done - prog} pending</span>
+          </div>
+          <div style={{ fontSize: 9, color: c.textDim, marginTop: 6 }}>Click to manage close tasks →</div>
+        </div>
+        );
+      })()}
+      {/* Recent Activity — live from app state */}
+      <div style={{ background: c.glass, backdropFilter: c.glassBlur, WebkitBackdropFilter: c.glassBlur, border: `1px solid ${c.glassBorder}`, borderRadius: 16, padding: "20px 22px", boxShadow: `${c.cardGlow}, ${c.glassHighlight}`, position: "relative", overflow: "hidden" }}>
+        <div style={{ position: "absolute", top: 0, left: "10%", right: "10%", height: 2, background: `linear-gradient(90deg, transparent, ${c.purple}35, transparent)`, borderRadius: "0 0 2px 2px" }} />
+        <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
+          <Activity size={15} color={c.purple} />
+          <span style={{ fontSize: 12, fontWeight: 700, color: c.text }}>Recent Activity</span>
+          <span style={{ marginLeft: "auto", fontSize: 8, fontWeight: 800, padding: "2px 6px", borderRadius: 3, background: `${c.purple}12`, color: c.purple }}>{(activityLog || []).length} events</span>
+        </div>
+        <div style={{ display: "flex", flexDirection: "column", gap: 0 }}>
+          {(activityLog || []).slice(0, 5).map((ev, i) => {
+            const s = Math.floor((Date.now() - ev.t) / 1000);
+            const ago = s < 60 ? `${s}s` : s < 3600 ? `${Math.floor(s/60)}m` : `${Math.floor(s/3600)}h`;
+            const typeColor = { auth: c.green, nav: c.accent, close: c.amber, action: c.purple, export: c.cyan }[ev.type] || c.textDim;
+            return (
+              <div key={i} style={{ display: "flex", alignItems: "center", gap: 8, padding: "6px 0", borderBottom: i < 4 ? `1px solid ${c.borderSub}` : "none", animation: i === 0 ? "fadeSlideUp 0.3s ease-out" : "none" }}>
+                <div style={{ width: 5, height: 5, borderRadius: "50%", background: typeColor, flexShrink: 0 }} />
+                <span style={{ fontSize: 10, color: c.textSec, flex: 1, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{ev.msg}</span>
+                <span style={{ fontSize: 8, color: c.textFaint, fontFamily: "'JetBrains Mono', monospace", flexShrink: 0 }}>{ago}</span>
+              </div>
+            );
+          })}
+          {(!activityLog || activityLog.length === 0) && <div style={{ fontSize: 10, color: c.textFaint, padding: "8px 0" }}>No recent activity</div>}
+        </div>
+      </div>
+    </div>
+
     {/* Cohort Retention Heatmap */}
     <div style={{ fontSize: 9, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.12em", color: c.textFaint, marginTop: 24, marginBottom: 10, display: "flex", alignItems: "center", gap: 8 }}>
       Retention & Cohorts <div style={{ width: 40, height: 1, background: c.borderSub }} />
@@ -1743,9 +1847,9 @@ const DashboardView = ({ c, onNav, toast, onDrawer, userName, period }) => {
 
     {/* Cross-sell banner */}
     <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginTop: 24 }}>
-      {/* Referral */}
+      {/* Partner Program */}
       <div style={{ background: c.glass, backdropFilter: c.glassBlur, WebkitBackdropFilter: c.glassBlur, border: `1px solid ${c.glassBorder}`, borderRadius: 16, padding: "22px 24px", boxShadow: `${c.cardGlow}, ${c.glassHighlight}`, display: "flex", alignItems: "center", gap: 16, transition: "all 0.2s", cursor: "pointer", position: "relative", overflow: "hidden" }}
-        onClick={() => toast("Referral link copied to clipboard", "success")}
+        onClick={() => { try { navigator.clipboard.writeText("https://finance-os.app?ref=FOS-DEMO"); } catch {} toast("Referral link copied — earn 20% recurring commission", "success"); }}
         onMouseEnter={e => { e.currentTarget.style.borderColor = `${c.green}40`; e.currentTarget.style.transform = "translateY(-2px)"; }}
         onMouseLeave={e => { e.currentTarget.style.borderColor = c.border; e.currentTarget.style.transform = "none"; }}
       >
@@ -1753,8 +1857,9 @@ const DashboardView = ({ c, onNav, toast, onDrawer, userName, period }) => {
           <Users size={18} color={c.green} />
         </div>
         <div style={{ flex: 1 }}>
-          <div style={{ fontSize: 13, fontWeight: 800, color: c.text, marginBottom: 3 }}>Refer a finance team</div>
-          <div style={{ fontSize: 11, color: c.textDim, lineHeight: 1.4 }}>They get 20% off. You get $100 credit.</div>
+          <div style={{ fontSize: 13, fontWeight: 800, color: c.text, marginBottom: 3 }}>Partner & Referral Program</div>
+          <div style={{ fontSize: 11, color: c.textDim, lineHeight: 1.4 }}>Earn 20% recurring commission on every referral. They get 20% off their first year.</div>
+          <div style={{ fontSize: 9, color: c.textFaint, marginTop: 4, fontFamily: "'JetBrains Mono', monospace" }}>Your code: FOS-DEMO</div>
         </div>
         <div style={{ fontSize: 10, padding: "7px 14px", borderRadius: 8, border: `1px solid ${c.green}20`, background: c.greenDim, color: c.green, fontWeight: 700, whiteSpace: "nowrap", fontFamily: "inherit" }}>Copy Link</div>
       </div>
@@ -1782,14 +1887,14 @@ const DashboardView = ({ c, onNav, toast, onDrawer, userName, period }) => {
 // COPILOT VIEW
 // ══════════════════════════════════════════════════════════════
 const COPILOT_RESPONSES = {
-  "revenue": "Revenue beat of +$2.09M (+4.3%) is driven entirely by enterprise outperformance.\n\n**Enterprise (>$100K ACV):** +$3.3M above plan (+16.9%)\n• ACV expansion: avg deal up 28% ($142K → $182K)\n• AI module attach: 34% of new deals (vs 12% planned)\n• Three unplanned $300K+ deals from inbound\n\n**Mid-market ($25K-$100K):** -$800K below plan (-4.2%)\n**SMB (<$25K):** -$400K below plan (-3.8%)\n\nNDR at 118% — expansion contributing $4.2M above initial contracts.\n\n**Recommendation:** Double down on enterprise AI module. Investigate mid-market win rate decline vs Runway.",
-  "pigment": "**Acme vs Pigment — Head to Head**\n\nScale: Pigment ~$80M ARR vs our $48.6M (they're ~1.6x).\nWin rate: We win 42% of competitive deals. Was 35% two quarters ago — improving.\n\n**Where we win:**\n• Visible AI reasoning — they don't have this\n• Published pricing ($499-$3,999/mo flat vs their opaque $65K+ entry)\n• Self-serve onboarding (days vs 3-6 month implementation)\n\n**Where they win:**\n• Fortune 500 logos and enterprise references\n• Module breadth (workforce planning, SPM)\n• Larger partner ecosystem\n\nOur Rule of 40 (52.1) vs estimated 40-45 for Pigment.\n\n**Recommendation:** Focus positioning on AI transparency and TCO. Build customer advisory board for enterprise proof points.",
+  "revenue": "Revenue beat of +$2.09M (+4.3%) is driven entirely by enterprise outperformance.\n\n**Enterprise (>$100K ACV):** +$3.3M above plan (+16.9%)\n• ACV expansion: avg deal up 28% ($142K → $182K)\n• AI module attach: 34% of new deals (vs 12% planned)\n• Three unplanned $300K+ deals from inbound\n\n**Mid-market ($25K-$100K):** -$800K below plan (-4.2%)\n**SMB (<$25K):** -$400K below plan (-3.8%)\n\nNDR at 118% — expansion contributing $4.2M above initial contracts.\n\n**Recommendation:** Double down on enterprise AI module. Investigate mid-market win rate decline vs competitors.",
+  "pigment": "**Competitive Position — Head to Head**\n\nWin rate: We win 42% of competitive deals. Was 35% two quarters ago — improving.\n\n**Where we win:**\n• Visible AI reasoning — legacy tools don't have this\n• Published pricing ($499-$3,999/mo flat vs opaque $65K+ entry)\n• Self-serve onboarding (days vs 3-6 month implementation)\n\n**Where incumbents win:**\n• Fortune 500 logos and enterprise references\n• Module breadth (workforce planning, SPM)\n• Larger partner ecosystems\n\nOur Rule of 40 (52.1) vs estimated 40-45 for mid-market incumbents.\n\n**Recommendation:** Focus positioning on AI transparency and TCO. Build customer advisory board for enterprise proof points.",
   "guidance": "**Raise guidance to $52-54M.**\n\nThe math:\n• YTD actual: $51.19M (+$2.09M vs plan)\n• Current run rate: $52.8M full year\n• Enterprise pipeline weighted at $38M in stages 3-5\n\nWhy it's structural:\n• Enterprise ACV up 28% — pricing power, not luck\n• AI module at 34% attach creates new revenue layer\n• NDR at 118% means base compounds\n\nScenario range:\n• Bear: $50.5M (mid-market worsens)\n• Base: $52.8M (current trajectory)\n• Bull: $54.2M (Q4 flush + AI v2)\n\n**Recommendation:** Present $52-54M range to board. Pair with competitive SWAT team request.",
   "margin": "**Gross Margin Analysis: 84.7% (+2.1pp YoY)**\n\n**What's driving the improvement:**\n• Cloud cost optimization: moved to reserved instances → -$380K/yr\n• Support automation: AI deflection at 42% → headcount flat despite 24% growth\n• Revenue mix shift: Enterprise (87% margin) growing faster than SMB (78% margin)\n\n**Risks to watch:**\n• AI inference costs scaling with usage — currently $0.004/query, could 3x\n• Mid-market support tickets up 18% (churn signal?)\n\n**Benchmark:** SaaS median 72%. We're top-decile at 84.7%.\n\n**Recommendation:** Lock in 3-year cloud commitments while rates are favorable. Monitor AI cost per query weekly.",
   "burn": "**Burn Multiple: 0.8x (efficient growth)**\n\nFormula: Net Burn / Net New ARR = $9.4M / $11.7M = 0.80x\n\n**Breakdown:**\n• Net new ARR: $11.7M (from $36.9M → $48.6M)\n• Total OpEx: $39.6M\n• Cash consumed: $9.4M net burn\n\n**Benchmark context:**\n• <1.0x = best-in-class efficiency (Bessemer says 'superhuman')\n• 1.0-1.5x = good\n• >2.0x = concerning\n\n**Cash position:** $12.8M with 34 months runway at current burn.\n\n**Recommendation:** Maintain below 1.0x. Selective hiring in enterprise sales only — each rep producing $1.8M ARR.",
-  "churn": "**Churn & Retention Analysis**\n\n**Logo churn:** 4.2% annualized (8 accounts lost of 192)\n• 5 were SMB (<$25K) — expected at this segment\n• 2 mid-market lost to Runway on price\n• 1 enterprise churned due to M&A (acquired company standardized)\n\n**Revenue churn:** 2.1% gross, offset by 118% NDR\n• Net revenue retention: 118% means every $1 from last year is now $1.18\n• Expansion: AI module upsell (34% attach), seat expansion, tier upgrades\n\n**Cohort trend:** 2023 cohort NDR at 124% (maturing well). 2024 cohort at 112% (still early).\n\n**Recommendation:** Launch mid-market win-back campaign targeting the 2 Runway losses. Pricing flexibility in the $25-50K band.",
+  "churn": "**Churn & Retention Analysis**\n\n**Logo churn:** 4.2% annualized (8 accounts lost of 192)\n• 5 were SMB (<$25K) — expected at this segment\n• 2 mid-market lost to competitors on price\n• 1 enterprise churned due to M&A (acquired company standardized)\n\n**Revenue churn:** 2.1% gross, offset by 118% NDR\n• Net revenue retention: 118% means every $1 from last year is now $1.18\n• Expansion: AI module upsell (34% attach), seat expansion, tier upgrades\n\n**Cohort trend:** 2023 cohort NDR at 124% (maturing well). 2024 cohort at 112% (still early).\n\n**Recommendation:** Launch mid-market win-back campaign targeting the 2 competitor losses. Pricing flexibility in the $25-50K band.",
   "expense": "**Expense Variance Summary — YTD**\n\n**Over budget (action needed):**\n• S&M: +$730K over (+5.0%) — Hiring $420K ahead of plan, events $180K for re:Invent\n• Cloud/Infra: +$455K over (+12.4%) — AI inference costs scaling faster than modeled\n\n**Under budget (favorable):**\n• R&D: -$278K under (-1.4%) — two senior hires delayed to Q3\n• G&A: -$255K under (-5.0%) — legal fees lower than budgeted\n\n**Total OpEx:** $39.6M vs $39.4M budget (+$200K net, +0.5%)\n\n**Recommendation:** S&M overspend is deliberate (pipeline ROI 7.2x). Cloud costs need attention — set up inference cost alerts at $0.006/query threshold.",
-  "forecast": "**Forecast Accuracy Assessment**\n\n**Current model:** ETS + XGBoost + Linear ensemble\n• MAPE: 3.2% (industry median: 8-12%)\n• Best on: Revenue, COGS (1.8% MAPE)\n• Weakest on: S&M timing (6.1% MAPE — event spend lumpy)\n\n**14 drivers tracked:**\n• Pipeline velocity, win rates, ACV, NDR, logo churn\n• Headcount plan, cloud costs, AI usage, event calendar\n• 3 external: Fed rate, SaaS multiples, hiring index\n\n**Confidence intervals:**\n• Q3 revenue: $13.2M ± $420K (95% CI)\n• Full year: $52.8M ± $1.6M\n\n**Recommendation:** Retrain weekly during Q3 (board prep). Add competitor pricing as a driver — 2 recent losses correlated with Runway price drops.",
+  "forecast": "**Forecast Accuracy Assessment**\n\n**Current model:** ETS + XGBoost + Linear ensemble\n• MAPE: 3.2% (industry median: 8-12%)\n• Best on: Revenue, COGS (1.8% MAPE)\n• Weakest on: S&M timing (6.1% MAPE — event spend lumpy)\n\n**14 drivers tracked:**\n• Pipeline velocity, win rates, ACV, NDR, logo churn\n• Headcount plan, cloud costs, AI usage, event calendar\n• 3 external: Fed rate, SaaS multiples, hiring index\n\n**Confidence intervals:**\n• Q3 revenue: $13.2M ± $420K (95% CI)\n• Full year: $52.8M ± $1.6M\n\n**Recommendation:** Retrain weekly during Q3 (board prep). Add competitor pricing as a driver — 2 recent losses correlated with competitor price drops.",
   "default": "I have Acme's full financials, SaaS metrics, benchmarks, and competitive data loaded. That's a great question — let me analyze the data.\n\nBased on the current performance:\n• Revenue: $51.19M YTD (+4.3% vs plan)\n• Gross margin: 84.7%\n• Rule of 40: 52.1 (top quartile)\n• NDR: 118%\n• Burn multiple: 0.8x (efficient)\n• Cash runway: 34 months ($12.8M)\n\nI can help with variance analysis, scenario modeling, competitive benchmarks, forecasting, churn analysis, or expense deep-dives. What would you like to explore?",
 };
 
@@ -1803,7 +1908,7 @@ const renderInline = (text, c) => {
   });
 };
 
-const CopilotView = ({ c, toast }) => {
+const CopilotView = ({ c, toast, logActivity }) => {
   const [messages, setMessages] = useState([
     { role: "assistant", content: "Welcome to FinanceOS AI Copilot.\n\nI have Acme's full financials, SaaS metrics, benchmarks, and competitive data loaded. Ask me anything and I'll show my reasoning before answering.\n\n**6 active variances** — Revenue +$2.09M, S&M and Cloud over. Rule of 40 at 52.1 (top quartile)." },
   ]);
@@ -1821,6 +1926,7 @@ const CopilotView = ({ c, toast }) => {
     setMessages(prev => [...prev, { role: "user", content: userMsg }]);
     setInput("");
     setThinking(true);
+    if (logActivity) logActivity(`AI query: "${userMsg.slice(0, 40)}${userMsg.length > 40 ? "…" : ""}"`, "action");
 
     // Route through Supabase Edge Function (API key stays server-side)
     // Falls back to demo responses if Edge Function unavailable
@@ -1904,7 +2010,7 @@ const CopilotView = ({ c, toast }) => {
               <div style={{ fontSize: 16, fontWeight: 800, color: c.text, marginBottom: 6 }}>Ask me anything</div>
               <div style={{ fontSize: 12, color: c.textDim, lineHeight: 1.6, marginBottom: 16 }}>I can analyze your P&L variances, forecast revenue, compare scenarios, and surface hidden patterns in your data.</div>
               <div style={{ display: "flex", flexDirection: "column", gap: 8, textAlign: "left" }}>
-                {["What drove the $2.09M revenue beat?", "Compare us to Pigment and Anaplan", "Should we raise FY guidance?", "Where are we over budget on expenses?"].map(q => (
+                {["What drove the $2.09M revenue beat?", "How do we compare to legacy FP&A tools?", "Should we raise FY guidance?", "Where are we over budget on expenses?"].map(q => (
                   <button key={q} onClick={() => { setInput(q); }} style={{
                     fontSize: 11, padding: "10px 14px", borderRadius: 10, border: `1px solid ${c.borderSub}`,
                     background: c.surfaceAlt, color: c.textSec, cursor: "pointer", fontFamily: "inherit",
@@ -2549,22 +2655,22 @@ const CLOSE_TASKS = [
   { id: 8, task: "Management review sign-off", owner: "CFO", status: "notstarted", due: "Mar 8", priority: "med", cat: "Review" },
 ];
 
-const CloseView = ({ c, toast }) => {
-  const [tasks, setTasks] = useState(CLOSE_TASKS);
+const CloseView = ({ c, toast, tasks, setTasks, logActivity }) => {
 
+  const statusLabel = { done: "Complete", progress: "In Progress", notstarted: "Not Started" };
+  const statusColor = { done: c.green, progress: c.accent, notstarted: c.textFaint };
   const cycleStatus = (id) => {
     const order = ["notstarted", "progress", "done"];
     setTasks(prev => prev.map(t => {
       if (t.id !== id) return t;
       const next = order[(order.indexOf(t.status) + 1) % 3];
       toast(`${t.task.slice(0, 40)}${t.task.length > 40 ? "…" : ""} → ${statusLabel[next]}`, next === "done" ? "success" : "info");
+      if (logActivity) logActivity(`Close task: ${t.task.slice(0, 30)} → ${statusLabel[next]}`, "close");
       return { ...t, status: next };
     }));
   };
   const doneCount = tasks.filter(t => t.status === "done").length;
   const pct = tasks.length ? Math.round((doneCount / tasks.length) * 100) : 0;
-  const statusLabel = { done: "Complete", progress: "In Progress", notstarted: "Not Started" };
-  const statusColor = { done: c.green, progress: c.accent, notstarted: c.textFaint };
 
   return (
     <div style={{ padding: 32 }}>
@@ -5178,8 +5284,8 @@ const LandingPage = ({ onLogin }) => {
           {[
             { label: "SaaS companies", detail: "$5M–$200M ARR" },
             { label: "Finance teams", detail: "3–25 people" },
-            { label: "Replaces", detail: "Spreadsheets & Adaptive" },
-            { label: "Competes with", detail: "Anaplan, Pigment, Runway" },
+            { label: "Replaces", detail: "Spreadsheets & legacy FP&A" },
+            { label: "Replaces", detail: "Legacy EPM, spreadsheets, point solutions" },
           ].map(item => (
             <div key={item.label} style={{ textAlign: "center" }}>
               <div style={{ fontSize: 12, fontWeight: 700, color: "#f0f2f5" }}>{item.label}</div>
@@ -5280,7 +5386,7 @@ const LandingPage = ({ onLogin }) => {
         </div>
       </div>
 
-      {/* Competitive Comparison — SWOT: position vs Pigment, Anaplan, Runway */}
+      {/* Competitive Comparison — category positioning */}
       <div style={{ padding: "60px 48px", maxWidth: 1100, margin: "0 auto" }}>
         <div style={{ textAlign: "center", marginBottom: 40 }}>
           <h2 style={{ fontSize: 36, fontWeight: 800, letterSpacing: "-0.03em", marginBottom: 12 }}>How FinanceOS compares</h2>
@@ -5291,7 +5397,7 @@ const LandingPage = ({ onLogin }) => {
           <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12 }}>
             <thead>
               <tr style={{ borderBottom: "1px solid #1e2230" }}>
-                {["Capability", "FinanceOS", "Anaplan", "Pigment", "Runway"].map((h, i) => (
+                {["Capability", "FinanceOS", "Legacy EPM", "Mid-Market FP&A", "Startup Tools"].map((h, i) => (
                   <th key={h} style={{ padding: "14px 16px", textAlign: i === 0 ? "left" : "center", fontSize: 11, fontWeight: 700, color: i === 1 ? "#60a5fa" : "#8b92a5", textTransform: "uppercase", letterSpacing: "0.04em" }}>{h}</th>
                 ))}
               </tr>
@@ -5454,15 +5560,15 @@ const LandingPage = ({ onLogin }) => {
         </div>
         {[
           { q: "What is FinanceOS?", a: "FinanceOS is an AI-powered financial planning and analysis (FP&A) platform. It connects to your ERP, CRM, and billing systems to build a unified financial model, then uses AI to surface variances, forecast revenue, and answer natural language questions about your data — with visible reasoning so you can verify every insight." },
-          { q: "How long does implementation take?", a: "Most teams are live within 48 hours. Connect your ERP, map your chart of accounts, and start running reports the same day. No consultants, no 6-month implementations. Compare that to 3-6 months for Anaplan and Pigment." },
-          { q: "How does FinanceOS compare to Anaplan and Pigment?", a: "FinanceOS offers enterprise-grade features (multi-entity consolidation, scenario modeling, AI copilot) at a fraction of the cost — starting at $499/mo vs $200K+/yr for Anaplan and $65K+/yr for Pigment. We also deploy in days, not months, with transparent published pricing." },
-          { q: "Who is FinanceOS best for?", a: "SaaS companies with $5M-$200M ARR and finance teams of 3-25 people. If you're currently using spreadsheets, outgrowing Adaptive Insights, or looking for an enterprise-grade FP&A tool without the enterprise price tag, FinanceOS is built for you." },
+          { q: "How long does implementation take?", a: "Most teams are live within 48 hours. Connect your ERP, map your chart of accounts, and start running reports the same day. No consultants, no 6-month implementations. Compare that to 3-6 months at legacy vendors." },
+          { q: "How does FinanceOS compare to legacy FP&A tools?", a: "FinanceOS offers enterprise-grade features (multi-entity consolidation, scenario modeling, AI copilot) at a fraction of the cost — starting at $499/mo vs $65K-$200K+/yr at legacy platforms. We also deploy in days, not months, with transparent published pricing." },
+          { q: "Who is FinanceOS best for?", a: "SaaS companies with $5M-$200M ARR and finance teams of 3-25 people. If you're currently using spreadsheets, outgrowing your current FP&A tool, or looking for an enterprise-grade FP&A tool without the enterprise price tag, FinanceOS is built for you." },
           { q: "How does the AI Copilot work?", a: "Our AI reads your full financial model — actuals, budgets, forecasts, and benchmarks. Ask any question in plain English and get a sourced, reasoned answer. Unlike other tools, we show our work so you can verify every insight. Powered by Claude with your API key stored server-side." },
           { q: "What integrations do you support?", a: "30+ native integrations including NetSuite, Salesforce, Stripe, Snowflake, Rippling, QuickBooks, Xero, Plaid, and more. Bi-directional sync with < 5 minute latency. We're one of the only FP&A platforms with native banking data via Plaid." },
           { q: "Is my data secure?", a: "SOC 2 Type II compliant, AES-256 encryption at rest and in transit, row-level security in Supabase, HSTS + Content Security Policy headers, and zero cross-tenant data leakage. Your data never leaves your tenant." },
           { q: "What does FinanceOS cost?", a: "Starter: $499/mo (annual). Growth: $1,499/mo. Business: $3,999/mo. Enterprise: custom pricing. All plans include a 30-day money-back guarantee — subscribe risk-free." },
-          { q: "Can I migrate from Pigment, Anaplan, or Adaptive?", a: "Yes. We provide a guided migration path with a dedicated onboarding specialist. Most migrations complete in 2-3 weeks with full historical data preservation." },
-          { q: "What makes FinanceOS different from Runway?", a: "Runway is strong for early-stage startups. FinanceOS serves mid-market teams that need multi-entity consolidation, intercompany elimination, and board-ready reporting. We also have published transparent pricing — Runway does not." },
+          { q: "Can I migrate from my current FP&A platform?", a: "Yes. We provide a guided migration path with a dedicated onboarding specialist. Most migrations complete in 2-3 weeks with full historical data preservation." },
+          { q: "What makes FinanceOS different from startup-focused tools?", a: "Startup-focused tools work for early-stage companies. FinanceOS serves mid-market teams that need multi-entity consolidation, intercompany elimination, and board-ready reporting. We also have published transparent pricing — most competitors do not." },
           { q: "Do you offer a money-back guarantee?", a: "Yes — all plans include a 30-day money-back guarantee. Subscribe, connect your data, and if you're not satisfied within 30 days, contact us for a full refund. No questions asked." },
           { q: "Do you offer custom pricing for large teams?", a: "Yes. Enterprise agreements have no seat limits, no entity caps, and no usage ceilings. We offer multi-year committed spend discounts, custom SLAs, dedicated TAMs, on-premises deployment, and SOX-compliant audit trails. Contact sales for a proposal." },
         ].map((faq, i) => (
@@ -5602,6 +5708,7 @@ const LandingPage = ({ onLogin }) => {
             { title: "Company", links: [
               { link: "Privacy Policy", url: "/privacy" },
               { link: "Terms of Service", url: "/terms" },
+              { link: "Partner Program", url: "mailto:partners@finance-os.app?subject=FinanceOS%20Partner%20Program%20Interest" },
               { link: "GitHub", url: "https://github.com/Malikfrazier35/financeos" },
             ]},
           ].map(col => (
@@ -5673,6 +5780,16 @@ function FinanceOSApp() {
   });
   useEffect(() => { try { localStorage.setItem("financeos-sidebar", sidebarCollapsed ? "collapsed" : "expanded"); } catch {} }, [sidebarCollapsed]);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  // Global activity log — feeds dashboard ticker and notification badge
+  const [activityLog, setActivityLog] = useState([
+    { t: Date.now() - 120000, msg: "Signed in", type: "auth" },
+    { t: Date.now() - 90000, msg: "Viewed Dashboard", type: "nav" },
+  ]);
+  const logActivity = useCallback((msg, type = "action") => {
+    setActivityLog(prev => [{ t: Date.now(), msg, type }, ...prev].slice(0, 50));
+  }, []);
+  // Close tasks state elevated to app level — persists across view switches
+  const [closeTasks, setCloseTasks] = useState(CLOSE_TASKS);
   const [suitePanelOpen, setSuitePanelOpen] = useState(() => {
     try { return localStorage.getItem("financeos-suite-dismissed") !== "true"; } catch { return true; }
   });
@@ -5883,6 +6000,7 @@ function FinanceOSApp() {
 
   // Navigation with history tracking + loading transition
   // MUST be defined before the if(!loggedIn) return — React Rules of Hooks
+  const viewTitles = { dashboard: "Dashboard", copilot: "AI Copilot", pnl: "P&L Statement", forecast: "Forecast Optimizer", consolidation: "Multi-Entity Consolidation", models: "Scenario Models", close: "Close Tasks", integrations: "Integrations", admin: "Admin Console", investor: "Investor Metrics", settings: "Settings" };
   const navigate = useCallback((v) => {
     if (v === view) return;
     setMobileMenuOpen(false);
@@ -5893,7 +6011,6 @@ function FinanceOSApp() {
       setView(v);
       setViewLoading(false);
       loadingTimer.current = null;
-      // Scroll content area to top on view change
       try { document.querySelector("[data-content-area]")?.scrollTo(0, 0); } catch {}
     }, 280);
     setNavHistory(prev => {
@@ -5902,7 +6019,8 @@ function FinanceOSApp() {
       if (idx >= 0) return next.slice(0, idx + 1);
       return [...next, v];
     });
-  }, [view]);
+    logActivity(`Opened ${viewTitles[v] || v}`, "nav");
+  }, [view, logActivity]);
 
   // Keyboard shortcuts
   const [shortcutsOpen, setShortcutsOpen] = useState(false);
@@ -5927,7 +6045,6 @@ function FinanceOSApp() {
     else { navigate(item.id); }
   };
 
-  const viewTitles = { dashboard: "Dashboard", copilot: "AI Copilot", pnl: "P&L Statement", forecast: "Forecast Optimizer", consolidation: "Multi-Entity Consolidation", models: "Scenario Models", close: "Close Tasks", integrations: "Integrations", admin: "Admin Console", investor: "Investor Metrics", settings: "Settings" };
 
   // Show marketing page when not logged in
   if (!loggedIn) {
@@ -6398,13 +6515,13 @@ function FinanceOSApp() {
           <div style={{ position: "fixed", bottom: "15%", right: "10%", width: "35%", height: "35%", borderRadius: "50%", background: `radial-gradient(circle, ${c.purple}05 0%, transparent 70%)`, filter: "blur(80px)", pointerEvents: "none", zIndex: 0 }} />
           <div style={{ position: "fixed", top: "50%", right: "35%", width: "25%", height: "25%", borderRadius: "50%", background: `radial-gradient(circle, ${c.green}04 0%, transparent 70%)`, filter: "blur(60px)", pointerEvents: "none", zIndex: 0 }} />
           {viewLoading ? <LoadingSkeleton c={c} /> : (<>
-          {view === "dashboard" && <SectionBoundary name="Dashboard" bg={c.surface} borderColor={c.border} textColor={c.textDim} accentColor={c.accent}><DashboardView c={c} onNav={navigate} toast={toast} onDrawer={setDrawerKpi} userName={user.name} period={period} /></SectionBoundary>}
-          {view === "copilot" && <SectionBoundary name="AI Copilot" bg={c.surface} borderColor={c.border} textColor={c.textDim} accentColor={c.accent}><CopilotView c={c} toast={toast} /></SectionBoundary>}
-          {view === "pnl" && <SectionBoundary name="P&L Statement" bg={c.surface} borderColor={c.border} textColor={c.textDim} accentColor={c.accent}><PnlView c={c} onNav={navigate} toast={toast} /></SectionBoundary>}
+          {view === "dashboard" && <SectionBoundary name="Dashboard" bg={c.surface} borderColor={c.border} textColor={c.textDim} accentColor={c.accent}><DashboardView c={c} onNav={navigate} toast={toast} onDrawer={setDrawerKpi} userName={user.name} period={period} closeTasks={closeTasks} activityLog={activityLog} /></SectionBoundary>}
+          {view === "copilot" && <SectionBoundary name="AI Copilot" bg={c.surface} borderColor={c.border} textColor={c.textDim} accentColor={c.accent}><CopilotView c={c} toast={toast} logActivity={logActivity} /></SectionBoundary>}
+          {view === "pnl" && <SectionBoundary name="P&L Statement" bg={c.surface} borderColor={c.border} textColor={c.textDim} accentColor={c.accent}><PnlView c={c} onNav={navigate} toast={toast} logActivity={logActivity} /></SectionBoundary>}
           {view === "forecast" && <SectionBoundary name="Forecast Optimizer" bg={c.surface} borderColor={c.border} textColor={c.textDim} accentColor={c.accent}><ForecastView c={c} toast={toast} /></SectionBoundary>}
           {view === "consolidation" && <SectionBoundary name="Consolidation" bg={c.surface} borderColor={c.border} textColor={c.textDim} accentColor={c.accent}><ConsolidationView c={c} onNav={navigate} toast={toast} /></SectionBoundary>}
           {view === "models" && <SectionBoundary name="Scenario Models" bg={c.surface} borderColor={c.border} textColor={c.textDim} accentColor={c.accent}><ScenariosView c={c} toast={toast} /></SectionBoundary>}
-          {view === "close" && <SectionBoundary name="Month-End Close" bg={c.surface} borderColor={c.border} textColor={c.textDim} accentColor={c.accent}><CloseView c={c} toast={toast} /></SectionBoundary>}
+          {view === "close" && <SectionBoundary name="Month-End Close" bg={c.surface} borderColor={c.border} textColor={c.textDim} accentColor={c.accent}><CloseView c={c} toast={toast} tasks={closeTasks} setTasks={setCloseTasks} logActivity={logActivity} /></SectionBoundary>}
           {view === "integrations" && <SectionBoundary name="Integrations" bg={c.surface} borderColor={c.border} textColor={c.textDim} accentColor={c.accent}><IntegrationsView c={c} toast={toast} /></SectionBoundary>}
           {view === "admin" && <SectionBoundary name="Admin Panel" bg={c.surface} borderColor={c.border} textColor={c.textDim} accentColor={c.accent}><AdminView c={c} toast={toast} onNav={navigate} /></SectionBoundary>}
           {view === "investor" && <SectionBoundary name="Investor Relations" bg={c.surface} borderColor={c.border} textColor={c.textDim} accentColor={c.accent}><InvestorView c={c} toast={toast} /></SectionBoundary>}
