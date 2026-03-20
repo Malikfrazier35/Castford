@@ -4389,7 +4389,7 @@ const AuthModal = ({ mode: initialMode, onClose, onAuth }) => {
 
           {/* Trust signals */}
           <div style={{ display: "flex", justifyContent: "center", gap: 16, marginTop: 16, paddingTop: 14, borderTop: "1px solid #1e2230" }}>
-            {[{ icon: Shield, label: "SOC 2" }, { icon: Zap, label: "AES-256" }, { icon: Globe, label: "99.99% SLA" }].map(t => (
+            {[{ icon: Shield, label: "SOC 2" }, { icon: Zap, label: "AES-256" }, { icon: Globe, label: "Custom SLA" }].map(t => (
               <div key={t.label} style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 9, color: "#3d4558", fontWeight: 600 }}>
                 <t.icon size={10} color="#3d4558" /> {t.label}
               </div>
@@ -4404,13 +4404,13 @@ const AuthModal = ({ mode: initialMode, onClose, onAuth }) => {
           )}
           {/* Trust signals */}
           <div style={{ display: "flex", justifyContent: "center", gap: 16, marginTop: 16, paddingTop: 14, borderTop: "1px solid #1e2230" }}>
-            {[{ label: "SOC 2", icon: "🛡️" }, { label: "AES-256", icon: "🔒" }, { label: "99.99% SLA", icon: "⚡" }].map(t => (
+            {[{ label: "SOC 2", icon: "🛡️" }, { label: "AES-256", icon: "🔒" }, { label: "Custom SLA", icon: "⚡" }].map(t => (
               <span key={t.label} style={{ fontSize: 9, color: "#3d4558", fontWeight: 600, display: "flex", alignItems: "center", gap: 4 }}>
                 <span style={{ fontSize: 11 }}>{t.icon}</span> {t.label}
               </span>
             ))}
           </div>
-          <div style={{ textAlign: "center", marginTop: 8, fontSize: 9, color: "#3d4558" }}>Trusted by 2,400+ finance teams · 30-day money-back guarantee</div>
+          <div style={{ textAlign: "center", marginTop: 8, fontSize: 9, color: "#3d4558" }}>30-day money-back guarantee · Cancel anytime</div>
         </div>
       </div>
     </div>
@@ -4453,7 +4453,7 @@ const PRICING_PLANS = [
     monthlyLink: "https://buy.stripe.com/7sY8wPbdd04a8nE9ANdwc0s", annualLink: "https://buy.stripe.com/dRmaEX811dV0eM23cpdwc0t" },
   { name: "Enterprise", monthly: null, annual: null, seats: Infinity, entities: Infinity, enterprise: true,
     desc: "Custom deployment · SOX compliance · On-prem",
-    features: ["No seat or entity limits", "SOX-compliant audit trails", "On-premises or private cloud", "Custom integrations & API", "Dedicated success team + TAM", "Multi-year & volume pricing", "White-glove onboarding", "Custom SLA (99.99% available)"],
+    features: ["No seat or entity limits", "SOX-compliant audit trails", "On-premises or private cloud", "Custom integrations & API", "Dedicated success team + TAM", "Multi-year & volume pricing", "White-glove onboarding", "Custom SLA (up to 99.99%)"],
     usage: [
       { label: "All meters", included: -1, overage: "Unlimited" },
       { label: "Committed spend discounts", included: -1, overage: "Custom" },
@@ -4770,14 +4770,14 @@ const PlanPicker = ({ c, userName, onSkip, onSelect, isDemo, isAuthenticated }) 
     { name: "AI Copilot (Claude)", values: [false, true, true] },
     { name: "Multi-Entity Consolidation", values: [false, true, true] },
     { name: "Scenario Modeling", values: ["2", "10", "Unlimited"] },
-    { name: "Integrations", values: ["5", "15", "30+"] },
+    { name: "Integrations", values: ["5", "15", "All"] },
     { name: "Variance Detective", values: [true, true, true] },
     { name: "Forecast Optimizer", values: ["Basic", "ML-Powered", "Custom ML"] },
     { name: "Board Reporting", values: [false, true, true] },
     { name: "Custom ML Models", values: [false, false, true] },
     { name: "SSO / SAML / RBAC", values: [false, false, true] },
     { name: "Dedicated CSM", values: [false, false, true] },
-    { name: "SLA Guarantee", values: ["99.9%", "99.95%", "99.99%"] },
+    { name: "Uptime Target", values: ["99.9%", "99.95%", "Custom"] },
     { name: "API Access", values: [false, "REST", "REST + GQL"] },
     { name: "Support", values: ["Email", "Priority", "Dedicated"] },
   ];
@@ -5017,7 +5017,7 @@ const PlanPicker = ({ c, userName, onSkip, onSelect, isDemo, isAuthenticated }) 
             </div>
           )}
           <div style={{ display: "flex", justifyContent: "center", gap: 20 }}>
-            {["2,400+ demo users", "NPS 72", "$840K pipeline"].map(s => (
+            {["12-view dashboard", "AI-powered insights", "30-day money-back guarantee"].map(s => (
               <div key={s} style={{ fontSize: 10, color: t.txF, fontWeight: 600 }}>{s}</div>
             ))}
           </div>
@@ -5040,8 +5040,8 @@ const DEMO_TABS = [
     title: "Close in hours, not weeks", sub: "Multi-entity consolidation with automatic intercompany eliminations, FX adjustments, and entity-level approval workflows.",
     kpis: [{ l: "Entities", v: "Unlimited" }, { l: "IC Elim", v: "Auto" }, { l: "Currencies", v: "40+" }] },
   { id: "integrations", label: "Integrations",
-    title: "Your stack, connected", sub: "30+ native integrations — NetSuite, Salesforce, Stripe, Snowflake, Rippling. Bi-directional sync with real-time data freshness indicators.",
-    kpis: [{ l: "Connectors", v: "30+" }, { l: "Sync", v: "Real-time" }, { l: "Setup", v: "< 5 min" }] },
+    title: "Your stack, connected", sub: "Native integrations — NetSuite, Salesforce, Stripe, Snowflake, Rippling. Bi-directional sync with real-time data freshness indicators.",
+    kpis: [{ l: "Connectors", v: "15+" }, { l: "Sync", v: "Real-time" }, { l: "Setup", v: "< 5 min" }] },
 ];
 
 const ProductDemo = ({ enterDemo }) => {
@@ -5266,8 +5266,8 @@ const LandingPage = ({ onLogin }) => {
         <div style={{ display: "flex", justifyContent: "center", gap: 28, marginTop: 32, flexWrap: "wrap" }}>
           {[
             { value: "< 48hr", label: "Go-live" },
-            { value: "30+", label: "Integrations" },
-            { value: "3.2%", label: "Forecast MAPE" },
+            { value: "15+", label: "Integrations" },
+            { value: "Sub-3%", label: "Forecast MAPE" },
             { value: "SOC 2", label: "Compliant" },
           ].map(m => (
             <div key={m.label} style={{ textAlign: "center" }}>
@@ -5308,7 +5308,7 @@ const LandingPage = ({ onLogin }) => {
             { title: "Multi-Entity Consolidation", desc: "Automatic intercompany eliminations, FX adjustments, and entity-level approval workflows.", Icon: Layers, color: "#34d399" },
             { title: "Variance Detective", desc: "AI scans every line for favorable/unfavorable variances and explains the drivers automatically.", Icon: Eye, color: "#fbbf24" },
             { title: "Scenario Modeling", desc: "Compare 4+ scenarios side-by-side. Base, bull, bear, and custom — all with live data feeds.", Icon: Cpu, color: "#f87171" },
-            { title: "30+ Integrations", desc: "NetSuite, Salesforce, Stripe, Snowflake, Rippling, and more. Real-time bi-directional sync.", Icon: Globe, color: "#22d3ee" },
+            { title: "Native Integrations", desc: "NetSuite, Salesforce, Stripe, Snowflake, Rippling, and more. Real-time bi-directional sync.", Icon: Globe, color: "#22d3ee" },
           ].map(f => (
             <div key={f.title} style={{ background: "#111318", border: "1px solid #1e2230", borderRadius: 16, padding: "26px 24px", transition: "all 0.25s cubic-bezier(0.22,1,0.36,1)", position: "relative", overflow: "hidden" }}
               onMouseEnter={e => { e.currentTarget.style.borderColor = `${f.color}40`; e.currentTarget.style.transform = "translateY(-4px)"; e.currentTarget.style.boxShadow = `0 12px 40px ${f.color}08`; }}
@@ -5363,13 +5363,13 @@ const LandingPage = ({ onLogin }) => {
       <div style={{ padding: isMobile ? "40px 20px" : "80px 48px", maxWidth: 1100, margin: "0 auto" }}>
         <div style={{ textAlign: "center", marginBottom: 48 }}>
           <div style={{ display: "inline-block", padding: "6px 14px", borderRadius: 20, background: "rgba(52,211,153,0.06)", border: "1px solid rgba(52,211,153,0.12)", fontSize: 10, fontWeight: 700, color: "#34d399", marginBottom: 16, letterSpacing: "0.06em", textTransform: "uppercase" }}>Built for Impact</div>
-          <h2 style={{ fontSize: 36, fontWeight: 800, letterSpacing: "-0.03em", marginBottom: 12 }}>What teams accomplish</h2>
-          <p style={{ fontSize: 15, color: "#8b92a5", maxWidth: 500, margin: "0 auto" }}>Real outcomes finance teams achieve after deploying FinanceOS.</p>
+          <h2 style={{ fontSize: 36, fontWeight: 800, letterSpacing: "-0.03em", marginBottom: 12 }}>What teams can accomplish</h2>
+          <p style={{ fontSize: 15, color: "#8b92a5", maxWidth: 500, margin: "0 auto" }}>Projected outcomes based on product capabilities and industry benchmarks.</p>
         </div>
         <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "repeat(3, 1fr)", gap: 16 }}>
           {[
             { icon: "⚡", outcome: "Close time drops from 12 days to 4", detail: "AI copilot auto-generates variance commentary and flags accrual errors before your auditors see them.", metric: "8-day reduction", color: "#60a5fa" },
-            { icon: "◈", outcome: "Model 3 M&A scenarios in 20 minutes", detail: "Side-by-side scenario comparison with live sensitivity sliders. No more two-week spreadsheet cycles.", metric: "10x faster analysis", color: "#a78bfa" },
+            { icon: "◈", outcome: "Model 3 M&A scenarios in 20 minutes", detail: "Side-by-side scenario comparison with live sensitivity sliders. No more two-week spreadsheet cycles.", metric: "Scenario modeling in minutes", color: "#a78bfa" },
             { icon: "◆", outcome: "See AI reasoning you can actually verify", detail: "Unlike black-box copilots, FinanceOS shows every data source, assumption, and calculation chain.", metric: "Full transparency", color: "#34d399" },
           ].map(t => (
             <div key={t.outcome} style={{ background: "#111318", border: "1px solid #1e2230", borderRadius: 16, padding: "28px 24px", position: "relative", overflow: "hidden", transition: "all 0.25s cubic-bezier(0.22,1,0.36,1)" }}
@@ -5411,13 +5411,13 @@ const LandingPage = ({ onLogin }) => {
                 { cap: "Multi-entity consolidation", us: true, an: true, pi: true, ru: false },
                 { cap: "Scenario modeling (4+ side-by-side)", us: true, an: true, pi: true, ru: true },
                 { cap: "Real-time variance detection", us: true, an: false, pi: true, ru: false },
-                { cap: "30+ native integrations", us: true, an: true, pi: true, ru: true },
+                { cap: "Native integrations", us: true, an: true, pi: true, ru: true },
                 { cap: "Banking data via Plaid", us: true, an: false, pi: false, ru: false },
                 { cap: "CSV / file upload pipeline", us: true, an: true, pi: true, ru: true },
-                { cap: "SOC 2 Type II compliant", us: true, an: true, pi: true, ru: true },
+                { cap: "SOC 2 Type II architecture", us: true, an: true, pi: true, ru: true },
                 { cap: "Enterprise / on-prem option", us: true, an: true, pi: true, ru: false },
                 { cap: "Implementation time", us: "< 48hr", an: "3-6 mo", pi: "3-6 mo", ru: "Weeks" },
-                { cap: "Starting price", us: "$499/mo", an: "$200K+/yr", pi: "$65K+/yr", ru: "$30K+/yr" },
+                { cap: "Starting price", us: "From $499/mo", an: "$200K+/yr", pi: "$65K+/yr", ru: "$30K+/yr" },
               ].map(row => (
                 <tr key={row.cap} style={{ borderBottom: "1px solid #1e2230" }}>
                   <td style={{ padding: "12px 16px", color: "#9ea5b8", fontWeight: 500 }}>{row.cap}</td>
@@ -5540,9 +5540,9 @@ const LandingPage = ({ onLogin }) => {
         {/* Social proof + ROI below pricing */}
         <div style={{ display: "flex", justifyContent: "center", gap: 32, marginTop: 32, flexWrap: "wrap" }}>
           {[
-            { value: "8 days", label: "Avg close time reduction" },
-            { value: "10x", label: "Faster scenario analysis" },
-            { value: "84%", label: "Average gross margin" },
+            { value: "Days", label: "Not months to deploy" },
+            { value: "Minutes", label: "Scenario analysis time" },
+            { value: "< 48hr", label: "Onboarding time" },
             { value: "< 48hr", label: "Implementation time" },
           ].map(s => (
             <div key={s.label} style={{ textAlign: "center" }}>
@@ -5564,8 +5564,8 @@ const LandingPage = ({ onLogin }) => {
           { q: "How does FinanceOS compare to legacy FP&A tools?", a: "FinanceOS offers enterprise-grade features (multi-entity consolidation, scenario modeling, AI copilot) at a fraction of the cost — starting at $499/mo vs $65K-$200K+/yr at legacy platforms. We also deploy in days, not months, with transparent published pricing." },
           { q: "Who is FinanceOS best for?", a: "SaaS companies with $5M-$200M ARR and finance teams of 3-25 people. If you're currently using spreadsheets, outgrowing your current FP&A tool, or looking for an enterprise-grade FP&A tool without the enterprise price tag, FinanceOS is built for you." },
           { q: "How does the AI Copilot work?", a: "Our AI reads your full financial model — actuals, budgets, forecasts, and benchmarks. Ask any question in plain English and get a sourced, reasoned answer. Unlike other tools, we show our work so you can verify every insight. Powered by Claude with your API key stored server-side." },
-          { q: "What integrations do you support?", a: "30+ native integrations including NetSuite, Salesforce, Stripe, Snowflake, Rippling, QuickBooks, Xero, Plaid, and more. Bi-directional sync with < 5 minute latency. We're one of the only FP&A platforms with native banking data via Plaid." },
-          { q: "Is my data secure?", a: "SOC 2 Type II compliant, AES-256 encryption at rest and in transit, row-level security in Supabase, HSTS + Content Security Policy headers, and zero cross-tenant data leakage. Your data never leaves your tenant." },
+          { q: "What integrations do you support?", a: "Native integrations including NetSuite, Salesforce, Stripe, Snowflake, Rippling, QuickBooks, Xero, Plaid, and more. Bi-directional sync with < 5 minute latency. We're one of the only FP&A platforms with native banking data via Plaid." },
+          { q: "Is my data secure?", a: "SOC 2 Type II architecture, AES-256 encryption at rest and in transit, row-level security in Supabase, HSTS + Content Security Policy headers, and zero cross-tenant data leakage. Your data never leaves your tenant." },
           { q: "What does FinanceOS cost?", a: "Starter: $499/mo (annual). Growth: $1,499/mo. Business: $3,999/mo. Enterprise: custom pricing. All plans include a 30-day money-back guarantee — subscribe risk-free." },
           { q: "Can I migrate from my current FP&A platform?", a: "Yes. We provide a guided migration path with a dedicated onboarding specialist. Most migrations complete in 2-3 weeks with full historical data preservation." },
           { q: "What makes FinanceOS different from startup-focused tools?", a: "Startup-focused tools work for early-stage companies. FinanceOS serves mid-market teams that need multi-entity consolidation, intercompany elimination, and board-ready reporting. We also have published transparent pricing — most competitors do not." },
@@ -5591,7 +5591,7 @@ const LandingPage = ({ onLogin }) => {
         </div>
         <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr 1fr" : "repeat(4, 1fr)", gap: 16 }}>
           {[
-            { title: "SOC 2 Type II", sub: "Audit-ready architecture with full access logging and role-based controls.", badge: "COMPLIANT", icon: Shield, color: "#34d399" },
+            { title: "SOC 2 Type II", sub: "Audit-ready architecture with full access logging and role-based controls.", badge: "AUDIT-READY", icon: Shield, color: "#34d399" },
             { title: "AES-256 Encryption", sub: "Data encrypted at rest and in transit. Zero plaintext storage of credentials.", badge: "AT REST + TRANSIT", icon: Zap, color: "#60a5fa" },
             { title: "Row-Level Security", sub: "Every database query is scoped to your organization. Zero cross-tenant data leakage.", badge: "SUPABASE RLS", icon: Layers, color: "#a78bfa" },
             { title: "HSTS + CSP Headers", sub: "Strict Transport Security, Content Security Policy, and 5 additional security headers.", badge: "VERCEL", icon: Globe, color: "#22d3ee" },

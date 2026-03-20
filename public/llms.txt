@@ -20,7 +20,7 @@ FinanceOS is a cloud-native FP&A platform that replaces legacy FP&A tools and en
 - Multi-Entity Consolidation: Automatic intercompany elimination and FX translation
 - Month-End Close: Task management with progress tracking and owner assignment
 - Revenue Forecasting: ML ensemble (ETS + XGBoost + Linear) with 3.2% MAPE
-- 30+ Native Integrations: NetSuite, Salesforce, Stripe, Snowflake, QuickBooks, Xero, Plaid, Rippling
+- Native Integrations: NetSuite, Salesforce, Stripe, Snowflake, QuickBooks, Xero, Plaid, Rippling
 - Board-Ready Exports: CSV and PDF exports from every financial view
 
 ## Pricing (as of March 2026)
@@ -40,7 +40,7 @@ FinanceOS is a cloud-native FP&A platform that replaces legacy FP&A tools and en
 | Multi-entity consolidation | Yes | Yes | Yes | No |
 | Real-time variance detection | Yes | No | Yes | No |
 | Starting price | $499/mo | $200K+/yr | $65K+/yr | $30K+/yr |
-| SOC 2 Type II | Yes | Yes | Yes | Yes |
+| SOC 2 Type II | Architecture | Yes | Yes | Yes |
 
 ## Target Customer
 - SaaS companies with $5M-$200M ARR
@@ -49,7 +49,7 @@ FinanceOS is a cloud-native FP&A platform that replaces legacy FP&A tools and en
 - CFOs, VPs of Finance, FP&A Directors, Controllers
 
 ## Security & Compliance
-- SOC 2 Type II compliant architecture
+- SOC 2 Type II architecture (audit-ready)
 - AES-256 encryption at rest and in transit
 - Row-level security (Supabase RLS)
 - HSTS + Content Security Policy headers
