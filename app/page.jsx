@@ -718,7 +718,7 @@ const useWorkflow = (initialTasks) => {
     pending: tasks.filter(t => t.status === "pending" || t.status === "notstarted").length,
     inProgress: tasks.filter(t => t.status === "progress" || t.status === "in_review").length,
   };
-  stats.pct = Math.round((stats.done / stats.total) * 100);
+  stats.pct = stats.total ? Math.round((stats.done / stats.total) * 100) : 0;
 
   return { tasks, setTasks, transition, auditLog, stats };
 };
@@ -848,7 +848,7 @@ const usePreferences = (key, defaultVal) => {
   useEffect(() => {
     try {
       const stored = localStorage.getItem(`fos_${key}`);
-      if (stored !== null) setValue(JSON.parse(stored));
+      if (stored !== null) { try { setValue(JSON.parse(stored)); } catch {} }
     } catch {}
     setHydrated(true);
   }, [key]);
@@ -975,7 +975,7 @@ const ChartTooltip = memo(({ active, payload, label, c }) => {
       {yoyDelta !== null && (
         <div style={{ display: "flex", justifyContent: "space-between", padding: "2px 0 4px", fontSize: 11 }}>
           <span style={{ color: c.textDim, fontWeight: 600 }}>YoY Growth</span>
-          <span style={{ fontWeight: 800, fontFamily: "'JetBrains Mono', monospace", color: yoyDelta >= 0 ? c.green : c.red }}>{yoyDelta >= 0 ? "+" : ""}{yoyDelta.toFixed(1)}%</span>
+          <span style={{ fontWeight: 800, fontFamily: "'JetBrains Mono', monospace", color: yoyDelta >= 0 ? c.green : c.red }}>{yoyDelta >= 0 ? "+" : ""}{(yoyDelta || 0).toFixed(1)}%</span>
         </div>
       )}
       {/* Revenue composition — only for actual months */}
@@ -1015,6 +1015,7 @@ const ChartTooltip = memo(({ active, payload, label, c }) => {
 
 // ── SPARKLINE ────────────────────────────────────────────────
 const Spark = memo(({ data, color, width = 64, height = 24 }) => {
+  if (!data || data.length < 2) return <svg width={width} height={height} />;
   const min = Math.min(...data), max = Math.max(...data), range = max - min || 1;
   const pts = data.map((v, i) => [((i / (data.length - 1)) * width), (height - ((v - min) / range) * (height - 6) - 3)]);
   // Smooth cubic bezier path
@@ -1341,7 +1342,7 @@ const DashboardView = ({ c, onNav, toast, onDrawer, userName, period }) => {
         </ResponsiveContainer>
         <div style={{ display: "flex", flexDirection: "column", gap: 10, marginTop: 8 }}>
           {SEGMENT_DATA.map(s => {
-            const pct = ((s.value / segmentTotal) * 100).toFixed(0);
+            const pct = segmentTotal ? ((s.value / segmentTotal) * 100).toFixed(0) : "0";
             return (
               <div key={s.name} style={{ padding: "6px 8px", borderRadius: 8, transition: "background 0.1s" }}
                 onMouseEnter={e => e.currentTarget.style.background = `${s.color}06`}
@@ -2012,7 +2013,7 @@ const PnlView = ({ c, onNav, toast }) => {
         onMouseLeave={() => setHover(false)}
       >
         <span style={{ textDecoration: hover ? "underline" : "none" }}>{v >= 0 ? "+" : ""}{fmt(v)}</span>
-        <span style={{ fontSize: 9, opacity: 0.7, marginLeft: 4 }}>({vp >= 0 ? "+" : ""}{vp.toFixed(1)}%)</span>
+        <span style={{ fontSize: 9, opacity: 0.7, marginLeft: 4 }}>({vp >= 0 ? "+" : ""}{(vp || 0).toFixed(1)}%)</span>
         {hover && (
           <div style={{ position: "absolute", bottom: "calc(100% + 6px)", right: 0, background: c.surface, border: `1px solid ${c.border}`, borderRadius: 8, padding: "8px 12px", boxShadow: "0 8px 24px rgba(0,0,0,0.3)", zIndex: 50, whiteSpace: "nowrap", fontSize: 10, color: c.textSec, pointerEvents: "none", animation: "fadeIn 0.1s" }}>
             <div style={{ color: fav ? c.green : c.red, fontWeight: 700, marginBottom: 2 }}>{fav ? "Favorable" : "Unfavorable"} variance</div>
@@ -2525,7 +2526,7 @@ const CloseView = ({ c, toast }) => {
     if (task) toast(`Completed: ${task.task}`, "success");
   };
   const doneCount = tasks.filter(t => t.status === "done").length;
-  const pct = Math.round((doneCount / tasks.length) * 100);
+  const pct = tasks.length ? Math.round((doneCount / tasks.length) * 100) : 0;
   const statusLabel = { done: "Complete", progress: "In Progress", notstarted: "Not Started" };
   const statusColor = { done: c.green, progress: c.accent, notstarted: c.textFaint };
 
@@ -3567,7 +3568,7 @@ const ScenariosView = ({ c, toast }) => {
     ...s,
     revenue: +(s.revenue * (drivers.ndr / 118) * (drivers.pipeline / 42)).toFixed(1),
     opex: +(s.opex * (drivers.headcount / 128)).toFixed(1),
-    get ebitda() { return +((this.revenue - this.opex) / this.revenue * 100).toFixed(1); }
+    get ebitda() { return this.revenue ? +((this.revenue - this.opex) / this.revenue * 100).toFixed(1) : 0; }
   } : s);
 
   const active = scenarios[selected];
