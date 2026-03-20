@@ -342,33 +342,50 @@ const PERIODS = ["FY2025 YTD", "Q2 2025", "Q1 2025", "FY2024", "Q4 2024"];
 
 // ── DATA ──────────────────────────────────────────────────────
 const REVENUE_DATA = [
-  { month: "Jul", actual: 6800, budget: 6500, forecast: null, qoq: null },
-  { month: "Aug", actual: 7100, budget: 6800, forecast: null, qoq: 4.4 },
-  { month: "Sep", actual: 7600, budget: 7100, forecast: null, qoq: 7.0 },
-  { month: "Oct", actual: 8000, budget: 7400, forecast: null, qoq: 5.3 },
-  { month: "Nov", actual: 8500, budget: 7700, forecast: null, qoq: 6.3 },
-  { month: "Dec", actual: 8800, budget: 8000, forecast: null, qoq: 3.5 },
-  { month: "Jan", actual: null, budget: 8300, forecast: 9100, qoq: null },
-  { month: "Feb", actual: null, budget: 8600, forecast: 9400, qoq: null },
-  { month: "Mar", actual: null, budget: 8900, forecast: 9700, qoq: null },
-  { month: "Apr", actual: null, budget: 9200, forecast: 9900, qoq: null },
-  { month: "May", actual: null, budget: 9500, forecast: 10100, qoq: null },
-  { month: "Jun", actual: null, budget: 9800, forecast: 10400, qoq: null },
+  { month: "Jul", actual: 6800, budget: 6500, forecast: null, qoq: null, yoy: 5200, bear: null, bull: null, newBiz: 2040, expansion: 3400, churn: -340, services: 1700 },
+  { month: "Aug", actual: 7100, budget: 6800, forecast: null, qoq: 4.4, yoy: 5500, bear: null, bull: null, newBiz: 2130, expansion: 3620, churn: -380, services: 1730 },
+  { month: "Sep", actual: 7600, budget: 7100, forecast: null, qoq: 7.0, yoy: 5900, bear: null, bull: null, newBiz: 2280, expansion: 3800, churn: -350, services: 1870 },
+  { month: "Oct", actual: 8000, budget: 7400, forecast: null, qoq: 5.3, yoy: 6200, bear: null, bull: null, newBiz: 2400, expansion: 4000, churn: -420, services: 2020 },
+  { month: "Nov", actual: 8500, budget: 7700, forecast: null, qoq: 6.3, yoy: 6600, bear: null, bull: null, newBiz: 2550, expansion: 4250, churn: -390, services: 2090 },
+  { month: "Dec", actual: 8800, budget: 8000, forecast: null, qoq: 3.5, yoy: 6900, bear: null, bull: null, newBiz: 2640, expansion: 4400, churn: -410, services: 2170 },
+  { month: "Jan", actual: null, budget: 8300, forecast: 9100, qoq: null, yoy: 7200, bear: 8600, bull: 9500, newBiz: null, expansion: null, churn: null, services: null },
+  { month: "Feb", actual: null, budget: 8600, forecast: 9400, qoq: null, yoy: 7500, bear: 8800, bull: 9900, newBiz: null, expansion: null, churn: null, services: null },
+  { month: "Mar", actual: null, budget: 8900, forecast: 9700, qoq: null, yoy: 7800, bear: 9100, bull: 10300, newBiz: null, expansion: null, churn: null, services: null },
+  { month: "Apr", actual: null, budget: 9200, forecast: 9900, qoq: null, yoy: 8100, bear: 9300, bull: 10600, newBiz: null, expansion: null, churn: null, services: null },
+  { month: "May", actual: null, budget: 9500, forecast: 10100, qoq: null, yoy: 8400, bear: 9500, bull: 10800, newBiz: null, expansion: null, churn: null, services: null },
+  { month: "Jun", actual: null, budget: 9800, forecast: 10400, qoq: null, yoy: 8700, bear: 9700, bull: 11200, newBiz: null, expansion: null, churn: null, services: null },
 ];
 
 const EXPENSE_DATA = [
-  { name: "R&D", actual: 19270, budget: 19548, pct: 37.6, trend: "flat" },
-  { name: "S&M", actual: 15460, budget: 14730, pct: 30.2, trend: "up" },
-  { name: "Cloud", actual: 4455, budget: 4000, pct: 8.7, trend: "up" },
-  { name: "COGS", actual: 7820, budget: 7365, pct: 15.3, trend: "flat" },
-  { name: "G&A", actual: 4860, budget: 5115, pct: 9.5, trend: "down" },
+  { name: "R&D", actual: 19270, budget: 19548, pct: 37.6, trend: "flat", q1: 9400, q2: 9870, hc: 142, hcPlan: 156 },
+  { name: "S&M", actual: 15460, budget: 14730, pct: 30.2, trend: "up", q1: 7100, q2: 8360, hc: 68, hcPlan: 72 },
+  { name: "Cloud", actual: 4455, budget: 4000, pct: 8.7, trend: "up", q1: 2100, q2: 2355, hc: null, hcPlan: null },
+  { name: "COGS", actual: 7820, budget: 7365, pct: 15.3, trend: "flat", q1: 3800, q2: 4020, hc: 24, hcPlan: 24 },
+  { name: "G&A", actual: 4860, budget: 5115, pct: 9.5, trend: "down", q1: 2500, q2: 2360, hc: 78, hcPlan: 90 },
 ];
 
 const SEGMENT_DATA = [
-  { name: "Enterprise", value: 38920, color: "#0ea5e9", growth: 28, pct: 76 },
-  { name: "Mid-Market", value: 8650, color: "#a78bfa", growth: 14, pct: 17 },
-  { name: "SMB", value: 2420, color: "#22d3ee", growth: -4, pct: 5 },
-  { name: "Self-Serve", value: 1200, color: "#f5b731", growth: 62, pct: 2 },
+  { name: "Enterprise", value: 38920, color: "#0ea5e9", growth: 28, pct: 76, acv: 186, deals: 209, winRate: 42, cycle: 38 },
+  { name: "Mid-Market", value: 8650, color: "#a78bfa", growth: 14, pct: 17, acv: 42, deals: 206, winRate: 31, cycle: 52 },
+  { name: "SMB", value: 2420, color: "#22d3ee", growth: -4, pct: 5, acv: 8.2, deals: 295, winRate: 28, cycle: 14 },
+  { name: "Self-Serve", value: 1200, color: "#f5b731", growth: 62, pct: 2, acv: 1.8, deals: 667, winRate: null, cycle: null },
+];
+
+const COHORT_DATA = [
+  { cohort: "Q1 '24", m0: 100, m3: 96, m6: 92, m9: 89, m12: 87 },
+  { cohort: "Q2 '24", m0: 100, m3: 97, m6: 94, m9: 91, m12: null },
+  { cohort: "Q3 '24", m0: 100, m3: 98, m6: 95, m9: null, m12: null },
+  { cohort: "Q4 '24", m0: 100, m3: 97, m6: null, m9: null, m12: null },
+  { cohort: "Q1 '25", m0: 100, m3: null, m6: null, m9: null, m12: null },
+];
+
+const CASH_RUNWAY = [
+  { month: "Jul", balance: 32400, burn: -1850, inflow: 6800 },
+  { month: "Aug", balance: 37350, burn: -1920, inflow: 7100 },
+  { month: "Sep", balance: 43130, burn: -2010, inflow: 7600 },
+  { month: "Oct", balance: 49120, burn: -2080, inflow: 8000 },
+  { month: "Nov", balance: 55540, burn: -2150, inflow: 8500 },
+  { month: "Dec", balance: 62190, burn: -2220, inflow: 8800 },
 ];
 
 const KPIS = [
@@ -874,23 +891,85 @@ const isFavorable = (actual, budget, isRevenue = false) => isRevenue ? actual >=
 // ── CUSTOM TOOLTIP ───────────────────────────────────────────
 const ChartTooltip = memo(({ active, payload, label, c }) => {
   if (!active || !payload?.length) return null;
+  const actual = payload.find(p => p.dataKey === "actual")?.value;
+  const budget = payload.find(p => p.dataKey === "budget")?.value;
+  const forecast = payload.find(p => p.dataKey === "forecast")?.value;
+  const yoy = payload.find(p => p.dataKey === "yoy")?.value;
+  const variance = actual && budget ? actual - budget : null;
+  const variancePct = actual && budget ? ((actual - budget) / budget * 100) : null;
+  const yoyDelta = actual && yoy ? ((actual - yoy) / yoy * 100) : null;
+  // Find composition data from REVENUE_DATA
+  const monthData = REVENUE_DATA.find(d => d.month === label);
+
   return (
     <div style={{
-      background: `${c.surface}f0`, border: `1px solid ${c.borderBright}`, borderRadius: 16, padding: "14px 18px",
-      fontSize: 12, boxShadow: `${c.shadow3}, 0 0 0 1px ${c.accent}08`, backdropFilter: "blur(16px)", WebkitBackdropFilter: "blur(16px)",
-      minWidth: 180, position: "relative", overflow: "hidden",
+      background: `${c.surface}f5`, border: `1px solid ${c.borderBright}`, borderRadius: 16, padding: "16px 20px",
+      fontSize: 12, boxShadow: `0 12px 40px rgba(0,0,0,0.3), 0 0 0 1px ${c.accent}08`, backdropFilter: "blur(20px)", WebkitBackdropFilter: "blur(20px)",
+      minWidth: 240, position: "relative", overflow: "hidden",
     }}>
       <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 2, background: `linear-gradient(90deg, ${c.accent}60, ${c.purple}40, transparent)` }} />
-      <div style={{ fontWeight: 800, color: c.text, marginBottom: 10, fontSize: 10, textTransform: "uppercase", letterSpacing: "0.08em" }}>{label}</div>
-      {payload.filter(p => p.value != null).map((p, i) => (
-        <div key={i} style={{ display: "flex", justifyContent: "space-between", gap: 24, padding: "4px 0", alignItems: "center" }}>
-          <span style={{ display: "flex", alignItems: "center", gap: 7, color: c.textSec, fontWeight: 500 }}>
-            <span style={{ width: 10, height: 10, borderRadius: 3, background: `${p.color}30`, border: `2px solid ${p.color}`, display: "inline-block" }} />
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
+        <span style={{ fontWeight: 800, color: c.text, fontSize: 10, textTransform: "uppercase", letterSpacing: "0.08em" }}>{label} 2025</span>
+        {variance !== null && (
+          <span style={{ fontSize: 9, fontWeight: 800, padding: "2px 6px", borderRadius: 4, background: variance >= 0 ? `${c.green}15` : `${c.red}15`, color: variance >= 0 ? c.green : c.red }}>
+            {variance >= 0 ? "+" : ""}{variancePct?.toFixed(1)}% vs plan
+          </span>
+        )}
+      </div>
+      {/* Primary metrics */}
+      {payload.filter(p => p.value != null && !["bull","bear"].includes(p.dataKey)).map((p, i) => (
+        <div key={i} style={{ display: "flex", justifyContent: "space-between", gap: 20, padding: "4px 0", alignItems: "center" }}>
+          <span style={{ display: "flex", alignItems: "center", gap: 7, color: c.textSec, fontWeight: 500, fontSize: 11 }}>
+            <span style={{ width: 8, height: 8, borderRadius: p.dataKey === "budget" ? 1 : 3, background: `${p.color}30`, border: `2px solid ${p.color}`, display: "inline-block" }} />
             {p.name}
           </span>
           <span style={{ fontWeight: 800, fontFamily: "'JetBrains Mono', monospace", color: c.text, fontSize: 12 }}>{typeof p.value === "number" ? fmt(p.value) : p.value}</span>
         </div>
       ))}
+      {/* Variance row */}
+      {variance !== null && (
+        <div style={{ display: "flex", justifyContent: "space-between", padding: "6px 0 4px", marginTop: 4, borderTop: `1px solid ${c.borderSub}`, fontSize: 11 }}>
+          <span style={{ color: c.textDim, fontWeight: 600 }}>Variance</span>
+          <span style={{ fontWeight: 800, fontFamily: "'JetBrains Mono', monospace", color: variance >= 0 ? c.green : c.red }}>{variance >= 0 ? "+" : ""}{fmt(variance)}</span>
+        </div>
+      )}
+      {yoyDelta !== null && (
+        <div style={{ display: "flex", justifyContent: "space-between", padding: "2px 0 4px", fontSize: 11 }}>
+          <span style={{ color: c.textDim, fontWeight: 600 }}>YoY Growth</span>
+          <span style={{ fontWeight: 800, fontFamily: "'JetBrains Mono', monospace", color: yoyDelta >= 0 ? c.green : c.red }}>{yoyDelta >= 0 ? "+" : ""}{yoyDelta.toFixed(1)}%</span>
+        </div>
+      )}
+      {/* Revenue composition — only for actual months */}
+      {monthData?.newBiz && (
+        <div style={{ marginTop: 6, paddingTop: 6, borderTop: `1px solid ${c.borderSub}` }}>
+          <div style={{ fontSize: 8, fontWeight: 700, color: c.textFaint, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 4 }}>Composition</div>
+          {[
+            { label: "New Business", val: monthData.newBiz, color: c.accent },
+            { label: "Expansion", val: monthData.expansion, color: c.green },
+            { label: "Services", val: monthData.services, color: c.purple },
+            { label: "Churn", val: monthData.churn, color: c.red },
+          ].map(item => (
+            <div key={item.label} style={{ display: "flex", justifyContent: "space-between", padding: "2px 0", fontSize: 10 }}>
+              <span style={{ display: "flex", alignItems: "center", gap: 5, color: c.textDim }}>
+                <span style={{ width: 4, height: 4, borderRadius: 1, background: item.color }} />
+                {item.label}
+              </span>
+              <span style={{ fontFamily: "'JetBrains Mono', monospace", fontWeight: 600, color: item.val < 0 ? c.red : c.textSec }}>{item.val < 0 ? "" : "$"}{(Math.abs(item.val) / 1000).toFixed(1)}K</span>
+            </div>
+          ))}
+          {/* Composition bar */}
+          <div style={{ display: "flex", height: 3, borderRadius: 2, overflow: "hidden", marginTop: 4, gap: 1 }}>
+            {[
+              { val: monthData.newBiz, color: c.accent },
+              { val: monthData.expansion, color: c.green },
+              { val: monthData.services, color: c.purple },
+            ].map((s, i) => {
+              const total = monthData.newBiz + monthData.expansion + monthData.services;
+              return <div key={i} style={{ width: `${(s.val / total) * 100}%`, background: s.color, borderRadius: 1 }} />;
+            })}
+          </div>
+        </div>
+      )}
     </div>
   );
 });
@@ -898,23 +977,31 @@ const ChartTooltip = memo(({ active, payload, label, c }) => {
 // ── SPARKLINE ────────────────────────────────────────────────
 const Spark = memo(({ data, color, width = 64, height = 24 }) => {
   const min = Math.min(...data), max = Math.max(...data), range = max - min || 1;
-  const points = data.map((v, i) => `${(i / (data.length - 1)) * width},${height - ((v - min) / range) * (height - 4) - 2}`).join(" ");
-  const areaPoints = `0,${height} ${points} ${width},${height}`;
+  const pts = data.map((v, i) => [((i / (data.length - 1)) * width), (height - ((v - min) / range) * (height - 6) - 3)]);
+  // Smooth cubic bezier path
+  const path = pts.map((p, i) => {
+    if (i === 0) return `M ${p[0]},${p[1]}`;
+    const prev = pts[i - 1];
+    const cpx = (prev[0] + p[0]) / 2;
+    return `C ${cpx},${prev[1]} ${cpx},${p[1]} ${p[0]},${p[1]}`;
+  }).join(" ");
+  const areaPath = `${path} L ${width},${height} L 0,${height} Z`;
   const id = `sp${Math.random().toString(36).slice(2, 6)}`;
-  const lastY = parseFloat(points.split(" ").pop().split(",")[1]);
+  const lastPt = pts[pts.length - 1];
+  const isUp = data[data.length - 1] > data[0];
   return (
-    <svg width={width} height={height} style={{ display: "block" }}>
+    <svg width={width} height={height} style={{ display: "block", overflow: "visible" }}>
       <defs>
         <linearGradient id={id} x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor={color} stopOpacity={0.25} />
-          <stop offset="50%" stopColor={color} stopOpacity={0.08} />
+          <stop offset="0%" stopColor={color} stopOpacity={0.3} />
+          <stop offset="40%" stopColor={color} stopOpacity={0.1} />
           <stop offset="100%" stopColor={color} stopOpacity={0} />
         </linearGradient>
       </defs>
-      <polygon points={areaPoints} fill={`url(#${id})`} />
-      <polyline points={points} fill="none" stroke={color} strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" />
-      <circle cx={width} cy={lastY} r={3} fill={color} opacity={0.3} />
-      <circle cx={width} cy={lastY} r={2} fill={color} />
+      <path d={areaPath} fill={`url(#${id})`} />
+      <path d={path} fill="none" stroke={color} strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" />
+      <circle cx={lastPt[0]} cy={lastPt[1]} r={3.5} fill={color} opacity={0.15} />
+      <circle cx={lastPt[0]} cy={lastPt[1]} r={2} fill={color} />
     </svg>
   );
 });
@@ -1140,12 +1227,18 @@ const DashboardView = ({ c, onNav, toast, onDrawer, userName, period }) => {
             <defs>
               <linearGradient id="gAct" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor={c.accent} stopOpacity={0.2} /><stop offset="60%" stopColor={c.accent} stopOpacity={0.05} /><stop offset="100%" stopColor={c.accent} stopOpacity={0} /></linearGradient>
               <linearGradient id="gFc" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor={c.green} stopOpacity={0.15} /><stop offset="100%" stopColor={c.green} stopOpacity={0} /></linearGradient>
+              <linearGradient id="gBand" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor={c.green} stopOpacity={0.06} /><stop offset="100%" stopColor={c.green} stopOpacity={0.02} /></linearGradient>
             </defs>
             <CartesianGrid stroke={c.chartGrid} strokeDasharray="3 6" vertical={false} />
             <XAxis dataKey="month" tick={{ fontSize: 10, fill: c.chartAxis, fontWeight: 600 }} axisLine={false} tickLine={false} />
             <YAxis tick={{ fontSize: 10, fill: c.chartAxis }} axisLine={false} tickLine={false} tickFormatter={v => `$${v / 1000}M`} />
             <Tooltip content={<ChartTooltip c={c} />} cursor={{ stroke: c.accent, strokeWidth: 1, strokeDasharray: "3 3", strokeOpacity: 0.3 }} />
             <ReferenceLine y={7800} stroke={c.amber} strokeDasharray="8 4" strokeWidth={1} strokeOpacity={0.5} label={{ value: "AVG", fill: c.amber, fontSize: 8, fontWeight: 800, position: "right" }} />
+            {/* Bear/Bull confidence band */}
+            {!hiddenSeries.forecast && <Area type="monotone" dataKey="bull" stroke="none" fill="url(#gBand)" name="Bull" connectNulls={false} />}
+            {!hiddenSeries.forecast && <Area type="monotone" dataKey="bear" stroke="none" fill="url(#gBand)" name="Bear" connectNulls={false} />}
+            {/* YoY comparison (prior year) */}
+            <Line type="monotone" dataKey="yoy" stroke={c.textFaint} strokeWidth={1} strokeDasharray="2 4" name="Prior Year" dot={false} strokeOpacity={0.4} />
             {!hiddenSeries.actual && <Area type="monotone" dataKey="actual" stroke={c.accent} fill="url(#gAct)" strokeWidth={2.5} name="Actual" dot={{ r: 4, fill: c.surface, stroke: c.accent, strokeWidth: 2.5 }} activeDot={{ r: 6, fill: c.accent, stroke: c.surface, strokeWidth: 2 }} connectNulls={false} />}
             {!hiddenSeries.budget && <Line type="monotone" dataKey="budget" stroke={c.textFaint} strokeWidth={1.5} strokeDasharray="5 5" name="Budget" dot={false} />}
             {!hiddenSeries.forecast && <Area type="monotone" dataKey="forecast" stroke={c.green} fill="url(#gFc)" strokeWidth={2} strokeDasharray="8 4" name="Forecast" dot={{ r: 3.5, fill: c.surface, stroke: c.green, strokeWidth: 2 }} connectNulls={false} />}
@@ -1167,9 +1260,11 @@ const DashboardView = ({ c, onNav, toast, onDrawer, userName, period }) => {
               {s.label}
             </span>
           ))}
+          <span style={{ fontSize: 9, color: c.textFaint, display: "flex", alignItems: "center", gap: 3 }}><span style={{ width: 8, height: 0, borderTop: `1px dashed ${c.textFaint}40` }} />YoY</span>
           <span style={{ marginLeft: "auto", display: "flex", gap: 10, alignItems: "center" }}>
             <span style={{ fontSize: 9, fontWeight: 700, padding: "2px 7px", borderRadius: 4, background: c.greenDim, color: c.green, border: `1px solid ${c.green}10` }}>+$2.09M beat</span>
-            <span style={{ fontWeight: 700, color: c.accent, fontFamily: "'JetBrains Mono', monospace", fontSize: 10 }}>H: $10.4M · L: $6.8M</span>
+            <span style={{ fontSize: 9, fontWeight: 700, padding: "2px 7px", borderRadius: 4, background: `${c.accent}08`, color: c.accent, border: `1px solid ${c.accent}10` }}>+29% YoY</span>
+            <span style={{ fontWeight: 700, color: c.textDim, fontFamily: "'JetBrains Mono', monospace", fontSize: 10 }}>H: $10.4M · L: $6.8M</span>
           </span>
         </div>
       </div>
@@ -1205,18 +1300,119 @@ const DashboardView = ({ c, onNav, toast, onDrawer, userName, period }) => {
           {SEGMENT_DATA.map(s => {
             const pct = ((s.value / segmentTotal) * 100).toFixed(0);
             return (
-              <div key={s.name} style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 11 }}>
-                <div style={{ width: 10, height: 10, borderRadius: 4, background: `linear-gradient(135deg, ${s.color}, ${s.color}aa)`, boxShadow: `0 0 6px ${s.color}30`, flexShrink: 0 }} />
-                <span style={{ color: c.textSec, fontWeight: 500, flex: 1 }}>{s.name}</span>
-                {s.growth != null && <span style={{ fontSize: 9, fontWeight: 700, color: s.growth >= 0 ? c.green : c.red, background: s.growth >= 0 ? c.greenDim : c.redDim, padding: "1px 5px", borderRadius: 3 }}>{s.growth >= 0 ? "+" : ""}{s.growth}%</span>}
-                <span style={{ fontWeight: 700, color: c.textSec, fontFamily: "'JetBrains Mono', monospace", fontSize: 10 }}>{fmt(s.value)}</span>
-                <div style={{ width: 40, height: 4, background: c.bg2, borderRadius: 2, overflow: "hidden" }}>
-                  <div style={{ width: `${pct}%`, height: "100%", background: `linear-gradient(90deg, ${s.color}, ${s.color}80)`, borderRadius: 2 }} />
+              <div key={s.name} style={{ padding: "6px 8px", borderRadius: 8, transition: "background 0.1s" }}
+                onMouseEnter={e => e.currentTarget.style.background = `${s.color}06`}
+                onMouseLeave={e => e.currentTarget.style.background = "transparent"}
+              >
+                <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 11 }}>
+                  <div style={{ width: 10, height: 10, borderRadius: 4, background: `linear-gradient(135deg, ${s.color}, ${s.color}aa)`, boxShadow: `0 0 6px ${s.color}30`, flexShrink: 0 }} />
+                  <span style={{ color: c.textSec, fontWeight: 500, flex: 1 }}>{s.name}</span>
+                  {s.growth != null && <span style={{ fontSize: 9, fontWeight: 700, color: s.growth >= 0 ? c.green : c.red, background: s.growth >= 0 ? c.greenDim : c.redDim, padding: "1px 5px", borderRadius: 3 }}>{s.growth >= 0 ? "+" : ""}{s.growth}%</span>}
+                  <span style={{ fontWeight: 700, color: c.textSec, fontFamily: "'JetBrains Mono', monospace", fontSize: 10 }}>{fmt(s.value)}</span>
+                  <div style={{ width: 40, height: 4, background: c.bg2, borderRadius: 2, overflow: "hidden" }}>
+                    <div style={{ width: `${pct}%`, height: "100%", background: `linear-gradient(90deg, ${s.color}, ${s.color}80)`, borderRadius: 2 }} />
+                  </div>
+                  <span style={{ fontWeight: 800, color: c.text, fontFamily: "'JetBrains Mono', monospace", fontSize: 11, width: 30, textAlign: "right" }}>{pct}%</span>
                 </div>
-                <span style={{ fontWeight: 800, color: c.text, fontFamily: "'JetBrains Mono', monospace", fontSize: 11, width: 30, textAlign: "right" }}>{pct}%</span>
+                <div style={{ display: "flex", gap: 8, marginTop: 4, marginLeft: 18, fontSize: 8, color: c.textFaint }}>
+                  {s.acv && <span>ACV {"$"}{s.acv}K</span>}
+                  {s.deals && <span>{s.deals} deals</span>}
+                  {s.winRate && <span>Win {s.winRate}%</span>}
+                  {s.cycle && <span>{s.cycle}d cycle</span>}
+                </div>
               </div>
             );
           })}
+        </div>
+      </div>
+    </div>
+
+    {/* Revenue Composition + Cash Runway */}
+    <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: 16, marginBottom: 24 }}>
+      {/* Revenue Waterfall — New Biz / Expansion / Services / Churn */}
+      <div style={{ background: c.glass, backdropFilter: c.glassBlur, WebkitBackdropFilter: c.glassBlur, border: `1px solid ${c.glassBorder}`, borderRadius: 16, padding: "24px 24px 18px", boxShadow: `${c.cardGlow}, ${c.glassHighlight}`, position: "relative", overflow: "hidden" }}>
+        <div style={{ position: "absolute", top: 0, left: "10%", right: "10%", height: 2, background: `linear-gradient(90deg, transparent, ${c.cyan}40, transparent)`, borderRadius: "0 0 2px 2px" }} />
+        <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 16 }}>
+          <div style={{ width: 28, height: 28, borderRadius: 8, background: `linear-gradient(135deg, ${c.cyan}18, ${c.green}08)`, border: `1px solid ${c.cyan}15`, display: "flex", alignItems: "center", justifyContent: "center" }}>
+            <Layers size={14} color={c.cyan} />
+          </div>
+          <div>
+            <div style={{ fontSize: 13, fontWeight: 800, color: c.text }}>Revenue Composition</div>
+            <div style={{ fontSize: 10, color: c.textDim }}>New Business · Expansion · Services · Churn</div>
+          </div>
+        </div>
+        <ResponsiveContainer width="100%" height={180}>
+          <BarChart data={REVENUE_DATA.filter(d => d.newBiz)} margin={{ top: 5, right: 5, bottom: 0, left: -10 }}>
+            <defs>
+              <linearGradient id="gNewBiz" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor={c.accent} stopOpacity={0.9}/><stop offset="100%" stopColor={c.accent} stopOpacity={0.6}/></linearGradient>
+              <linearGradient id="gExpan" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor={c.green} stopOpacity={0.9}/><stop offset="100%" stopColor={c.green} stopOpacity={0.6}/></linearGradient>
+              <linearGradient id="gSvc" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor={c.purple} stopOpacity={0.8}/><stop offset="100%" stopColor={c.purple} stopOpacity={0.5}/></linearGradient>
+            </defs>
+            <CartesianGrid stroke={c.chartGrid} strokeDasharray="3 6" vertical={false} />
+            <XAxis dataKey="month" tick={{ fontSize: 10, fill: c.chartAxis, fontWeight: 600 }} axisLine={false} tickLine={false} />
+            <YAxis tick={{ fontSize: 9, fill: c.chartAxis }} axisLine={false} tickLine={false} tickFormatter={v => `$${v / 1000}K`} />
+            <Tooltip content={<ChartTooltip c={c} />} cursor={{ fill: `${c.accent}06` }} />
+            <Bar dataKey="expansion" fill="url(#gExpan)" stackId="rev" radius={[0, 0, 0, 0]} name="Expansion" barSize={28} />
+            <Bar dataKey="newBiz" fill="url(#gNewBiz)" stackId="rev" radius={[0, 0, 0, 0]} name="New Business" />
+            <Bar dataKey="services" fill="url(#gSvc)" stackId="rev" radius={[4, 4, 0, 0]} name="Services" />
+          </BarChart>
+        </ResponsiveContainer>
+        <div style={{ display: "flex", gap: 14, marginTop: 10, paddingTop: 8, borderTop: `1px solid ${c.borderSub}`, fontSize: 10 }}>
+          {[
+            { label: "New Biz", color: c.accent, val: "$14.0M" },
+            { label: "Expansion", color: c.green, val: "$23.5M" },
+            { label: "Services", color: c.purple, val: "$11.6M" },
+            { label: "Churn", color: c.red, val: "-$2.3M" },
+          ].map(s => (
+            <span key={s.label} style={{ display: "flex", alignItems: "center", gap: 4, color: c.textDim, fontWeight: 600 }}>
+              <span style={{ width: 8, height: 8, borderRadius: 2, background: s.color }} />
+              {s.label} <span style={{ fontFamily: "'JetBrains Mono', monospace", color: s.color === c.red ? c.red : c.text, fontWeight: 700, fontSize: 11 }}>{s.val}</span>
+            </span>
+          ))}
+        </div>
+      </div>
+
+      {/* Cash Runway */}
+      <div style={{ background: c.glass, backdropFilter: c.glassBlur, WebkitBackdropFilter: c.glassBlur, border: `1px solid ${c.glassBorder}`, borderRadius: 16, padding: "24px 24px 18px", boxShadow: `${c.cardGlow}, ${c.glassHighlight}`, position: "relative", overflow: "hidden" }}>
+        <div style={{ position: "absolute", top: 0, left: "10%", right: "10%", height: 2, background: `linear-gradient(90deg, transparent, ${c.green}40, transparent)`, borderRadius: "0 0 2px 2px" }} />
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 16 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+            <div style={{ width: 28, height: 28, borderRadius: 8, background: `linear-gradient(135deg, ${c.green}18, ${c.cyan}08)`, border: `1px solid ${c.green}15`, display: "flex", alignItems: "center", justifyContent: "center" }}>
+              <DollarSign size={14} color={c.green} />
+            </div>
+            <div>
+              <div style={{ fontSize: 13, fontWeight: 800, color: c.text }}>Cash & Runway</div>
+              <div style={{ fontSize: 10, color: c.textDim }}>Balance · Net Burn · Months remaining</div>
+            </div>
+          </div>
+          <div style={{ textAlign: "right" }}>
+            <div style={{ fontSize: 22, fontWeight: 800, color: c.green, fontFamily: "'JetBrains Mono', monospace", letterSpacing: "-0.02em" }}>$62.2M</div>
+            <div style={{ fontSize: 9, color: c.textDim }}>28 months runway</div>
+          </div>
+        </div>
+        <ResponsiveContainer width="100%" height={160}>
+          <ComposedChart data={CASH_RUNWAY} margin={{ top: 5, right: 5, bottom: 0, left: -10 }}>
+            <defs>
+              <linearGradient id="gCash" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor={c.green} stopOpacity={0.2}/><stop offset="100%" stopColor={c.green} stopOpacity={0}/></linearGradient>
+            </defs>
+            <CartesianGrid stroke={c.chartGrid} strokeDasharray="3 6" vertical={false} />
+            <XAxis dataKey="month" tick={{ fontSize: 10, fill: c.chartAxis, fontWeight: 600 }} axisLine={false} tickLine={false} />
+            <YAxis tick={{ fontSize: 9, fill: c.chartAxis }} axisLine={false} tickLine={false} tickFormatter={v => `$${v / 1000}K`} />
+            <Tooltip content={<ChartTooltip c={c} />} cursor={{ stroke: c.green, strokeWidth: 1, strokeDasharray: "3 3", strokeOpacity: 0.3 }} />
+            <Area type="monotone" dataKey="balance" stroke={c.green} fill="url(#gCash)" strokeWidth={2.5} name="Cash Balance" dot={{ r: 3.5, fill: c.surface, stroke: c.green, strokeWidth: 2 }} />
+            <Bar dataKey="inflow" fill={`${c.accent}40`} radius={[3, 3, 0, 0]} barSize={14} name="Inflow" />
+          </ComposedChart>
+        </ResponsiveContainer>
+        <div style={{ display: "flex", gap: 14, marginTop: 10, paddingTop: 8, borderTop: `1px solid ${c.borderSub}`, fontSize: 10 }}>
+          {[
+            { label: "Avg Burn", val: "-$2.0M/mo", color: c.red },
+            { label: "Avg Inflow", val: "+$7.8M/mo", color: c.green },
+            { label: "Net", val: "+$5.8M/mo", color: c.accent },
+          ].map(s => (
+            <span key={s.label} style={{ display: "flex", alignItems: "center", gap: 4, color: c.textDim, fontWeight: 600 }}>
+              {s.label} <span style={{ fontFamily: "'JetBrains Mono', monospace", color: s.color, fontWeight: 700 }}>{s.val}</span>
+            </span>
+          ))}
         </div>
       </div>
     </div>
@@ -1250,16 +1446,20 @@ const DashboardView = ({ c, onNav, toast, onDrawer, userName, period }) => {
           </BarChart>
         </ResponsiveContainer>
         {/* Variance summary */}
-        <div style={{ display: "flex", gap: 8, marginTop: 12, paddingTop: 10, borderTop: `1px solid ${c.borderSub}` }}>
+        <div style={{ display: "flex", gap: 6, marginTop: 12, paddingTop: 10, borderTop: `1px solid ${c.borderSub}`, flexWrap: "wrap" }}>
           {EXPENSE_DATA.map(d => {
             const v = d.actual - d.budget;
             const over = v > 0;
             const trendArrow = d.trend === "up" ? "↑" : d.trend === "down" ? "↓" : "→";
             return (
-              <div key={d.name} style={{ flex: 1, padding: "8px 6px", borderRadius: 8, background: over ? c.redDim : c.greenDim, textAlign: "center", border: `1px solid ${over ? c.red : c.green}08` }}>
+              <div key={d.name} style={{ flex: 1, minWidth: 60, padding: "8px 6px", borderRadius: 8, background: over ? c.redDim : c.greenDim, textAlign: "center", border: `1px solid ${over ? c.red : c.green}08`, transition: "transform 0.1s" }}
+                onMouseEnter={e => e.currentTarget.style.transform = "scale(1.03)"}
+                onMouseLeave={e => e.currentTarget.style.transform = "scale(1)"}
+              >
                 <div style={{ fontSize: 8, color: c.textDim, fontWeight: 700, marginBottom: 3, textTransform: "uppercase", letterSpacing: "0.06em" }}>{d.name}</div>
                 <div style={{ fontSize: 10, fontWeight: 800, color: over ? c.red : c.green, fontFamily: "'JetBrains Mono', monospace" }}>{over ? "+" : ""}{fmt(v)}</div>
-                <div style={{ fontSize: 8, color: c.textFaint, marginTop: 2 }}>{d.pct}% rev {trendArrow}</div>
+                <div style={{ fontSize: 7, color: c.textFaint, marginTop: 2 }}>{d.pct}% rev {trendArrow}</div>
+                {d.hc && <div style={{ fontSize: 7, color: c.textFaint, marginTop: 1, fontFamily: "'JetBrains Mono', monospace" }}>{d.hc}/{d.hcPlan} HC</div>}
               </div>
             );
           })}
