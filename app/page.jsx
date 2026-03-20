@@ -439,21 +439,55 @@ const Skeleton = ({ c, width = "100%", height = 12, radius = 6 }) => (
 
 const LoadingSkeleton = memo(({ c }) => (
   <div style={{ padding: 32 }}>
+    {/* Welcome header skeleton */}
+    <div style={{ marginBottom: 20 }}>
+      <Skeleton c={c} width={120} height={8} />
+      <div style={{ height: 8 }} />
+      <Skeleton c={c} width={260} height={22} />
+      <div style={{ height: 6 }} />
+      <Skeleton c={c} width={300} height={10} />
+    </div>
+    {/* Quick actions skeleton */}
+    <div style={{ display: "flex", gap: 8, marginBottom: 20 }}>
+      {[0,1,2,3].map(i => <Skeleton key={i} c={c} width={120} height={38} radius={12} />)}
+    </div>
+    {/* Status bar skeleton */}
+    <Skeleton c={c} height={32} radius={8} style={{ marginBottom: 16 }} />
+    {/* KPI grid skeleton */}
     <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 16, marginBottom: 24 }}>
       {[0,1,2,3,4,5].map(i => (
-        <div key={i} style={{ background: c.glass, backdropFilter: c.glassBlur, WebkitBackdropFilter: c.glassBlur, border: `1px solid ${c.glassBorder}`, borderRadius: 16, padding: "22px 24px" }}>
-          <Skeleton c={c} width={80} height={10} />
-          <div style={{ height: 12 }} />
-          <Skeleton c={c} width={120} height={28} />
+        <div key={i} style={{ background: c.glass, backdropFilter: c.glassBlur, WebkitBackdropFilter: c.glassBlur, border: `1px solid ${c.glassBorder}`, borderRadius: 16, padding: "22px 24px", position: "relative", overflow: "hidden" }}>
+          <div style={{ position: "absolute", top: 0, left: "15%", right: "15%", height: 2, background: `linear-gradient(90deg, transparent, ${c.accent}10, transparent)` }} />
+          <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 14 }}>
+            <Skeleton c={c} width={80} height={10} />
+            <Skeleton c={c} width={32} height={32} radius={10} />
+          </div>
+          <Skeleton c={c} width={100} height={28} />
           <div style={{ height: 8 }} />
-          <Skeleton c={c} width={60} height={14} />
+          <Skeleton c={c} width={60} height={20} radius={8} />
         </div>
       ))}
     </div>
-    <div style={{ background: c.glass, backdropFilter: c.glassBlur, WebkitBackdropFilter: c.glassBlur, border: `1px solid ${c.glassBorder}`, borderRadius: 16, padding: 22, marginBottom: 24 }}>
-      <Skeleton c={c} width={200} height={12} />
-      <div style={{ height: 16 }} />
-      <Skeleton c={c} height={200} radius={8} />
+    {/* Chart + Insights skeleton */}
+    <div style={{ display: "grid", gridTemplateColumns: "1.6fr 1fr", gap: 16 }}>
+      <div style={{ background: c.glass, backdropFilter: c.glassBlur, WebkitBackdropFilter: c.glassBlur, border: `1px solid ${c.glassBorder}`, borderRadius: 16, padding: 22, position: "relative", overflow: "hidden" }}>
+        <div style={{ position: "absolute", top: 0, left: "10%", right: "10%", height: 2, background: `linear-gradient(90deg, transparent, ${c.accent}10, transparent)` }} />
+        <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 18 }}>
+          <Skeleton c={c} width={180} height={14} />
+          <Skeleton c={c} width={80} height={24} radius={8} />
+        </div>
+        <Skeleton c={c} height={200} radius={8} />
+      </div>
+      <div style={{ background: c.glass, backdropFilter: c.glassBlur, WebkitBackdropFilter: c.glassBlur, border: `1px solid ${c.glassBorder}`, borderRadius: 16, padding: 22, position: "relative", overflow: "hidden" }}>
+        <div style={{ position: "absolute", top: 0, left: "10%", right: "10%", height: 2, background: `linear-gradient(90deg, transparent, ${c.purple}10, transparent)` }} />
+        <Skeleton c={c} width={140} height={14} />
+        <div style={{ height: 14 }} />
+        {[0,1,2,3].map(i => (
+          <div key={i} style={{ marginBottom: 10 }}>
+            <Skeleton c={c} height={52} radius={12} />
+          </div>
+        ))}
+      </div>
     </div>
   </div>
 ));
@@ -4925,6 +4959,7 @@ function FinanceOSApp() {
   const [user, setUser] = useState({ name: "Guest", email: "", plan: null });
   const [view, setView] = useState("dashboard");
   const [showPlanPicker, setShowPlanPicker] = useState(false);
+  const [showScrollTop, setShowScrollTop] = useState(false);
   const [prevView, setPrevView] = useState(null);
   const [cmdOpen, setCmdOpen] = useState(false);
   const [drawerKpi, setDrawerKpi] = useState(null);
@@ -5257,7 +5292,11 @@ function FinanceOSApp() {
           [data-grid-footer] { grid-template-columns: 1fr !important; }
           [data-steps] { grid-template-columns: 1fr !important; }
         }
-        .view-fade { animation: fadeIn 0.25s ease-out; }
+        .view-fade { animation: fadeSlideUp 0.3s cubic-bezier(0.22,1,0.36,1); }
+        [data-content-area]::-webkit-scrollbar { width: 6px; }
+        [data-content-area]::-webkit-scrollbar-track { background: transparent; }
+        [data-content-area]::-webkit-scrollbar-thumb { background: rgba(139,146,165,0.15); border-radius: 3px; }
+        [data-content-area]::-webkit-scrollbar-thumb:hover { background: rgba(139,146,165,0.3); }
         .noise-overlay { position: fixed; inset: 0; pointer-events: none; z-index: 9998; opacity: ${mode === "dark" ? 0.018 : 0.01}; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); transition: opacity 0.4s ease; }
       `}</style>
       {/* Subtle noise texture for depth */}
