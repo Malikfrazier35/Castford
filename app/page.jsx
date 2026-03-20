@@ -2813,13 +2813,13 @@ const CloseView = ({ c, toast, tasks, setTasks, logActivity }) => {
 // INTEGRATIONS VIEW
 // ══════════════════════════════════════════════════════════════
 const CONNECTORS = [
-  { name: "NetSuite", cat: "ERP", status: "connected", records: "847K", color: "#0C9ADA", lastSync: "2 min ago", health: 100 },
-  { name: "Salesforce", cat: "CRM", status: "connected", records: "124K", color: "#00A1E0", lastSync: "45s ago", health: 100 },
-  { name: "Stripe", cat: "Billing", status: "connected", records: "38K", color: "#635BFF", lastSync: "1 min ago", health: 100 },
-  { name: "Rippling", cat: "HRIS", status: "connected", records: "312", color: "#FE6847", lastSync: "4 min ago", health: 98 },
-  { name: "Snowflake", cat: "Data Warehouse", status: "connected", records: "2.1M", color: "#29B5E8", lastSync: "3 min ago", health: 100 },
-  { name: "HubSpot", cat: "CRM", status: "connected", records: "89K", color: "#FF7A59", lastSync: "2 min ago", health: 100 },
-  { name: "Ramp", cat: "Expenses", status: "connected", records: "5.2K", color: "#007A5E", lastSync: "5 min ago", health: 97 },
+  { name: "NetSuite", cat: "ERP", status: "connected", records: "847K", color: "#0C9ADA", syncedAt: Date.now() - 120000, health: 100 },
+  { name: "Salesforce", cat: "CRM", status: "connected", records: "124K", color: "#00A1E0", syncedAt: Date.now() - 45000, health: 100 },
+  { name: "Stripe", cat: "Billing", status: "connected", records: "38K", color: "#635BFF", syncedAt: Date.now() - 60000, health: 100 },
+  { name: "Rippling", cat: "HRIS", status: "connected", records: "312", color: "#FE6847", syncedAt: Date.now() - 240000, health: 98 },
+  { name: "Snowflake", cat: "Data Warehouse", status: "connected", records: "2.1M", color: "#29B5E8", syncedAt: Date.now() - 180000, health: 100 },
+  { name: "HubSpot", cat: "CRM", status: "connected", records: "89K", color: "#FF7A59", syncedAt: Date.now() - 130000, health: 100 },
+  { name: "Ramp", cat: "Expenses", status: "connected", records: "5.2K", color: "#007A5E", syncedAt: Date.now() - 300000, health: 97 },
   { name: "Plaid", cat: "Banking", status: "available", records: null, color: "#0A85EA", badge: "NEW" },
   { name: "QuickBooks", cat: "ERP", status: "available", records: null, color: "#2CA01C" },
   { name: "Xero", cat: "ERP", status: "available", records: null, color: "#13B5EA" },
@@ -2830,6 +2830,16 @@ const CONNECTORS = [
   { name: "REST API", cat: "Developer", status: "available", records: null, color: "#8b92a5", badge: "BETA" },
 ];
 
+// Live time-ago formatter
+const timeAgo = (ts) => {
+  if (!ts) return "—";
+  const s = Math.floor((Date.now() - ts) / 1000);
+  if (s < 5) return "Just now";
+  if (s < 60) return `${s}s ago`;
+  if (s < 3600) return `${Math.floor(s / 60)}m ${s % 60}s ago`;
+  return `${Math.floor(s / 3600)}h ago`;
+};
+
 const IntegrationsView = ({ c, toast }) => {
   const [conns, setConns] = useState(CONNECTORS);
   const [filter, setFilter] = useState("all");
@@ -2838,12 +2848,15 @@ const IntegrationsView = ({ c, toast }) => {
   const [disconnectConfirm, setDisconnectConfirm] = useState(null);
   const [syncingName, setSyncingName] = useState(null);
   const [uploadOpen, setUploadOpen] = useState(false);
-  const [uploadStep, setUploadStep] = useState(0); // 0=select, 1=mapping, 2=importing, 3=done
+  const [uploadStep, setUploadStep] = useState(0);
   const [uploadFile, setUploadFile] = useState(null);
   const [plaidOpen, setPlaidOpen] = useState(false);
+  const [tick, setTick] = useState(0);
   const cats = ["all", ...new Set(CONNECTORS.map(co => co.cat))];
   const mountedRef = useRef(true);
   useEffect(() => () => { mountedRef.current = false; }, []);
+  // Tick every 1s to update live sync times
+  useEffect(() => { const i = setInterval(() => setTick(t => t + 1), 1000); return () => clearInterval(i); }, []);
 
   const startConnect = (name) => {
     const conn = conns.find(co => co.name === name);
@@ -2878,7 +2891,7 @@ const IntegrationsView = ({ c, toast }) => {
     setTimeout(() => {
       if (!mountedRef.current) return;
       const fakeRecords = ["12K", "24K", "8.4K", "156K", "3.2K"][Math.floor(Math.random() * 5)];
-      setConns(prev => prev.map(co => co.name === name ? { ...co, status: "connected", records: fakeRecords, lastSync: "Just now" } : co));
+      setConns(prev => prev.map(co => co.name === name ? { ...co, status: "connected", records: fakeRecords, syncedAt: Date.now() } : co));
       setSyncingName(null);
       toast(`${name} connected — ${fakeRecords} records synced`, "success");
     }, 2500);
@@ -2887,7 +2900,7 @@ const IntegrationsView = ({ c, toast }) => {
   const confirmDisconnect = async () => {
     const name = disconnectConfirm;
     setDisconnectConfirm(null);
-    setConns(prev => prev.map(co => co.name === name ? { ...co, status: "available", records: null, lastSync: null } : co));
+    setConns(prev => prev.map(co => co.name === name ? { ...co, status: "available", records: null, syncedAt: null } : co));
     // Remove from Supabase
     try {
       const { data: { user } } = await supabase.auth.getUser();
@@ -2905,10 +2918,10 @@ const IntegrationsView = ({ c, toast }) => {
 
   const syncConnector = (name) => {
     setSyncingName(name);
-    setConns(prev => prev.map(co => co.name === name ? { ...co, lastSync: "Syncing..." } : co));
+    setConns(prev => prev.map(co => co.name === name ? { ...co, syncedAt: -1 } : co));
     setTimeout(() => {
       if (!mountedRef.current) return;
-      setConns(prev => prev.map(co => co.name === name ? { ...co, lastSync: "Just now" } : co));
+      setConns(prev => prev.map(co => co.name === name ? { ...co, syncedAt: Date.now() } : co));
       setSyncingName(null);
       toast(`${name} synced`, "success");
     }, 1800);
@@ -2926,8 +2939,8 @@ const IntegrationsView = ({ c, toast }) => {
             <Plug size={17} color={c.accent} />
           </div>
           <div>
-            <div style={{ display: "flex", alignItems: "center", gap: 8 }}><div style={{ fontSize: 20, fontWeight: 800, color: c.text, letterSpacing: "-0.03em" }}>Integrations</div><span style={{ fontSize: 7, fontWeight: 800, padding: "2px 6px", borderRadius: 3, background: `${c.green}15`, color: c.green, letterSpacing: "0.06em" }}>5 ACTIVE</span></div>
-            <div style={{ fontSize: 12, color: c.textDim, marginTop: 2 }}>Connect your stack · Bi-directional sync · Real-time freshness</div>
+            <div style={{ display: "flex", alignItems: "center", gap: 8 }}><div style={{ fontSize: 20, fontWeight: 800, color: c.text, letterSpacing: "-0.03em" }}>Integrations</div><span style={{ fontSize: 7, fontWeight: 800, padding: "2px 6px", borderRadius: 3, background: `${c.green}15`, color: c.green, letterSpacing: "0.06em" }}>{connected.length} ACTIVE</span></div>
+            <div style={{ fontSize: 12, color: c.textDim, marginTop: 2 }}>Connect your stack · Bi-directional sync · Last sync {timeAgo(Math.max(...connected.map(co => co.syncedAt || 0)))}</div>
           </div>
         </div>
         <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search integrations..."
@@ -2941,12 +2954,18 @@ const IntegrationsView = ({ c, toast }) => {
         Pipeline Health <div style={{ width: 40, height: 1, background: c.borderSub }} />
       </div>
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))", gap: 12, marginBottom: 20 }}>
-        {[
+        {(() => {
+          const avgFresh = connected.length ? Math.round(connected.reduce((a, co) => a + (Date.now() - (co.syncedAt || Date.now())), 0) / connected.length / 1000) : 0;
+          const avgStr = avgFresh < 60 ? `${avgFresh}s` : `${Math.floor(avgFresh / 60)}m ${avgFresh % 60}s`;
+          const totalRecs = connected.reduce((a, co) => a + (parseFloat((co.records || "0").replace(/[KM,]/g, m => m === "K" ? "" : m === "M" ? "" : "")) * (co.records?.includes("M") ? 1000000 : co.records?.includes("K") ? 1000 : 1) || 0), 0);
+          const recsStr = totalRecs >= 1000000 ? `${(totalRecs / 1000000).toFixed(1)}M` : totalRecs >= 1000 ? `${(totalRecs / 1000).toFixed(0)}K` : `${totalRecs}`;
+          return [
           { label: "Connected", value: connected.length, icon: "●", color: c.green },
           { label: "Available", value: conns.filter(co => co.status === "available").length, icon: "○", color: c.textDim },
-          { label: "Total Records", value: "3.2M+", icon: "◆", color: c.accent },
-          { label: "Avg Freshness", value: "< 4 min", icon: "⚡", color: c.amber },
-        ].map(s => (
+          { label: "Total Records", value: recsStr, icon: "◆", color: c.accent },
+          { label: "Avg Freshness", value: avgStr, icon: "⚡", color: avgFresh < 300 ? c.green : c.amber },
+          ];
+        })().map(s => (
           <div key={s.label} style={{ background: c.glass, backdropFilter: c.glassBlur, WebkitBackdropFilter: c.glassBlur, border: `1px solid ${c.glassBorder}`, borderRadius: 12, padding: "14px 18px", boxShadow: `${c.cardGlow}, ${c.glassHighlight}`, transition: "all 0.25s cubic-bezier(0.22,1,0.36,1)", position: "relative", overflow: "hidden" }}
             onMouseEnter={e => { e.currentTarget.style.borderColor = `${s.color}35`; e.currentTarget.style.transform = "translateY(-2px)"; e.currentTarget.style.boxShadow = `0 8px 24px ${s.color}08, ${c.cardGlow}`; }}
             onMouseLeave={e => { e.currentTarget.style.borderColor = c.border; e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = c.cardGlow; }}
@@ -3003,7 +3022,7 @@ const IntegrationsView = ({ c, toast }) => {
               <div style={{ fontSize: 10, marginBottom: 10 }}>
                 <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 5, padding: "6px 10px", borderRadius: 6, background: c.surfaceAlt }}>
                   <span style={{ color: c.green, fontWeight: 600 }}>{co.records} records</span>
-                  <span style={{ color: co.name === syncingName ? c.amber : c.textFaint, fontFamily: "'JetBrains Mono', monospace", fontSize: 9 }}>{co.name === syncingName ? "Syncing..." : (co.lastSync || "3 min ago")}</span>
+                  <span style={{ color: co.name === syncingName ? c.amber : c.textFaint, fontFamily: "'JetBrains Mono', monospace", fontSize: 9 }}>{co.name === syncingName ? "Syncing..." : co.syncedAt === -1 ? "Syncing..." : timeAgo(co.syncedAt)}</span>
                 </div>
                 {co.health != null && (
                   <div style={{ display: "flex", alignItems: "center", gap: 6, padding: "0 2px" }}>
@@ -3150,7 +3169,7 @@ const IntegrationsView = ({ c, toast }) => {
               </div>
               <div style={{ display: "flex", gap: 8 }}>
                 <button onClick={() => setUploadStep(0)} style={{ flex: 1, fontSize: 12, padding: "11px 0", borderRadius: 10, border: `1px solid ${c.border}`, background: "transparent", color: c.textSec, cursor: "pointer", fontFamily: "inherit", fontWeight: 600 }}>Back</button>
-                <button onClick={() => { setUploadStep(2); setTimeout(() => { if (mountedRef.current) { setUploadStep(3); setConns(prev => prev.map(co => co.name === "CSV / Excel" ? { ...co, status: "connected", records: "1,247", lastSync: "Just now", health: 100 } : co)); }}, 2000); }} style={{ flex: 1, fontSize: 12, padding: "11px 0", borderRadius: 10, border: "none", background: c.accent, color: "#fff", cursor: "pointer", fontFamily: "inherit", fontWeight: 700 }}>Import {uploadFile?.rows || 1247} Rows</button>
+                <button onClick={() => { setUploadStep(2); setTimeout(() => { if (mountedRef.current) { setUploadStep(3); setConns(prev => prev.map(co => co.name === "CSV / Excel" ? { ...co, status: "connected", records: "1,247", syncedAt: Date.now(), health: 100 } : co)); }}, 2000); }} style={{ flex: 1, fontSize: 12, padding: "11px 0", borderRadius: 10, border: "none", background: c.accent, color: "#fff", cursor: "pointer", fontFamily: "inherit", fontWeight: 700 }}>Import {uploadFile?.rows || 1247} Rows</button>
               </div>
             </>)}
 
