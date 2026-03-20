@@ -3832,10 +3832,20 @@ const PlanPicker = ({ c, userName, onSkip, onSelect, isDemo }) => {
   ];
 
   return (
-    <div style={{ position: "fixed", inset: 0, zIndex: 10000, background: "rgba(0,0,0,0.6)", backdropFilter: "blur(12px)", display: "flex", alignItems: "center", justifyContent: "center", animation: "fadeIn 0.2s" }}>
-      <div style={{ width: 800, maxHeight: "94vh", overflow: "auto", background: t.bg, border: `1px solid ${t.bdr}`, borderRadius: 20, boxShadow: "0 24px 80px rgba(0,0,0,0.4)", animation: "cmdIn 0.25s cubic-bezier(0.22,1,0.36,1)" }}>
+    <div onClick={onSkip} style={{ position: "fixed", inset: 0, zIndex: 10000, background: "rgba(0,0,0,0.6)", backdropFilter: "blur(12px)", display: "flex", alignItems: "center", justifyContent: "center", animation: "fadeIn 0.2s" }}>
+      <div onClick={e => e.stopPropagation()} style={{ width: 800, maxHeight: "94vh", overflow: "auto", background: t.bg, border: `1px solid ${t.bdr}`, borderRadius: 20, boxShadow: "0 24px 80px rgba(0,0,0,0.4)", animation: "cmdIn 0.25s cubic-bezier(0.22,1,0.36,1)" }}>
         {/* Header */}
-        <div style={{ padding: "32px 40px 0", textAlign: "center" }}>
+        <div style={{ padding: "32px 40px 0", textAlign: "center", position: "relative" }}>
+          {/* Back / Close button */}
+          <button onClick={onSkip} aria-label="Go back" style={{
+            position: "absolute", top: 20, left: 20, width: 36, height: 36, borderRadius: 10,
+            border: `1px solid ${t.bdr}`, background: "transparent", color: t.txD, cursor: "pointer",
+            display: "flex", alignItems: "center", justifyContent: "center", transition: "all 0.15s",
+            fontFamily: "inherit", fontSize: 16,
+          }}
+          onMouseEnter={e => { e.currentTarget.style.borderColor = t.bdrBright; e.currentTarget.style.color = t.tx; }}
+          onMouseLeave={e => { e.currentTarget.style.borderColor = t.bdr; e.currentTarget.style.color = t.txD; }}
+          >←</button>
           <div style={{ display: "inline-block", padding: "4px 12px", borderRadius: 20, background: `${t.gn}10`, border: `1px solid ${t.gn}18`, fontSize: 10, fontWeight: 700, color: t.gn, marginBottom: 12, letterSpacing: "0.04em" }}>30-DAY MONEY-BACK GUARANTEE</div>
           <div style={{ fontSize: 24, fontWeight: 800, letterSpacing: "-0.02em", marginBottom: 6, color: t.tx }}>
             {userName && userName !== "Guest" ? `Welcome, ${userName.split(" ")[0]}!` : "Choose your plan"}
@@ -3989,7 +3999,10 @@ const PlanPicker = ({ c, userName, onSkip, onSelect, isDemo }) => {
           {isDemo ? (
             <button onClick={onSkip} style={{ fontSize: 12, color: t.txD, background: "none", border: "none", cursor: "pointer", fontFamily: "inherit", textDecoration: "underline", marginBottom: 12 }}>Continue with demo — explore with sample data</button>
           ) : (
-            <div style={{ fontSize: 11, color: t.txF, marginBottom: 12 }}>All plans include: SOC 2 compliance · AES-256 encryption · 24/7 monitoring · Email support</div>
+            <div>
+              <div style={{ fontSize: 11, color: t.txF, marginBottom: 8 }}>All plans include: SOC 2 compliance · AES-256 encryption · 24/7 monitoring · Email support</div>
+              <button onClick={onSkip} style={{ fontSize: 11, color: t.txD, background: "none", border: "none", cursor: "pointer", fontFamily: "inherit", marginBottom: 6 }}>Skip for now →</button>
+            </div>
           )}
           <div style={{ display: "flex", justifyContent: "center", gap: 20 }}>
             {["2,400+ demo users", "NPS 72", "$840K pipeline"].map(s => (
