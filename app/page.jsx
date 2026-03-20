@@ -5276,7 +5276,7 @@ const LandingPage = ({ onLogin }) => {
               </div>
               {!p.enterprise && billing === "annual" && p.monthly && p.annual && <div style={{ fontSize: 11, color: "#34d399", fontWeight: 600, marginBottom: 14 }}>Save ${((p.monthly - p.annual) * 12).toLocaleString()}/year</div>}
               {!p.enterprise && billing === "monthly" && <div style={{ height: 20 }} />}
-              {p.enterprise && <div style={{ fontSize: 11, color: "#8b92a5", marginBottom: 14 }}>Tailored to your requirements</div>}
+              {p.enterprise && <div style={{ fontSize: 11, color: "#8b92a5", lineHeight: 1.5, marginBottom: 14 }}>No seat, entity, or usage limits.<br />Multi-year & volume pricing available.</div>}
               <div style={{ display: "flex", flexDirection: "column", gap: 8, marginBottom: 16 }}>
                 <div style={{ fontSize: 8, fontWeight: 700, color: "#636d84", textTransform: "uppercase", letterSpacing: "0.08em" }}>Platform</div>
                 {p.features.map(f => (
