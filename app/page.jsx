@@ -4969,7 +4969,7 @@ const LandingPage = ({ onLogin }) => {
             <span style={{ fontSize: 36, fontWeight: 800, fontFamily: "'JetBrains Mono', monospace" }}>$2,799</span>
             <span style={{ fontSize: 14, color: "#8b92a5" }}>/mo · Save 15%</span>
           </div>
-          <button onClick={enterDemo} style={{ fontSize: 14, padding: "12px 28px", borderRadius: 10, border: "none", background: "linear-gradient(135deg, #60a5fa, #a78bfa)", color: "#fff", cursor: "pointer", fontFamily: "inherit", fontWeight: 700, boxShadow: "0 6px 24px rgba(96,165,250,0.25)" }}>Start Suite Trial</button>
+          <button onClick={enterDemo} style={{ fontSize: 14, padding: "12px 28px", borderRadius: 10, border: "none", background: "linear-gradient(135deg, #60a5fa, #a78bfa)", color: "#fff", cursor: "pointer", fontFamily: "inherit", fontWeight: 700, boxShadow: "0 6px 24px rgba(96,165,250,0.25)" }}>Get Started — Suite</button>
         </div>
       </div>
 
@@ -5276,6 +5276,26 @@ function FinanceOSApp() {
     return () => { mounted = false; subscription.unsubscribe(); };
   }, []);
 
+  // Handle Stripe checkout redirect: ?checkout=success&plan=starter
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const params = new URLSearchParams(window.location.search);
+    const checkoutStatus = params.get("checkout");
+    const checkoutPlan = params.get("plan");
+    if (checkoutStatus === "success" && checkoutPlan) {
+      toast(`${checkoutPlan.charAt(0).toUpperCase() + checkoutPlan.slice(1)} plan activated — welcome to FinanceOS!`, "success");
+      setUser(prev => ({ ...prev, plan: checkoutPlan }));
+      setShowPlanPicker(false);
+      setShowOnboarding(true);
+      // Clean URL
+      window.history.replaceState(null, "", window.location.pathname);
+    } else if (checkoutStatus === "cancel") {
+      toast("Checkout cancelled — you can choose a plan anytime", "info");
+      setShowPlanPicker(true);
+      window.history.replaceState(null, "", window.location.pathname);
+    }
+  }, [loggedIn]);
+
   // Sunset-aware auto theme: dark after 6:30pm, light after 6:30am, respects OS preference
   const getAutoMode = useCallback(() => {
     const hour = new Date().getHours();
@@ -5560,7 +5580,7 @@ function FinanceOSApp() {
             {!sidebarCollapsed && <div>
               <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
                 <span style={{ fontWeight: 800, fontSize: 15, color: c.text, letterSpacing: "-0.3px", whiteSpace: "nowrap" }}>Finance<span style={{ fontWeight: 400, opacity: 0.6 }}>OS</span></span>
-                <span style={{ fontSize: 7, fontWeight: 800, padding: "2px 5px", borderRadius: 3, background: user.plan === "demo" ? c.amberDim : `${c.green}12`, color: user.plan === "demo" ? c.amber : c.green, letterSpacing: "0.06em", textTransform: "uppercase" }}>{user.plan === "demo" ? "DEMO" : user.plan || "PRO"}</span>
+                <span style={{ fontSize: 7, fontWeight: 800, padding: "2px 5px", borderRadius: 3, background: user.plan === "demo" ? c.amberDim : user.plan === "pending" || !user.plan ? `${c.accent}12` : `${c.green}12`, color: user.plan === "demo" ? c.amber : user.plan === "pending" || !user.plan ? c.accent : c.green, letterSpacing: "0.06em", textTransform: "uppercase" }}>{user.plan === "demo" ? "DEMO" : user.plan ? user.plan.toUpperCase() : "STARTER"}</span>
               </div>
               <div style={{ fontSize: 9, color: c.textFaint, marginTop: 2, whiteSpace: "nowrap" }}>Acme SaaS Corp · FY2025</div>
             </div>}
@@ -5627,6 +5647,16 @@ function FinanceOSApp() {
         {/* Suite Cross-Sell */}
         {!sidebarCollapsed && (
         <div style={{ padding: "8px 14px", borderTop: `1px solid ${c.borderSub}` }}>
+          {/* Upgrade prompt for demo users */}
+          {user.plan === "demo" && (
+            <div onClick={() => setShowPlanPicker(true)} style={{ margin: "4px 0 8px", padding: "10px 12px", borderRadius: 10, background: `linear-gradient(135deg, ${c.accent}08, ${c.purple}04)`, border: `1px solid ${c.accent}15`, cursor: "pointer", transition: "all 0.15s" }}
+              onMouseEnter={e => { e.currentTarget.style.borderColor = `${c.accent}30`; e.currentTarget.style.transform = "translateY(-1px)"; }}
+              onMouseLeave={e => { e.currentTarget.style.borderColor = `${c.accent}15`; e.currentTarget.style.transform = "none"; }}
+            >
+              <div style={{ fontSize: 10, fontWeight: 700, color: c.accent, marginBottom: 2 }}>Upgrade to a paid plan</div>
+              <div style={{ fontSize: 9, color: c.textDim }}>30-day money-back guarantee</div>
+            </div>
+          )}
           <div style={{ fontSize: 9, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.12em", color: c.textFaint, padding: "8px 4px 6px" }}>Vaultline Suite</div>
           {[
             { name: "Vaultline", sub: "Treasury", color: "#22d3ee" },
@@ -5696,7 +5726,10 @@ function FinanceOSApp() {
             </div>
             <div style={{ flex: 1 }}>
               <div style={{ fontSize: 12, fontWeight: 600, color: c.text }}>{user.name || "Guest"}</div>
-              <div style={{ fontSize: 9, color: c.textDim, fontWeight: 500 }}>{user.plan ? `${user.plan} Plan` : "Starter"} · Online</div>
+              <div style={{ fontSize: 9, color: c.textDim, fontWeight: 500, display: "flex", alignItems: "center", gap: 4 }}>
+                <span style={{ display: "inline-block", width: 5, height: 5, borderRadius: "50%", background: user.plan === "demo" ? c.amber : c.green, flexShrink: 0 }} />
+                {user.plan === "demo" ? "Demo Mode" : user.plan ? `${user.plan.charAt(0).toUpperCase() + user.plan.slice(1)} Plan` : "Starter"}
+              </div>
             </div>
             <Settings size={13} color={c.textFaint} />
           </div>
