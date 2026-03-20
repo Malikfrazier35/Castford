@@ -37,7 +37,7 @@ const nextConfig = {
               "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
               "font-src 'self' https://fonts.gstatic.com",
               "img-src 'self' data: blob: https:",
-              "connect-src 'self' https://*.supabase.co https://api.stripe.com https://*.plaid.com https://plausible.io https://api.anthropic.com wss://*.supabase.co",
+              "connect-src 'self' https://*.supabase.co https://api.stripe.com https://*.plaid.com https://plausible.io https://api.anthropic.com https://oauth.platform.intuit.com https://*.api.intuit.com https://sandbox-quickbooks.api.intuit.com https://quickbooks.api.intuit.com wss://*.supabase.co",
               "frame-src https://js.stripe.com https://hooks.stripe.com https://cdn.plaid.com",
               "base-uri 'self'",
               "form-action 'self'",
