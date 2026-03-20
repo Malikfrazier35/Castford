@@ -3955,6 +3955,8 @@ const AuthModal = ({ mode: initialMode, onClose, onAuth }) => {
   // Email sign-up or sign-in
   const handleEmail = async () => {
     if (!email.trim() || !password.trim()) { setError("Email and password required"); return; }
+    if (authMode === "signup" && password.trim().length < 8) { setError("Password must be at least 8 characters"); return; }
+    if (authMode === "signup" && !name.trim()) { setError("Full name is required"); return; }
     setLoading("email");
     setError(null);
     try {
@@ -4924,7 +4926,7 @@ const LandingPage = ({ onLogin }) => {
         ) : (
         <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
           <button onClick={() => setAuthModal("login")} style={{ fontSize: 12, padding: "8px 14px", borderRadius: 8, border: "1px solid #1e2230", background: "transparent", color: "#f0f2f5", cursor: "pointer", fontFamily: "inherit", fontWeight: 600 }}>Sign In</button>
-          <button onClick={() => setAuthModal("signup")} style={{ fontSize: 12, padding: "8px 14px", borderRadius: 8, border: "none", background: "linear-gradient(135deg, #60a5fa, #a78bfa)", color: "#fff", cursor: "pointer", fontFamily: "inherit", fontWeight: 700 }}>Try Free</button>
+          <button onClick={() => setAuthModal("signup")} style={{ fontSize: 12, padding: "8px 14px", borderRadius: 8, border: "none", background: "linear-gradient(135deg, #60a5fa, #a78bfa)", color: "#fff", cursor: "pointer", fontFamily: "inherit", fontWeight: 700 }}>Subscribe</button>
         </div>
         )}
       </nav>
@@ -5513,11 +5515,12 @@ const LandingPage = ({ onLogin }) => {
               {col.links.map(link => {
                 const linkMap = { "Privacy Policy": "/privacy", "Terms of Service": "/terms" };
                 const href = linkMap[link];
+                const comingSoon = !href && !["Dashboard", "AI Copilot", "Forecasting", "Consolidation", "Integrations"].includes(link);
                 return (
-                <div key={link} onClick={() => { if (href) window.location.href = href; }} style={{ fontSize: 12, color: "#3d4558", marginBottom: 8, cursor: "pointer" }}
+                <div key={link} onClick={() => { if (href) window.location.href = href; else if (!comingSoon) enterDemo(); }} style={{ fontSize: 12, color: "#3d4558", marginBottom: 8, cursor: href || !comingSoon ? "pointer" : "default", display: "flex", alignItems: "center", gap: 4 }}
                   onMouseEnter={e => e.currentTarget.style.color = "#9ea5b8"}
                   onMouseLeave={e => e.currentTarget.style.color = "#3d4558"}
-                >{link}</div>
+                >{link}{comingSoon && <span style={{ fontSize: 7, padding: "1px 4px", borderRadius: 3, background: "rgba(96,165,250,0.06)", color: "#636d84", fontWeight: 700 }}>SOON</span>}</div>
                 );
               })}
             </div>
