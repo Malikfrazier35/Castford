@@ -1671,6 +1671,9 @@ const PnlView = ({ c, onNav, toast }) => {
         onPDF={() => { window.print(); toast("Use Save as PDF in the print dialog", "info"); }}
       />
       {/* Financial Summary KPIs */}
+      <div style={{ fontSize: 9, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.12em", color: c.textFaint, marginBottom: 10, display: "flex", alignItems: "center", gap: 8 }}>
+        Financial Summary <div style={{ width: 40, height: 1, background: c.borderSub }} />
+      </div>
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: 12, marginBottom: 16 }}>
         {[
           { label: "Total Revenue", value: fmt(PNL_DATA[0]?.total?.actual || 0), delta: fmtPct(variancePct(PNL_DATA[0]?.total?.actual || 0, PNL_DATA[0]?.total?.budget || 1)), fav: true, color: c.green },
@@ -2020,6 +2023,9 @@ const ConsolidationView = ({ c, onNav, toast }) => {
         <button onClick={() => { ENTITIES.forEach(e => { if ((entityStatus[e.name] || e.status) !== "Closed") approve(e.name); }); }} style={{ fontSize: 11, padding: "8px 16px", borderRadius: 8, border: "none", background: c.green, color: "#fff", fontWeight: 700, cursor: "pointer", fontFamily: "inherit" }}>Close All Pending</button>
       </div>
       {/* Entity cards */}
+      <div style={{ fontSize: 9, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.12em", color: c.textFaint, marginBottom: 10, display: "flex", alignItems: "center", gap: 8 }}>
+        Entity Status <div style={{ width: 40, height: 1, background: c.borderSub }} />
+      </div>
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: 16, marginBottom: 20 }}>
         {ENTITIES.map(e => {
           const st = entityStatus[e.name] || e.status;
@@ -2061,6 +2067,9 @@ const ConsolidationView = ({ c, onNav, toast }) => {
       </div>
 
       {/* Consolidated P&L */}
+      <div style={{ fontSize: 9, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.12em", color: c.textFaint, marginTop: 4, marginBottom: 10, display: "flex", alignItems: "center", gap: 8 }}>
+        Consolidated Financials <div style={{ width: 40, height: 1, background: c.borderSub }} />
+      </div>
       <div style={{ background: c.glass, backdropFilter: c.glassBlur, WebkitBackdropFilter: c.glassBlur, border: `1px solid ${c.glassBorder}`, borderRadius: 16, overflow: "hidden", position: "relative" }}>
         <div style={{ position: "absolute", top: 0, left: "10%", right: "10%", height: 2, background: `linear-gradient(90deg, transparent, ${c.accent}25, transparent)`, borderRadius: "0 0 2px 2px", zIndex: 2 }} />
         <div style={{ padding: "16px 20px", display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: `2px solid ${c.borderBright}` }}>
@@ -3245,6 +3254,9 @@ const ScenariosView = ({ c, toast }) => {
         })() : (
           <>
             {/* Scenario cards */}
+            <div style={{ fontSize: 9, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.12em", color: c.textFaint, marginBottom: 10, display: "flex", alignItems: "center", gap: 8 }}>
+              Scenario Models <div style={{ width: 40, height: 1, background: c.borderSub }} />
+            </div>
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
               {scenarios.map((s, i) => (
                 <div key={s.name} onClick={() => setSelected(i)} style={{
@@ -3272,6 +3284,9 @@ const ScenariosView = ({ c, toast }) => {
             </div>
 
             {/* Sensitivity sliders */}
+            <div style={{ fontSize: 9, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.12em", color: c.textFaint, marginTop: 16, marginBottom: 10, display: "flex", alignItems: "center", gap: 8 }}>
+              Assumption Drivers <div style={{ width: 40, height: 1, background: c.borderSub }} />
+            </div>
             <div style={{ background: c.glass, backdropFilter: c.glassBlur, WebkitBackdropFilter: c.glassBlur, border: `1px solid ${c.glassBorder}`, borderRadius: 16, padding: "22px 24px", boxShadow: `${c.cardGlow}, ${c.glassHighlight}`, position: "relative", overflow: "hidden" }}>
               <div style={{ position: "absolute", top: 0, left: "10%", right: "10%", height: 2, background: `linear-gradient(90deg, transparent, ${c.amber}25, transparent)`, borderRadius: "0 0 2px 2px" }} />
               <div style={{ fontSize: 13, fontWeight: 800, color: c.text, marginBottom: 16 }}>Assumption Drivers</div>
