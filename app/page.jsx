@@ -1176,7 +1176,7 @@ const DashboardView = ({ c, onNav, toast, onDrawer, userName, period }) => {
     </div>
 
     {/* Expense Bars + Insights */}
-    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
+    <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(340px, 1fr))", gap: 16 }}>
       {/* Expense Breakdown */}
       <div style={{ background: c.glass, backdropFilter: c.glassBlur, WebkitBackdropFilter: c.glassBlur, border: `1px solid ${c.glassBorder}`, borderRadius: 16, padding: "24px 24px 18px", boxShadow: `${c.cardGlow}, ${c.glassHighlight}`, position: "relative", overflow: "hidden" }}>
         <div style={{ position: "absolute", top: 0, left: "10%", right: "10%", height: 2, background: `linear-gradient(90deg, transparent, ${c.amber}40, transparent)`, borderRadius: "0 0 2px 2px" }} />
@@ -1852,6 +1852,9 @@ const ForecastView = ({ c, toast }) => {
       </div>
 
       {/* Chart */}
+      <div style={{ fontSize: 9, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.12em", color: c.textFaint, marginBottom: 10, display: "flex", alignItems: "center", gap: 8 }}>
+        Forecast Model <div style={{ width: 40, height: 1, background: c.borderSub }} />
+      </div>
       <div style={{ background: c.glass, backdropFilter: c.glassBlur, WebkitBackdropFilter: c.glassBlur, border: `1px solid ${c.glassBorder}`, borderRadius: 16, padding: "24px 24px 18px", boxShadow: `${c.cardGlow}, ${c.glassHighlight}`, marginBottom: 16, position: "relative", overflow: "hidden" }}>
         <div style={{ position: "absolute", top: 0, left: "10%", right: "10%", height: 2, background: `linear-gradient(90deg, transparent, ${c.green}40, ${c.accent}20, transparent)`, borderRadius: "0 0 2px 2px" }} />
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
@@ -2388,7 +2391,7 @@ const IntegrationsView = ({ c, toast }) => {
       </div>
 
       {/* Health overview bar */}
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 12, marginBottom: 20 }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))", gap: 12, marginBottom: 20 }}>
         {[
           { label: "Connected", value: connected.length, icon: "●", color: c.green },
           { label: "Available", value: conns.filter(co => co.status === "available").length, icon: "○", color: c.textDim },
@@ -2417,7 +2420,7 @@ const IntegrationsView = ({ c, toast }) => {
       </div>
 
       {/* Connector grid */}
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 16 }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: 16 }}>
         {filtered.map(co => (
           <div key={co.name} style={{ background: c.glass, backdropFilter: c.glassBlur, WebkitBackdropFilter: c.glassBlur, border: `1px solid ${c.glassBorder}`, borderRadius: 16, padding: "22px 20px", boxShadow: `${c.cardGlow}, ${c.glassHighlight}`, transition: "all 0.25s cubic-bezier(0.22,1,0.36,1)", position: "relative", overflow: "hidden" }}
             onMouseEnter={e => { e.currentTarget.style.borderColor = `${co.color}50`; e.currentTarget.style.transform = "translateY(-3px)"; e.currentTarget.style.boxShadow = `0 8px 28px ${co.color}10, ${c.cardGlow}`; }}
