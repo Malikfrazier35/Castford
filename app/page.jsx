@@ -1495,7 +1495,7 @@ const CopilotView = ({ c, toast }) => {
             <Sparkles size={15} color={c.purple} />
           </div>
           <div>
-            <div style={{ fontSize: 20, fontWeight: 800, color: c.text, letterSpacing: "-0.03em" }}>AI Copilot</div>
+            <div style={{ display: "flex", alignItems: "center", gap: 8 }}><div style={{ fontSize: 20, fontWeight: 800, color: c.text, letterSpacing: "-0.03em" }}>AI Copilot</div><span style={{ fontSize: 7, fontWeight: 800, padding: "2px 6px", borderRadius: 3, background: `${c.purple}15`, color: c.purple, letterSpacing: "0.06em" }}>CLAUDE</span></div>
             <div style={{ fontSize: 12, color: c.textDim, marginTop: 2 }}>Ask anything about your financials · Visible reasoning · Cited sources</div>
           </div>
         </div>
@@ -1648,13 +1648,22 @@ const PnlView = ({ c, onNav, toast }) => {
   return (
     <div style={{ padding: 32, overflow: "auto" }}>
       {/* View Header */}
-      <div style={{ marginBottom: 20, display: "flex", alignItems: "flex-start", gap: 14 }}>
-        <div style={{ width: 36, height: 36, borderRadius: 10, background: `linear-gradient(135deg, ${c.accent}15, ${c.green}08)`, border: `1px solid ${c.accent}10`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, marginTop: 2 }}>
-          <FileText size={17} color={c.accent} />
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 20 }}>
+        <div style={{ display: "flex", alignItems: "flex-start", gap: 14 }}>
+          <div style={{ width: 36, height: 36, borderRadius: 10, background: `linear-gradient(135deg, ${c.accent}15, ${c.green}08)`, border: `1px solid ${c.accent}10`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, marginTop: 2 }}>
+            <FileText size={17} color={c.accent} />
+          </div>
+          <div>
+            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+              <div style={{ fontSize: 20, fontWeight: 800, color: c.text, letterSpacing: "-0.03em" }}>P&L Statement</div>
+              <span style={{ fontSize: 7, fontWeight: 800, padding: "2px 6px", borderRadius: 3, background: `${c.green}15`, color: c.green, letterSpacing: "0.06em", display: "flex", alignItems: "center", gap: 3 }}><span style={{ width: 4, height: 4, borderRadius: "50%", background: c.green, animation: "pulse 2s infinite" }} />LIVE</span>
+            </div>
+            <div style={{ fontSize: 12, color: c.textDim, marginTop: 2 }}>FY2025 YTD · Click any variance to ask AI Copilot for root cause analysis</div>
+          </div>
         </div>
-        <div>
-          <div style={{ fontSize: 20, fontWeight: 800, color: c.text, letterSpacing: "-0.03em" }}>P&L Statement</div>
-          <div style={{ fontSize: 12, color: c.textDim, marginTop: 2 }}>FY2025 YTD · Click any variance to ask AI Copilot for root cause analysis</div>
+        <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+          <span style={{ fontSize: 9, color: c.textFaint }}>Last close: Feb 28</span>
+          <span style={{ fontSize: 9, padding: "3px 8px", borderRadius: 5, background: c.accentDim, color: c.accent, fontWeight: 700 }}>FY2025 YTD</span>
         </div>
       </div>
       <ExportBar c={c} title=""
@@ -1819,7 +1828,10 @@ const ForecastView = ({ c, toast }) => {
             <Brain size={17} color={c.green} />
           </div>
           <div>
-            <div style={{ fontSize: 20, fontWeight: 800, color: c.text, letterSpacing: "-0.03em" }}>Forecast Optimizer</div>
+            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+              <div style={{ fontSize: 20, fontWeight: 800, color: c.text, letterSpacing: "-0.03em" }}>Forecast Optimizer</div>
+              <span style={{ fontSize: 7, fontWeight: 800, padding: "2px 6px", borderRadius: 3, background: `${c.purple}15`, color: c.purple, letterSpacing: "0.06em" }}>ML</span>
+            </div>
             <div style={{ fontSize: 12, color: c.textDim, marginTop: 2 }}>ML ensemble with live sensitivity sliders · MAPE {retrained ? "2.9%" : "3.2%"} · 14 drivers</div>
           </div>
         </div>
@@ -1995,7 +2007,10 @@ const ConsolidationView = ({ c, onNav, toast }) => {
             <Layers size={17} color={c.cyan} />
           </div>
           <div>
-            <div style={{ fontSize: 20, fontWeight: 800, color: c.text, letterSpacing: "-0.03em" }}>Multi-Entity Consolidation</div>
+            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+              <div style={{ fontSize: 20, fontWeight: 800, color: c.text, letterSpacing: "-0.03em" }}>Multi-Entity Consolidation</div>
+              <span style={{ fontSize: 7, fontWeight: 800, padding: "2px 6px", borderRadius: 3, background: `${c.cyan}15`, color: c.cyan, letterSpacing: "0.06em" }}>AUTO IC</span>
+            </div>
             <div style={{ fontSize: 12, color: c.textDim, marginTop: 2 }}>{ENTITIES.length} entities · Auto IC elimination · {ENTITIES.filter(e => (entityStatus[e.name] || e.status) === "Closed").length} closed · FX: Real-time</div>
           </div>
         </div>
@@ -2123,7 +2138,10 @@ const CloseView = ({ c, toast }) => {
             <CheckSquare size={17} color={c.amber} />
           </div>
           <div>
-            <div style={{ fontSize: 20, fontWeight: 800, color: c.text, letterSpacing: "-0.03em" }}>Month-End Close</div>
+            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+              <div style={{ fontSize: 20, fontWeight: 800, color: c.text, letterSpacing: "-0.03em" }}>Month-End Close</div>
+              <span style={{ fontSize: 7, fontWeight: 800, padding: "2px 6px", borderRadius: 3, background: pct === 100 ? `${c.green}15` : `${c.amber}15`, color: pct === 100 ? c.green : c.amber, letterSpacing: "0.06em" }}>{pct}%</span>
+            </div>
             <div style={{ fontSize: 12, color: c.textDim, marginTop: 2 }}>February close · {tasks.length - doneCount} tasks remaining · Est. {Math.max(0, (tasks.length - doneCount) * 0.5).toFixed(1)}h to complete</div>
           </div>
         </div>
@@ -2353,7 +2371,7 @@ const IntegrationsView = ({ c, toast }) => {
             <Plug size={17} color={c.accent} />
           </div>
           <div>
-            <div style={{ fontSize: 20, fontWeight: 800, color: c.text, letterSpacing: "-0.03em" }}>Integrations</div>
+            <div style={{ display: "flex", alignItems: "center", gap: 8 }}><div style={{ fontSize: 20, fontWeight: 800, color: c.text, letterSpacing: "-0.03em" }}>Integrations</div><span style={{ fontSize: 7, fontWeight: 800, padding: "2px 6px", borderRadius: 3, background: `${c.green}15`, color: c.green, letterSpacing: "0.06em" }}>5 ACTIVE</span></div>
             <div style={{ fontSize: 12, color: c.textDim, marginTop: 2 }}>Connect your stack · Bi-directional sync · Real-time freshness</div>
           </div>
         </div>
@@ -2645,7 +2663,7 @@ const InvestorView = ({ c, toast }) => (
           <TrendingUp size={17} color={c.green} />
         </div>
         <div>
-          <div style={{ fontSize: 20, fontWeight: 800, color: c.text, letterSpacing: "-0.03em" }}>Investor Metrics</div>
+          <div style={{ display: "flex", alignItems: "center", gap: 8 }}><div style={{ fontSize: 20, fontWeight: 800, color: c.text, letterSpacing: "-0.03em" }}>Investor Metrics</div><span style={{ fontSize: 7, fontWeight: 800, padding: "2px 6px", borderRadius: 3, background: `${c.green}15`, color: c.green, letterSpacing: "0.06em" }}>BOARD READY</span></div>
           <div style={{ fontSize: 12, color: c.textDim, marginTop: 2 }}>Series A readiness scorecard · 8 SaaS benchmarks · Board-ready exports</div>
         </div>
       </div>
@@ -2851,7 +2869,7 @@ const AdminView = ({ c, toast, onNav }) => {
             <Shield size={17} color={c.amber} />
           </div>
           <div>
-            <div style={{ fontSize: 20, fontWeight: 800, color: c.text, letterSpacing: "-0.03em" }}>Admin Console</div>
+            <div style={{ display: "flex", alignItems: "center", gap: 8 }}><div style={{ fontSize: 20, fontWeight: 800, color: c.text, letterSpacing: "-0.03em" }}>Admin Console</div><span style={{ fontSize: 7, fontWeight: 800, padding: "2px 6px", borderRadius: 3, background: `${c.accent}15`, color: c.accent, letterSpacing: "0.06em" }}>ADMIN</span></div>
             <div style={{ fontSize: 12, color: c.textDim, marginTop: 2 }}>{users.length} users · {users.filter(u => u.status === "active").length} active · {events.length} events today</div>
           </div>
         </div>
@@ -3133,7 +3151,10 @@ const ScenariosView = ({ c, toast }) => {
             <GitBranch size={17} color={c.purple} />
           </div>
           <div>
-            <div style={{ fontSize: 20, fontWeight: 800, color: c.text, letterSpacing: "-0.03em" }}>Scenario Modeling</div>
+            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+              <div style={{ fontSize: 20, fontWeight: 800, color: c.text, letterSpacing: "-0.03em" }}>Scenario Modeling</div>
+              <span style={{ fontSize: 7, fontWeight: 800, padding: "2px 6px", borderRadius: 3, background: `${c.purple}15`, color: c.purple, letterSpacing: "0.06em" }}>{scenarios.length} ACTIVE</span>
+            </div>
             <div style={{ fontSize: 12, color: c.textDim, marginTop: 2 }}>{scenarios.length} scenarios · Drag sliders to model assumptions in real-time</div>
           </div>
         </div>
