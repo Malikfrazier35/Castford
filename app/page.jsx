@@ -5368,7 +5368,7 @@ const LandingPage = ({ onLogin }) => {
         </div>
         <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "repeat(3, 1fr)", gap: 16 }}>
           {[
-            { icon: "⚡", outcome: "Close time drops from 12 days to 4", detail: "AI copilot auto-generates variance commentary and flags accrual errors before your auditors see them.", metric: "8-day reduction", color: "#60a5fa" },
+            { icon: "⚡", outcome: "Accelerate your month-end close", detail: "AI copilot auto-generates variance commentary and flags accrual errors before your auditors see them.", metric: "Faster close cycles", color: "#60a5fa" },
             { icon: "◈", outcome: "Model 3 M&A scenarios in 20 minutes", detail: "Side-by-side scenario comparison with live sensitivity sliders. No more two-week spreadsheet cycles.", metric: "Scenario modeling in minutes", color: "#a78bfa" },
             { icon: "◆", outcome: "See AI reasoning you can actually verify", detail: "Unlike black-box copilots, FinanceOS shows every data source, assumption, and calculation chain.", metric: "Full transparency", color: "#34d399" },
           ].map(t => (
