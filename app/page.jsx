@@ -2212,12 +2212,28 @@ const IntegrationsView = ({ c, toast }) => {
     setConnectingName(name);
   };
 
-  const confirmConnect = (name) => {
+  const confirmConnect = async (name) => {
     setConnectingName(null);
     setSyncingName(name);
     setConns(prev => prev.map(co => co.name === name ? { ...co, status: "syncing", records: "Syncing..." } : co));
     toast(`Connecting ${name}...`, "info");
-    // Simulate sync delay
+    // Write to Supabase integrations table
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        const { data: profile } = await supabase.from("users").select("org_id").eq("id", user.id).maybeSingle();
+        if (profile?.org_id) {
+          await supabase.from("integrations").upsert({
+            org_id: profile.org_id,
+            provider: name.toLowerCase().replace(/\s+/g, "_"),
+            status: "connected",
+            last_sync_at: new Date().toISOString(),
+            records_synced: Math.floor(Math.random() * 20000) + 3000,
+            config: { connected_by: user.email, connected_at: new Date().toISOString() },
+          }, { onConflict: "org_id,provider" }).catch(() => {});
+        }
+      }
+    } catch {}
     setTimeout(() => {
       if (!mountedRef.current) return;
       const fakeRecords = ["12K", "24K", "8.4K", "156K", "3.2K"][Math.floor(Math.random() * 5)];
@@ -2227,10 +2243,22 @@ const IntegrationsView = ({ c, toast }) => {
     }, 2500);
   };
 
-  const confirmDisconnect = () => {
+  const confirmDisconnect = async () => {
     const name = disconnectConfirm;
     setDisconnectConfirm(null);
     setConns(prev => prev.map(co => co.name === name ? { ...co, status: "available", records: null, lastSync: null } : co));
+    // Remove from Supabase
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        const { data: profile } = await supabase.from("users").select("org_id").eq("id", user.id).maybeSingle();
+        if (profile?.org_id) {
+          await supabase.from("integrations").delete()
+            .eq("org_id", profile.org_id)
+            .eq("provider", name.toLowerCase().replace(/\s+/g, "_")).catch(() => {});
+        }
+      }
+    } catch {}
     toast(`Disconnected ${name}`, "warning");
   };
 
@@ -4731,16 +4759,37 @@ function FinanceOSApp() {
   // Listen for Supabase auth state changes (handles OAuth redirects)
   useEffect(() => {
     let mounted = true;
-    const handleSession = (session) => {
+    const handleSession = async (session) => {
       if (!mounted || !session?.user) return;
       try {
         const u = session.user;
-        setUser({ name: u.user_metadata?.full_name || u.email?.split("@")[0] || "User", email: u.email || "" });
+        setUser(prev => ({ ...prev, name: u.user_metadata?.full_name || u.email?.split("@")[0] || "User", email: u.email || "" }));
         setLoggedIn(true);
         // Clean up URL hash after processing OAuth tokens
         if (typeof window !== "undefined" && window.location.hash?.includes("access_token")) {
           window.history.replaceState(null, "", window.location.pathname);
         }
+        // Call verify-session to ensure user+org exist in public tables
+        // This auto-provisions for users who signed up before onboarding write-through
+        try {
+          const res = await fetch(`${SUPABASE_URL}/functions/v1/verify-session`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "Authorization": `Bearer ${session.access_token}`,
+              "apikey": SUPABASE_KEY,
+            },
+          });
+          if (res.ok) {
+            const data = await res.json();
+            if (data.org?.plan && data.org.plan !== "trial") {
+              setUser(prev => ({ ...prev, plan: data.org.plan }));
+            }
+            if (data.org?.name) {
+              setUser(prev => ({ ...prev, orgName: data.org.name }));
+            }
+          }
+        } catch (e) { console.warn("verify-session:", e); }
       } catch {}
     };
 
