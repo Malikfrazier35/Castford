@@ -3907,115 +3907,289 @@ const PRICING_PLANS = [
 const OnboardingWizard = ({ c, userName, planStatus, onComplete }) => {
   const [step, setStep] = useState(0);
   const [org, setOrg] = useState({ name: "", industry: "", fy: "December", currency: "USD", erp: "" });
+  const [connecting, setConnecting] = useState(null);
+  const [connected, setConnected] = useState([]);
+  const [setupProgress, setSetupProgress] = useState(0);
+
   const steps = [
-    { title: "Set up your organization", sub: "Basic details to customize your experience", time: "~30 sec" },
-    { title: "Connect your data", sub: "Link your ERP, CRM, or billing system", time: "~1 min" },
-    { title: "You're all set", sub: "Your workspace is ready", time: "" },
+    { title: "Set up your organization", sub: "Basic details to customize your workspace", icon: "🏢" },
+    { title: "Connect your data", sub: "Link your ERP, billing, or banking systems", icon: "🔗" },
+    { title: "You're all set", sub: "Your workspace is ready", icon: "🚀" },
   ];
-  const erps = ["NetSuite", "QuickBooks", "Xero", "SAP", "Sage Intacct", "Workday", "Other", "Skip for now"];
-  const inputStyle = { width: "100%", fontSize: 13, padding: "11px 14px", borderRadius: 10, border: `1px solid ${c?.border || "#1e2230"}`, background: c?.surfaceAlt || "#0b0c10", color: c?.text || "#f0f2f5", fontFamily: "inherit", outline: "none", transition: "border-color 0.2s" };
+
+  const connectors = [
+    { id: "netsuite", name: "NetSuite", cat: "ERP", color: "#1B7B8A", icon: "N", desc: "Full GL, AR/AP, journals" },
+    { id: "quickbooks", name: "QuickBooks", cat: "ERP", color: "#2CA01C", icon: "Q", desc: "P&L, balance sheet, invoices" },
+    { id: "xero", name: "Xero", cat: "ERP", color: "#13B5EA", icon: "X", desc: "Multi-currency, bank feeds" },
+    { id: "salesforce", name: "Salesforce", cat: "CRM", color: "#00A1E0", icon: "S", desc: "Pipeline, ARR, forecasts" },
+    { id: "stripe", name: "Stripe", cat: "Billing", color: "#635BFF", icon: "$", desc: "MRR, churn, subscriptions" },
+    { id: "plaid", name: "Plaid", cat: "Banking", color: "#000000", icon: "⬡", desc: "Bank accounts, transactions" },
+    { id: "snowflake", name: "Snowflake", cat: "Data", color: "#29B5E8", icon: "❄", desc: "Custom SQL, data warehouse" },
+    { id: "csv", name: "CSV Upload", cat: "File", color: "#8b92a5", icon: "↑", desc: "Upload spreadsheets directly" },
+  ];
+
+  const handleConnect = (id) => {
+    setConnecting(id);
+    setTimeout(() => {
+      setConnected(prev => [...prev, id]);
+      setConnecting(null);
+    }, 1800);
+  };
+
+  // Animated setup sequence on step 3
+  useEffect(() => {
+    if (step !== 2) return;
+    const msgs = ["Creating workspace...", "Configuring chart of accounts...", "Loading sample data...", "Initializing AI Copilot...", "Ready!"];
+    let i = 0;
+    const timer = setInterval(() => {
+      i++;
+      setSetupProgress(Math.min(i * 20, 100));
+      if (i >= msgs.length) clearInterval(timer);
+    }, 600);
+    return () => clearInterval(timer);
+  }, [step]);
+
+  const setupMsgs = ["Creating workspace...", "Configuring chart of accounts...", "Loading sample data...", "Initializing AI Copilot...", "Ready!"];
+  const currentMsg = setupMsgs[Math.min(Math.floor(setupProgress / 20), setupMsgs.length - 1)];
+
+  const accentC = c?.accent || "#60a5fa";
+  const greenC = c?.green || "#34d399";
+  const surfC = c?.surface || "#111318";
+  const txtC = c?.text || "#f0f2f5";
+  const dimC = c?.textDim || "#8b92a5";
+  const faintC = c?.textFaint || "#3d4558";
+  const bdrC = c?.border || "#1e2230";
+  const bgC = c?.surfaceAlt || "#0b0c10";
+
+  // Mini sparkline for step 3
+  const MiniChart = () => {
+    const pts = [20,35,28,42,38,55,48,62,58,72,65,78];
+    const w = 280, h = 60;
+    const path = pts.map((p, i) => `${i === 0 ? "M" : "L"} ${(i / (pts.length - 1)) * w} ${h - (p / 80) * h}`).join(" ");
+    return (
+      <svg viewBox={`0 0 ${w} ${h}`} style={{ width: "100%", height: 60, overflow: "visible" }}>
+        <defs>
+          <linearGradient id="ogFill" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor={accentC} stopOpacity="0.15" />
+            <stop offset="100%" stopColor={accentC} stopOpacity="0" />
+          </linearGradient>
+        </defs>
+        <path d={`${path} L ${w} ${h} L 0 ${h} Z`} fill="url(#ogFill)" />
+        <path d={path} fill="none" stroke={accentC} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ strokeDasharray: 500, strokeDashoffset: setupProgress < 60 ? 500 - (setupProgress / 60) * 500 : 0, transition: "stroke-dashoffset 0.8s ease" }} />
+        {setupProgress >= 80 && <circle cx={w} cy={h - (78 / 80) * h} r="4" fill={accentC} style={{ animation: "pulse 2s infinite" }} />}
+      </svg>
+    );
+  };
 
   return (
     <div style={{ position: "fixed", inset: 0, zIndex: 10001, background: "rgba(0,0,0,0.7)", backdropFilter: "blur(12px)", display: "flex", alignItems: "center", justifyContent: "center", animation: "fadeIn 0.2s" }}>
-      <div style={{ width: 520, background: c?.surface || "#111318", border: `1px solid ${c?.border || "#1e2230"}`, borderRadius: 20, boxShadow: "0 24px 80px rgba(0,0,0,0.5)", padding: "36px 40px", animation: "cmdIn 0.25s cubic-bezier(0.22,1,0.36,1)" }}>
-        {/* Step progress bar with labels */}
+      <div style={{ width: 560, maxWidth: "95vw", maxHeight: "92vh", overflow: "auto", background: surfC, border: `1px solid ${bdrC}`, borderRadius: 20, boxShadow: "0 24px 80px rgba(0,0,0,0.5)", padding: "36px 40px", animation: "cmdIn 0.25s cubic-bezier(0.22,1,0.36,1)", position: "relative" }}>
+        {/* Gradient accent edge */}
+        <div style={{ position: "absolute", top: 0, left: "10%", right: "10%", height: 2, background: `linear-gradient(90deg, transparent, ${accentC}40, ${greenC}20, transparent)`, borderRadius: "0 0 2px 2px" }} />
+
+        {/* Step progress */}
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 28, position: "relative" }}>
-          {/* Connecting line */}
           <div style={{ position: "absolute", top: 14, left: "16.5%", right: "16.5%", height: 2, background: c?.borderSub || "#1e2230", zIndex: 0 }} />
-          <div style={{ position: "absolute", top: 14, left: "16.5%", height: 2, background: `linear-gradient(90deg, ${c?.accent || "#60a5fa"}, ${c?.green || "#34d399"})`, zIndex: 1, transition: "width 0.4s cubic-bezier(0.22,1,0.36,1)", width: step === 0 ? "0%" : step === 1 ? "50%" : "67%" }} />
+          <div style={{ position: "absolute", top: 14, left: "16.5%", height: 2, background: `linear-gradient(90deg, ${accentC}, ${greenC})`, zIndex: 1, transition: "width 0.4s cubic-bezier(0.22,1,0.36,1)", width: step === 0 ? "0%" : step === 1 ? "50%" : "67%" }} />
           {steps.map((s, i) => (
             <div key={i} style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 6, zIndex: 2, flex: 1 }}>
               <div style={{
                 width: 28, height: 28, borderRadius: 10, display: "flex", alignItems: "center", justifyContent: "center",
                 fontSize: 11, fontWeight: 800, transition: "all 0.3s cubic-bezier(0.22,1,0.36,1)",
-                background: i < step ? `linear-gradient(135deg, ${c?.green || "#34d399"}, ${c?.accent || "#60a5fa"})` : i === step ? (c?.accent || "#60a5fa") : (c?.bg2 || "#1e2230"),
-                color: i <= step ? "#fff" : (c?.textFaint || "#3d4558"),
+                background: i < step ? `linear-gradient(135deg, ${greenC}, ${accentC})` : i === step ? accentC : (c?.bg2 || "#1e2230"),
+                color: i <= step ? "#fff" : faintC,
                 border: `2px solid ${i <= step ? "transparent" : (c?.borderSub || "#1e2230")}`,
-                boxShadow: i === step ? `0 0 12px ${(c?.accent || "#60a5fa")}30` : "none",
+                boxShadow: i === step ? `0 0 12px ${accentC}30` : "none",
               }}>
                 {i < step ? <Check size={14} strokeWidth={3} /> : i + 1}
               </div>
-              <div style={{ fontSize: 9, fontWeight: 700, color: i <= step ? (c?.text || "#f0f2f5") : (c?.textFaint || "#3d4558"), textTransform: "uppercase", letterSpacing: "0.06em", textAlign: "center" }}>
-                {i === 0 ? "Setup" : i === 1 ? "Connect" : "Ready"}
+              <div style={{ fontSize: 9, fontWeight: 700, color: i <= step ? txtC : faintC, textTransform: "uppercase", letterSpacing: "0.06em" }}>
+                {["Setup", "Connect", "Ready"][i]}
               </div>
             </div>
           ))}
         </div>
 
-        {/* Pending plan indicator */}
+        {/* Pending plan */}
         {planStatus?.startsWith("pending:") && (
-          <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 16, padding: "8px 14px", borderRadius: 8, background: `${c?.accent || "#60a5fa"}08`, border: `1px solid ${c?.accent || "#60a5fa"}15`, fontSize: 10 }}>
-            <span style={{ width: 6, height: 6, borderRadius: "50%", background: c?.green || "#34d399", animation: "pulse 2s infinite" }} />
-            <span style={{ color: c?.textDim || "#8b92a5" }}>Plan:</span>
-            <span style={{ fontWeight: 700, color: c?.accent || "#60a5fa" }}>{planStatus.replace("pending:", "")} — activating</span>
+          <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 16, padding: "8px 14px", borderRadius: 8, background: `${accentC}08`, border: `1px solid ${accentC}15`, fontSize: 10 }}>
+            <span style={{ width: 6, height: 6, borderRadius: "50%", background: greenC, animation: "pulse 2s infinite" }} />
+            <span style={{ color: dimC }}>Plan:</span>
+            <span style={{ fontWeight: 700, color: accentC }}>{planStatus.replace("pending:", "")} — activating</span>
           </div>
         )}
 
+        {/* Header */}
         <div style={{ textAlign: "center", marginBottom: 24 }}>
-          <div style={{ fontSize: 22, fontWeight: 800, letterSpacing: "-0.03em", color: c?.text || "#f0f2f5", marginBottom: 6 }}>
+          <div style={{ fontSize: 22, fontWeight: 800, letterSpacing: "-0.03em", color: txtC, marginBottom: 6 }}>
             {step === 2 ? `Welcome aboard${userName && userName !== "Guest" ? `, ${userName.split(" ")[0]}` : ""}!` : steps[step].title}
           </div>
-          <div style={{ fontSize: 13, color: c?.textDim || "#8b92a5" }}>{steps[step].sub}</div>
-          {steps[step].time && <div style={{ fontSize: 10, color: c?.textFaint || "#3d4558", marginTop: 4 }}>{steps[step].time}</div>}
+          <div style={{ fontSize: 13, color: dimC }}>{steps[step].sub}</div>
         </div>
 
+        {/* ═══ STEP 1: Organization Setup ═══ */}
         {step === 0 && (
-          <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-            <input value={org.name} onChange={e => setOrg(p => ({ ...p, name: e.target.value }))} placeholder="Company name" style={inputStyle} />
+          <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+            <div style={{ position: "relative" }}>
+              <input value={org.name} onChange={e => setOrg(p => ({ ...p, name: e.target.value }))} placeholder="Company name"
+                style={{ width: "100%", fontSize: 14, padding: "13px 16px 13px 42px", borderRadius: 12, border: `1px solid ${bdrC}`, background: bgC, color: txtC, fontFamily: "inherit", outline: "none", transition: "border-color 0.2s", fontWeight: 600 }}
+                onFocus={e => e.target.style.borderColor = accentC} onBlur={e => e.target.style.borderColor = bdrC}
+              />
+              <span style={{ position: "absolute", left: 14, top: "50%", transform: "translateY(-50%)", fontSize: 16 }}>🏢</span>
+            </div>
+            {/* Live preview card */}
+            {org.name && (
+              <div style={{ padding: "12px 16px", borderRadius: 10, background: `${accentC}06`, border: `1px solid ${accentC}12`, display: "flex", alignItems: "center", gap: 10, animation: "fadeSlideUp 0.2s cubic-bezier(0.22,1,0.36,1)" }}>
+                <div style={{ width: 32, height: 32, borderRadius: 8, background: `linear-gradient(135deg, ${accentC}, ${c?.purple || "#a78bfa"})`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 13, fontWeight: 800, color: "#fff" }}>
+                  {org.name.split(" ").map(w => w[0]).join("").slice(0, 2).toUpperCase()}
+                </div>
+                <div>
+                  <div style={{ fontSize: 13, fontWeight: 700, color: txtC }}>{org.name}</div>
+                  <div style={{ fontSize: 10, color: faintC }}>Your workspace URL: {org.name.toLowerCase().replace(/[^a-z0-9]/g, "-").slice(0, 20)}.finance-os.app</div>
+                </div>
+              </div>
+            )}
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
-              <select value={org.industry} onChange={e => setOrg(p => ({ ...p, industry: e.target.value }))} style={{ ...inputStyle, cursor: "pointer" }}>
+              <select value={org.industry} onChange={e => setOrg(p => ({ ...p, industry: e.target.value }))} style={{ width: "100%", fontSize: 12, padding: "11px 14px", borderRadius: 10, border: `1px solid ${bdrC}`, background: bgC, color: org.industry ? txtC : faintC, fontFamily: "inherit", outline: "none", cursor: "pointer" }}>
                 <option value="">Industry</option>
                 {["SaaS / Software", "Financial Services", "E-commerce", "Healthcare", "Manufacturing", "Professional Services", "Other"].map(i => <option key={i} value={i}>{i}</option>)}
               </select>
-              <select value={org.currency} onChange={e => setOrg(p => ({ ...p, currency: e.target.value }))} style={{ ...inputStyle, cursor: "pointer" }}>
+              <select value={org.currency} onChange={e => setOrg(p => ({ ...p, currency: e.target.value }))} style={{ width: "100%", fontSize: 12, padding: "11px 14px", borderRadius: 10, border: `1px solid ${bdrC}`, background: bgC, color: txtC, fontFamily: "inherit", outline: "none", cursor: "pointer" }}>
                 {["USD", "EUR", "GBP", "CAD", "AUD", "JPY"].map(cur => <option key={cur} value={cur}>{cur}</option>)}
               </select>
             </div>
-            <select value={org.fy} onChange={e => setOrg(p => ({ ...p, fy: e.target.value }))} style={{ ...inputStyle, cursor: "pointer" }}>
+            <select value={org.fy} onChange={e => setOrg(p => ({ ...p, fy: e.target.value }))} style={{ width: "100%", fontSize: 12, padding: "11px 14px", borderRadius: 10, border: `1px solid ${bdrC}`, background: bgC, color: txtC, fontFamily: "inherit", outline: "none", cursor: "pointer" }}>
               {["January", "February", "March", "April", "June", "July", "September", "October", "December"].map(m => <option key={m} value={m}>Fiscal year ends {m}</option>)}
             </select>
           </div>
         )}
 
+        {/* ═══ STEP 2: Connect Data Sources ═══ */}
         {step === 1 && (
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
-            {erps.map(e => (
-              <button key={e} onClick={() => setOrg(p => ({ ...p, erp: e }))} style={{
-                padding: "14px 16px", borderRadius: 10, border: `1px solid ${org.erp === e ? (c?.accent || "#60a5fa") : (c?.border || "#1e2230")}`,
-                background: org.erp === e ? (c?.accentDim || "rgba(96,165,250,0.08)") : "transparent",
-                color: org.erp === e ? (c?.accent || "#60a5fa") : (c?.textSec || "#9ea5b8"),
-                fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: "inherit", transition: "all 0.15s",
-                textAlign: "left",
-              }}>{e}</button>
-            ))}
+          <div>
+            {/* Category labels */}
+            <div style={{ display: "flex", gap: 6, marginBottom: 14, flexWrap: "wrap" }}>
+              {["All", "ERP", "CRM", "Billing", "Banking", "Data"].map(cat => (
+                <span key={cat} style={{ fontSize: 9, fontWeight: 700, padding: "4px 10px", borderRadius: 6, background: bgC, border: `1px solid ${bdrC}`, color: dimC, letterSpacing: "0.04em" }}>{cat}</span>
+              ))}
+            </div>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
+              {connectors.map(co => {
+                const isConnected = connected.includes(co.id);
+                const isConnecting = connecting === co.id;
+                return (
+                  <div key={co.id} onClick={() => !isConnected && !isConnecting && handleConnect(co.id)} style={{
+                    padding: "16px 16px", borderRadius: 14, cursor: isConnected ? "default" : "pointer",
+                    border: `1px solid ${isConnected ? `${greenC}30` : isConnecting ? `${co.color}40` : bdrC}`,
+                    background: isConnected ? `${greenC}06` : isConnecting ? `${co.color}06` : "transparent",
+                    transition: "all 0.25s cubic-bezier(0.22,1,0.36,1)", position: "relative", overflow: "hidden",
+                  }}
+                  onMouseEnter={e => { if (!isConnected && !isConnecting) { e.currentTarget.style.borderColor = `${co.color}50`; e.currentTarget.style.transform = "translateY(-2px)"; e.currentTarget.style.boxShadow = `0 6px 20px ${co.color}10`; }}}
+                  onMouseLeave={e => { if (!isConnected && !isConnecting) { e.currentTarget.style.borderColor = bdrC; e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = "none"; }}}
+                  >
+                    {/* Syncing progress bar */}
+                    {isConnecting && <div style={{ position: "absolute", bottom: 0, left: 0, height: 2, background: `linear-gradient(90deg, ${co.color}, ${co.color}80)`, animation: "shrink 1.8s linear reverse", borderRadius: 1 }} />}
+                    <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 6 }}>
+                      <div style={{ width: 32, height: 32, borderRadius: 8, background: `${co.color}15`, border: `1px solid ${co.color}20`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 13, fontWeight: 800, color: co.color, flexShrink: 0 }}>
+                        {co.icon}
+                      </div>
+                      <div style={{ flex: 1 }}>
+                        <div style={{ fontSize: 13, fontWeight: 700, color: txtC, display: "flex", alignItems: "center", gap: 6 }}>
+                          {co.name}
+                          {isConnected && <span style={{ fontSize: 7, fontWeight: 800, padding: "2px 5px", borderRadius: 3, background: `${greenC}15`, color: greenC }}>SYNCED</span>}
+                        </div>
+                        <div style={{ fontSize: 9, color: faintC }}>{co.cat}</div>
+                      </div>
+                    </div>
+                    <div style={{ fontSize: 10, color: isConnecting ? co.color : dimC, fontWeight: isConnecting ? 600 : 400, lineHeight: 1.4 }}>
+                      {isConnecting ? "Connecting..." : isConnected ? "✓ Connected · Real-time sync" : co.desc}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+            <div style={{ textAlign: "center", marginTop: 14 }}>
+              <span style={{ fontSize: 10, color: faintC }}>
+                {connected.length > 0 ? `${connected.length} source${connected.length > 1 ? "s" : ""} connected · ` : ""}
+                Skip to use sample data — connect live sources anytime
+              </span>
+            </div>
           </div>
         )}
 
+        {/* ═══ STEP 3: Ready — Dynamic Preview ═══ */}
         {step === 2 && (
-          <div style={{ display: "flex", flexDirection: "column", gap: 14, alignItems: "center", padding: "8px 0" }}>
-            <div style={{ width: 56, height: 56, borderRadius: 16, background: `linear-gradient(135deg, ${c?.green || "#34d399"}, ${c?.accent || "#60a5fa"})`, display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 4, boxShadow: `0 8px 24px ${(c?.green || "#34d399")}25` }}>
-              <Check size={28} color="#fff" strokeWidth={3} />
-            </div>
-            <div style={{ background: c?.surfaceAlt || "#0b0c10", borderRadius: 10, padding: "14px 20px", fontSize: 12, color: c?.textDim || "#8b92a5", textAlign: "center", lineHeight: 1.7, width: "100%" }}>
-              {org.name && <div style={{ display: "flex", justifyContent: "space-between", padding: "4px 0" }}><span>Organization</span><strong style={{ color: c?.text || "#f0f2f5" }}>{org.name}</strong></div>}
-              {org.industry && <div style={{ display: "flex", justifyContent: "space-between", padding: "4px 0" }}><span>Industry</span><strong style={{ color: c?.text || "#f0f2f5" }}>{org.industry}</strong></div>}
-              {org.erp && org.erp !== "Skip for now" && <div style={{ display: "flex", justifyContent: "space-between", padding: "4px 0" }}><span>Data source</span><strong style={{ color: c?.text || "#f0f2f5" }}>{org.erp}</strong></div>}
-              <div style={{ display: "flex", justifyContent: "space-between", padding: "4px 0" }}><span>FY End</span><strong style={{ color: c?.text || "#f0f2f5" }}>{org.fy}</strong></div>
-              <div style={{ display: "flex", justifyContent: "space-between", padding: "4px 0" }}><span>Currency</span><strong style={{ color: c?.text || "#f0f2f5" }}>{org.currency}</strong></div>
-            </div>
-            <div style={{ fontSize: 10, color: c?.textFaint || "#3d4558", textAlign: "center" }}>Dashboard loaded with sample data. Connect live data anytime from Integrations.</div>
+          <div style={{ display: "flex", flexDirection: "column", gap: 16, alignItems: "center" }}>
+            {/* Animated setup progress */}
+            {setupProgress < 100 ? (
+              <div style={{ width: "100%", textAlign: "center" }}>
+                <div style={{ width: 48, height: 48, borderRadius: 14, background: `linear-gradient(135deg, ${accentC}15, ${c?.purple || "#a78bfa"}08)`, border: `1px solid ${accentC}15`, display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 12px", animation: "pulse 1.5s infinite" }}>
+                  <Cpu size={22} color={accentC} />
+                </div>
+                <div style={{ fontSize: 12, color: accentC, fontWeight: 600, marginBottom: 10 }}>{currentMsg}</div>
+                <div style={{ height: 4, background: c?.bg2 || "#1e2230", borderRadius: 2, overflow: "hidden", marginBottom: 4 }}>
+                  <div style={{ width: `${setupProgress}%`, height: "100%", background: `linear-gradient(90deg, ${accentC}, ${greenC})`, borderRadius: 2, transition: "width 0.5s cubic-bezier(0.22,1,0.36,1)" }} />
+                </div>
+                <div style={{ fontSize: 9, color: faintC, fontFamily: "'JetBrains Mono', monospace" }}>{setupProgress}%</div>
+              </div>
+            ) : (
+              <>
+                <div style={{ width: 52, height: 52, borderRadius: 14, background: `linear-gradient(135deg, ${greenC}, ${accentC})`, display: "flex", alignItems: "center", justifyContent: "center", boxShadow: `0 8px 24px ${greenC}25`, animation: "fadeSlideUp 0.3s cubic-bezier(0.22,1,0.36,1)" }}>
+                  <Check size={26} color="#fff" strokeWidth={3} />
+                </div>
+                {/* Dashboard preview card */}
+                <div style={{ width: "100%", background: bgC, borderRadius: 14, padding: "18px 20px", border: `1px solid ${bdrC}`, animation: "fadeSlideUp 0.4s cubic-bezier(0.22,1,0.36,1) 0.15s both" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
+                    <span style={{ fontSize: 11, fontWeight: 800, color: txtC }}>Revenue Preview</span>
+                    <span style={{ fontSize: 8, fontWeight: 800, padding: "2px 6px", borderRadius: 3, background: `${greenC}15`, color: greenC, display: "flex", alignItems: "center", gap: 3 }}>
+                      <span style={{ width: 4, height: 4, borderRadius: "50%", background: greenC, animation: "pulse 2s infinite" }} />LIVE
+                    </span>
+                  </div>
+                  <MiniChart />
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8, marginTop: 10 }}>
+                    {[{ label: "ARR", value: "$48.6M", color: accentC }, { label: "NDR", value: "118%", color: greenC }, { label: "Rule of 40", value: "52.1", color: c?.purple || "#a78bfa" }].map(k => (
+                      <div key={k.label} style={{ padding: "8px 10px", borderRadius: 8, background: `${k.color}06`, border: `1px solid ${k.color}10`, textAlign: "center" }}>
+                        <div style={{ fontSize: 8, fontWeight: 700, color: faintC, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 3 }}>{k.label}</div>
+                        <div style={{ fontSize: 15, fontWeight: 800, color: k.color, fontFamily: "'JetBrains Mono', monospace" }}>{k.value}</div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                {/* Org summary */}
+                <div style={{ width: "100%", fontSize: 11, color: dimC, display: "flex", flexWrap: "wrap", gap: 8, justifyContent: "center", animation: "fadeSlideUp 0.4s cubic-bezier(0.22,1,0.36,1) 0.3s both" }}>
+                  {org.name && <span style={{ padding: "4px 10px", borderRadius: 6, background: bgC, border: `1px solid ${bdrC}` }}>🏢 {org.name}</span>}
+                  {org.industry && <span style={{ padding: "4px 10px", borderRadius: 6, background: bgC, border: `1px solid ${bdrC}` }}>{org.industry}</span>}
+                  {connected.length > 0 && <span style={{ padding: "4px 10px", borderRadius: 6, background: `${greenC}06`, border: `1px solid ${greenC}15`, color: greenC }}>🔗 {connected.length} connected</span>}
+                  <span style={{ padding: "4px 10px", borderRadius: 6, background: bgC, border: `1px solid ${bdrC}` }}>{org.currency} · FY {org.fy}</span>
+                </div>
+              </>
+            )}
           </div>
         )}
 
+        {/* Navigation */}
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 28 }}>
           {step > 0 ? (
-            <button onClick={() => setStep(s => s - 1)} style={{ fontSize: 12, color: c?.textDim || "#8b92a5", background: "none", border: "none", cursor: "pointer", fontFamily: "inherit", fontWeight: 600 }}>← Back</button>
-          ) : <div />}
-          <button onClick={() => { if (step < 2) setStep(s => s + 1); else onComplete(org); }} style={{
-            fontSize: 13, padding: "12px 28px", borderRadius: 10, border: "none", fontWeight: 700, cursor: "pointer", fontFamily: "inherit",
-            background: step === 2 ? `linear-gradient(135deg, ${c?.green || "#34d399"}, ${c?.accent || "#60a5fa"})` : (c?.accent || "#60a5fa"), color: "#fff",
-            boxShadow: `0 4px 16px ${(c?.accent || "#60a5fa")}25`,
-          }}>{step === 2 ? "Go to Dashboard →" : "Continue →"}</button>
+            <button onClick={() => setStep(s => s - 1)} style={{ fontSize: 12, color: dimC, background: "none", border: "none", cursor: "pointer", fontFamily: "inherit", fontWeight: 600, padding: "8px 12px", borderRadius: 8, transition: "color 0.15s" }}
+              onMouseEnter={e => e.currentTarget.style.color = txtC}
+              onMouseLeave={e => e.currentTarget.style.color = dimC}
+            >← Back</button>
+          ) : (
+            <button onClick={() => onComplete(org)} style={{ fontSize: 11, color: faintC, background: "none", border: "none", cursor: "pointer", fontFamily: "inherit" }}>Skip setup</button>
+          )}
+          <button onClick={() => { if (step < 2) setStep(s => s + 1); else if (setupProgress >= 100) onComplete(org); }}
+            disabled={step === 2 && setupProgress < 100}
+            style={{
+              fontSize: 13, padding: "12px 28px", borderRadius: 10, border: "none", fontWeight: 700, fontFamily: "inherit",
+              cursor: step === 2 && setupProgress < 100 ? "wait" : "pointer",
+              background: step === 2 && setupProgress >= 100 ? `linear-gradient(135deg, ${greenC}, ${accentC})` : accentC,
+              color: "#fff", boxShadow: `0 4px 16px ${accentC}25`,
+              opacity: step === 2 && setupProgress < 100 ? 0.6 : 1,
+              transition: "all 0.25s cubic-bezier(0.22,1,0.36,1)",
+            }}
+            onMouseEnter={e => { if (!(step === 2 && setupProgress < 100)) { e.currentTarget.style.transform = "translateY(-2px)"; e.currentTarget.style.boxShadow = `0 8px 24px ${accentC}35`; }}}
+            onMouseLeave={e => { e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = `0 4px 16px ${accentC}25`; }}
+          >{step === 2 ? (setupProgress < 100 ? "Setting up..." : "Go to Dashboard →") : step === 1 ? (connected.length > 0 ? `Continue with ${connected.length} source${connected.length > 1 ? "s" : ""} →` : "Continue with sample data →") : "Continue →"}</button>
         </div>
       </div>
     </div>
