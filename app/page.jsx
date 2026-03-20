@@ -5110,6 +5110,15 @@ function FinanceOSApp() {
     return () => { clearInterval(interval); mql?.removeEventListener?.("change", handler); };
   }, [autoTheme, getAutoMode]);
 
+  // Scroll-to-top FAB visibility
+  useEffect(() => {
+    const el = document.querySelector("[data-content-area]");
+    if (!el) return;
+    const onScroll = () => setShowScrollTop(el.scrollTop > 400);
+    el.addEventListener("scroll", onScroll, { passive: true });
+    return () => el.removeEventListener("scroll", onScroll);
+  }, [view]);
+
   const toggleMode = useCallback(() => {
     setAutoTheme(false);
     setMode(prev => {
@@ -5637,6 +5646,22 @@ function FinanceOSApp() {
       </div>
 
       {/* ── OVERLAYS ── */}
+      {/* Scroll-to-top FAB */}
+      {showScrollTop && loggedIn && (
+        <div onClick={() => document.querySelector("[data-content-area]")?.scrollTo({ top: 0, behavior: "smooth" })} style={{
+          position: "fixed", bottom: 28, right: 28, width: 40, height: 40, borderRadius: 12,
+          background: `${c.accent}dd`, backdropFilter: "blur(8px)", border: `1px solid ${c.accent}40`,
+          display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer",
+          boxShadow: `0 6px 24px ${c.accent}25`, zIndex: 100, transition: "all 0.25s cubic-bezier(0.22,1,0.36,1)",
+          animation: "fadeSlideUp 0.2s cubic-bezier(0.22,1,0.36,1)",
+        }}
+        onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-3px)"; e.currentTarget.style.boxShadow = `0 10px 32px ${c.accent}35`; }}
+        onMouseLeave={e => { e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = `0 6px 24px ${c.accent}25`; }}
+        title="Scroll to top"
+        >
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 12V4M4 7l4-4 4 4" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
+        </div>
+      )}
       {drawerKpi && <DetailDrawer kpi={drawerKpi} c={c} onClose={() => setDrawerKpi(null)} />}
       {cmdOpen && <CommandPalette c={c} onSelect={handleCmd} onClose={() => setCmdOpen(false)} />}
       {shortcutsOpen && (
