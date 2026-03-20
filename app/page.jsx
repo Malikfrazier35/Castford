@@ -3813,10 +3813,53 @@ const SettingsView = ({ c, onLogout, toast, mode }) => {
             <LogOut size={13} /> Sign Out of This Device
           </button>
         </div>
+        {/* Data Privacy & Rights — GDPR/CCPA */}
+        <div style={{ background: c.glass, backdropFilter: c.glassBlur, WebkitBackdropFilter: c.glassBlur, border: `1px solid ${c.glassBorder}`, borderRadius: 16, padding: "22px 24px", boxShadow: c.cardGlow }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6 }}>
+            <Shield size={16} color={c.accent} />
+            <div style={{ fontSize: 14, fontWeight: 700, color: c.text }}>Data Privacy & Rights</div>
+          </div>
+          <div style={{ fontSize: 12, color: c.textDim, lineHeight: 1.7, marginBottom: 16 }}>You have full control over your data. Export, review, or request deletion at any time under GDPR and CCPA.</div>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 14 }}>
+            <button onClick={async () => {
+              toast("Preparing your data export...", "info");
+              try {
+                const { data: { session } } = await supabase.auth.getSession();
+                if (!session?.access_token) { toast("Please sign in to export data", "warning"); return; }
+                const res = await fetch(`${SUPABASE_URL}/functions/v1/data-rights`, {
+                  method: "POST", headers: { "Content-Type": "application/json", "Authorization": `Bearer ${session.access_token}`, "apikey": SUPABASE_KEY },
+                  body: JSON.stringify({ action: "export" }),
+                });
+                if (res.ok) {
+                  const data = await res.json();
+                  const blob = new Blob([JSON.stringify(data.data, null, 2)], { type: "application/json" });
+                  const url = URL.createObjectURL(blob);
+                  const a = document.createElement("a"); a.href = url; a.download = `financeos-data-export-${new Date().toISOString().split("T")[0]}.json`; a.click();
+                  URL.revokeObjectURL(url);
+                  toast("Data export downloaded successfully", "success");
+                } else { toast("Export failed — try again", "warning"); }
+              } catch { toast("Export failed", "warning"); }
+            }} style={{ fontSize: 11, padding: "10px 16px", borderRadius: 8, border: `1px solid ${c.accent}30`, background: `${c.accent}08`, color: c.accent, cursor: "pointer", fontFamily: "inherit", fontWeight: 700, display: "flex", alignItems: "center", justifyContent: "center", gap: 6 }}>
+              <Globe size={13} /> Export My Data
+            </button>
+            <button onClick={() => window.location.href = "/privacy"} style={{ fontSize: 11, padding: "10px 16px", borderRadius: 8, border: `1px solid ${c.border}`, background: "transparent", color: c.textSec, cursor: "pointer", fontFamily: "inherit", fontWeight: 600, display: "flex", alignItems: "center", justifyContent: "center", gap: 6 }}>
+              <Eye size={13} /> View Privacy Policy
+            </button>
+          </div>
+          <div style={{ fontSize: 10, color: c.textFaint, lineHeight: 1.6, padding: "10px 14px", background: c.surfaceAlt, borderRadius: 8, border: `1px solid ${c.borderSub}` }}>
+            <div style={{ fontWeight: 700, color: c.textDim, marginBottom: 4 }}>Your rights include:</div>
+            <div>Access — Download all data we hold about you in JSON format</div>
+            <div>Portability — Machine-readable export (GDPR Article 20)</div>
+            <div>Deletion — Request complete erasure (GDPR Article 17 / CCPA §1798.105)</div>
+            <div>Rectification — Correct inaccurate data via Settings above</div>
+            <div style={{ marginTop: 6 }}>Contact <span style={{ color: c.accent }}>privacy@finance-os.app</span> for formal data subject requests.</div>
+          </div>
+        </div>
+
         {/* Delete Account */}
         <div style={{ background: c.surface, border: `1px solid ${c.red}30`, borderRadius: 16, padding: "22px 24px", boxShadow: c.cardGlow }}>
-          <div style={{ fontSize: 14, fontWeight: 700, color: c.red, marginBottom: 6 }}>Delete Account</div>
-          <div style={{ fontSize: 12, color: c.textDim, lineHeight: 1.7, marginBottom: 14 }}>Permanently delete your organization, all users, financial data, integrations, and AI conversation history. This action is irreversible and takes effect within 24 hours.</div>
+          <div style={{ fontSize: 14, fontWeight: 700, color: c.red, marginBottom: 6 }}>Delete Account & Data</div>
+          <div style={{ fontSize: 12, color: c.textDim, lineHeight: 1.7, marginBottom: 14 }}>Permanently delete your organization, all users, financial data, integrations, and AI conversation history. This complies with GDPR Article 17 (Right to Erasure). This action is irreversible and takes effect immediately.</div>
           {!deleteConfirm ? (
             <button onClick={() => setDeleteConfirm(true)} style={{ fontSize: 11, padding: "9px 18px", borderRadius: 8, border: `1px solid ${c.red}40`, background: c.redDim, color: c.red, cursor: "pointer", fontFamily: "inherit", fontWeight: 700 }}>Delete Account</button>
           ) : (
@@ -3829,16 +3872,19 @@ const SettingsView = ({ c, onLogout, toast, mode }) => {
               <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
                 <button disabled={deleteText !== "DELETE ACME SAAS CORP"} onClick={async () => {
                   try {
-                    const { data: { user } } = await supabase.auth.getUser();
-                    if (user) {
-                      // Delete user profile (cascades via FK if configured, or manual)
-                      await supabase.from("users").delete().eq("id", user.id);
-                      // Sign out
-                      await supabase.auth.signOut();
+                    const { data: { session } } = await supabase.auth.getSession();
+                    if (session?.access_token) {
+                      const res = await fetch(`${SUPABASE_URL}/functions/v1/data-rights`, {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json", "Authorization": `Bearer ${session.access_token}`, "apikey": SUPABASE_KEY },
+                        body: JSON.stringify({ action: "delete", reason: "User requested account deletion via Settings" }),
+                      });
+                      if (!res.ok) { toast("Deletion failed — contact support@finance-os.app", "warning"); return; }
                     }
-                  } catch (err) { console.error("Delete failed"); }
+                    await supabase.auth.signOut();
+                  } catch { toast("Deletion failed — contact support@finance-os.app", "warning"); }
                   setDeleteConfirm(false); setDeleteText(""); 
-                  toast("Account deleted. You have been signed out.", "warning");
+                  toast("Account and all data permanently deleted.", "warning");
                   if (typeof onLogout === "function") onLogout();
                 }} style={{ fontSize: 11, padding: "9px 18px", borderRadius: 8, border: "none", background: deleteText === "DELETE ACME SAAS CORP" ? c.red : c.textFaint, color: "#fff", cursor: deleteText === "DELETE ACME SAAS CORP" ? "pointer" : "not-allowed", fontFamily: "inherit", fontWeight: 700, opacity: deleteText === "DELETE ACME SAAS CORP" ? 1 : 0.4 }}>Permanently Delete</button>
                 <button onClick={() => { setDeleteConfirm(false); setDeleteText(""); }} style={{ fontSize: 11, padding: "9px 18px", borderRadius: 8, border: `1px solid ${c.border}`, background: "transparent", color: c.textSec, cursor: "pointer", fontFamily: "inherit", fontWeight: 600 }}>Cancel</button>
@@ -5529,8 +5575,20 @@ function FinanceOSApp() {
             if (data.org?.name) {
               setUser(prev => ({ ...prev, orgName: data.org.name }));
             }
-          } else {
-            console.warn("verify-session returned", res.status);
+          } else if (res.status === 429) {
+            // Rate limited — back off and retry once after delay
+            const retryAfter = parseInt(res.headers.get("Retry-After") || "30", 10);
+            setTimeout(async () => {
+              try {
+                const { data: { session: retrySession } } = await supabase.auth.getSession();
+                if (retrySession?.access_token) {
+                  await fetch(`${SUPABASE_URL}/functions/v1/verify-session`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json", "Authorization": `Bearer ${retrySession.access_token}`, "apikey": SUPABASE_KEY },
+                  });
+                }
+              } catch {}
+            }, retryAfter * 1000);
           }
         } catch (e) { console.warn("verify-session failed"); }
       } catch {}
