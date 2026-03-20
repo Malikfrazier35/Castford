@@ -29,16 +29,13 @@ export default function TermsPage() {
         <div style={h3}>3.1 Plans</div>
         <p style={p}>We offer the following subscription tiers: Starter ($599/month or $499/month billed annually), Growth ($1,799/month or $1,499/month billed annually), Business ($4,799/month or $3,999/month billed annually), and Enterprise (custom pricing). Pricing is subject to change with 30 days' written notice.</p>
 
-        <div style={h3}>3.2 Free Trial</div>
-        <p style={p}>New accounts receive a 14-day free trial with full access to Service features. No credit card is required during the trial period. At the end of the trial, you must select a paid plan to continue using the Service.</p>
+        <div style={h3}>3.2 Money-Back Guarantee</div>
+        <p style={p}>All paid plans include a 30-day money-back guarantee from the date of first payment. If you are unsatisfied for any reason, contact us within 30 days for a full refund. This guarantee applies to first-time subscribers only. Annual plans receive a full refund of the first payment; monthly plans receive a full refund of the most recent charge.</p>
 
-        <div style={h3}>3.3 Money-Back Guarantee</div>
-        <p style={p}>All paid plans include a 14-day money-back guarantee from the date of first payment. If you are unsatisfied for any reason, contact us within 14 days for a full refund. This guarantee applies to first-time subscribers only and covers the first billing cycle. Annual plans receive a full refund; monthly plans receive a full refund of the most recent charge.</p>
-
-        <div style={h3}>3.4 Billing & Renewal</div>
+        <div style={h3}>3.3 Billing & Renewal</div>
         <p style={p}>Subscriptions automatically renew at the end of each billing period (monthly or annual) unless cancelled. Payments are processed through Stripe, Inc. You authorize us to charge your payment method on file for recurring subscription fees. All fees are exclusive of taxes, which you are responsible for paying.</p>
 
-        <div style={h3}>3.5 Cancellation</div>
+        <div style={h3}>3.4 Cancellation</div>
         <p style={p}>You may cancel your subscription at any time through the Settings page or by contacting support. Cancellation takes effect at the end of the current billing period. No partial refunds are issued for unused time outside the money-back guarantee period.</p>
 
         <div style={h2}>4. Customer Data</div>

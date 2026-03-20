@@ -5,8 +5,8 @@ import { LayoutDashboard, TrendingUp, MessageSquare, FileText, Layers, GitBranch
 import { createClient } from "@supabase/supabase-js";
 
 // ── SUPABASE CLIENT ──────────────────────────────────────────
-const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL || "https://crecesswagluelvkesul.supabase.co";
-const SUPABASE_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNyZWNlc3N3YWdsdWVsdmtlc3VsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM4MTI5NzYsImV4cCI6MjA4OTM4ODk3Nn0.IGEEYDStt-eH9Mf2G_DzqCPfruDjN8m_ORtAcmtSAZg";
+const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const SUPABASE_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY, {
   auth: {
     detectSessionInUrl: true,
@@ -116,15 +116,15 @@ class AppErrorBoundary extends Component {
   constructor(props) { super(props); this.state = { hasError: false, error: null }; }
   static getDerivedStateFromError(error) { return { hasError: true, error }; }
   componentDidCatch(error, errorInfo) {
-    // Log to console + audit (in production: send to Sentry/LogRocket)
-    console.error("[FinanceOS] Unhandled error:", error, errorInfo);
+    console.error("[FinanceOS] Unhandled error:", error?.message);
     try {
-      // Fire-and-forget error report to Supabase audit log
-      fetch(`${process.env.NEXT_PUBLIC_SUPABASE_URL || "https://crecesswagluelvkesul.supabase.co"}/rest/v1/audit_log`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json", "apikey": process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNyZWNlc3N3YWdsdWVsdmtlc3VsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM4MTI5NzYsImV4cCI6MjA4OTM4ODk3Nn0.IGEEYDStt-eH9Mf2G_DzqCPfruDjN8m_ORtAcmtSAZg", "Prefer": "return=minimal" },
-        body: JSON.stringify({ action: "client.error", resource_type: "app", metadata: { message: error?.message, stack: error?.stack?.slice(0, 500), component: errorInfo?.componentStack?.slice(0, 300) } }),
-      }).catch(() => {});
+      // Fire-and-forget error report via Supabase client (no raw REST/keys)
+      if (typeof supabase !== "undefined") {
+        supabase.from("audit_log").insert({
+          action: "client.error", resource_type: "app",
+          metadata: { message: error?.message, stack: error?.stack?.slice(0, 500) },
+        }).then(() => {}).catch(() => {});
+      }
     } catch {}
   }
   render() {
@@ -3572,7 +3572,7 @@ const SettingsView = ({ c, onLogout, toast, mode }) => {
                       // Sign out
                       await supabase.auth.signOut();
                     }
-                  } catch (err) { console.error("Delete error:", err); }
+                  } catch (err) { console.error("Delete failed"); }
                   setDeleteConfirm(false); setDeleteText(""); 
                   toast("Account deleted. You have been signed out.", "warning");
                   if (typeof onLogout === "function") onLogout();
@@ -3751,10 +3751,10 @@ const AuthModal = ({ mode: initialMode, onClose, onAuth }) => {
           </button>
           <FosLogo size={36} />
           <div style={{ fontSize: 22, fontWeight: 700, letterSpacing: "-0.02em", marginBottom: 4, marginTop: 14 }}>
-            {authMode === "login" ? "Welcome back" : authMode === "signup" ? "Start your free trial" : "Request a demo"}
+            {authMode === "login" ? "Welcome back" : authMode === "signup" ? "Get started" : "Request a demo"}
           </div>
           <div style={{ fontSize: 13, color: "#8b92a5", lineHeight: 1.5 }}>
-            {authMode === "login" ? "Sign in to your FinanceOS workspace" : authMode === "signup" ? "14 days free · No credit card · Cancel anytime" : "Our team will prepare a personalized walkthrough"}
+            {authMode === "login" ? "Sign in to your FinanceOS workspace" : authMode === "signup" ? "Subscribe today · 30-day money-back guarantee" : "Our team will prepare a personalized walkthrough"}
           </div>
         </div>
 
@@ -3850,7 +3850,7 @@ const AuthModal = ({ mode: initialMode, onClose, onAuth }) => {
             </>) : authMode === "signup" ? (<>
               Already have an account? <span style={{ cursor: "pointer", color: "#60a5fa", fontWeight: 600 }} onClick={() => { setAuthMode("login"); setError(null); }}>Sign in</span>
             </>) : (<>
-              Want to explore first? <span style={{ cursor: "pointer", color: "#60a5fa", fontWeight: 600 }} onClick={() => { setAuthMode("signup"); setError(null); }}>Start free trial</span>
+              Want to explore first? <span style={{ cursor: "pointer", color: "#60a5fa", fontWeight: 600 }} onClick={() => { setAuthMode("signup"); setError(null); }}>Get started</span>
             </>)}
           </div>
 
@@ -3877,7 +3877,7 @@ const AuthModal = ({ mode: initialMode, onClose, onAuth }) => {
               </span>
             ))}
           </div>
-          <div style={{ textAlign: "center", marginTop: 8, fontSize: 9, color: "#3d4558" }}>Trusted by 2,400+ finance teams · No credit card required</div>
+          <div style={{ textAlign: "center", marginTop: 8, fontSize: 9, color: "#3d4558" }}>Trusted by 2,400+ finance teams · 30-day money-back guarantee</div>
         </div>
       </div>
     </div>
@@ -4238,7 +4238,7 @@ const PlanPicker = ({ c, userName, onSkip, onSelect, isDemo }) => {
           <div style={{ fontSize: 24, fontWeight: 800, letterSpacing: "-0.02em", marginBottom: 6, color: t.tx }}>
             {userName && userName !== "Guest" ? `Welcome, ${userName.split(" ")[0]}!` : "Choose your plan"}
           </div>
-          <div style={{ fontSize: 13, color: t.txD, marginBottom: 16 }}>All plans include a 14-day free trial. Upgrade, downgrade, or cancel anytime.</div>
+          <div style={{ fontSize: 13, color: t.txD, marginBottom: 16 }}>All plans include a 30-day money-back guarantee. Upgrade, downgrade, or cancel anytime.</div>
           <div style={{ display: "inline-flex", background: t.bg2, borderRadius: 10, padding: 3, border: `1px solid ${t.bdr}` }}>
             <button onClick={() => setBilling("monthly")} style={{ fontSize: 12, padding: "8px 20px", borderRadius: 8, border: "none", background: billing === "monthly" ? t.bdr : "transparent", color: billing === "monthly" ? t.tx : t.txD, cursor: "pointer", fontFamily: "inherit", fontWeight: 600, transition: "all 0.15s" }}>Monthly</button>
             <button onClick={() => setBilling("annual")} style={{ fontSize: 12, padding: "8px 20px", borderRadius: 8, border: "none", background: billing === "annual" ? t.bdr : "transparent", color: billing === "annual" ? t.tx : t.txD, cursor: "pointer", fontFamily: "inherit", fontWeight: 600, transition: "all 0.15s", position: "relative" }}>
@@ -4552,7 +4552,7 @@ const LandingPage = ({ onLogin }) => {
           <button onClick={() => setAuthModal("signup")} style={{ fontSize: 13, padding: "9px 20px", borderRadius: 8, border: "none", background: "linear-gradient(135deg, #60a5fa, #a78bfa)", color: "#fff", cursor: "pointer", fontFamily: "inherit", fontWeight: 700, boxShadow: "0 4px 16px rgba(96,165,250,0.2)", transition: "all 0.15s" }}
             onMouseEnter={e => e.currentTarget.style.boxShadow = "0 6px 24px rgba(96,165,250,0.3)"}
             onMouseLeave={e => e.currentTarget.style.boxShadow = "0 4px 16px rgba(96,165,250,0.2)"}
-          >Start Free Trial</button>
+          >Get Started</button>
         </div>
         ) : (
         <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
@@ -4583,7 +4583,7 @@ const LandingPage = ({ onLogin }) => {
           />
           <button onClick={handleHeroSignup} style={{ fontSize: 14, padding: "14px 24px", borderRadius: isMobile ? 10 : "0 10px 10px 0", border: "none", background: "linear-gradient(135deg, #60a5fa, #a78bfa)", color: "#fff", cursor: "pointer", fontFamily: "inherit", fontWeight: 700, whiteSpace: "nowrap", boxShadow: "0 8px 30px rgba(96,165,250,0.25)" }}>Get Started Free</button>
         </div>
-        <div style={{ fontSize: 11, color: "#3d4558", marginTop: 8, textAlign: "center" }}>Using a work email helps find teammates · No credit card required</div>
+        <div style={{ fontSize: 11, color: "#3d4558", marginTop: 8, textAlign: "center" }}>Using a work email helps find teammates · 30-day money-back guarantee</div>
         <div style={{ display: "flex", gap: 12, justifyContent: "center", marginTop: 16 }}>
           <button onClick={enterDemo} style={{ fontSize: 13, padding: "10px 20px", borderRadius: 8, border: "1px solid #1e2230", background: "transparent", color: "#9ea5b8", cursor: "pointer", fontFamily: "inherit", fontWeight: 600, transition: "all 0.15s" }}
             onMouseEnter={e => { e.currentTarget.style.borderColor = "#3d4558"; e.currentTarget.style.color = "#f0f2f5"; }}
@@ -4692,8 +4692,8 @@ const LandingPage = ({ onLogin }) => {
           ))}
         </div>
         <div style={{ textAlign: "center", marginTop: 32 }}>
-          <button onClick={enterDemo} style={{ fontSize: 15, padding: "14px 32px", borderRadius: 10, border: "none", background: "linear-gradient(135deg, #60a5fa, #a78bfa)", color: "#fff", cursor: "pointer", fontFamily: "inherit", fontWeight: 700, boxShadow: "0 8px 30px rgba(96,165,250,0.25)" }}>Start Your Free Trial</button>
-          <div style={{ marginTop: 10, fontSize: 12, color: "#3d4558" }}>No credit card required · 30-day money-back guarantee</div>
+          <button onClick={enterDemo} style={{ fontSize: 15, padding: "14px 32px", borderRadius: 10, border: "none", background: "linear-gradient(135deg, #60a5fa, #a78bfa)", color: "#fff", cursor: "pointer", fontFamily: "inherit", fontWeight: 700, boxShadow: "0 8px 30px rgba(96,165,250,0.25)" }}>Get Started — 30-Day MBG</button>
+          <div style={{ marginTop: 10, fontSize: 12, color: "#3d4558" }}>30-day money-back guarantee · Cancel anytime</div>
         </div>
       </div>
 
@@ -4875,10 +4875,10 @@ const LandingPage = ({ onLogin }) => {
           { q: "How does the AI Copilot work?", a: "Our AI reads your full financial model — actuals, budgets, forecasts, and benchmarks. Ask any question in plain English and get a sourced, reasoned answer. Unlike other tools, we show our work so you can verify every insight. Powered by Claude with your API key stored server-side." },
           { q: "What integrations do you support?", a: "30+ native integrations including NetSuite, Salesforce, Stripe, Snowflake, Rippling, QuickBooks, Xero, Plaid, and more. Bi-directional sync with < 5 minute latency. We're one of the only FP&A platforms with native banking data via Plaid." },
           { q: "Is my data secure?", a: "SOC 2 Type II compliant, AES-256 encryption at rest and in transit, row-level security in Supabase, HSTS + Content Security Policy headers, and zero cross-tenant data leakage. Your data never leaves your tenant." },
-          { q: "What does FinanceOS cost?", a: "Starter: $499/mo (annual). Growth: $1,499/mo. Business: $3,999/mo. Enterprise: custom pricing. All plans include a 14-day free trial — no credit card required. 14-day money-back guarantee after purchase." },
+          { q: "What does FinanceOS cost?", a: "Starter: $499/mo (annual). Growth: $1,499/mo. Business: $3,999/mo. Enterprise: custom pricing. All plans include a 30-day money-back guarantee — subscribe risk-free." },
           { q: "Can I migrate from Pigment, Anaplan, or Adaptive?", a: "Yes. We provide a guided migration path with a dedicated onboarding specialist. Most migrations complete in 2-3 weeks with full historical data preservation." },
           { q: "What makes FinanceOS different from Runway?", a: "Runway is strong for early-stage startups. FinanceOS serves mid-market teams that need multi-entity consolidation, intercompany elimination, and board-ready reporting. We also have published transparent pricing — Runway does not." },
-          { q: "Do you offer a free trial?", a: "Yes — 14 days free, no credit card required. After the trial, all your data is preserved when you choose a plan. We also offer a 14-day money-back guarantee after purchase." },
+          { q: "Do you offer a money-back guarantee?", a: "Yes — all plans include a 30-day money-back guarantee. Subscribe, connect your data, and if you're not satisfied within 30 days, contact us for a full refund. No questions asked." },
           { q: "Do you offer custom pricing for large teams?", a: "Yes. Teams with 50+ users or special compliance requirements can contact us for custom enterprise pricing with dedicated SLA, CSM, and on-premises deployment options." },
         ].map((faq, i) => (
           <details key={i} style={{ borderBottom: "1px solid #1e2230", cursor: "pointer" }}>
@@ -5221,7 +5221,7 @@ function FinanceOSApp() {
           } else {
             console.warn("verify-session returned", res.status);
           }
-        } catch (e) { console.warn("verify-session:", e); }
+        } catch (e) { console.warn("verify-session failed"); }
       } catch {}
     };
 
@@ -5679,7 +5679,7 @@ function FinanceOSApp() {
             </div>
             <div style={{ flex: 1 }}>
               <div style={{ fontSize: 12, fontWeight: 600, color: c.text }}>{user.name || "Guest"}</div>
-              <div style={{ fontSize: 9, color: c.textDim, fontWeight: 500 }}>{user.plan ? `${user.plan} Plan` : "Free Trial"} · Online</div>
+              <div style={{ fontSize: 9, color: c.textDim, fontWeight: 500 }}>{user.plan ? `${user.plan} Plan` : "Starter"} · Online</div>
             </div>
             <Settings size={13} color={c.textFaint} />
           </div>
@@ -5926,7 +5926,7 @@ function FinanceOSApp() {
               }),
             });
           }
-        } catch (err) { console.error("Onboarding error:", err); }
+        } catch (err) { console.error("Onboarding failed"); }
         setUser(prev => ({ ...prev, plan: planName }));
         setShowOnboarding(false);
         toast(`Welcome to FinanceOS${org.name ? ` — ${org.name}` : ""}`, "success");

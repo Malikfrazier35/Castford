@@ -28,8 +28,7 @@ FinanceOS is a cloud-native FP&A platform that replaces legacy tools like Anapla
 - Growth: $1,799/month ($1,499/month billed annually) — up to 25 users
 - Business: $4,799/month ($3,999/month billed annually) — up to 100 users
 - Enterprise: Custom pricing — unlimited users, dedicated CSM, SLA, on-premises option
-- Free trial: 14 days, no credit card required
-- Money-back guarantee: 14 days after purchase
+- Money-back guarantee: 30 days, full refund, no questions asked
 
 ## How FinanceOS Compares to Competitors
 | Capability | FinanceOS | Anaplan | Pigment | Runway |
