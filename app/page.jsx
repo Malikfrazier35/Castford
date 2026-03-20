@@ -4163,20 +4163,44 @@ const AuthModal = ({ mode: initialMode, onClose, onAuth }) => {
 // ── PLAN PICKER — shows Stripe checkout links after signup ───
 const PRICING_PLANS = [
   { name: "Starter", monthly: 599, annual: 499, seats: 5, entities: 3,
-    desc: "3 entities · 5 users · P&L + Forecast",
+    desc: "Core FP&A for growing teams",
     features: ["3 entities", "5 users", "P&L + Forecast", "5 connectors", "Email support"],
+    usage: [
+      { label: "AI Copilot queries", included: 100, overage: "$0.50/query" },
+      { label: "Connector syncs", included: 500, overage: "$0.02/sync" },
+      { label: "Report exports", included: 50, overage: "$0.25/export" },
+      { label: "Scenario runs", included: 10, overage: "$1.00/run" },
+    ],
     monthlyLink: "https://buy.stripe.com/eVqaEX2GH18e0VcbIVdwc0o", annualLink: "https://buy.stripe.com/bJe4gza995ougUa28ldwc0p" },
   { name: "Growth", monthly: 1799, annual: 1499, seats: 25, entities: 10, popular: true,
-    desc: "10 entities · 25 users · AI Copilot · Consolidation",
+    desc: "Full-stack FP&A with AI + consolidation",
     features: ["10 entities", "25 users", "AI Copilot", "Consolidation", "Unlimited connectors", "Priority support"],
+    usage: [
+      { label: "AI Copilot queries", included: 1000, overage: "$0.30/query" },
+      { label: "Connector syncs", included: 5000, overage: "$0.01/sync" },
+      { label: "Report exports", included: 500, overage: "$0.15/export" },
+      { label: "Scenario runs", included: 100, overage: "$0.75/run" },
+      { label: "API calls", included: 5000, overage: "$0.01/call" },
+    ],
     monthlyLink: "https://buy.stripe.com/bJe7sL1CDcQWeM200ddwc0q", annualLink: "https://buy.stripe.com/cNieVd0yz8AG47obIVdwc0r" },
   { name: "Business", monthly: 4799, annual: 3999, seats: 999, entities: 999,
-    desc: "Unlimited · Custom ML · SSO + RBAC · Dedicated CSM",
+    desc: "Enterprise FP&A · unlimited scale",
     features: ["Unlimited entities", "Unlimited users", "Custom ML models", "SSO + RBAC", "Dedicated CSM", "SLA guarantee", "API access"],
+    usage: [
+      { label: "AI Copilot queries", included: 10000, overage: "$0.15/query" },
+      { label: "Connector syncs", included: -1, overage: "Unlimited" },
+      { label: "Report exports", included: -1, overage: "Unlimited" },
+      { label: "Scenario runs", included: 1000, overage: "$0.50/run" },
+      { label: "API calls", included: -1, overage: "Unlimited" },
+    ],
     monthlyLink: "https://buy.stripe.com/7sY8wPbdd04a8nE9ANdwc0s", annualLink: "https://buy.stripe.com/dRmaEX811dV0eM23cpdwc0t" },
   { name: "Enterprise", monthly: null, annual: null, seats: 999, entities: 999, enterprise: true,
-    desc: "Custom deployment · SOX compliance · On-prem option",
-    features: ["Everything in Business", "SOX-compliant audit trails", "On-premises deployment", "Custom integrations", "Dedicated success team", "Volume discounts", "White-glove onboarding"] },
+    desc: "Custom deployment · SOX compliance · On-prem",
+    features: ["Everything in Business", "SOX-compliant audit trails", "On-premises deployment", "Custom integrations", "Dedicated success team", "Volume discounts", "White-glove onboarding"],
+    usage: [
+      { label: "All meters", included: -1, overage: "Unlimited" },
+      { label: "Committed spend discounts", included: -1, overage: "Custom" },
+    ] },
 ];
 
 // ── ONBOARDING WIZARD ────────────────────────────────────────
@@ -4593,6 +4617,49 @@ const PlanPicker = ({ c, userName, onSkip, onSelect, isDemo, isAuthenticated }) 
                 onMouseEnter={e => { if (!p.popular && checkoutLoading !== p.name) e.currentTarget.style.background = t.bdrBright; }}
                 onMouseLeave={e => { if (!p.popular && checkoutLoading !== p.name) e.currentTarget.style.background = t.bdr; }}
                 >{checkoutLoading === p.name ? "Saving..." : p.enterprise ? "Contact Sales" : `Subscribe — ${p.name}`}</button>
+                {/* Platform features */}
+                <div style={{ marginTop: 14, paddingTop: 12, borderTop: `1px solid ${t.bdrSub}` }}>
+                  <div style={{ fontSize: 8, fontWeight: 700, color: t.txF, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 6 }}>Platform</div>
+                  {p.features.map(f => (
+                    <div key={f} style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 10, color: t.txS, padding: "2px 0" }}>
+                      <span style={{ color: t.gn, fontSize: 10 }}>✓</span> {f}
+                    </div>
+                  ))}
+                </div>
+                {/* Usage-based consumption tiers */}
+                {p.usage && (
+                  <div style={{ marginTop: 10, paddingTop: 10, borderTop: `1px solid ${t.bdrSub}` }}>
+                    <div style={{ fontSize: 8, fontWeight: 700, color: t.txF, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 8, display: "flex", alignItems: "center", gap: 4 }}>
+                      Consumption Included <span style={{ fontSize: 7, padding: "1px 5px", borderRadius: 3, background: `${t.ac}12`, color: t.ac, fontWeight: 800 }}>PAY-PER-USE</span>
+                    </div>
+                    {p.usage.map(u => {
+                      const unlimited = u.included === -1;
+                      const maxRef = p.name === "Starter" ? 1000 : p.name === "Growth" ? 5000 : 10000;
+                      const pct = unlimited ? 100 : Math.min((u.included / maxRef) * 100, 100);
+                      return (
+                      <div key={u.label} style={{ marginBottom: 6 }}>
+                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: 10, marginBottom: 2 }}>
+                          <span style={{ color: t.txD, fontWeight: 500 }}>{u.label}</span>
+                          <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 10, fontWeight: 700, color: unlimited ? t.gn : t.tx }}>
+                            {unlimited ? "Unlimited" : u.included.toLocaleString()}
+                          </span>
+                        </div>
+                        <div style={{ height: 3, background: `${t.bdr}`, borderRadius: 2, overflow: "hidden" }}>
+                          <div style={{ width: `${pct}%`, height: "100%", borderRadius: 2, background: unlimited ? `linear-gradient(90deg, ${t.gn}, ${t.gn}88)` : p.popular ? `linear-gradient(90deg, ${t.ac}, ${t.pu})` : `linear-gradient(90deg, ${t.ac}bb, ${t.ac}66)`, transition: "width 0.6s cubic-bezier(0.22,1,0.36,1)" }} />
+                        </div>
+                        {!unlimited && u.overage && (
+                          <div style={{ fontSize: 8, color: t.txF, marginTop: 1 }}>then {u.overage}</div>
+                        )}
+                      </div>
+                      );
+                    })}
+                    {p.enterprise && (
+                      <div style={{ fontSize: 9, color: t.txD, marginTop: 4, padding: "4px 8px", borderRadius: 4, background: `${t.gn}06`, border: `1px solid ${t.gn}10` }}>
+                        Committed spend discounts available
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
               );
             })}
@@ -5084,8 +5151,8 @@ const LandingPage = ({ onLogin }) => {
       <div id="pricing" style={{ padding: isMobile ? "40px 20px 60px" : "80px 48px 80px", maxWidth: 1100, margin: "0 auto" }}>
         <div style={{ textAlign: "center", marginBottom: 48 }}>
           <div style={{ display: "inline-block", padding: "6px 14px", borderRadius: 20, background: "rgba(96,165,250,0.06)", border: "1px solid rgba(96,165,250,0.12)", fontSize: 10, fontWeight: 700, color: "#60a5fa", marginBottom: 16, letterSpacing: "0.06em", textTransform: "uppercase" }}>Pricing</div>
-          <h2 style={{ fontSize: 36, fontWeight: 800, letterSpacing: "-0.03em", marginBottom: 12 }}>Simple, transparent pricing</h2>
-          <p style={{ fontSize: 15, color: "#8b92a5", marginBottom: 24 }}>No hidden fees. No implementation charges. Cancel anytime.</p>
+          <h2 style={{ fontSize: 36, fontWeight: 800, letterSpacing: "-0.03em", marginBottom: 12 }}>Base + consumption pricing</h2>
+          <p style={{ fontSize: 15, color: "#8b92a5", marginBottom: 24 }}>Predictable base fee. Pay-per-use overages only when you exceed included limits.</p>
           <div style={{ display: "inline-flex", background: "#111318", borderRadius: 10, padding: 3, border: "1px solid #1e2230" }}>
             <button onClick={() => setBilling("monthly")} style={{ fontSize: 12, padding: "8px 18px", borderRadius: 8, border: "none", background: billing === "monthly" ? "#1e2230" : "transparent", color: billing === "monthly" ? "#f0f2f5" : "#8b92a5", cursor: "pointer", fontFamily: "inherit", fontWeight: 600, transition: "all 0.15s" }}>Monthly</button>
             <button onClick={() => setBilling("annual")} style={{ fontSize: 12, padding: "8px 18px", borderRadius: 8, border: "none", background: billing === "annual" ? "#1e2230" : "transparent", color: billing === "annual" ? "#f0f2f5" : "#8b92a5", cursor: "pointer", fontFamily: "inherit", fontWeight: 600, transition: "all 0.15s" }}>Annual <span style={{ fontSize: 9, fontWeight: 800, padding: "2px 6px", borderRadius: 4, background: "rgba(52,211,153,0.10)", color: "#34d399", marginLeft: 4 }}>-17%</span></button>
@@ -5111,13 +5178,47 @@ const LandingPage = ({ onLogin }) => {
               {!p.enterprise && billing === "annual" && p.monthly && p.annual && <div style={{ fontSize: 11, color: "#34d399", fontWeight: 600, marginBottom: 14 }}>Save ${((p.monthly - p.annual) * 12).toLocaleString()}/year</div>}
               {!p.enterprise && billing === "monthly" && <div style={{ height: 20 }} />}
               {p.enterprise && <div style={{ fontSize: 11, color: "#8b92a5", marginBottom: 14 }}>Tailored to your requirements</div>}
-              <div style={{ display: "flex", flexDirection: "column", gap: 10, marginBottom: 22 }}>
+              <div style={{ display: "flex", flexDirection: "column", gap: 8, marginBottom: 16 }}>
+                <div style={{ fontSize: 8, fontWeight: 700, color: "#636d84", textTransform: "uppercase", letterSpacing: "0.08em" }}>Platform</div>
                 {p.features.map(f => (
-                  <div key={f} style={{ fontSize: 13, color: "#9ea5b8", display: "flex", alignItems: "center", gap: 8 }}>
-                    <Check size={14} color="#34d399" strokeWidth={2.5} /> {f}
+                  <div key={f} style={{ fontSize: 12, color: "#9ea5b8", display: "flex", alignItems: "center", gap: 8 }}>
+                    <Check size={13} color="#34d399" strokeWidth={2.5} /> {f}
                   </div>
                 ))}
               </div>
+              {p.usage && (
+                <div style={{ paddingTop: 12, borderTop: "1px solid #1e2230", marginBottom: 16 }}>
+                  <div style={{ fontSize: 8, fontWeight: 700, color: "#636d84", textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 8, display: "flex", alignItems: "center", gap: 4 }}>
+                    Consumption Included <span style={{ fontSize: 7, padding: "1px 5px", borderRadius: 3, background: "rgba(96,165,250,0.08)", color: "#60a5fa", fontWeight: 800 }}>PAY-PER-USE</span>
+                  </div>
+                  {p.usage.map(u => {
+                    const unlimited = u.included === -1;
+                    const maxRef = p.name === "Starter" ? 1000 : p.name === "Growth" ? 5000 : 10000;
+                    const pct = unlimited ? 100 : Math.min((u.included / maxRef) * 100, 100);
+                    return (
+                    <div key={u.label} style={{ marginBottom: 5 }}>
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: 11, marginBottom: 2 }}>
+                        <span style={{ color: "#8b92a5" }}>{u.label}</span>
+                        <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 10, fontWeight: 700, color: unlimited ? "#34d399" : "#f0f2f5" }}>
+                          {unlimited ? "Unlimited" : u.included.toLocaleString()}
+                        </span>
+                      </div>
+                      <div style={{ height: 3, background: "#1e2230", borderRadius: 2, overflow: "hidden" }}>
+                        <div style={{ width: `${pct}%`, height: "100%", borderRadius: 2, background: unlimited ? "linear-gradient(90deg, #34d399, #34d39988)" : p.popular ? "linear-gradient(90deg, #60a5fa, #a78bfa)" : "linear-gradient(90deg, #60a5fabb, #60a5fa66)", transition: "width 0.6s cubic-bezier(0.22,1,0.36,1)" }} />
+                      </div>
+                      {!unlimited && u.overage && (
+                        <div style={{ fontSize: 8, color: "#3d4558", marginTop: 1 }}>then {u.overage}</div>
+                      )}
+                    </div>
+                    );
+                  })}
+                  {p.enterprise && (
+                    <div style={{ fontSize: 9, color: "#8b92a5", marginTop: 4, padding: "4px 8px", borderRadius: 4, background: "rgba(52,211,153,0.04)", border: "1px solid rgba(52,211,153,0.08)" }}>
+                      Committed spend discounts available
+                    </div>
+                  )}
+                </div>
+              )}
               {p.enterprise ? (
                 <button onClick={() => { window.open("mailto:sales@finance-os.app?subject=Enterprise%20Pricing%20Inquiry", "_blank"); }} style={{
                   width: "100%", fontSize: 12, padding: "12px 0", borderRadius: 10, border: "1px solid #1e2230", cursor: "pointer", fontFamily: "inherit", fontWeight: 700,
