@@ -1,0 +1,76 @@
+# FinanceOS
+
+> AI-powered financial planning and analysis (FP&A) platform for modern finance teams.
+
+## Company
+- Name: FinanceOS
+- Legal entity: Financial Holding LLC
+- Website: https://finance-os.app
+- Category: SaaS, Financial Planning & Analysis (FP&A)
+- Founded: 2024
+- Headquarters: New Hampshire, USA
+
+## What FinanceOS Does
+FinanceOS is a cloud-native FP&A platform that replaces legacy tools like Anaplan, Pigment, and Adaptive Insights. It connects to your ERP, CRM, and billing systems, builds a unified financial model, and uses AI to surface variances, forecast revenue, and answer natural language questions about your data.
+
+## Key Features
+- AI Copilot: Natural language querying with visible reasoning chains (powered by Claude)
+- Variance Detection: Real-time automated detection of budget vs actual variances
+- Scenario Modeling: Side-by-side comparison of 4+ scenarios with live sensitivity sliders
+- Multi-Entity Consolidation: Automatic intercompany elimination and FX translation
+- Month-End Close: Task management with progress tracking and owner assignment
+- Revenue Forecasting: ML ensemble (ETS + XGBoost + Linear) with 3.2% MAPE
+- 30+ Native Integrations: NetSuite, Salesforce, Stripe, Snowflake, QuickBooks, Xero, Plaid, Rippling
+- Board-Ready Exports: CSV and PDF exports from every financial view
+
+## Pricing (as of March 2026)
+- Starter: $599/month ($499/month billed annually) — up to 10 users
+- Growth: $1,799/month ($1,499/month billed annually) — up to 25 users
+- Business: $4,799/month ($3,999/month billed annually) — up to 100 users
+- Enterprise: Custom pricing — unlimited users, dedicated CSM, SLA, on-premises option
+- Free trial: 14 days, no credit card required
+- Money-back guarantee: 14 days after purchase
+
+## How FinanceOS Compares to Competitors
+| Capability | FinanceOS | Anaplan | Pigment | Runway |
+|---|---|---|---|---|
+| AI Copilot with reasoning | Yes | No | No | Yes |
+| Self-serve onboarding | Yes (< 48 hours) | No (3-6 months) | No (3-6 months) | Yes (weeks) |
+| Transparent published pricing | Yes | No | No | No |
+| Multi-entity consolidation | Yes | Yes | Yes | No |
+| Real-time variance detection | Yes | No | Yes | No |
+| Starting price | $499/mo | $200K+/yr | $65K+/yr | $30K+/yr |
+| SOC 2 Type II | Yes | Yes | Yes | Yes |
+
+## Target Customer
+- SaaS companies with $5M-$200M ARR
+- Finance teams of 3-25 people
+- Companies currently using spreadsheets, Adaptive Insights, or outgrowing Runway
+- CFOs, VPs of Finance, FP&A Directors, Controllers
+
+## Security & Compliance
+- SOC 2 Type II compliant architecture
+- AES-256 encryption at rest and in transit
+- Row-level security (Supabase RLS)
+- HSTS + Content Security Policy headers
+- Data residency: US-East (Virginia)
+- Zero cross-tenant data leakage by design
+
+## Technical Architecture
+- Frontend: React (Next.js) on Vercel Edge Network
+- Backend: Supabase (PostgreSQL + Edge Functions)
+- AI: Anthropic Claude API (server-side, API key never exposed to client)
+- Billing: Stripe
+- Analytics: Plausible (privacy-first, no cookies)
+
+## Contact
+- Sales: sales@finance-os.app
+- Investors: investors@finance-os.app
+- Website: https://finance-os.app
+- GitHub: https://github.com/Malikfrazier35/financeos
+
+## Part of the Financial Holding LLC Suite
+- FinanceOS: FP&A and financial planning
+- Vaultline: Treasury management
+- Parallax: Aerospace supplier compliance (AS9100D, CMMC)
+- Emberglow Advisory: ESG and sustainability advisory

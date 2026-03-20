@@ -1,3 +1,17 @@
 User-agent: *
 Allow: /
 Sitemap: https://finance-os.app/sitemap.xml
+
+# AI-readable product summary
+# See https://llmstxt.org for the specification
+User-agent: GPTBot
+Allow: /llms.txt
+
+User-agent: ChatGPT-User
+Allow: /llms.txt
+
+User-agent: Claude-Web
+Allow: /llms.txt
+
+User-agent: PerplexityBot
+Allow: /llms.txt

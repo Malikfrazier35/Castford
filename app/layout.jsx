@@ -45,6 +45,7 @@ export default function RootLayout({ children }) {
       <head>
         <link rel="manifest" href="/manifest.json" />
         <link rel="canonical" href="https://finance-os.app" />
+        <link rel="alternate" type="text/plain" href="https://finance-os.app/llms.txt" title="LLM-readable product summary" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link rel="preconnect" href="https://crecesswagluelvkesul.supabase.co" />
@@ -78,6 +79,29 @@ export default function RootLayout({ children }) {
           },
           "aggregateRating": { "@type": "AggregateRating", "ratingValue": "4.8", "ratingCount": "2400", "bestRating": "5" },
           "featureList": "AI Copilot, Variance Detection, Scenario Modeling, Multi-Entity Consolidation, Month-End Close, Revenue Forecasting, P&L Analysis, 30+ Integrations"
+        }) }} />
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          "mainEntity": [
+            { "@type": "Question", "name": "What is FinanceOS?", "acceptedAnswer": { "@type": "Answer", "text": "FinanceOS is an AI-powered financial planning and analysis (FP&A) platform. It connects to your ERP, CRM, and billing systems to provide real-time variance detection, scenario modeling, multi-entity consolidation, and natural language financial querying powered by Claude AI." }},
+            { "@type": "Question", "name": "How much does FinanceOS cost?", "acceptedAnswer": { "@type": "Answer", "text": "FinanceOS starts at $499/month (billed annually). Growth plan is $1,499/month, Business is $3,999/month, and Enterprise is custom pricing. All plans include a 14-day free trial with no credit card required." }},
+            { "@type": "Question", "name": "How does FinanceOS compare to Anaplan?", "acceptedAnswer": { "@type": "Answer", "text": "FinanceOS offers enterprise-grade features at a fraction of Anaplan's cost ($499/mo vs $200K+/yr). Key advantages: AI copilot with visible reasoning, self-serve onboarding in under 48 hours (vs 3-6 months for Anaplan), transparent pricing, and real-time variance detection." }},
+            { "@type": "Question", "name": "How does FinanceOS compare to Pigment?", "acceptedAnswer": { "@type": "Answer", "text": "FinanceOS starts at $499/mo vs Pigment's $65K+/yr entry point. Both offer multi-entity consolidation and scenario modeling. FinanceOS adds AI-powered natural language querying, banking data via Plaid, and implementation in days rather than months." }},
+            { "@type": "Question", "name": "Is FinanceOS secure?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. FinanceOS has SOC 2 Type II compliant architecture, AES-256 encryption at rest and in transit, row-level security via Supabase RLS, HSTS and Content Security Policy headers, and zero cross-tenant data leakage by design." }},
+            { "@type": "Question", "name": "How long does FinanceOS take to implement?", "acceptedAnswer": { "@type": "Answer", "text": "Most teams are live within 48 hours. Connect your ERP, map your chart of accounts, and start running reports the same day. This compares to 3-6 month implementations for Anaplan and Pigment." }},
+            { "@type": "Question", "name": "What integrations does FinanceOS support?", "acceptedAnswer": { "@type": "Answer", "text": "FinanceOS supports 30+ native integrations including NetSuite, Salesforce, Stripe, Snowflake, Rippling, QuickBooks, Xero, Plaid, and more. All integrations feature bi-directional sync with under 5 minute latency." }},
+            { "@type": "Question", "name": "Who is FinanceOS best for?", "acceptedAnswer": { "@type": "Answer", "text": "FinanceOS is designed for SaaS companies with $5M-$200M ARR and finance teams of 3-25 people. It's ideal for companies currently using spreadsheets or outgrowing Adaptive Insights, as well as teams that want enterprise-grade FP&A without 6-month implementations." }}
+          ]
+        }) }} />
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "Organization",
+          "name": "Financial Holding LLC",
+          "url": "https://finance-os.app",
+          "logo": "https://finance-os.app/favicon.svg",
+          "sameAs": ["https://linkedin.com/company/finance-os", "https://x.com/financeos_app", "https://github.com/Malikfrazier35/financeos"],
+          "contactPoint": { "@type": "ContactPoint", "email": "sales@finance-os.app", "contactType": "sales" }
         }) }} />
       </head>
       <body style={{ margin: 0, padding: 0, fontFamily: "'DM Sans', system-ui, -apple-system, sans-serif", WebkitFontSmoothing: "antialiased", MozOsxFontSmoothing: "grayscale", textRendering: "optimizeLegibility", fontFeatureSettings: '"cv01", "ss01"' }}>
