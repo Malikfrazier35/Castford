@@ -3955,7 +3955,7 @@ const AuthModal = ({ mode: initialMode, onClose, onAuth }) => {
             {authMode === "login" ? "Welcome back" : authMode === "signup" ? "Get started" : "Request a demo"}
           </div>
           <div style={{ fontSize: 13, color: "#8b92a5", lineHeight: 1.5 }}>
-            {authMode === "login" ? "Sign in to your FinanceOS workspace" : authMode === "signup" ? "Subscribe today · 30-day money-back guarantee" : "Our team will prepare a personalized walkthrough"}
+            {authMode === "login" ? "Sign in to your FinanceOS workspace" : authMode === "signup" ? "Join the waitlist · Launching soon" : "Our team will prepare a personalized walkthrough"}
           </div>
         </div>
 
@@ -4443,12 +4443,15 @@ const PlanPicker = ({ c, userName, onSkip, onSelect, isDemo, isAuthenticated }) 
           onMouseEnter={e => { e.currentTarget.style.borderColor = t.bdrBright; e.currentTarget.style.color = t.tx; }}
           onMouseLeave={e => { e.currentTarget.style.borderColor = t.bdr; e.currentTarget.style.color = t.txD; }}
           >←</button> : <div style={{ position: "absolute", top: 20, left: 20, width: 36, height: 36, borderRadius: 10, background: `${t.ac}08`, border: `1px solid ${t.ac}15`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 14 }}>🔒</div>}
-          <div style={{ display: "inline-block", padding: "4px 12px", borderRadius: 20, background: `${t.gn}10`, border: `1px solid ${t.gn}18`, fontSize: 10, fontWeight: 700, color: t.gn, marginBottom: 12, letterSpacing: "0.04em" }}>30-DAY MONEY-BACK GUARANTEE</div>
+          <div style={{ display: "flex", gap: 8, justifyContent: "center", marginBottom: 12 }}>
+            <div style={{ display: "inline-block", padding: "4px 12px", borderRadius: 20, background: `${t.gn}10`, border: `1px solid ${t.gn}18`, fontSize: 10, fontWeight: 700, color: t.gn, letterSpacing: "0.04em" }}>30-DAY MONEY-BACK GUARANTEE</div>
+            <div style={{ display: "inline-block", padding: "4px 12px", borderRadius: 20, background: `${t.ac}10`, border: `1px solid ${t.ac}18`, fontSize: 10, fontWeight: 700, color: t.ac, letterSpacing: "0.04em" }}>LAUNCHING SOON</div>
+          </div>
           <div style={{ fontSize: 24, fontWeight: 800, letterSpacing: "-0.02em", marginBottom: 6, color: t.tx }}>
             {userName && userName !== "Guest" ? `${userName.split(" ")[0]}, choose your plan` : "Choose your plan"}
           </div>
           <div style={{ fontSize: 13, color: t.txD, marginBottom: 16 }}>
-            {!canSkip ? "Select a plan to activate your workspace. 30-day money-back guarantee." : "All plans include a 30-day money-back guarantee. Upgrade, downgrade, or cancel anytime."}
+            {!canSkip ? "Select your plan to join the waitlist. You'll be first in line when we launch." : "Reserve your plan now. 30-day money-back guarantee when subscriptions go live."}
           </div>
           <div style={{ display: "inline-flex", background: t.bg2, borderRadius: 10, padding: 3, border: `1px solid ${t.bdr}` }}>
             <button onClick={() => setBilling("monthly")} style={{ fontSize: 12, padding: "8px 20px", borderRadius: 8, border: "none", background: billing === "monthly" ? t.bdr : "transparent", color: billing === "monthly" ? t.tx : t.txD, cursor: "pointer", fontFamily: "inherit", fontWeight: 600, transition: "all 0.15s" }}>Monthly</button>
@@ -4490,20 +4493,20 @@ const PlanPicker = ({ c, userName, onSkip, onSelect, isDemo, isAuthenticated }) 
                   if (p.enterprise) { window.open("mailto:sales@finance-os.app?subject=Enterprise%20Pricing%20Inquiry", "_blank"); return; }
                   setCheckoutLoading(p.name);
                   try {
+                    // Store is not yet live — add to waitlist with plan interest
                     const { data: { session: authSession } } = await supabase.auth.getSession();
-                    if (authSession?.access_token) {
-                      const res = await fetch(`${SUPABASE_URL}/functions/v1/create-checkout`, {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json", "Authorization": `Bearer ${authSession.access_token}`, "apikey": SUPABASE_KEY },
-                        body: JSON.stringify({ plan: p.name.toLowerCase(), interval: billing }),
-                      });
-                      const data = await res.json();
-                      if (data?.url) { window.location.href = data.url; setCheckoutLoading(null); return; }
+                    const email = authSession?.user?.email;
+                    if (email) {
+                      await supabase.from("waitlist").upsert({
+                        email, interest_type: "subscribe",
+                        source: "plan_picker",
+                        full_name: authSession?.user?.user_metadata?.full_name || "",
+                        company: p.name.toLowerCase(),
+                        role: `${p.name} ${billing}`,
+                      }, { onConflict: "email" });
                     }
-                    window.open(billing === "annual" ? p.annualLink : p.monthlyLink, "_blank");
                     setCheckoutPending(p.name);
                   } catch {
-                    window.open(billing === "annual" ? p.annualLink : p.monthlyLink, "_blank");
                     setCheckoutPending(p.name);
                   }
                   setCheckoutLoading(null);
@@ -4514,30 +4517,34 @@ const PlanPicker = ({ c, userName, onSkip, onSelect, isDemo, isAuthenticated }) 
                 }}
                 onMouseEnter={e => { if (!p.popular && checkoutLoading !== p.name) e.currentTarget.style.background = t.bdrBright; }}
                 onMouseLeave={e => { if (!p.popular && checkoutLoading !== p.name) e.currentTarget.style.background = t.bdr; }}
-                >{checkoutLoading === p.name ? "Redirecting..." : p.enterprise ? "Contact Sales" : `Get Started — ${p.name}`}</button>
+                >{checkoutLoading === p.name ? "Saving..." : p.enterprise ? "Contact Sales" : `Subscribe — ${p.name}`}</button>
               </div>
               );
             })}
           </div>
         </div>
 
-        {/* Checkout confirmation gate */}
+        {/* Waitlist confirmation — store launching soon */}
         {checkoutPending && !verifyingPayment && !verifyFailed && (
           <div style={{ padding: "24px 40px", textAlign: "center" }}>
-            <div style={{ background: `linear-gradient(135deg, ${t.ac}08, ${t.pu}05)`, border: `1px solid ${t.ac}20`, borderRadius: 16, padding: "32px 28px" }}>
-              <div style={{ width: 48, height: 48, borderRadius: 14, background: `linear-gradient(135deg, ${t.ac}, ${t.pu})`, display: "inline-flex", alignItems: "center", justifyContent: "center", marginBottom: 16 }}>
-                <span style={{ fontSize: 20 }}>💳</span>
+            <div style={{ background: `linear-gradient(135deg, ${t.gn}08, ${t.ac}05)`, border: `1px solid ${t.gn}20`, borderRadius: 16, padding: "32px 28px" }}>
+              <div style={{ width: 48, height: 48, borderRadius: 14, background: `linear-gradient(135deg, ${t.gn}, ${t.ac})`, display: "inline-flex", alignItems: "center", justifyContent: "center", marginBottom: 16 }}>
+                <span style={{ fontSize: 22, color: "#fff" }}>✓</span>
               </div>
-              <div style={{ fontSize: 18, fontWeight: 800, color: t.tx, marginBottom: 6 }}>Complete your {checkoutPending} checkout</div>
-              <div style={{ fontSize: 13, color: t.txD, lineHeight: 1.6, marginBottom: 20, maxWidth: 400, margin: "0 auto 20px" }}>
-                A Stripe checkout tab has opened. Complete your payment there, then return here to verify.
+              <div style={{ fontSize: 18, fontWeight: 800, color: t.tx, marginBottom: 6 }}>You're on the {checkoutPending} list</div>
+              <div style={{ fontSize: 13, color: t.txD, lineHeight: 1.6, maxWidth: 420, margin: "0 auto 20px" }}>
+                Subscriptions are launching soon. We've saved your {checkoutPending} plan preference and will notify you the moment checkout goes live.
               </div>
               <div style={{ display: "flex", gap: 10, justifyContent: "center" }}>
+                <button onClick={() => { setCheckoutPending(null); onSelect(checkoutPending); }} style={{
+                  fontSize: 14, padding: "12px 28px", borderRadius: 10, border: "none", cursor: "pointer", fontFamily: "inherit", fontWeight: 700,
+                  background: `linear-gradient(135deg, ${t.gn}, ${t.ac})`, color: "#fff", boxShadow: `0 4px 16px ${t.gn}25`,
+                }}>Continue to Dashboard →</button>
                 <button onClick={() => { setCheckoutPending(null); }} style={{
                   fontSize: 13, padding: "12px 20px", borderRadius: 10, border: `1px solid ${t.bdr}`, background: "transparent", color: t.txD, cursor: "pointer", fontFamily: "inherit", fontWeight: 600,
                 }}>Choose Different Plan</button>
               </div>
-              <div style={{ fontSize: 10, color: t.txF, marginTop: 14 }}>Your plan activates automatically when Stripe confirms payment via webhook.</div>
+              <div style={{ fontSize: 10, color: t.txF, marginTop: 14 }}>Full dashboard access with sample data now. Live billing activates at launch.</div>
             </div>
           </div>
         )}
@@ -4607,7 +4614,7 @@ const PlanPicker = ({ c, userName, onSkip, onSelect, isDemo, isAuthenticated }) 
             </button>
           ) : (
             <div style={{ fontSize: 10, color: t.txF, padding: "8px 16px", borderRadius: 8, background: `${t.ac}06`, border: `1px solid ${t.ac}10`, display: "inline-block", marginBottom: 8 }}>
-              🔒 Select a plan to activate your workspace
+              🔒 Select a plan to join the waitlist
             </div>
           )}
           <div style={{ display: "flex", justifyContent: "center", gap: 20 }}>
@@ -4770,7 +4777,7 @@ const LandingPage = ({ onLogin }) => {
           <button onClick={() => setAuthModal("signup")} style={{ fontSize: 13, padding: "9px 20px", borderRadius: 8, border: "none", background: "linear-gradient(135deg, #60a5fa, #a78bfa)", color: "#fff", cursor: "pointer", fontFamily: "inherit", fontWeight: 700, boxShadow: "0 4px 16px rgba(96,165,250,0.2)", transition: "all 0.15s" }}
             onMouseEnter={e => e.currentTarget.style.boxShadow = "0 6px 24px rgba(96,165,250,0.3)"}
             onMouseLeave={e => e.currentTarget.style.boxShadow = "0 4px 16px rgba(96,165,250,0.2)"}
-          >Get Started</button>
+          >Subscribe</button>
         </div>
         ) : (
         <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
@@ -4799,7 +4806,7 @@ const LandingPage = ({ onLogin }) => {
             onFocus={e => e.target.style.borderColor = "#60a5fa"}
             onBlur={e => e.target.style.borderColor = "#1e2230"}
           />
-          <button onClick={handleHeroSignup} style={{ fontSize: 14, padding: "14px 24px", borderRadius: isMobile ? 10 : "0 10px 10px 0", border: "none", background: "linear-gradient(135deg, #60a5fa, #a78bfa)", color: "#fff", cursor: "pointer", fontFamily: "inherit", fontWeight: 700, whiteSpace: "nowrap", boxShadow: "0 8px 30px rgba(96,165,250,0.25)" }}>Get Started Free</button>
+          <button onClick={handleHeroSignup} style={{ fontSize: 14, padding: "14px 24px", borderRadius: isMobile ? 10 : "0 10px 10px 0", border: "none", background: "linear-gradient(135deg, #60a5fa, #a78bfa)", color: "#fff", cursor: "pointer", fontFamily: "inherit", fontWeight: 700, whiteSpace: "nowrap", boxShadow: "0 8px 30px rgba(96,165,250,0.25)" }}>Subscribe Now</button>
         </div>
         <div style={{ fontSize: 11, color: "#3d4558", marginTop: 8, textAlign: "center" }}>Using a work email helps find teammates · 30-day money-back guarantee</div>
         <div style={{ display: "flex", gap: 12, justifyContent: "center", marginTop: 16 }}>
@@ -4910,7 +4917,7 @@ const LandingPage = ({ onLogin }) => {
           ))}
         </div>
         <div style={{ textAlign: "center", marginTop: 32 }}>
-          <button onClick={enterDemo} style={{ fontSize: 15, padding: "14px 32px", borderRadius: 10, border: "none", background: "linear-gradient(135deg, #60a5fa, #a78bfa)", color: "#fff", cursor: "pointer", fontFamily: "inherit", fontWeight: 700, boxShadow: "0 8px 30px rgba(96,165,250,0.25)" }}>Get Started — 30-Day MBG</button>
+          <button onClick={enterDemo} style={{ fontSize: 15, padding: "14px 32px", borderRadius: 10, border: "none", background: "linear-gradient(135deg, #60a5fa, #a78bfa)", color: "#fff", cursor: "pointer", fontFamily: "inherit", fontWeight: 700, boxShadow: "0 8px 30px rgba(96,165,250,0.25)" }}>Subscribe — 30-Day MBG</button>
           <div style={{ marginTop: 10, fontSize: 12, color: "#3d4558" }}>30-day money-back guarantee · Cancel anytime</div>
         </div>
       </div>
@@ -5170,7 +5177,7 @@ const LandingPage = ({ onLogin }) => {
             <span style={{ fontSize: 36, fontWeight: 800, fontFamily: "'JetBrains Mono', monospace" }}>$2,799</span>
             <span style={{ fontSize: 14, color: "#8b92a5" }}>/mo · Save 15%</span>
           </div>
-          <button onClick={enterDemo} style={{ fontSize: 14, padding: "12px 28px", borderRadius: 10, border: "none", background: "linear-gradient(135deg, #60a5fa, #a78bfa)", color: "#fff", cursor: "pointer", fontFamily: "inherit", fontWeight: 700, boxShadow: "0 6px 24px rgba(96,165,250,0.25)" }}>Get Started — Suite</button>
+          <button onClick={enterDemo} style={{ fontSize: 14, padding: "12px 28px", borderRadius: 10, border: "none", background: "linear-gradient(135deg, #60a5fa, #a78bfa)", color: "#fff", cursor: "pointer", fontFamily: "inherit", fontWeight: 700, boxShadow: "0 6px 24px rgba(96,165,250,0.25)" }}>Subscribe — Full Suite</button>
         </div>
       </div>
 
