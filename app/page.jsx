@@ -1999,7 +1999,25 @@ const CopilotView = ({ c, toast }) => {
 // ══════════════════════════════════════════════════════════════
 const PnlView = ({ c, onNav, toast }) => {
   const [collapsed, setCollapsed] = useState({});
+  const [sortCol, setSortCol] = useState(null); // null | "actual" | "budget" | "variance" | "pctrev"
+  const [sortDir, setSortDir] = useState("desc");
   const toggle = (section) => setCollapsed(prev => ({ ...prev, [section]: !prev[section] }));
+  const handleSort = (col) => {
+    if (sortCol === col) { setSortDir(d => d === "desc" ? "asc" : "desc"); }
+    else { setSortCol(col); setSortDir("desc"); }
+  };
+  const sortRows = (rows) => {
+    if (!sortCol) return rows;
+    return [...rows].sort((a, b) => {
+      let va, vb;
+      if (sortCol === "actual") { va = a.actual; vb = b.actual; }
+      else if (sortCol === "budget") { va = a.budget; vb = b.budget; }
+      else if (sortCol === "variance") { va = (a.actual || 0) - (a.budget || 0); vb = (b.actual || 0) - (b.budget || 0); }
+      else if (sortCol === "pctrev") { va = a.actual / 51190; vb = b.actual / 51190; }
+      else return 0;
+      return sortDir === "desc" ? (vb || 0) - (va || 0) : (va || 0) - (vb || 0);
+    });
+  };
 
   const VarCell = ({ actual, budget, revenue = false }) => {
     const v = variance(actual, budget);
@@ -2073,13 +2091,27 @@ const PnlView = ({ c, onNav, toast }) => {
         <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12 }}>
           <thead>
             <tr style={{ borderBottom: `2px solid ${c.borderBright}` }}>
-              {["Line Item", "Actual", "Budget", "Variance", "% Rev", "Notes"].map(h => (
-                <th key={h} style={{
+              {[
+                { key: null, label: "Line Item", align: "left" },
+                { key: "actual", label: "Actual", align: "right" },
+                { key: "budget", label: "Budget", align: "right" },
+                { key: "variance", label: "Variance", align: "right" },
+                { key: "pctrev", label: "% Rev", align: "right" },
+                { key: null, label: "Notes", align: "left" },
+              ].map(h => (
+                <th key={h.label} onClick={() => h.key && handleSort(h.key)} style={{
                   padding: "14px 14px", fontSize: 9, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.1em",
-                  color: c.textFaint, textAlign: h === "Line Item" || h === "Notes" ? "left" : "right",
+                  color: sortCol === h.key ? c.accent : c.textFaint, textAlign: h.align,
                   background: c.surfaceAlt, position: "sticky", top: 0, zIndex: 2,
-                  borderBottom: `2px solid ${c.borderBright}`,
-                }}>{h}</th>
+                  borderBottom: `2px solid ${sortCol === h.key ? c.accent : c.borderBright}`,
+                  cursor: h.key ? "pointer" : "default", transition: "all 0.15s", userSelect: "none",
+                }}>
+                  <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>
+                    {h.label}
+                    {sortCol === h.key && <span style={{ fontSize: 10 }}>{sortDir === "desc" ? "↓" : "↑"}</span>}
+                    {h.key && sortCol !== h.key && <span style={{ fontSize: 8, opacity: 0.3 }}>⇅</span>}
+                  </span>
+                </th>
               ))}
             </tr>
           </thead>
@@ -2098,7 +2130,7 @@ const PnlView = ({ c, onNav, toast }) => {
                     </span>
                   </td>
                 </tr>,
-                ...(!isCollapsed ? section.rows.map((row, ri) => (
+                ...(!isCollapsed ? sortRows(section.rows).map((row, ri) => (
                   <tr key={`row-${si}-${ri}`} style={{ borderBottom: `1px solid ${c.borderSub}`, background: ri % 2 === 1 ? `${c.surfaceAlt}60` : "transparent", transition: "background 0.12s" }}
                     onMouseEnter={e => e.currentTarget.style.background = c.accentMid || c.accentDim}
                     onMouseLeave={e => e.currentTarget.style.background = ri % 2 === 1 ? `${c.surfaceAlt}60` : "transparent"}
@@ -2520,10 +2552,14 @@ const CLOSE_TASKS = [
 const CloseView = ({ c, toast }) => {
   const [tasks, setTasks] = useState(CLOSE_TASKS);
 
-  const complete = (id) => {
-    const task = tasks.find(t => t.id === id);
-    setTasks(prev => prev.map(t => t.id === id ? { ...t, status: "done" } : t));
-    if (task) toast(`Completed: ${task.task}`, "success");
+  const cycleStatus = (id) => {
+    const order = ["notstarted", "progress", "done"];
+    setTasks(prev => prev.map(t => {
+      if (t.id !== id) return t;
+      const next = order[(order.indexOf(t.status) + 1) % 3];
+      toast(`${t.task.slice(0, 40)}${t.task.length > 40 ? "…" : ""} → ${statusLabel[next]}`, next === "done" ? "success" : "info");
+      return { ...t, status: next };
+    }));
   };
   const doneCount = tasks.filter(t => t.status === "done").length;
   const pct = tasks.length ? Math.round((doneCount / tasks.length) * 100) : 0;
@@ -2608,20 +2644,21 @@ const CloseView = ({ c, toast }) => {
                 <div key={t.id} style={{
                   display: "flex", alignItems: "center", gap: 12, padding: "14px 18px",
                   borderBottom: i < catTasks.length - 1 ? `1px solid ${c.borderSub}` : "none",
-                  opacity: t.status === "done" ? 0.5 : 1, cursor: t.status !== "done" ? "pointer" : "default",
-                  transition: "all 0.2s", borderLeft: `3px solid ${t.status === "done" ? c.green : priorityColors[t.priority] || c.accent}`,
+                  opacity: t.status === "done" ? 0.55 : 1, cursor: "pointer",
+                  transition: "all 0.2s", borderLeft: `3px solid ${t.status === "done" ? c.green : t.status === "progress" ? c.accent : priorityColors[t.priority] || c.textFaint}`,
                 }}
-                onClick={() => t.status !== "done" && complete(t.id)}
-                onMouseEnter={e => { if (t.status !== "done") { e.currentTarget.style.background = c.accentDim; e.currentTarget.style.transform = "translateX(2px)"; }}}
+                onClick={() => cycleStatus(t.id)}
+                onMouseEnter={e => { e.currentTarget.style.background = c.accentDim; e.currentTarget.style.transform = "translateX(2px)"; }}
                 onMouseLeave={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.transform = "none"; }}
                 >
                   <div style={{
-                    width: 22, height: 22, borderRadius: 7, border: `2px solid ${t.status === "done" ? c.green : c.border}`,
-                    background: t.status === "done" ? `linear-gradient(135deg, ${c.green}, ${c.green}cc)` : "transparent", display: "flex", alignItems: "center", justifyContent: "center",
+                    width: 22, height: 22, borderRadius: 7, border: `2px solid ${t.status === "done" ? c.green : t.status === "progress" ? c.accent : c.border}`,
+                    background: t.status === "done" ? `linear-gradient(135deg, ${c.green}, ${c.green}cc)` : t.status === "progress" ? `${c.accent}15` : "transparent", display: "flex", alignItems: "center", justifyContent: "center",
                     flexShrink: 0, transition: "all 0.3s cubic-bezier(0.22,1,0.36,1)",
-                    boxShadow: t.status === "done" ? `0 0 8px ${c.green}30` : "none",
+                    boxShadow: t.status === "done" ? `0 0 8px ${c.green}30` : t.status === "progress" ? `0 0 6px ${c.accent}20` : "none",
                   }}>
                     {t.status === "done" && <Check size={12} color="#fff" strokeWidth={3} />}
+                    {t.status === "progress" && <div style={{ width: 8, height: 8, borderRadius: "50%", background: c.accent, animation: "pulse 2s ease-in-out infinite" }} />}
                   </div>
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <div style={{ fontSize: 13, fontWeight: 600, color: c.text, textDecoration: t.status === "done" ? "line-through" : "none", marginBottom: 3 }}>{t.task}</div>
@@ -5875,6 +5912,11 @@ function FinanceOSApp() {
       if ((e.metaKey || e.ctrlKey) && e.key === "b") { e.preventDefault(); setSidebarCollapsed(prev => !prev); }
       if (e.key === "Escape") { setCmdOpen(false); setDrawerKpi(null); setNotifOpen(false); setShortcutsOpen(false); }
       if (e.key === "?" && !e.metaKey && !e.ctrlKey && document.activeElement?.tagName !== "INPUT" && document.activeElement?.tagName !== "TEXTAREA") { setShortcutsOpen(true); }
+      // ⌘1-9 view navigation
+      const viewKeys = ["dashboard", "copilot", "pnl", "forecast", "consolidation", "models", "close", "integrations", "admin"];
+      if ((e.metaKey || e.ctrlKey) && e.key >= "1" && e.key <= "9" && viewKeys[+e.key - 1]) { e.preventDefault(); navigate(viewKeys[+e.key - 1]); }
+      // ⌘E quick export
+      if ((e.metaKey || e.ctrlKey) && e.key === "e" && !e.shiftKey) { e.preventDefault(); toast("Export shortcut — use CSV/PDF buttons on current view", "info"); }
     };
     window.addEventListener("keydown", handler);
     return () => window.removeEventListener("keydown", handler);
@@ -6466,7 +6508,8 @@ function FinanceOSApp() {
               { keys: ["?"], label: "Show this help" },
               { keys: ["Esc"], label: "Close modals and drawers" },
               { keys: ["⌘", "B"], label: "Toggle sidebar" },
-              { keys: ["1-9"], label: "Navigate to view (by position)" },
+              { keys: ["⌘", "1–9"], label: "Navigate to view by position" },
+              { keys: ["⌘", "E"], label: "Export current view" },
             ].map(s => (
               <div key={s.label} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "10px 0", borderBottom: `1px solid ${c.borderSub}` }}>
                 <span style={{ fontSize: 12, color: c.textSec }}>{s.label}</span>
