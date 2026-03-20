@@ -954,7 +954,7 @@ const InsightRow = memo(({ item, c, onClick }) => {
 // ══════════════════════════════════════════════════════════════
 // DASHBOARD VIEW
 // ══════════════════════════════════════════════════════════════
-const DashboardView = ({ c, onNav, toast, onDrawer, userName }) => {
+const DashboardView = ({ c, onNav, toast, onDrawer, userName, period }) => {
   const [hiddenSeries, setHiddenSeries] = useState({});
   const toggleSeries = (key) => setHiddenSeries(prev => ({ ...prev, [key]: !prev[key] }));
   const displayName = userName && userName !== "Guest" ? userName.split(" ")[0] : null;
@@ -977,7 +977,9 @@ const DashboardView = ({ c, onNav, toast, onDrawer, userName }) => {
         <div style={{ fontSize: 10, fontWeight: 700, color: c.textFaint, textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 6 }}>
           {new Date().toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric" })}
         </div>
-        <div style={{ fontSize: 24, fontWeight: 800, color: c.text, letterSpacing: "-0.03em", lineHeight: 1.2 }}>Good {new Date().getHours() < 12 ? "morning" : new Date().getHours() < 17 ? "afternoon" : "evening"}{displayName ? `, ${displayName}` : ""}</div>
+        <div style={{ fontSize: 24, fontWeight: 800, color: c.text, letterSpacing: "-0.03em", lineHeight: 1.2 }}>Good {new Date().getHours() < 12 ? "morning" : new Date().getHours() < 17 ? "afternoon" : "evening"}{displayName ? `, ${displayName}` : ""}
+          {period && <span style={{ fontSize: 10, fontWeight: 700, padding: "3px 8px", borderRadius: 5, background: c.accentDim, color: c.accent, marginLeft: 10, verticalAlign: "middle", letterSpacing: "0.02em" }}>{period}</span>}
+        </div>
         <div style={{ fontSize: 12, color: c.textDim, marginTop: 6, display: "flex", alignItems: "center", gap: 6, flexWrap: "wrap" }}>
           <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}><span style={{ width: 6, height: 6, borderRadius: "50%", background: c.green, display: "inline-block", animation: "pulse 2s infinite" }} />Revenue ahead by $2.09M</span>
           <span style={{ color: c.textFaint }}>·</span>
@@ -1479,7 +1481,19 @@ const CopilotView = ({ c, toast }) => {
                 <Sparkles size={24} color={c.purple} />
               </div>
               <div style={{ fontSize: 16, fontWeight: 800, color: c.text, marginBottom: 6 }}>Ask me anything</div>
-              <div style={{ fontSize: 12, color: c.textDim, lineHeight: 1.6 }}>I can analyze your P&L variances, forecast revenue, compare scenarios, and surface hidden patterns in your data.</div>
+              <div style={{ fontSize: 12, color: c.textDim, lineHeight: 1.6, marginBottom: 16 }}>I can analyze your P&L variances, forecast revenue, compare scenarios, and surface hidden patterns in your data.</div>
+              <div style={{ display: "flex", flexDirection: "column", gap: 8, textAlign: "left" }}>
+                {["What drove the $2.09M revenue beat?", "Compare us to Pigment and Anaplan", "Should we raise FY guidance?", "Where are we over budget on expenses?"].map(q => (
+                  <button key={q} onClick={() => { setInput(q); }} style={{
+                    fontSize: 11, padding: "10px 14px", borderRadius: 10, border: `1px solid ${c.borderSub}`,
+                    background: c.surfaceAlt, color: c.textSec, cursor: "pointer", fontFamily: "inherit",
+                    fontWeight: 500, textAlign: "left", transition: "all 0.15s", lineHeight: 1.4,
+                  }}
+                  onMouseEnter={e => { e.currentTarget.style.borderColor = c.accent; e.currentTarget.style.color = c.text; }}
+                  onMouseLeave={e => { e.currentTarget.style.borderColor = c.borderSub; e.currentTarget.style.color = c.textSec; }}
+                  >{q}</button>
+                ))}
+              </div>
             </div>
           </div>
         )}
@@ -1606,7 +1620,7 @@ const PnlView = ({ c, onNav, toast }) => {
         onPDF={() => { window.print(); toast("Use Save as PDF in the print dialog", "info"); }}
       />
       {/* Financial Summary KPIs */}
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 12, marginBottom: 16 }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: 12, marginBottom: 16 }}>
         {[
           { label: "Total Revenue", value: fmt(PNL_DATA[0]?.total?.actual || 0), delta: fmtPct(variancePct(PNL_DATA[0]?.total?.actual || 0, PNL_DATA[0]?.total?.budget || 1)), fav: true, color: c.green },
           { label: "Gross Profit", value: fmt((PNL_DATA[0]?.total?.actual || 0) - (PNL_DATA[1]?.total?.actual || 0)), delta: `${(((PNL_DATA[0]?.total?.actual || 0) - (PNL_DATA[1]?.total?.actual || 0)) / (PNL_DATA[0]?.total?.actual || 1) * 100).toFixed(1)}% margin`, fav: true, color: c.accent },
@@ -1946,7 +1960,7 @@ const ConsolidationView = ({ c, onNav, toast }) => {
         <button onClick={() => { ENTITIES.forEach(e => { if ((entityStatus[e.name] || e.status) !== "Closed") approve(e.name); }); }} style={{ fontSize: 11, padding: "8px 16px", borderRadius: 8, border: "none", background: c.green, color: "#fff", fontWeight: 700, cursor: "pointer", fontFamily: "inherit" }}>Close All Pending</button>
       </div>
       {/* Entity cards */}
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 16, marginBottom: 20 }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: 16, marginBottom: 20 }}>
         {ENTITIES.map(e => {
           const st = entityStatus[e.name] || e.status;
           const closing = st === "closing";
@@ -5407,7 +5421,7 @@ function FinanceOSApp() {
           <div style={{ position: "fixed", bottom: "15%", right: "10%", width: "35%", height: "35%", borderRadius: "50%", background: `radial-gradient(circle, ${c.purple}05 0%, transparent 70%)`, filter: "blur(80px)", pointerEvents: "none", zIndex: 0 }} />
           <div style={{ position: "fixed", top: "50%", right: "35%", width: "25%", height: "25%", borderRadius: "50%", background: `radial-gradient(circle, ${c.green}04 0%, transparent 70%)`, filter: "blur(60px)", pointerEvents: "none", zIndex: 0 }} />
           {viewLoading ? <LoadingSkeleton c={c} /> : (<>
-          {view === "dashboard" && <SectionBoundary bg={c.surface} borderColor={c.border} textColor={c.textDim}><DashboardView c={c} onNav={navigate} toast={toast} onDrawer={setDrawerKpi} userName={user.name} /></SectionBoundary>}
+          {view === "dashboard" && <SectionBoundary bg={c.surface} borderColor={c.border} textColor={c.textDim}><DashboardView c={c} onNav={navigate} toast={toast} onDrawer={setDrawerKpi} userName={user.name} period={period} /></SectionBoundary>}
           {view === "copilot" && <SectionBoundary bg={c.surface} borderColor={c.border} textColor={c.textDim}><CopilotView c={c} toast={toast} /></SectionBoundary>}
           {view === "pnl" && <SectionBoundary bg={c.surface} borderColor={c.border} textColor={c.textDim}><PnlView c={c} onNav={navigate} toast={toast} /></SectionBoundary>}
           {view === "forecast" && <SectionBoundary bg={c.surface} borderColor={c.border} textColor={c.textDim}><ForecastView c={c} toast={toast} /></SectionBoundary>}
