@@ -4957,12 +4957,60 @@ const ProductDemo = ({ enterDemo }) => {
                       </div>
                     ))}
                   </div>
-                  <div style={{ height: 120, background: "linear-gradient(180deg, rgba(96,165,250,0.05), transparent)", borderRadius: 8, border: "1px solid #1e2230", overflow: "hidden" }}>
-                    <svg width="100%" height="100%" viewBox="0 0 400 120" preserveAspectRatio="none">
-                      <defs><linearGradient id={`dg-${active.id}`} x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor="#60a5fa" stopOpacity="0.2"/><stop offset="100%" stopColor="#60a5fa" stopOpacity="0"/></linearGradient></defs>
-                      <path d="M0,90 C40,85 80,70 120,60 C160,50 200,55 240,40 C280,25 320,30 360,20 L400,15 L400,120 L0,120 Z" fill={`url(#dg-${active.id})`}/>
-                      <path d="M0,90 C40,85 80,70 120,60 C160,50 200,55 240,40 C280,25 320,30 360,20 L400,15" fill="none" stroke="#60a5fa" strokeWidth="2"/>
-                    </svg>
+                  {/* Tab-specific mockup visual */}
+                  <div style={{ height: 120, background: "linear-gradient(180deg, rgba(96,165,250,0.05), transparent)", borderRadius: 8, border: "1px solid #1e2230", overflow: "hidden", position: "relative" }}>
+                    {active.id === "planning" && (
+                      <svg width="100%" height="100%" viewBox="0 0 400 120" preserveAspectRatio="none">
+                        <defs><linearGradient id="dg-plan" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor="#60a5fa" stopOpacity="0.15"/><stop offset="100%" stopColor="#60a5fa" stopOpacity="0"/></linearGradient></defs>
+                        <path d="M0,90 C40,85 80,70 120,60 C160,50 200,55 240,40 C280,25 320,30 360,20 L400,15 L400,120 L0,120 Z" fill="url(#dg-plan)"/>
+                        <path d="M0,90 C40,85 80,70 120,60 C160,50 200,55 240,40 C280,25 320,30 360,20 L400,15" fill="none" stroke="#60a5fa" strokeWidth="2"/>
+                        <path d="M0,95 C60,88 130,82 200,75 C270,68 340,55 400,50" fill="none" stroke="#3d4558" strokeWidth="1" strokeDasharray="4 3"/>
+                        <text x="360" y="12" fill="#34d399" fontSize="9" fontWeight="700">+4.3%</text>
+                      </svg>
+                    )}
+                    {active.id === "copilot" && (
+                      <div style={{ padding: "12px 16px", display: "flex", flexDirection: "column", gap: 6, height: "100%" }}>
+                        <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 9, color: "#a78bfa" }}><div style={{ width: 14, height: 14, borderRadius: 5, background: "#a78bfa15", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 8 }}>✦</div>FinanceOS Copilot</div>
+                        <div style={{ fontSize: 10, color: "#8b92a5", lineHeight: 1.5 }}>Revenue beat of +$2.09M is driven by enterprise outperformance. ACV expansion up 28%.</div>
+                        <div style={{ display: "flex", gap: 4, marginTop: "auto" }}>
+                          {["Enterprise +16.9%", "NDR 118%", "AI attach 34%"].map(t => <span key={t} style={{ fontSize: 7, padding: "2px 6px", borderRadius: 3, background: "#34d39910", color: "#34d399", fontWeight: 700 }}>{t}</span>)}
+                        </div>
+                      </div>
+                    )}
+                    {active.id === "consolidation" && (
+                      <div style={{ padding: "12px 16px", display: "flex", flexDirection: "column", gap: 4 }}>
+                        {[
+                          { entity: "Acme Corp (USD)", status: "Approved", color: "#34d399" },
+                          { entity: "Acme EU (EUR)", status: "In Review", color: "#fbbf24" },
+                          { entity: "Acme APAC (JPY)", status: "Pending", color: "#60a5fa" },
+                        ].map(e => (
+                          <div key={e.entity} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "6px 0", borderBottom: "1px solid #1e2230" }}>
+                            <span style={{ fontSize: 10, color: "#9ea5b8" }}>{e.entity}</span>
+                            <span style={{ fontSize: 8, fontWeight: 700, padding: "2px 6px", borderRadius: 3, background: `${e.color}10`, color: e.color }}>{e.status}</span>
+                          </div>
+                        ))}
+                        <div style={{ fontSize: 8, color: "#3d4558", marginTop: 4 }}>IC eliminations: 3 auto-reconciled · FX gain: +$42K</div>
+                      </div>
+                    )}
+                    {active.id === "integrations" && (
+                      <div style={{ padding: "10px 16px", display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 6 }}>
+                        {[
+                          { name: "NetSuite", color: "#1B7B8A", status: "●" },
+                          { name: "Salesforce", color: "#00A1E0", status: "●" },
+                          { name: "Stripe", color: "#635BFF", status: "●" },
+                          { name: "Snowflake", color: "#29B5E8", status: "●" },
+                          { name: "Plaid", color: "#fff", status: "●" },
+                          { name: "Rippling", color: "#34d399", status: "●" },
+                          { name: "QuickBooks", color: "#2CA01C", status: "●" },
+                          { name: "Xero", color: "#13B5EA", status: "○" },
+                        ].map(c => (
+                          <div key={c.name} style={{ background: "#111318", border: "1px solid #1e2230", borderRadius: 6, padding: "6px 8px", textAlign: "center" }}>
+                            <div style={{ fontSize: 8, color: c.color, marginBottom: 2 }}>{c.status}</div>
+                            <div style={{ fontSize: 7, color: "#8b92a5", fontWeight: 600 }}>{c.name}</div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
@@ -5865,6 +5913,11 @@ function FinanceOSApp() {
         input[type="range"] { cursor: pointer; }
         input[type="range"]::-webkit-slider-thumb { cursor: pointer; }
         ::selection { background: ${c.accentMid || c.accentDim}; }
+        /* Focus-visible: keyboard users see accent ring, mouse users don't */
+        *:focus-visible { outline: 2px solid ${c.accent}; outline-offset: 2px; border-radius: 4px; }
+        *:focus:not(:focus-visible) { outline: none; }
+        /* Skip-to-content for screen readers */
+        .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
         /* Smooth theme crossfade on structural elements */
         .theme-transition {
           transition: background 0.4s ease, background-color 0.4s ease, color 0.3s ease, border-color 0.4s ease, box-shadow 0.4s ease;
