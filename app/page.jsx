@@ -5324,7 +5324,13 @@ const LandingPage = ({ onLogin }) => {
   const plans = PRICING_PLANS;
 
   return (
-    <div style={{ minHeight: "100vh", background: "#09090b", color: "#f0f2f5", fontFamily: "'DM Sans', system-ui, sans-serif", overflow: "auto" }}>
+    <div style={{ minHeight: "100vh", background: "#09090b", color: "#f0f2f5", fontFamily: "'DM Sans', system-ui, sans-serif", overflow: "auto", position: "relative" }}>
+      {/* Ambient depth — dot grid + gradient orbs */}
+      <div style={{ position: "fixed", inset: 0, pointerEvents: "none", zIndex: 0 }}>
+        <div style={{ position: "absolute", inset: 0, backgroundImage: "radial-gradient(circle at 1px 1px, rgba(255,255,255,0.03) 0.5px, transparent 0.5px)", backgroundSize: "40px 40px" }} />
+        <div style={{ position: "absolute", top: "-20%", right: "-10%", width: "60%", height: "60%", borderRadius: "50%", background: "radial-gradient(circle, rgba(96,165,250,0.04) 0%, transparent 60%)", filter: "blur(120px)" }} />
+        <div style={{ position: "absolute", bottom: "-15%", left: "-5%", width: "50%", height: "50%", borderRadius: "50%", background: "radial-gradient(circle, rgba(167,139,250,0.03) 0%, transparent 60%)", filter: "blur(120px)" }} />
+      </div>
       {/* Ambient */}
       <div style={{ position: "fixed", inset: 0, pointerEvents: "none", overflow: "hidden" }}>
         <div style={{ position: "absolute", top: "-30%", right: "-15%", width: "70%", height: "70%", borderRadius: "50%", background: "radial-gradient(circle, rgba(96,165,250,0.07) 0%, transparent 65%)", filter: "blur(100px)" }} />
@@ -6381,6 +6387,22 @@ function FinanceOSApp() {
         ::-webkit-scrollbar-thumb:hover { background: rgba(128,128,128,0.3); }
         /* Selection color */
         ::selection { background: rgba(91,156,245,0.2); color: inherit; }
+        /* Subtle grid pattern for dashboard depth */
+        [data-content-area]::before {
+          content: ""; position: absolute; inset: 0; pointer-events: none; z-index: 0;
+          background-image: radial-gradient(circle at 1px 1px, ${c.borderSub} 0.5px, transparent 0.5px);
+          background-size: 32px 32px; opacity: 0.3;
+        }
+        /* Glass card refined hover */
+        [data-glass-card] {
+          transition: all 0.25s cubic-bezier(0.22,1,0.36,1);
+          border: 1px solid ${c.glassBorder};
+        }
+        [data-glass-card]:hover {
+          border-color: ${c.accent}25;
+          box-shadow: 0 8px 32px ${c.accent}06, 0 0 0 1px ${c.accent}08;
+          transform: translateY(-2px);
+        }
         /* Details/summary for FAQ */
         details summary::-webkit-details-marker { display: none; }
         details summary { list-style: none; }
@@ -6451,7 +6473,8 @@ function FinanceOSApp() {
           [data-grid-footer] { grid-template-columns: 1fr !important; }
           [data-steps] { grid-template-columns: 1fr !important; }
         }
-        .view-fade { animation: fadeSlideUp 0.3s cubic-bezier(0.22,1,0.36,1); }
+        .view-fade { animation: viewEnter 0.35s cubic-bezier(0.22,1,0.36,1); }
+        @keyframes viewEnter { from { opacity: 0; transform: translateY(6px); filter: blur(2px); } to { opacity: 1; transform: translateY(0); filter: blur(0); } }
         [data-content-area]::-webkit-scrollbar { width: 6px; }
         [data-content-area]::-webkit-scrollbar-track { background: transparent; }
         [data-content-area]::-webkit-scrollbar-thumb { background: rgba(139,146,165,0.15); border-radius: 3px; }
@@ -6542,7 +6565,7 @@ function FinanceOSApp() {
                   <Icon size={16} strokeWidth={active ? 2.5 : 1.5} />
                   {!sidebarCollapsed && item.label}
                   {!sidebarCollapsed && item.id === "copilot" && <Sparkles size={10} color={c.purple} style={{ marginLeft: "auto" }} />}
-                  {!sidebarCollapsed && item.id === "close" && <span style={{ marginLeft: "auto", fontSize: 9, fontWeight: 700, padding: "1px 6px", borderRadius: 4, background: c.amberDim, color: c.amber }}>3</span>}
+                  {!sidebarCollapsed && item.id === "close" && (() => { const pending = (closeTasks || []).filter(t => t.status !== "done").length; return pending > 0 ? <span style={{ marginLeft: "auto", fontSize: 9, fontWeight: 700, padding: "1px 6px", borderRadius: 4, background: c.amberDim, color: c.amber }}>{pending}</span> : null; })()}
                   {!sidebarCollapsed && item.id === "dashboard" && <span style={{ marginLeft: "auto", fontSize: 9, fontWeight: 700, padding: "1px 6px", borderRadius: 4, background: c.redDim, color: c.red }}>4</span>}
                 </div>
               </div>
@@ -6550,95 +6573,103 @@ function FinanceOSApp() {
           })}
         </div>
 
-        {/* Upgrade prompt for demo users */}
-        {!sidebarCollapsed && user.plan === "demo" && (
-        <div style={{ padding: "10px 14px", borderTop: `1px solid ${c.borderSub}` }}>
-            <div onClick={() => setShowPlanPicker(true)} style={{ padding: "12px 14px", borderRadius: 12, background: `linear-gradient(135deg, ${c.accent}06, ${c.purple}04)`, border: `1px solid ${c.accent}12`, cursor: "pointer", transition: "all 0.2s cubic-bezier(0.22,1,0.36,1)", position: "relative", overflow: "hidden" }}
-              onMouseEnter={e => { e.currentTarget.style.borderColor = `${c.accent}35`; e.currentTarget.style.transform = "translateY(-1px)"; e.currentTarget.style.boxShadow = `0 4px 16px ${c.accent}10`; }}
-              onMouseLeave={e => { e.currentTarget.style.borderColor = `${c.accent}12`; e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = "none"; }}
-            >
-              <div style={{ position: "absolute", top: 0, left: "15%", right: "15%", height: 1, background: `linear-gradient(90deg, transparent, ${c.accent}40, transparent)` }} />
-              <div style={{ fontSize: 11, fontWeight: 700, color: c.accent, marginBottom: 2 }}>Upgrade to a paid plan</div>
-              <div style={{ fontSize: 9, color: c.textDim }}>Base + pay-per-use · 30-day MBG</div>
-            </div>
-        </div>
-        )}
-
-        {/* Account Section — Theme + Profile + Sign Out */}
-        <div style={{ padding: sidebarCollapsed ? "8px 8px 12px" : "10px 14px 14px", borderTop: `1px solid ${c.borderSub}` }}>
-          {/* Theme toggle */}
-          <div onClick={toggleMode} aria-label={`Switch to ${mode === "dark" ? "light" : "dark"} mode`} role="button" tabIndex={0} onKeyDown={e => e.key === "Enter" && toggleMode()} style={{
-            display: "flex", alignItems: "center", gap: sidebarCollapsed ? 0 : 10,
-            padding: sidebarCollapsed ? "8px 0" : "8px 10px", borderRadius: 8,
-            cursor: "pointer", fontSize: 12, color: c.textSec, transition: "all 0.2s",
-            justifyContent: sidebarCollapsed ? "center" : "flex-start",
-          }}
-          onMouseEnter={e => { e.currentTarget.style.background = c.surfaceAlt; e.currentTarget.style.color = c.text; }}
-          onMouseLeave={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = c.textSec; }}
-          >
-            <div style={{
-              width: 36, height: 20, borderRadius: 10, position: "relative",
-              background: mode === "dark" ? c.surfaceAlt : "#bfdbfe",
-              border: `1px solid ${mode === "dark" ? c.borderSub : "#93c5fd"}`,
-              transition: "all 0.3s cubic-bezier(0.22,1,0.36,1)",
-              flexShrink: 0,
-            }}>
-              <div style={{
-                position: "absolute", top: 2, width: 14, height: 14, borderRadius: "50%",
-                left: mode === "dark" ? 2 : 18,
-                background: mode === "dark" ? c.textFaint : "#f59e0b",
-                boxShadow: mode === "dark" ? "none" : "0 0 6px rgba(245,158,11,0.4)",
-                transition: "all 0.3s cubic-bezier(0.22,1,0.36,1)",
-                display: "flex", alignItems: "center", justifyContent: "center",
-              }}>
-                {mode === "dark" ? <Moon size={8} color={c.bg} strokeWidth={2.5} /> : <Sun size={8} color="#fff" strokeWidth={2.5} />}
+        {/* ── Account Panel — Vercel-style ── */}
+        <div style={{ borderTop: `1px solid ${c.borderSub}`, marginTop: "auto" }}>
+          {/* Upgrade prompt for demo users */}
+          {!sidebarCollapsed && user.plan === "demo" && (
+            <div style={{ padding: "10px 14px 0" }}>
+              <div onClick={() => setShowPlanPicker(true)} style={{ padding: "10px 12px", borderRadius: 10, background: `linear-gradient(135deg, ${c.accent}06, ${c.purple}04)`, border: `1px solid ${c.accent}12`, cursor: "pointer", transition: "all 0.2s cubic-bezier(0.22,1,0.36,1)" }}
+                onMouseEnter={e => { e.currentTarget.style.borderColor = `${c.accent}35`; }}
+                onMouseLeave={e => { e.currentTarget.style.borderColor = `${c.accent}12`; }}
+              >
+                <div style={{ fontSize: 11, fontWeight: 700, color: c.accent, marginBottom: 1 }}>Upgrade to a paid plan</div>
+                <div style={{ fontSize: 9, color: c.textDim }}>Base + pay-per-use</div>
               </div>
             </div>
-            <span style={{ flex: 1, fontSize: 11, fontWeight: 500, display: sidebarCollapsed ? "none" : "block" }}>{mode === "dark" ? "Dark" : "Light"}</span>
-            {autoTheme && !sidebarCollapsed && <span style={{ fontSize: 7, fontWeight: 800, padding: "2px 5px", borderRadius: 3, background: c.accentDim, color: c.accent, letterSpacing: "0.05em" }}>AUTO</span>}
-          </div>
-
-          {/* User profile card */}
-          {!sidebarCollapsed ? (
-          <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 10px", marginTop: 6, borderRadius: 10, cursor: "pointer", transition: "all 0.15s", background: "transparent" }}
-            onMouseEnter={e => { e.currentTarget.style.background = c.surfaceAlt; }}
-            onMouseLeave={e => { e.currentTarget.style.background = "transparent"; }}
-            onClick={() => navigate("settings")}
-          >
-            <div style={{ position: "relative" }}>
-              <div style={{
-                width: 32, height: 32, borderRadius: 10, display: "flex", alignItems: "center", justifyContent: "center",
-                background: `linear-gradient(135deg, ${c.accent}, ${c.purple})`, fontSize: 11, fontWeight: 800, color: "#fff",
-                boxShadow: `0 2px 8px ${c.accent}30`,
-              }}>{(user.name || "G").split(" ").map(w => w[0]).join("").slice(0,2).toUpperCase() || "G"}</div>
-              <div style={{ position: "absolute", bottom: -1, right: -1, width: 9, height: 9, borderRadius: "50%", background: c.green, border: `2px solid ${c.bg}`, boxShadow: `0 0 4px ${c.green}40` }} />
-            </div>
-            <div style={{ flex: 1, minWidth: 0 }}>
-              <div style={{ fontSize: 12, fontWeight: 600, color: c.text, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{user.name || "Guest"}</div>
-              <div style={{ fontSize: 9, color: c.textDim, fontWeight: 500, display: "flex", alignItems: "center", gap: 4 }}>
-                <span style={{ display: "inline-block", width: 5, height: 5, borderRadius: "50%", background: user.plan === "demo" ? c.amber : c.green, flexShrink: 0, boxShadow: `0 0 4px ${user.plan === "demo" ? c.amber : c.green}40` }} />
-                {user.plan === "demo" ? "Demo Mode" : user.plan ? `${user.plan.charAt(0).toUpperCase() + user.plan.slice(1)} Plan` : "Starter"}
-              </div>
-            </div>
-            <Settings size={13} color={c.textFaint} />
-          </div>
-          ) : (
-          <div style={{ textAlign: "center", marginTop: 6 }} onClick={() => navigate("settings")} title={`${user.name || "Guest"} · Settings`}>
-            <div style={{ width: 32, height: 32, borderRadius: 10, display: "inline-flex", alignItems: "center", justifyContent: "center", background: `linear-gradient(135deg, ${c.accent}, ${c.purple})`, fontSize: 11, fontWeight: 800, color: "#fff", cursor: "pointer", boxShadow: `0 2px 8px ${c.accent}30` }}>{(user.name || "G").split(" ").map(w => w[0]).join("").slice(0,2).toUpperCase() || "G"}</div>
-          </div>
           )}
 
-          {/* Sign Out — distinct styling */}
-          <div onClick={handleLogout} style={{
-            display: "flex", alignItems: "center", gap: 8, padding: "8px 10px", marginTop: 6, borderRadius: 8,
-            cursor: "pointer", fontSize: 11, color: c.textFaint, transition: "all 0.15s", fontWeight: 500,
-            justifyContent: sidebarCollapsed ? "center" : "flex-start",
-          }}
-          onMouseEnter={e => { e.currentTarget.style.background = `${c.red}08`; e.currentTarget.style.color = c.red; }}
-          onMouseLeave={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = c.textFaint; }}
-          >
-            <LogOut size={13} /> {!sidebarCollapsed && "Sign Out"}
+          {/* User identity + nav links */}
+          {!sidebarCollapsed ? (
+          <div style={{ padding: "14px 14px 10px" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12 }}>
+              <div style={{ position: "relative", flexShrink: 0 }}>
+                <div style={{
+                  width: 32, height: 32, borderRadius: 10, display: "flex", alignItems: "center", justifyContent: "center",
+                  background: `linear-gradient(135deg, ${c.accent}, ${c.purple})`, fontSize: 11, fontWeight: 800, color: "#fff",
+                  boxShadow: `0 2px 8px ${c.accent}30`,
+                }}>{(user.name || "G").split(" ").map(w => w[0]).join("").slice(0,2).toUpperCase() || "G"}</div>
+                <div style={{ position: "absolute", bottom: -1, right: -1, width: 8, height: 8, borderRadius: "50%", background: c.green, border: `2px solid ${c.sidebarBg}` }} />
+              </div>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{ fontSize: 12, fontWeight: 600, color: c.text, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{user.name || "Guest"}</div>
+                <div style={{ fontSize: 9, color: c.textFaint, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{user.email || "guest@demo.finance-os.app"}</div>
+              </div>
+            </div>
+            <div style={{ display: "flex", flexDirection: "column", gap: 0 }}>
+              {[{ label: "Feedback", action: () => toast("Thank you — feedback noted", "success") }].map(link => (
+                <div key={link.label} onClick={link.action} style={{ fontSize: 11, color: c.textDim, padding: "7px 8px", borderRadius: 6, cursor: "pointer", transition: "all 0.12s", fontWeight: 500 }}
+                  onMouseEnter={e => { e.currentTarget.style.background = c.surfaceAlt; e.currentTarget.style.color = c.text; }}
+                  onMouseLeave={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = c.textDim; }}
+                >{link.label}</div>
+              ))}
+              {/* Theme — system / light / dark pills */}
+              <div style={{ padding: "7px 8px", fontSize: 11, color: c.textDim, fontWeight: 500 }}>
+                <div style={{ marginBottom: 6 }}>Theme</div>
+                <div style={{ display: "flex", gap: 0, background: c.surfaceAlt, borderRadius: 6, padding: 2, border: `1px solid ${c.borderSub}` }}>
+                  {[{ id: "system", label: "System" }, { id: "light", label: "Light" }, { id: "dark", label: "Dark" }].map(t => {
+                    const isActive = (t.id === "system" && autoTheme) || (t.id === mode && !autoTheme);
+                    return (
+                    <div key={t.id} onClick={() => { if (t.id !== mode && t.id !== "system") toggleMode(); }} style={{
+                      flex: 1, textAlign: "center", fontSize: 10, fontWeight: isActive ? 700 : 500, padding: "4px 0",
+                      borderRadius: 4, cursor: "pointer", transition: "all 0.15s",
+                      background: isActive ? c.surface : "transparent",
+                      color: isActive ? c.text : c.textFaint,
+                      boxShadow: isActive ? "0 1px 3px rgba(0,0,0,0.08)" : "none",
+                    }}>{t.label}</div>
+                    );
+                  })}
+                </div>
+              </div>
+              {[
+                { label: "Home Page", action: handleLogout },
+                { label: "Changelog", action: () => toast("Changelog coming soon", "info") },
+                { label: "Help", action: () => window.open("mailto:support@finance-os.app", "_blank") },
+                { label: "Docs", action: () => window.open("https://finance-os.app/llms.txt", "_blank") },
+              ].map(link => (
+                <div key={link.label} onClick={link.action} style={{ fontSize: 11, color: c.textDim, padding: "7px 8px", borderRadius: 6, cursor: "pointer", transition: "all 0.12s", fontWeight: 500 }}
+                  onMouseEnter={e => { e.currentTarget.style.background = c.surfaceAlt; e.currentTarget.style.color = c.text; }}
+                  onMouseLeave={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = c.textDim; }}
+                >{link.label}</div>
+              ))}
+              <div onClick={handleLogout} style={{ fontSize: 11, color: c.textFaint, padding: "7px 8px", borderRadius: 6, cursor: "pointer", transition: "all 0.12s", fontWeight: 500, display: "flex", alignItems: "center", gap: 6 }}
+                onMouseEnter={e => { e.currentTarget.style.background = `${c.red}06`; e.currentTarget.style.color = c.red; }}
+                onMouseLeave={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = c.textFaint; }}
+              ><LogOut size={12} /> Log Out</div>
+            </div>
+            {/* Platform Status */}
+            <div style={{ marginTop: 8, padding: "8px 8px", borderRadius: 6, background: c.surfaceAlt, border: `1px solid ${c.borderSub}`, display: "flex", alignItems: "center", gap: 6 }}>
+              <span style={{ position: "relative", width: 7, height: 7, flexShrink: 0 }}>
+                <span style={{ position: "absolute", inset: 0, borderRadius: "50%", background: c.green }} />
+                <span style={{ position: "absolute", inset: -2, borderRadius: "50%", background: c.green, opacity: 0.25, animation: "pulse 2s infinite" }} />
+              </span>
+              <span style={{ fontSize: 10, color: c.textDim, fontWeight: 500 }}>All systems normal</span>
+            </div>
           </div>
+          ) : (
+          <div style={{ padding: "10px 0", display: "flex", flexDirection: "column", alignItems: "center", gap: 6 }}>
+            <div onClick={() => navigate("settings")} title={`${user.name || "Guest"}`} style={{ cursor: "pointer" }}>
+              <div style={{ width: 32, height: 32, borderRadius: 10, display: "flex", alignItems: "center", justifyContent: "center", background: `linear-gradient(135deg, ${c.accent}, ${c.purple})`, fontSize: 11, fontWeight: 800, color: "#fff", boxShadow: `0 2px 8px ${c.accent}30` }}>{(user.name || "G").split(" ").map(w => w[0]).join("").slice(0,2).toUpperCase() || "G"}</div>
+            </div>
+            <div onClick={toggleMode} title={`Theme: ${mode}`} style={{ width: 32, height: 24, borderRadius: 6, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", color: c.textFaint, transition: "all 0.15s" }}
+              onMouseEnter={e => { e.currentTarget.style.background = c.surfaceAlt; e.currentTarget.style.color = c.text; }}
+              onMouseLeave={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = c.textFaint; }}
+            >{mode === "dark" ? <Moon size={13} /> : <Sun size={13} />}</div>
+            <div onClick={handleLogout} title="Log Out" style={{ width: 32, height: 24, borderRadius: 6, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", color: c.textFaint, transition: "all 0.15s" }}
+              onMouseEnter={e => { e.currentTarget.style.background = `${c.red}08`; e.currentTarget.style.color = c.red; }}
+              onMouseLeave={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = c.textFaint; }}
+            ><LogOut size={13} /></div>
+          </div>
+          )}
         </div>
       </div>
 
@@ -6658,10 +6689,12 @@ function FinanceOSApp() {
         <div className="theme-transition" style={{
           height: 56, borderBottom: `1px solid ${c.border}`, display: "flex", alignItems: "center",
           justifyContent: "space-between", padding: "0 28px", flexShrink: 0,
-          background: `${c.bg2}cc`, backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)",
+          background: `${c.bg2}cc`, backdropFilter: "blur(16px)", WebkitBackdropFilter: "blur(16px)",
           position: "relative", zIndex: 10,
           transition: "background 0.4s ease, border-color 0.4s ease",
         }}>
+          {/* Accent line — subtle gradient under topbar */}
+          <div style={{ position: "absolute", bottom: -1, left: "5%", right: "5%", height: 1, background: `linear-gradient(90deg, transparent, ${c.accent}18, ${c.purple}12, transparent)`, zIndex: 11 }} />
           <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
             {/* Mobile hamburger */}
             {isMobile && (
