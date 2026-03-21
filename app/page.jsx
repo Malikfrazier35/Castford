@@ -6288,9 +6288,19 @@ function FinanceOSApp() {
             const data = await res.json();
             if (data.org?.plan && data.org.plan !== "demo") {
               setUser(prev => ({ ...prev, plan: data.org.plan }));
+              // Paid user — hide plan picker if it was shown
+              setShowPlanPicker(false);
             }
             if (data.org?.name) {
               setUser(prev => ({ ...prev, orgName: data.org.name }));
+            }
+            // If onboarding was already completed, never show plan picker
+            if (data.org?.plan && data.org.plan !== "demo") {
+              setShowOnboarding(false);
+            }
+            // Show plan picker for demo users who haven't upgraded yet
+            if (data.org?.plan === "demo" || !data.org?.plan) {
+              setShowPlanPicker(true);
             }
           } else if (res.status === 429) {
             // Rate limited — back off and retry once after delay
@@ -6336,8 +6346,9 @@ function FinanceOSApp() {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       if ((event === "SIGNED_IN" || event === "INITIAL_SESSION" || event === "TOKEN_REFRESHED") && session?.user) {
         handleSession(session);
-        // Show plan picker only on fresh sign-in (not session restore)
-        if (event === "SIGNED_IN" && mounted) setShowPlanPicker(true);
+        // Plan picker is now controlled by verify-session response, not the sign-in event.
+        // If verify-session returns plan === 'demo', the plan picker will be shown there.
+        // This prevents paid users from seeing the plan picker flash on every login.
       } else if (event === "SIGNED_OUT") {
         if (mounted) { setLoggedIn(false); setUser({ name: "Guest", email: "" }); setView("dashboard"); }
       }
