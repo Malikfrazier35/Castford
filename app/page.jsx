@@ -4107,14 +4107,27 @@ const SettingsView = ({ c, onLogout, toast, mode, onShowSuitePanel, suitePanelOp
           <div style={{ fontSize: 11, color: c.textDim, marginBottom: 14, padding: "8px 12px", background: c.surfaceAlt, borderRadius: 8 }}>Visa ····4242 · Billing: finance@acme.io</div>
           <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
             {[
-              { label: "Manage Subscription", url: "https://billing.stripe.com/p/login/bIY00B0b37cMbWo3cc" },
-              { label: "View Invoices", url: "https://billing.stripe.com/p/login/bIY00B0b37cMbWo3cc" },
-              { label: "Update Payment Method", url: "https://billing.stripe.com/p/login/bIY00B0b37cMbWo3cc" },
+              { label: "Manage Subscription", primary: true },
+              { label: "View Invoices", primary: false },
+              { label: "Update Payment Method", primary: false },
             ].map(b => (
-              <button key={b.label} style={{ fontSize: 11, padding: "9px 18px", borderRadius: 8, border: `1px solid ${c.border}`, background: "transparent", color: c.textSec, cursor: "pointer", fontFamily: "inherit", fontWeight: 600, transition: "all 0.15s" }}
+              <button key={b.label} style={{ fontSize: 11, padding: "9px 18px", borderRadius: 8, border: `1px solid ${b.primary ? c.accent : c.border}`, background: b.primary ? `${c.accent}08` : "transparent", color: b.primary ? c.accent : c.textSec, cursor: "pointer", fontFamily: "inherit", fontWeight: 600, transition: "all 0.15s" }}
                 onMouseEnter={e => { e.currentTarget.style.borderColor = c.accent; e.currentTarget.style.color = c.accent; }}
-                onMouseLeave={e => { e.currentTarget.style.borderColor = c.border; e.currentTarget.style.color = c.textSec; }}
-                onClick={() => { try { window.open(b.url, "_blank"); } catch {} toast(`Opening ${b.label}...`, "success"); }}
+                onMouseLeave={e => { e.currentTarget.style.borderColor = b.primary ? c.accent : c.border; e.currentTarget.style.color = b.primary ? c.accent : c.textSec; }}
+                onClick={async () => {
+                  toast(`Opening ${b.label}...`, "info");
+                  try {
+                    const { data: { session } } = await supabase.auth.getSession();
+                    if (!session?.access_token) { toast("Please sign in to manage billing", "warning"); return; }
+                    const res = await fetch(`${SUPABASE_URL}/functions/v1/manage-subscription`, {
+                      method: "POST",
+                      headers: { "Content-Type": "application/json", "Authorization": `Bearer ${session.access_token}`, "apikey": SUPABASE_KEY },
+                    });
+                    const data = await res.json();
+                    if (data.url) { window.open(data.url, "_blank"); }
+                    else { toast(data.error || "Could not open billing portal", "error"); }
+                  } catch { toast("Billing portal unavailable — contact support@finance-os.app", "error"); }
+                }}
               >{b.label}</button>
             ))}
           </div>
