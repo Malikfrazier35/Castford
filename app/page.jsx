@@ -6033,6 +6033,10 @@ function FinanceOSApp() {
   const [prevView, setPrevView] = useState(null);
   const [cmdOpen, setCmdOpen] = useState(false);
   const [drawerKpi, setDrawerKpi] = useState(null);
+  const [aiChatOpen, setAiChatOpen] = useState(false);
+  const [aiChatMessages, setAiChatMessages] = useState([]);
+  const [aiChatInput, setAiChatInput] = useState("");
+  const [aiChatThinking, setAiChatThinking] = useState(false);
   const [period, setPeriod] = useState("FY2025 YTD");
   const [periodOpen, setPeriodOpen] = useState(false);
   const [notifOpen, setNotifOpen] = useState(false);
@@ -6901,7 +6905,7 @@ function FinanceOSApp() {
       {/* Scroll-to-top FAB */}
       {showScrollTop && loggedIn && (
         <div onClick={() => document.querySelector("[data-content-area]")?.scrollTo({ top: 0, behavior: "smooth" })} style={{
-          position: "fixed", bottom: 28, right: 28, width: 40, height: 40, borderRadius: 12,
+          position: "fixed", bottom: aiChatOpen ? 560 : 86, right: 28, width: 40, height: 40, borderRadius: 12,
           background: `${c.accent}dd`, backdropFilter: "blur(8px)", border: `1px solid ${c.accent}40`,
           display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer",
           boxShadow: `0 6px 24px ${c.accent}25`, zIndex: 100, transition: "all 0.25s cubic-bezier(0.22,1,0.36,1)",
@@ -6943,6 +6947,158 @@ function FinanceOSApp() {
           </div>
         </div>
       )}
+      {/* ── Floating AI Assistant ── */}
+      {loggedIn && (
+        <>
+        {/* Chat bubble trigger */}
+        {!aiChatOpen && (
+          <div onClick={() => setAiChatOpen(true)} style={{
+            position: "fixed", bottom: 28, right: 28, width: 48, height: 48, borderRadius: 14,
+            background: `linear-gradient(135deg, ${c.accent}, ${c.purple})`, cursor: "pointer",
+            display: "flex", alignItems: "center", justifyContent: "center",
+            boxShadow: `0 8px 32px ${c.accent}30, 0 0 0 1px ${c.accent}20`,
+            zIndex: 500, transition: "all 0.25s cubic-bezier(0.22,1,0.36,1)",
+            animation: "fadeSlideUp 0.3s cubic-bezier(0.22,1,0.36,1)",
+          }}
+          onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-3px) scale(1.05)"; e.currentTarget.style.boxShadow = `0 12px 40px ${c.accent}40, 0 0 0 1px ${c.accent}30`; }}
+          onMouseLeave={e => { e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = `0 8px 32px ${c.accent}30, 0 0 0 1px ${c.accent}20`; }}
+          title="Ask AI anything"
+          >
+            <Sparkles size={20} color="#fff" strokeWidth={2} />
+          </div>
+        )}
+
+        {/* Chat panel */}
+        {aiChatOpen && (
+          <div style={{
+            position: "fixed", bottom: 28, right: 28, width: 380, height: 520, maxHeight: "75vh",
+            background: c.surface, border: `1px solid ${c.border}`, borderRadius: 20,
+            boxShadow: `0 24px 80px rgba(0,0,0,0.3), 0 0 0 1px ${c.accent}08`,
+            zIndex: 500, display: "flex", flexDirection: "column", overflow: "hidden",
+            animation: "cmdIn 0.2s cubic-bezier(0.22,1,0.36,1)",
+          }}>
+            {/* Header */}
+            <div style={{ padding: "16px 18px 12px", borderBottom: `1px solid ${c.borderSub}`, display: "flex", alignItems: "center", justifyContent: "space-between", flexShrink: 0 }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                <div style={{ width: 28, height: 28, borderRadius: 8, background: `linear-gradient(135deg, ${c.accent}15, ${c.purple}08)`, border: `1px solid ${c.accent}12`, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                  <Sparkles size={14} color={c.accent} />
+                </div>
+                <div>
+                  <div style={{ fontSize: 13, fontWeight: 700, color: c.text }}>FinanceOS AI</div>
+                  <div style={{ fontSize: 9, color: c.textFaint }}>Ask about your data, get instant answers</div>
+                </div>
+              </div>
+              <div style={{ display: "flex", gap: 4 }}>
+                <div onClick={() => { setAiChatOpen(false); navigate("copilot"); }} title="Open full Copilot view" style={{ width: 28, height: 28, borderRadius: 6, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", color: c.textFaint, transition: "all 0.12s" }}
+                  onMouseEnter={e => { e.currentTarget.style.background = c.surfaceAlt; e.currentTarget.style.color = c.accent; }}
+                  onMouseLeave={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = c.textFaint; }}
+                ><ArrowUpRight size={14} /></div>
+                <div onClick={() => setAiChatOpen(false)} style={{ width: 28, height: 28, borderRadius: 6, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", color: c.textFaint, transition: "all 0.12s" }}
+                  onMouseEnter={e => { e.currentTarget.style.background = c.surfaceAlt; e.currentTarget.style.color = c.text; }}
+                  onMouseLeave={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = c.textFaint; }}
+                ><X size={14} /></div>
+              </div>
+            </div>
+
+            {/* Messages */}
+            <div style={{ flex: 1, overflow: "auto", padding: "16px 18px", display: "flex", flexDirection: "column", gap: 12 }}>
+              {aiChatMessages.length === 0 && (
+                <div style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 16, padding: "20px 0" }}>
+                  <div style={{ width: 40, height: 40, borderRadius: 12, background: `linear-gradient(135deg, ${c.accent}12, ${c.purple}06)`, border: `1px solid ${c.accent}10`, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                    <Sparkles size={18} color={c.accent} />
+                  </div>
+                  <div style={{ textAlign: "center" }}>
+                    <div style={{ fontSize: 13, fontWeight: 700, color: c.text, marginBottom: 4 }}>How can I help?</div>
+                    <div style={{ fontSize: 11, color: c.textDim, lineHeight: 1.5 }}>Ask about revenue, forecasts, variances, or any financial question.</div>
+                  </div>
+                  <div style={{ display: "flex", flexDirection: "column", gap: 6, width: "100%" }}>
+                    {["What drove the revenue beat?", "Show me our top variances", "How accurate is our forecast?"].map(q => (
+                      <div key={q} onClick={() => { setAiChatInput(q); }} style={{
+                        fontSize: 11, padding: "8px 12px", borderRadius: 8, border: `1px solid ${c.borderSub}`,
+                        background: c.surfaceAlt, color: c.textSec, cursor: "pointer", transition: "all 0.12s", fontWeight: 500,
+                      }}
+                      onMouseEnter={e => { e.currentTarget.style.borderColor = `${c.accent}30`; e.currentTarget.style.color = c.text; }}
+                      onMouseLeave={e => { e.currentTarget.style.borderColor = c.borderSub; e.currentTarget.style.color = c.textSec; }}
+                      >{q}</div>
+                    ))}
+                  </div>
+                </div>
+              )}
+              {aiChatMessages.map((m, i) => (
+                <div key={i} style={{ display: "flex", flexDirection: "column", alignItems: m.role === "user" ? "flex-end" : "flex-start" }}>
+                  <div style={{
+                    maxWidth: "85%", fontSize: 12, lineHeight: 1.55, padding: "10px 14px", borderRadius: 14,
+                    ...(m.role === "user"
+                      ? { background: `linear-gradient(135deg, ${c.accent}, ${c.purple})`, color: "#fff", borderBottomRightRadius: 4 }
+                      : { background: c.surfaceAlt, color: c.text, border: `1px solid ${c.borderSub}`, borderBottomLeftRadius: 4 }),
+                  }}>{m.content.split("\n").map((line, j) => <div key={j}>{line || "\u00A0"}</div>)}</div>
+                </div>
+              ))}
+              {aiChatThinking && (
+                <div style={{ display: "flex", alignItems: "flex-start" }}>
+                  <div style={{ padding: "10px 14px", borderRadius: 14, borderBottomLeftRadius: 4, background: c.surfaceAlt, border: `1px solid ${c.borderSub}`, display: "flex", gap: 4 }}>
+                    {[0, 1, 2].map(d => <div key={d} style={{ width: 6, height: 6, borderRadius: "50%", background: c.textFaint, animation: `pulse 1s ease-in-out ${d * 0.15}s infinite` }} />)}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Input */}
+            <div style={{ padding: "12px 14px", borderTop: `1px solid ${c.borderSub}`, flexShrink: 0 }}>
+              <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+                <input value={aiChatInput} onChange={e => setAiChatInput(e.target.value)}
+                  onKeyDown={e => {
+                    if (e.key === "Enter" && aiChatInput.trim() && !aiChatThinking) {
+                      const q = aiChatInput.trim();
+                      setAiChatMessages(prev => [...prev, { role: "user", content: q }]);
+                      setAiChatInput("");
+                      setAiChatThinking(true);
+                      logActivity(`AI chat: "${q.slice(0, 30)}"`, "action");
+                      // Demo response with delay
+                      setTimeout(() => {
+                        const ql = q.toLowerCase();
+                        let resp = "Based on current data, I can see several key trends. Revenue is tracking ahead of plan by $2.09M (+4.3%), driven primarily by enterprise outperformance. Would you like me to break this down further?";
+                        if (ql.includes("revenue") || ql.includes("beat")) resp = "Revenue beat of +$2.09M is driven by enterprise ACV expansion (up 28% to $182K avg) and 34% AI module attach rate. Mid-market is slightly under plan. Want me to analyze the mid-market gap?";
+                        else if (ql.includes("variance") || ql.includes("over budget")) resp = "Top 4 variances this period:\n1. S&M: +$730K over (event spend timing)\n2. R&D: -$420K under (delayed hires)\n3. Enterprise revenue: +$3.3M above\n4. Cloud infra: +$180K over\nWant details on any of these?";
+                        else if (ql.includes("forecast") || ql.includes("accuracy") || ql.includes("mape")) resp = "Current forecast model runs an ETS + XGBoost + Linear ensemble with 14 drivers. MAPE is 3.2% (industry median 8-12%). Revenue and COGS are strongest at 1.8% MAPE. S&M timing is weakest at 6.1%. Shall I retrain with updated data?";
+                        else if (ql.includes("churn") || ql.includes("retention")) resp = "Logo churn: 4.2% annualized (8 of 192 accounts). Revenue churn: 2.1% gross, fully offset by 118% NDR. The 2023 cohort is maturing well at 124% NDR. Two mid-market losses were price-competitive.";
+                        setAiChatMessages(prev => [...prev, { role: "assistant", content: resp }]);
+                        setAiChatThinking(false);
+                      }, 800 + Math.random() * 600);
+                    }
+                  }}
+                  placeholder="Ask about your data..."
+                  style={{ flex: 1, fontSize: 12, padding: "9px 14px", borderRadius: 10, border: `1px solid ${c.border}`, background: c.surfaceAlt, color: c.text, fontFamily: "inherit", outline: "none", transition: "border-color 0.15s" }}
+                  onFocus={e => e.target.style.borderColor = c.accent}
+                  onBlur={e => e.target.style.borderColor = c.border}
+                />
+                <button onClick={() => {
+                  if (aiChatInput.trim() && !aiChatThinking) {
+                    const q = aiChatInput.trim();
+                    setAiChatMessages(prev => [...prev, { role: "user", content: q }]);
+                    setAiChatInput("");
+                    setAiChatThinking(true);
+                    logActivity(`AI chat: "${q.slice(0, 30)}"`, "action");
+                    setTimeout(() => {
+                      setAiChatMessages(prev => [...prev, { role: "assistant", content: "I've analyzed your data. Revenue is trending 4.3% above plan, primarily from enterprise. The AI module attach rate of 34% is driving ACV expansion. Would you like a deeper breakdown?" }]);
+                      setAiChatThinking(false);
+                    }, 800 + Math.random() * 600);
+                  }
+                }} disabled={!aiChatInput.trim() || aiChatThinking} style={{
+                  width: 34, height: 34, borderRadius: 8, border: "none", flexShrink: 0,
+                  background: aiChatInput.trim() ? `linear-gradient(135deg, ${c.accent}, ${c.purple})` : c.surfaceAlt,
+                  color: aiChatInput.trim() ? "#fff" : c.textFaint,
+                  cursor: aiChatInput.trim() ? "pointer" : "default",
+                  display: "flex", alignItems: "center", justifyContent: "center", transition: "all 0.15s",
+                }}><Send size={14} /></button>
+              </div>
+              <div style={{ fontSize: 9, color: c.textFaint, marginTop: 6, textAlign: "center" }}>Press Enter to send · <span onClick={() => { setAiChatOpen(false); navigate("copilot"); }} style={{ color: c.accent, cursor: "pointer", fontWeight: 600 }}>Open full Copilot</span></div>
+            </div>
+          </div>
+        )}
+        </>
+      )}
+
       <ToastContainer toasts={toasts} c={c} />
       {/* ENV 5: Desktop Platform */}
       <OfflineIndicator c={c} />
