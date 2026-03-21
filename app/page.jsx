@@ -945,9 +945,9 @@ const FosLogoFull = memo(({ size = 32, c }) => (
 
 // ── HELPERS ───────────────────────────────────────────────────
 // ── LOCALE-AWARE FORMATTERS ──────────────────────────────────
-const CURRENCY_SYMBOLS = { USD: "$", EUR: "\u20ac", GBP: "\u00a3", CAD: "CA$", AUD: "A$", JPY: "\u00a5", CHF: "CHF\u00a0", SGD: "S$", HKD: "HK$", INR: "\u20b9", BRL: "R$", SEK: "" };
-const CURRENCY_SUFFIX = { SEK: "\u00a0kr" };
-const LOCALE_MAP = { US: "en-US", GB: "en-GB", CA: "en-CA", AU: "en-AU", DE: "de-DE", FR: "fr-FR", JP: "ja-JP", SG: "en-SG", HK: "zh-HK", IT: "it-IT", BR: "pt-BR", IN: "en-IN", NL: "nl-NL", SE: "sv-SE", CH: "de-CH", AE: "ar-AE" };
+const CURRENCY_SYMBOLS = { USD: "$", EUR: "\u20ac", GBP: "\u00a3", CAD: "CA$", AUD: "A$", JPY: "\u00a5", CHF: "CHF\u00a0", SGD: "S$", HKD: "HK$", INR: "\u20b9", BRL: "R$", SEK: "", MXN: "MX$", KRW: "\u20a9", CNY: "\u00a5", NZD: "NZ$", ZAR: "R", NOK: "", DKK: "", PLN: "z\u0142", ILS: "\u20aa", THB: "\u0e3f", PHP: "\u20b1", TWD: "NT$" };
+const CURRENCY_SUFFIX = { SEK: "\u00a0kr", NOK: "\u00a0kr", DKK: "\u00a0kr", PLN: "\u00a0z\u0142" };
+const LOCALE_MAP = { US: "en-US", GB: "en-GB", CA: "en-CA", AU: "en-AU", DE: "de-DE", FR: "fr-FR", JP: "ja-JP", SG: "en-SG", HK: "zh-HK", IT: "it-IT", BR: "pt-BR", IN: "en-IN", NL: "nl-NL", SE: "sv-SE", CH: "de-CH", AE: "ar-AE", MX: "es-MX", KR: "ko-KR", ES: "es-ES", IE: "en-IE", IL: "he-IL", PL: "pl-PL", NO: "nb-NO", DK: "da-DK", FI: "fi-FI", NZ: "en-NZ", ZA: "en-ZA", PH: "en-PH" };
 
 const getLocalePrefs = () => {
   try {
@@ -3973,125 +3973,155 @@ const SettingsView = ({ c, onLogout, toast, mode, onShowSuitePanel, suitePanelOp
   const [dateFormat, setDateFormat] = useState(() => { try { return localStorage.getItem("fos_dateformat") || "MM/DD/YYYY"; } catch { return "MM/DD/YYYY"; } });
   const saveRegional = (key, val, setter) => { setter(val); try { localStorage.setItem(key, val); } catch {} toast("Preference updated", "success"); };
   const tabs = [
-    { id: "org", label: "Organization" },
-    { id: "billing", label: "Billing" },
-    { id: "security", label: "Security" },
-    { id: "session", label: "Session" },
+    { id: "org", label: "Organization", icon: LayoutDashboard },
+    { id: "billing", label: "Billing", icon: DollarSign },
+    { id: "security", label: "Security", icon: Shield },
+    { id: "regional", label: "Regional", icon: Globe },
+    { id: "session", label: "Session", icon: Activity },
   ];
   return (
-    <div style={{ padding: 32, maxWidth: 720 }}>
+    <div style={{ padding: 32, maxWidth: 800 }}>
       {/* View Header */}
-      <div style={{ marginBottom: 20, display: "flex", alignItems: "flex-start", gap: 14 }}>
-        <div style={{ width: 36, height: 36, borderRadius: 10, background: `linear-gradient(135deg, ${c.textDim}15, ${c.accent}06)`, border: `1px solid ${c.textDim}10`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, marginTop: 2 }}>
-          <Settings size={17} color={c.textDim} />
-        </div>
-        <div>
-          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-            <div style={{ fontSize: 20, fontWeight: 800, color: c.text, letterSpacing: "-0.03em" }}>Settings</div>
-            <span style={{ fontSize: 7, fontWeight: 800, padding: "2px 6px", borderRadius: 3, background: `${c.textDim}15`, color: c.textDim, letterSpacing: "0.06em" }}>ACCOUNT</span>
-          </div>
-          <div style={{ fontSize: 12, color: c.textDim, marginTop: 2 }}>Manage your account, billing, notifications, and preferences</div>
-        </div>
+      <div style={{ marginBottom: 20 }}>
+        <div style={{ fontSize: 20, fontWeight: 800, color: c.text, letterSpacing: "-0.03em" }}>Settings</div>
+        <div style={{ fontSize: 12, color: c.textDim, marginTop: 4 }}>Manage your account, billing, and preferences</div>
       </div>
-      {/* Tab bar */}
-      <div style={{ display: "flex", gap: 4, marginBottom: 20, background: c.surfaceAlt, borderRadius: 10, padding: 3, border: `1px solid ${c.borderSub}` }}>
-        {tabs.map(t => (
-          <button key={t.id} onClick={() => setActiveTab(t.id)} style={{
-            flex: 1, fontSize: 11, padding: "8px 0", borderRadius: 7, border: "none",
-            background: activeTab === t.id ? c.surface : "transparent",
-            color: activeTab === t.id ? c.text : c.textDim,
-            fontWeight: activeTab === t.id ? 700 : 500, cursor: "pointer", fontFamily: "inherit",
-            boxShadow: activeTab === t.id ? c.shadow1 : "none", transition: "all 0.15s",
-          }}>{t.label}</button>
-        ))}
-      </div>
+      {/* Sidebar-style tab nav — vertical on desktop, horizontal on compact */}
+      <div style={{ display: "flex", gap: 24 }}>
+        {/* Tab nav */}
+        <div style={{ width: 160, flexShrink: 0, display: "flex", flexDirection: "column", gap: 2 }}>
+          {tabs.map(t => {
+            const active = activeTab === t.id;
+            return (
+            <div key={t.id} onClick={() => setActiveTab(t.id)} style={{
+              display: "flex", alignItems: "center", gap: 8, padding: "9px 12px", borderRadius: 8,
+              fontSize: 12, fontWeight: active ? 600 : 400, cursor: "pointer",
+              color: active ? c.text : c.textDim,
+              background: active ? c.surfaceAlt : "transparent",
+              transition: "all 0.12s",
+            }}
+            onMouseEnter={e => { if (!active) { e.currentTarget.style.background = `${c.surfaceAlt}80`; e.currentTarget.style.color = c.textSec; } }}
+            onMouseLeave={e => { if (!active) { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = c.textDim; } }}
+            >
+              <t.icon size={14} strokeWidth={active ? 2 : 1.5} />
+              {t.label}
+            </div>
+            );
+          })}
+        </div>
+
+        {/* Content */}
+        <div style={{ flex: 1, minWidth: 0 }}>
 
       {activeTab === "org" && (
-        <div style={{ background: c.glass, backdropFilter: c.glassBlur, WebkitBackdropFilter: c.glassBlur, border: `1px solid ${c.glassBorder}`, borderRadius: 16, padding: "22px 24px", boxShadow: `${c.cardGlow}, ${c.glassHighlight}`, position: "relative", overflow: "hidden" }}>
-          <div style={{ position: "absolute", top: 0, left: "10%", right: "10%", height: 2, background: `linear-gradient(90deg, transparent, ${c.accent}30, transparent)`, borderRadius: "0 0 2px 2px" }} />
-          <div style={{ fontSize: 14, fontWeight: 800, color: c.text, marginBottom: 14 }}>Organization</div>
+        <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 12, padding: "20px 24px" }}>
+          <div style={{ fontSize: 14, fontWeight: 700, color: c.text, marginBottom: 14 }}>Organization</div>
           {[{ label: "Company", value: "Acme SaaS Corp" }, { label: "Fiscal Year End", value: "December 31" }, { label: "Currency", value: "USD" }, { label: "Plan", value: "Growth — $1,799/mo billed annually" }, { label: "Seats", value: "12 of 25 used" }, { label: "Data Region", value: "US-East (Virginia)" }, { label: "SSO Provider", value: "Not configured" }].map(f => (
             <div key={f.label} style={{ display: "flex", justifyContent: "space-between", padding: "11px 0", borderBottom: `1px solid ${c.borderSub}`, fontSize: 12 }}>
               <span style={{ color: c.textDim }}>{f.label}</span>
               <span style={{ color: c.text, fontWeight: 600 }}>{f.value}</span>
             </div>
           ))}
+          {/* Display Preferences */}
+          <div style={{ fontSize: 13, fontWeight: 700, color: c.text, marginTop: 20, marginBottom: 10 }}>Display</div>
+          {[
+            { label: "Right panel", desc: "Resources, social, and suite products", key: "suite", on: suitePanelOpen, action: () => { if (suitePanelOpen) { toast("Panel is currently visible", "info"); } else { onShowSuitePanel(); toast("Panel restored", "success"); } } },
+            { label: "Dark mode", desc: `Currently ${mode === "dark" ? "dark" : "light"} theme`, key: "theme", on: mode === "dark" },
+          ].map(p => (
+            <div key={p.key} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "10px 0", borderBottom: `1px solid ${c.borderSub}` }}>
+              <div>
+                <div style={{ fontSize: 12, fontWeight: 500, color: c.text }}>{p.label}</div>
+                <div style={{ fontSize: 10, color: c.textFaint }}>{p.desc}</div>
+              </div>
+              <div onClick={p.action} style={{
+                width: 36, height: 20, borderRadius: 10, position: "relative", cursor: p.action ? "pointer" : "default",
+                background: p.on ? c.accent : c.surfaceAlt, border: `1px solid ${p.on ? c.accent : c.borderSub}`,
+                transition: "all 0.3s cubic-bezier(0.22,1,0.36,1)",
+              }}>
+                <div style={{
+                  position: "absolute", top: 2, width: 14, height: 14, borderRadius: "50%",
+                  left: p.on ? 18 : 2, background: p.on ? "#fff" : c.textFaint,
+                  transition: "all 0.3s cubic-bezier(0.22,1,0.36,1)",
+                }} />
+              </div>
+            </div>
+          ))}
         </div>
       )}
 
-      {/* Display Preferences — always visible */}
-      <div style={{ background: c.glass, backdropFilter: c.glassBlur, WebkitBackdropFilter: c.glassBlur, border: `1px solid ${c.glassBorder}`, borderRadius: 16, padding: "22px 24px", boxShadow: `${c.cardGlow}, ${c.glassHighlight}`, position: "relative", overflow: "hidden", marginTop: 16 }}>
-        <div style={{ position: "absolute", top: 0, left: "10%", right: "10%", height: 2, background: `linear-gradient(90deg, transparent, ${c.purple}25, transparent)`, borderRadius: "0 0 2px 2px" }} />
-        <div style={{ fontSize: 14, fontWeight: 800, color: c.text, marginBottom: 14 }}>Display Preferences</div>
-        {[
-          { label: "Right panel", desc: "Show resources, social, and suite products on the right side", key: "suite", on: suitePanelOpen, action: () => { if (suitePanelOpen) { toast("Panel is currently visible", "info"); } else { onShowSuitePanel(); toast("Panel restored", "success"); } } },
-          { label: "Dark mode", desc: `Currently ${mode === "dark" ? "dark" : "light"} theme`, key: "theme", on: mode === "dark" },
-          { label: "Compact sidebar", desc: "Collapse sidebar to icons only", key: "sidebar", on: false },
-        ].map(p => (
-          <div key={p.key} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "12px 0", borderBottom: `1px solid ${c.borderSub}` }}>
-            <div>
-              <div style={{ fontSize: 12, fontWeight: 600, color: c.text }}>{p.label}</div>
-              <div style={{ fontSize: 10, color: c.textDim, marginTop: 1 }}>{p.desc}</div>
+      {/* Regional tab — expanded locales */}
+      {activeTab === "regional" && (
+        <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 12, padding: "20px 24px" }}>
+          <div style={{ fontSize: 14, fontWeight: 700, color: c.text, marginBottom: 4 }}>Regional & Currency</div>
+          <div style={{ fontSize: 11, color: c.textDim, marginBottom: 16 }}>Controls how numbers, dates, and currencies display across all reports and exports.</div>
+          {[
+            { label: "Region", key: "fos_region", value: region, setter: setRegion, options: [
+              { v: "US", l: "United States" }, { v: "GB", l: "United Kingdom" }, { v: "CA", l: "Canada" }, { v: "AU", l: "Australia" },
+              { v: "DE", l: "Germany" }, { v: "FR", l: "France" }, { v: "JP", l: "Japan" }, { v: "SG", l: "Singapore" },
+              { v: "HK", l: "Hong Kong SAR" }, { v: "IT", l: "Italy" }, { v: "BR", l: "Brazil" }, { v: "IN", l: "India" },
+              { v: "NL", l: "Netherlands" }, { v: "SE", l: "Sweden" }, { v: "CH", l: "Switzerland" }, { v: "AE", l: "United Arab Emirates" },
+              { v: "MX", l: "Mexico" }, { v: "KR", l: "South Korea" }, { v: "ES", l: "Spain" }, { v: "IE", l: "Ireland" },
+              { v: "IL", l: "Israel" }, { v: "PL", l: "Poland" }, { v: "NO", l: "Norway" }, { v: "DK", l: "Denmark" },
+              { v: "FI", l: "Finland" }, { v: "NZ", l: "New Zealand" }, { v: "ZA", l: "South Africa" }, { v: "PH", l: "Philippines" },
+            ]},
+            { label: "Language", key: "fos_lang", value: lang, setter: setLang, options: [
+              { v: "en", l: "English" }, { v: "en-GB", l: "English (UK)" }, { v: "es", l: "Espanol" },
+              { v: "es-MX", l: "Espanol (Mexico)" }, { v: "fr", l: "Francais" }, { v: "de", l: "Deutsch" },
+              { v: "it", l: "Italiano" }, { v: "pt", l: "Portugues" }, { v: "pt-BR", l: "Portugues (Brasil)" },
+              { v: "ja", l: "Japanese" }, { v: "zh", l: "Chinese (Simplified)" }, { v: "zh-TW", l: "Chinese (Traditional)" },
+              { v: "ko", l: "Korean" }, { v: "nl", l: "Nederlands" }, { v: "sv", l: "Svenska" },
+              { v: "da", l: "Dansk" }, { v: "nb", l: "Norsk" }, { v: "fi", l: "Suomi" },
+              { v: "pl", l: "Polski" }, { v: "he", l: "Hebrew" }, { v: "ar", l: "Arabic" },
+              { v: "hi", l: "Hindi" }, { v: "th", l: "Thai" }, { v: "vi", l: "Vietnamese" },
+            ]},
+            { label: "Currency", key: "fos_currency", value: currency, setter: setCurrency, options: [
+              { v: "USD", l: "$ USD" }, { v: "EUR", l: "EUR" }, { v: "GBP", l: "GBP" },
+              { v: "CAD", l: "$ CAD" }, { v: "AUD", l: "$ AUD" }, { v: "JPY", l: "JPY" },
+              { v: "CHF", l: "CHF" }, { v: "SGD", l: "$ SGD" }, { v: "HKD", l: "$ HKD" },
+              { v: "INR", l: "INR" }, { v: "BRL", l: "R$ BRL" }, { v: "SEK", l: "kr SEK" },
+              { v: "MXN", l: "$ MXN" }, { v: "KRW", l: "KRW" }, { v: "CNY", l: "CNY" },
+              { v: "NZD", l: "$ NZD" }, { v: "ZAR", l: "R ZAR" }, { v: "NOK", l: "kr NOK" },
+              { v: "DKK", l: "kr DKK" }, { v: "PLN", l: "zl PLN" }, { v: "ILS", l: "ILS" },
+              { v: "THB", l: "THB" }, { v: "PHP", l: "PHP" }, { v: "TWD", l: "NT$ TWD" },
+            ]},
+            { label: "Date Format", key: "fos_dateformat", value: dateFormat, setter: setDateFormat, options: [
+              { v: "MM/DD/YYYY", l: "MM/DD/YYYY" }, { v: "DD/MM/YYYY", l: "DD/MM/YYYY" },
+              { v: "YYYY-MM-DD", l: "YYYY-MM-DD (ISO)" }, { v: "DD.MM.YYYY", l: "DD.MM.YYYY" },
+              { v: "YYYY/MM/DD", l: "YYYY/MM/DD" },
+            ]},
+            { label: "Number Format", key: "fos_numformat", value: (() => { try { return localStorage.getItem("fos_numformat") || "1,234.56"; } catch { return "1,234.56"; } })(), setter: (v) => { try { localStorage.setItem("fos_numformat", v); } catch {} }, options: [
+              { v: "1,234.56", l: "1,234.56 (US/UK)" }, { v: "1.234,56", l: "1.234,56 (EU)" },
+              { v: "1 234,56", l: "1 234,56 (FR/SE)" }, { v: "1'234.56", l: "1'234.56 (CH)" },
+            ]},
+            { label: "Timezone", key: "fos_timezone", value: (() => { try { return localStorage.getItem("fos_timezone") || Intl.DateTimeFormat().resolvedOptions().timeZone; } catch { return "America/New_York"; } })(), setter: (v) => { try { localStorage.setItem("fos_timezone", v); } catch {} }, options: [
+              { v: "America/New_York", l: "Eastern (ET)" }, { v: "America/Chicago", l: "Central (CT)" },
+              { v: "America/Denver", l: "Mountain (MT)" }, { v: "America/Los_Angeles", l: "Pacific (PT)" },
+              { v: "Europe/London", l: "London (GMT/BST)" }, { v: "Europe/Paris", l: "Central Europe (CET)" },
+              { v: "Europe/Berlin", l: "Berlin (CET)" }, { v: "Asia/Tokyo", l: "Tokyo (JST)" },
+              { v: "Asia/Shanghai", l: "Shanghai (CST)" }, { v: "Asia/Singapore", l: "Singapore (SGT)" },
+              { v: "Asia/Kolkata", l: "India (IST)" }, { v: "Australia/Sydney", l: "Sydney (AEST)" },
+              { v: "America/Sao_Paulo", l: "Sao Paulo (BRT)" }, { v: "UTC", l: "UTC" },
+            ]},
+          ].map(f => (
+            <div key={f.key} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "10px 0", borderBottom: `1px solid ${c.borderSub}` }}>
+              <div style={{ fontSize: 12, fontWeight: 500, color: c.text }}>{f.label}</div>
+              <select value={f.value} onChange={e => { if (f.key.startsWith("fos_")) saveRegional(f.key, e.target.value, f.setter); else { f.setter(e.target.value); toast("Preference updated", "success"); } }} style={{
+                fontSize: 12, padding: "6px 28px 6px 10px", borderRadius: 6, border: `1px solid ${c.border}`,
+                background: c.surfaceAlt, color: c.text, fontFamily: "inherit", fontWeight: 600, cursor: "pointer",
+                appearance: "none", WebkitAppearance: "none", backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%236b7280'/%3E%3C/svg%3E")`,
+                backgroundRepeat: "no-repeat", backgroundPosition: "right 8px center", minWidth: 160,
+              }}>
+                {f.options.map(o => <option key={o.v} value={o.v}>{o.l}</option>)}
+              </select>
             </div>
-            <div onClick={p.action} style={{
-              width: 36, height: 20, borderRadius: 10, position: "relative", cursor: p.action ? "pointer" : "default",
-              background: p.on ? c.accent : c.surfaceAlt, border: `1px solid ${p.on ? c.accent : c.borderSub}`,
-              transition: "all 0.3s cubic-bezier(0.22,1,0.36,1)",
-            }}>
-              <div style={{
-                position: "absolute", top: 2, width: 14, height: 14, borderRadius: "50%",
-                left: p.on ? 18 : 2, background: p.on ? "#fff" : c.textFaint,
-                transition: "all 0.3s cubic-bezier(0.22,1,0.36,1)",
-              }} />
-            </div>
-          </div>
-        ))}
-      </div>
-
-      {/* Regional & Currency */}
-      <div style={{ background: c.glass, backdropFilter: c.glassBlur, WebkitBackdropFilter: c.glassBlur, border: `1px solid ${c.glassBorder}`, borderRadius: 16, padding: "22px 24px", boxShadow: `${c.cardGlow}, ${c.glassHighlight}`, position: "relative", overflow: "hidden", marginTop: 16 }}>
-        <div style={{ position: "absolute", top: 0, left: "10%", right: "10%", height: 2, background: `linear-gradient(90deg, transparent, ${c.cyan}25, transparent)`, borderRadius: "0 0 2px 2px" }} />
-        <div style={{ fontSize: 14, fontWeight: 800, color: c.text, marginBottom: 4 }}>Regional & Currency</div>
-        <div style={{ fontSize: 11, color: c.textDim, marginBottom: 16 }}>Controls how numbers, dates, and currencies display across all reports and exports.</div>
-        {[
-          { label: "Region", key: "fos_region", value: region, setter: setRegion, options: [
-            { v: "US", l: "United States" }, { v: "GB", l: "United Kingdom" }, { v: "CA", l: "Canada" }, { v: "AU", l: "Australia" },
-            { v: "DE", l: "Germany" }, { v: "FR", l: "France" }, { v: "JP", l: "Japan" }, { v: "SG", l: "Singapore" },
-            { v: "HK", l: "Hong Kong SAR" }, { v: "IT", l: "Italy" }, { v: "BR", l: "Brazil" }, { v: "IN", l: "India" },
-            { v: "NL", l: "Netherlands" }, { v: "SE", l: "Sweden" }, { v: "CH", l: "Switzerland" }, { v: "AE", l: "United Arab Emirates" },
-          ]},
-          { label: "Language", key: "fos_lang", value: lang, setter: setLang, options: [
-            { v: "en", l: "English" }, { v: "en-GB", l: "English (UK)" }, { v: "es", l: "Espanol" }, { v: "fr", l: "Francais" },
-            { v: "de", l: "Deutsch" }, { v: "ja", l: "Japanese" }, { v: "zh", l: "Chinese (Simplified)" }, { v: "pt", l: "Portugues" },
-          ]},
-          { label: "Currency", key: "fos_currency", value: currency, setter: setCurrency, options: [
-            { v: "USD", l: "$ USD" }, { v: "EUR", l: "EUR" }, { v: "GBP", l: "GBP" }, { v: "CAD", l: "$ CAD" },
-            { v: "AUD", l: "$ AUD" }, { v: "JPY", l: "JPY" }, { v: "CHF", l: "CHF" }, { v: "SGD", l: "$ SGD" },
-            { v: "HKD", l: "$ HKD" }, { v: "INR", l: "INR" }, { v: "BRL", l: "R$ BRL" }, { v: "SEK", l: "kr SEK" },
-          ]},
-          { label: "Date Format", key: "fos_dateformat", value: dateFormat, setter: setDateFormat, options: [
-            { v: "MM/DD/YYYY", l: "MM/DD/YYYY" }, { v: "DD/MM/YYYY", l: "DD/MM/YYYY" }, { v: "YYYY-MM-DD", l: "YYYY-MM-DD (ISO)" }, { v: "DD.MM.YYYY", l: "DD.MM.YYYY" },
-          ]},
-        ].map(f => (
-          <div key={f.key} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "10px 0", borderBottom: `1px solid ${c.borderSub}` }}>
-            <div style={{ fontSize: 12, fontWeight: 600, color: c.text }}>{f.label}</div>
-            <select value={f.value} onChange={e => saveRegional(f.key, e.target.value, f.setter)} style={{
-              fontSize: 12, padding: "6px 28px 6px 10px", borderRadius: 6, border: `1px solid ${c.border}`,
-              background: c.surfaceAlt, color: c.text, fontFamily: "inherit", fontWeight: 600, cursor: "pointer",
-              appearance: "none", WebkitAppearance: "none", backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%236b7280'/%3E%3C/svg%3E")`,
-              backgroundRepeat: "no-repeat", backgroundPosition: "right 8px center",
-            }}>
-              {f.options.map(o => <option key={o.v} value={o.v}>{o.l}</option>)}
-            </select>
-          </div>
-        ))}
-        <div style={{ fontSize: 9, color: c.textFaint, marginTop: 10 }}>Changes apply to dashboard, reports, and exports. Multi-entity consolidation uses entity-level currency settings.</div>
-      </div>
+          ))}
+          <div style={{ fontSize: 9, color: c.textFaint, marginTop: 10 }}>Changes apply to dashboard, reports, and exports. Multi-entity consolidation uses entity-level currency settings.</div>
+        </div>
+      )}
 
       {activeTab === "billing" && (
-        <div style={{ background: c.glass, backdropFilter: c.glassBlur, WebkitBackdropFilter: c.glassBlur, border: `1px solid ${c.glassBorder}`, borderRadius: 16, padding: "24px 24px 18px", boxShadow: `${c.cardGlow}, ${c.glassHighlight}`, position: "relative", overflow: "hidden" }}>
-          <div style={{ position: "absolute", top: 0, left: "10%", right: "10%", height: 2, background: `linear-gradient(90deg, transparent, ${c.accent}30, transparent)`, borderRadius: "0 0 2px 2px" }} />
-          <div style={{ fontSize: 14, fontWeight: 800, color: c.text, marginBottom: 16 }}>Billing & Subscription</div>
+        <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 12, padding: "20px 24px" }}>
+          <div style={{ fontSize: 14, fontWeight: 700, color: c.text, marginBottom: 16 }}>Billing & Subscription</div>
           <div style={{ display: "flex", gap: 12, marginBottom: 16 }}>
             <div style={{ flex: 1, padding: "16px 16px", borderRadius: 12, background: `linear-gradient(135deg, ${c.accent}08, ${c.purple}04)`, border: `1px solid ${c.accent}15` }}>
               <div style={{ fontSize: 9, color: c.accent, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 6 }}>Current Plan</div>
@@ -4135,9 +4165,8 @@ const SettingsView = ({ c, onLogout, toast, mode, onShowSuitePanel, suitePanelOp
       )}
 
       {activeTab === "security" && (<>
-        <div style={{ background: c.glass, backdropFilter: c.glassBlur, WebkitBackdropFilter: c.glassBlur, border: `1px solid ${c.glassBorder}`, borderRadius: 16, padding: "24px 24px 18px", boxShadow: `${c.cardGlow}, ${c.glassHighlight}`, position: "relative", overflow: "hidden" }}>
-          <div style={{ position: "absolute", top: 0, left: "10%", right: "10%", height: 2, background: `linear-gradient(90deg, transparent, ${c.green}30, transparent)`, borderRadius: "0 0 2px 2px" }} />
-          <div style={{ fontSize: 14, fontWeight: 800, color: c.text, marginBottom: 16 }}>Security & Access</div>
+        <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 12, padding: "20px 24px" }}>
+          <div style={{ fontSize: 14, fontWeight: 700, color: c.text, marginBottom: 16 }}>Security & Access</div>
           {[{ label: "Two-Factor Authentication", value: "Enabled (TOTP)", status: "green" }, { label: "Last Password Change", value: "42 days ago", status: "amber" }, { label: "Active Sessions", value: "2 devices", status: "accent" }, { label: "API Keys", value: "1 active (created Mar 2)", status: "accent" }, { label: "Audit Log", value: "312 events this month", status: "accent" }].map(f => (
             <div key={f.label} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "12px 0", borderBottom: `1px solid ${c.borderSub}`, fontSize: 12 }}>
               <span style={{ color: c.textSec, fontWeight: 500 }}>{f.label}</span>
@@ -4149,9 +4178,8 @@ const SettingsView = ({ c, onLogout, toast, mode, onShowSuitePanel, suitePanelOp
           ))}
         </div>
         {/* Password Change */}
-        <div style={{ background: c.glass, backdropFilter: c.glassBlur, WebkitBackdropFilter: c.glassBlur, border: `1px solid ${c.glassBorder}`, borderRadius: 16, padding: "22px 24px", boxShadow: `${c.cardGlow}, ${c.glassHighlight}`, marginTop: 16, position: "relative", overflow: "hidden" }}>
-          <div style={{ position: "absolute", top: 0, left: "10%", right: "10%", height: 2, background: `linear-gradient(90deg, transparent, ${c.amber}25, transparent)`, borderRadius: "0 0 2px 2px" }} />
-          <div style={{ fontSize: 14, fontWeight: 800, color: c.text, marginBottom: 12 }}>Change Password</div>
+        <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 12, padding: "20px 24px", marginTop: 16 }}>
+          <div style={{ fontSize: 14, fontWeight: 700, color: c.text, marginBottom: 12 }}>Change Password</div>
           <div style={{ display: "flex", flexDirection: "column", gap: 10, maxWidth: 360 }}>
             <input type="password" placeholder="New password (8+ characters)" style={{ fontSize: 12, padding: "10px 14px", borderRadius: 8, border: `1px solid ${c.border}`, background: c.surfaceAlt, color: c.text, fontFamily: "inherit", outline: "none" }}
               id="pw-new" onFocus={e => e.target.style.borderColor = c.accent} onBlur={e => e.target.style.borderColor = c.border} />
@@ -4176,9 +4204,8 @@ const SettingsView = ({ c, onLogout, toast, mode, onShowSuitePanel, suitePanelOp
 
       {activeTab === "session" && (<>
         {/* Sign Out */}
-        <div style={{ background: c.glass, backdropFilter: c.glassBlur, WebkitBackdropFilter: c.glassBlur, border: `1px solid ${c.glassBorder}`, borderRadius: 16, padding: "22px 24px", boxShadow: `${c.cardGlow}, ${c.glassHighlight}`, marginBottom: 16, position: "relative", overflow: "hidden" }}>
-          <div style={{ position: "absolute", top: 0, left: "10%", right: "10%", height: 2, background: `linear-gradient(90deg, transparent, ${c.green}25, transparent)`, borderRadius: "0 0 2px 2px" }} />
-          <div style={{ fontSize: 14, fontWeight: 800, color: c.text, marginBottom: 6 }}>Active Session</div>
+        <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 12, padding: "20px 24px", marginBottom: 16 }}>
+          <div style={{ fontSize: 14, fontWeight: 700, color: c.text, marginBottom: 6 }}>Active Session</div>
           <div style={{ fontSize: 11, color: c.textDim, marginBottom: 14 }}>Signed in as <span style={{ color: c.text, fontWeight: 600 }}>sarah.chen@acme.io</span> · VP Finance</div>
           <div style={{ display: "flex", gap: 8, marginBottom: 12 }}>
             {[{ label: "Device", value: "MacBook Pro" }, { label: "Browser", value: "Chrome 122" }, { label: "Location", value: "San Francisco, CA" }, { label: "IP", value: "192.168.1.***" }].map(d => (
@@ -4193,7 +4220,7 @@ const SettingsView = ({ c, onLogout, toast, mode, onShowSuitePanel, suitePanelOp
           </button>
         </div>
         {/* Data Privacy & Rights — GDPR/CCPA */}
-        <div style={{ background: c.glass, backdropFilter: c.glassBlur, WebkitBackdropFilter: c.glassBlur, border: `1px solid ${c.glassBorder}`, borderRadius: 16, padding: "22px 24px", boxShadow: c.cardGlow }}>
+        <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 12, padding: "20px 24px" }}>
           <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6 }}>
             <Shield size={16} color={c.accent} />
             <div style={{ fontSize: 14, fontWeight: 700, color: c.text }}>Data Privacy & Rights</div>
@@ -4236,7 +4263,7 @@ const SettingsView = ({ c, onLogout, toast, mode, onShowSuitePanel, suitePanelOp
         </div>
 
         {/* Delete Account */}
-        <div style={{ background: c.surface, border: `1px solid ${c.red}30`, borderRadius: 16, padding: "22px 24px", boxShadow: c.cardGlow }}>
+        <div style={{ background: c.surface, border: `1px solid ${c.red}30`, borderRadius: 12, padding: "20px 24px" }}>
           <div style={{ fontSize: 14, fontWeight: 700, color: c.red, marginBottom: 6 }}>Delete Account & Data</div>
           <div style={{ fontSize: 12, color: c.textDim, lineHeight: 1.7, marginBottom: 14 }}>Permanently delete your organization, all users, financial data, integrations, and AI conversation history. This complies with GDPR Article 17 (Right to Erasure). This action is irreversible and takes effect immediately.</div>
           {!deleteConfirm ? (
@@ -4272,6 +4299,8 @@ const SettingsView = ({ c, onLogout, toast, mode, onShowSuitePanel, suitePanelOp
           )}
         </div>
       </>)}
+        </div>{/* close Content */}
+      </div>{/* close sidebar flex row */}
     </div>
   );
 };
@@ -5953,8 +5982,25 @@ const LandingPage = ({ onLogin }) => {
             </div>
           ))}
         </div>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", paddingTop: 20, borderTop: "1px solid #1e2230", fontSize: 11, color: "#3d4558" }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", paddingTop: 20, borderTop: "1px solid #1e2230", fontSize: 11, color: "#3d4558", flexWrap: "wrap", gap: 12 }}>
           <span>© {new Date().getFullYear()} Financial Holding LLC · All rights reserved</span>
+          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+            {/* Locale picker — landing page */}
+            {[
+              { key: "fos_lang", options: [["en","EN"],["es","ES"],["fr","FR"],["de","DE"],["ja","JA"],["zh","ZH"],["pt","PT"],["ko","KO"],["it","IT"],["nl","NL"]] },
+              { key: "fos_currency", options: [["USD","USD"],["EUR","EUR"],["GBP","GBP"],["CAD","CAD"],["AUD","AUD"],["JPY","JPY"],["CHF","CHF"],["BRL","BRL"],["INR","INR"],["KRW","KRW"]] },
+            ].map(sel => (
+              <select key={sel.key} defaultValue={(() => { try { return localStorage.getItem(sel.key) || sel.options[0][0]; } catch { return sel.options[0][0]; } })()} onChange={e => { try { localStorage.setItem(sel.key, e.target.value); } catch {} }} style={{
+                fontSize: 10, padding: "3px 20px 3px 6px", borderRadius: 4, border: "1px solid #1e2230",
+                background: "transparent", color: "#636d84", fontFamily: "'JetBrains Mono', monospace", fontWeight: 600,
+                cursor: "pointer", appearance: "none", WebkitAppearance: "none",
+                backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='5'%3E%3Cpath d='M0 0l4 5 4-5z' fill='%23636d84'/%3E%3C/svg%3E")`,
+                backgroundRepeat: "no-repeat", backgroundPosition: "right 5px center",
+              }}>
+                {sel.options.map(([v, l]) => <option key={v} value={v}>{l}</option>)}
+              </select>
+            ))}
+          </div>
           <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
             <span>Built with care in New Hampshire</span>
             {[
