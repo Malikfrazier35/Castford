@@ -694,7 +694,7 @@ const Btn = ({ children, variant = "primary", size = "md", loading, disabled, on
 // ══════════════════════════════════════════════════════════════
 // ENV 2: AI DIGITAL-INTELLIGENCE PIPELINE
 // ══════════════════════════════════════════════════════════════
-const AI_SYSTEM_PROMPT = `You are FinanceOS AI Copilot for Acme SaaS Corp. You have complete access to their financials.
+const AI_SYSTEM_PROMPT = `You are FinanceOS AI Copilot. You have complete access to the company financials.
 
 KEY METRICS (FY2025 YTD):
 - Revenue: $51.19M (+4.3% vs $49.1M plan)
@@ -868,14 +868,14 @@ const StatusBanner = memo(({ dark }) => {
   );
 });
 
-const DemoBanner = memo(({ c, onNav, onUpgrade }) => (
+const DemoBanner = memo(({ c, onNav, onUpgrade, orgName }) => (
   <div style={{
     display: "flex", alignItems: "center", justifyContent: "center", gap: 12, padding: "8px 16px",
     background: `linear-gradient(90deg, ${c.accent}15, ${c.purple}10)`, borderBottom: `1px solid ${c.accent}20`,
     fontSize: 11, color: c.textSec, flexShrink: 0, flexWrap: "wrap",
   }}>
     <span style={{ fontSize: 8, fontWeight: 800, padding: "2px 6px", borderRadius: 3, background: c.accentDim, color: c.accent, letterSpacing: "0.06em" }}>DEMO</span>
-    <span>Viewing sample data for <strong style={{ color: c.text }}>Acme SaaS Corp</strong></span>
+    <span>Viewing sample data for <strong style={{ color: c.text }}>{orgName || "your organization"}</strong></span>
     <span style={{ width: 3, height: 3, borderRadius: "50%", background: c.textFaint }} />
     <span onClick={() => onNav("integrations")} style={{ fontSize: 10, color: c.accent, fontWeight: 700, cursor: "pointer" }}>Connect Your ERP</span>
     <span style={{ width: 3, height: 3, borderRadius: "50%", background: c.textFaint }} />
@@ -2005,7 +2005,7 @@ const COPILOT_RESPONSES = {
   "churn": "**Churn & Retention Analysis**\n\n**Logo churn:** 4.2% annualized (8 accounts lost of 192)\n• 5 were SMB (<$25K) — expected at this segment\n• 2 mid-market lost to competitors on price\n• 1 enterprise churned due to M&A (acquired company standardized)\n\n**Revenue churn:** 2.1% gross, offset by 118% NDR\n• Net revenue retention: 118% means every $1 from last year is now $1.18\n• Expansion: AI module upsell (34% attach), seat expansion, tier upgrades\n\n**Cohort trend:** 2023 cohort NDR at 124% (maturing well). 2024 cohort at 112% (still early).\n\n**Recommendation:** Launch mid-market win-back campaign targeting the 2 competitor losses. Pricing flexibility in the $25-50K band.",
   "expense": "**Expense Variance Summary — YTD**\n\n**Over budget (action needed):**\n• S&M: +$730K over (+5.0%) — Hiring $420K ahead of plan, events $180K for re:Invent\n• Cloud/Infra: +$455K over (+12.4%) — AI inference costs scaling faster than modeled\n\n**Under budget (favorable):**\n• R&D: -$278K under (-1.4%) — two senior hires delayed to Q3\n• G&A: -$255K under (-5.0%) — legal fees lower than budgeted\n\n**Total OpEx:** $39.6M vs $39.4M budget (+$200K net, +0.5%)\n\n**Recommendation:** S&M overspend is deliberate (pipeline ROI 7.2x). Cloud costs need attention — set up inference cost alerts at $0.006/query threshold.",
   "forecast": "**Forecast Accuracy Assessment**\n\n**Current model:** ETS + XGBoost + Linear ensemble\n• MAPE: 3.2% (industry median: 8-12%)\n• Best on: Revenue, COGS (1.8% MAPE)\n• Weakest on: S&M timing (6.1% MAPE — event spend lumpy)\n\n**14 drivers tracked:**\n• Pipeline velocity, win rates, ACV, NDR, logo churn\n• Headcount plan, cloud costs, AI usage, event calendar\n• 3 external: Fed rate, SaaS multiples, hiring index\n\n**Confidence intervals:**\n• Q3 revenue: $13.2M ± $420K (95% CI)\n• Full year: $52.8M ± $1.6M\n\n**Recommendation:** Retrain weekly during Q3 (board prep). Add competitor pricing as a driver — 2 recent losses correlated with competitor price drops.",
-  "default": "I have Acme's full financials, SaaS metrics, benchmarks, and competitive data loaded. That's a great question — let me analyze the data.\n\nBased on the current performance:\n• Revenue: $51.19M YTD (+4.3% vs plan)\n• Gross margin: 84.7%\n• Rule of 40: 52.1 (top quartile)\n• NDR: 118%\n• Burn multiple: 0.8x (efficient)\n• Cash runway: 34 months ($12.8M)\n\nI can help with variance analysis, scenario modeling, competitive benchmarks, forecasting, churn analysis, or expense deep-dives. What would you like to explore?",
+  "default": "I have the company's full financials, SaaS metrics, benchmarks, and competitive data loaded. That's a great question — let me analyze the data.\n\nBased on the current performance:\n• Revenue: $51.19M YTD (+4.3% vs plan)\n• Gross margin: 84.7%\n• Rule of 40: 52.1 (top quartile)\n• NDR: 118%\n• Burn multiple: 0.8x (efficient)\n• Cash runway: 34 months ($12.8M)\n\nI can help with variance analysis, scenario modeling, competitive benchmarks, forecasting, churn analysis, or expense deep-dives. What would you like to explore?",
 };
 
 // Inline markdown: **bold** and `code`
@@ -2020,7 +2020,7 @@ const renderInline = (text, c) => {
 
 const CopilotView = ({ c, toast, logActivity }) => {
   const [messages, setMessages] = useState([
-    { role: "assistant", content: "Welcome to FinanceOS AI Copilot.\n\nI have Acme's full financials, SaaS metrics, benchmarks, and competitive data loaded. Ask me anything and I'll show my reasoning before answering.\n\n**6 active variances** — Revenue +$2.09M, S&M and Cloud over. Rule of 40 at 52.1 (top quartile)." },
+    { role: "assistant", content: "Welcome to FinanceOS AI Copilot.\n\nI have the company's full financials, SaaS metrics, benchmarks, and competitive data loaded. Ask me anything and I'll show my reasoning before answering.\n\n**6 active variances** — Revenue +$2.09M, S&M and Cloud over. Rule of 40 at 52.1 (top quartile)." },
   ]);
   const [input, setInput] = useState("");
   const [thinking, setThinking] = useState(false);
@@ -2213,7 +2213,7 @@ const CopilotView = ({ c, toast, logActivity }) => {
 // ══════════════════════════════════════════════════════════════
 // P&L VIEW
 // ══════════════════════════════════════════════════════════════
-const PnlView = ({ c, onNav, toast }) => {
+const PnlView = ({ c, onNav, toast, orgName }) => {
   const [collapsed, setCollapsed] = useState({});
   const [sortCol, setSortCol] = useState(null); // null | "actual" | "budget" | "variance" | "pctrev"
   const [sortDir, setSortDir] = useState("desc");
@@ -2281,7 +2281,7 @@ const PnlView = ({ c, onNav, toast }) => {
       </div>
       <ExportBar c={c} title=""
         onCSV={() => { const rows = PNL_DATA.flatMap(s => [...s.rows.map(r => [s.section, r.name, r.actual, r.budget, r.actual - r.budget, r.note || ""]), [s.section, s.total.name, s.total.actual, s.total.budget, s.total.actual - s.total.budget, ""]]); downloadCSV("financeos-pnl-fy2025.csv", ["Section","Line Item","Actual ($K)","Budget ($K)","Variance ($K)","Notes"], rows); toast("P&L exported as CSV", "success"); }}
-        onPDF={() => { const rows = PNL_DATA.flatMap(s => [...s.rows.map(r => [r.name, "$" + r.actual.toLocaleString() + "K", "$" + r.budget.toLocaleString() + "K", "$" + (r.actual - r.budget).toLocaleString() + "K", ((r.actual - r.budget) / Math.abs(r.budget) * 100).toFixed(1) + "%"]), [s.total.name, "$" + s.total.actual.toLocaleString() + "K", "$" + s.total.budget.toLocaleString() + "K", "$" + (s.total.actual - s.total.budget).toLocaleString() + "K", ((s.total.actual - s.total.budget) / Math.abs(s.total.budget) * 100).toFixed(1) + "%"]]); downloadPDF("PnL Statement FY2025", ["Line Item", "Actual", "Budget", "Variance", "Var %"], rows, { subtitle: "Acme SaaS Corp" }); toast("P\x26L exported as PDF", "success"); }}
+        onPDF={() => { const rows = PNL_DATA.flatMap(s => [...s.rows.map(r => [r.name, "$" + r.actual.toLocaleString() + "K", "$" + r.budget.toLocaleString() + "K", "$" + (r.actual - r.budget).toLocaleString() + "K", ((r.actual - r.budget) / Math.abs(r.budget) * 100).toFixed(1) + "%"]), [s.total.name, "$" + s.total.actual.toLocaleString() + "K", "$" + s.total.budget.toLocaleString() + "K", "$" + (s.total.actual - s.total.budget).toLocaleString() + "K", ((s.total.actual - s.total.budget) / Math.abs(s.total.budget) * 100).toFixed(1) + "%"]]); downloadPDF("PnL Statement FY2025", ["Line Item", "Actual", "Budget", "Variance", "Var %"], rows, { subtitle: orgName || "Financial Report" }); toast("P\x26L exported as PDF", "success"); }}
       />
       {/* Financial Summary KPIs */}
       <div style={{ fontSize: 9, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.12em", color: c.textFaint, marginBottom: 10, display: "flex", alignItems: "center", gap: 8 }}>
@@ -4008,7 +4008,7 @@ const ScenariosView = ({ c, toast }) => {
 // ══════════════════════════════════════════════════════════════
 // ENV 11: CUSTOMER SIGN-IN / SIGN-OUT / ACCOUNT DELETION
 // ══════════════════════════════════════════════════════════════
-const SettingsView = ({ c, onLogout, toast, mode, onShowSuitePanel, suitePanelOpen }) => {
+const SettingsView = ({ c, onLogout, toast, mode, onShowSuitePanel, suitePanelOpen, user }) => {
   const [deleteConfirm, setDeleteConfirm] = useState(false);
   const [deleteText, setDeleteText] = useState("");
   const [activeTab, setActiveTab] = useState("org");
@@ -4062,7 +4062,7 @@ const SettingsView = ({ c, onLogout, toast, mode, onShowSuitePanel, suitePanelOp
       {activeTab === "org" && (
         <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 12, padding: "20px 24px" }}>
           <div style={{ fontSize: 14, fontWeight: 700, color: c.text, marginBottom: 14 }}>Organization</div>
-          {[{ label: "Company", value: "Acme SaaS Corp" }, { label: "Fiscal Year End", value: "December 31" }, { label: "Currency", value: "USD" }, { label: "Plan", value: "Growth — $1,799/mo billed annually" }, { label: "Seats", value: "12 of 25 used" }, { label: "Data Region", value: "US-East (Virginia)" }, { label: "SSO Provider", value: "Not configured" }].map(f => (
+          {[{ label: "Company", value: user?.orgName || "My Organization" }, { label: "Fiscal Year End", value: "December 31" }, { label: "Currency", value: "USD" }, { label: "Plan", value: user?.plan ? user.plan.charAt(0).toUpperCase() + user.plan.slice(1) : "Demo" }, { label: "Seats", value: "12 of 25 used" }, { label: "Data Region", value: "US-East (Virginia)" }, { label: "SSO Provider", value: "Not configured" }].map(f => (
             <div key={f.label} style={{ display: "flex", justifyContent: "space-between", padding: "11px 0", borderBottom: `1px solid ${c.borderSub}`, fontSize: 12 }}>
               <span style={{ color: c.textDim }}>{f.label}</span>
               <span style={{ color: c.text, fontWeight: 600 }}>{f.value}</span>
@@ -4316,13 +4316,13 @@ const SettingsView = ({ c, onLogout, toast, mode, onShowSuitePanel, suitePanelOp
             <button onClick={() => setDeleteConfirm(true)} style={{ fontSize: 11, padding: "9px 18px", borderRadius: 8, border: `1px solid ${c.red}40`, background: c.redDim, color: c.red, cursor: "pointer", fontFamily: "inherit", fontWeight: 700 }}>Delete Account</button>
           ) : (
             <div>
-              <div style={{ fontSize: 11, color: c.red, fontWeight: 600, marginBottom: 8 }}>Type "DELETE ACME SAAS CORP" to confirm:</div>
-              <input value={deleteText} onChange={e => setDeleteText(e.target.value)} placeholder="DELETE ACME SAAS CORP" style={{
+              <div style={{ fontSize: 11, color: c.red, fontWeight: 600, marginBottom: 8 }}>Type "DELETE {(user?.orgName || "MY ORG").toUpperCase()}" to confirm:</div>
+              <input value={deleteText} onChange={e => setDeleteText(e.target.value)} placeholder={`DELETE ${(user?.orgName || "MY ORG").toUpperCase()}`} style={{
                 width: "100%", fontSize: 12, padding: "9px 14px", borderRadius: 8, border: `1px solid ${c.red}40`,
                 background: c.bg2, color: c.text, fontFamily: "'JetBrains Mono', monospace", outline: "none", marginBottom: 10,
               }} />
               <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
-                <button disabled={deleteText !== "DELETE ACME SAAS CORP"} onClick={async () => {
+                <button disabled={deleteText !== `DELETE ${(user?.orgName || "MY ORG").toUpperCase()}`} onClick={async () => {
                   try {
                     const { data: { session } } = await supabase.auth.getSession();
                     if (session?.access_token) {
@@ -4338,7 +4338,7 @@ const SettingsView = ({ c, onLogout, toast, mode, onShowSuitePanel, suitePanelOp
                   setDeleteConfirm(false); setDeleteText(""); 
                   toast("Account and all data permanently deleted.", "warning");
                   if (typeof onLogout === "function") onLogout();
-                }} style={{ fontSize: 11, padding: "9px 18px", borderRadius: 8, border: "none", background: deleteText === "DELETE ACME SAAS CORP" ? c.red : c.textFaint, color: "#fff", cursor: deleteText === "DELETE ACME SAAS CORP" ? "pointer" : "not-allowed", fontFamily: "inherit", fontWeight: 700, opacity: deleteText === "DELETE ACME SAAS CORP" ? 1 : 0.4 }}>Permanently Delete</button>
+                }} style={{ fontSize: 11, padding: "9px 18px", borderRadius: 8, border: "none", background: deleteText === `DELETE ${(user?.orgName || "MY ORG").toUpperCase()}` ? c.red : c.textFaint, color: "#fff", cursor: deleteText === `DELETE ${(user?.orgName || "MY ORG").toUpperCase()}` ? "pointer" : "not-allowed", fontFamily: "inherit", fontWeight: 700, opacity: deleteText === `DELETE ${(user?.orgName || "MY ORG").toUpperCase()}` ? 1 : 0.4 }}>Permanently Delete</button>
                 <button onClick={() => { setDeleteConfirm(false); setDeleteText(""); }} style={{ fontSize: 11, padding: "9px 18px", borderRadius: 8, border: `1px solid ${c.border}`, background: "transparent", color: c.textSec, cursor: "pointer", fontFamily: "inherit", fontWeight: 600 }}>Cancel</button>
               </div>
             </div>
@@ -6748,7 +6748,7 @@ function FinanceOSApp() {
                 <span style={{ fontWeight: 800, fontSize: 15, color: c.text, letterSpacing: "-0.3px", whiteSpace: "nowrap" }}>Finance<span style={{ fontWeight: 400, opacity: 0.6 }}>OS</span></span>
                 <span style={{ fontSize: 7, fontWeight: 800, padding: "2px 5px", borderRadius: 3, background: user.plan === "demo" ? c.amberDim : user.plan === "pending" || !user.plan ? `${c.accent}12` : `${c.green}12`, color: user.plan === "demo" ? c.amber : user.plan === "pending" || !user.plan ? c.accent : c.green, letterSpacing: "0.06em", textTransform: "uppercase" }}>{user.plan === "demo" ? "DEMO" : user.plan ? user.plan.toUpperCase() : "STARTER"}</span>
               </div>
-              <div style={{ fontSize: 9, color: c.textFaint, marginTop: 2, whiteSpace: "nowrap" }}>Acme SaaS Corp · FY2025</div>
+              <div style={{ fontSize: 9, color: c.textFaint, marginTop: 2, whiteSpace: "nowrap" }}>{user.orgName || "My Org"} · FY{new Date().getFullYear()}</div>
             </div>}
           </div>
           {!sidebarCollapsed && (
@@ -6865,7 +6865,7 @@ function FinanceOSApp() {
         <StatusBanner dark={mode === "dark"} />
 
         {/* Demo data banner — ENV 7 */}
-        {user.plan === "demo" && <DemoBanner c={c} onNav={navigate} onUpgrade={() => setShowPlanPicker(true)} />}
+        {user.plan === "demo" && <DemoBanner c={c} onNav={navigate} onUpgrade={() => setShowPlanPicker(true)} orgName={user.orgName} />}
 
         {/* Topbar — frosted glass */}
         <div className="theme-transition" style={{
@@ -7002,7 +7002,7 @@ function FinanceOSApp() {
           {viewLoading ? <LoadingSkeleton c={c} /> : (<>
           {view === "dashboard" && <SectionBoundary name="Dashboard" bg={c.surface} borderColor={c.border} textColor={c.textDim} accentColor={c.accent}><DashboardView c={c} onNav={navigate} toast={toast} onDrawer={setDrawerKpi} userName={user.name} period={period} closeTasks={closeTasks} activityLog={activityLog} /></SectionBoundary>}
           {view === "copilot" && <SectionBoundary name="AI Copilot" bg={c.surface} borderColor={c.border} textColor={c.textDim} accentColor={c.accent}><CopilotView c={c} toast={toast} logActivity={logActivity} /></SectionBoundary>}
-          {view === "pnl" && <SectionBoundary name="P&L Statement" bg={c.surface} borderColor={c.border} textColor={c.textDim} accentColor={c.accent}><PnlView c={c} onNav={navigate} toast={toast} logActivity={logActivity} /></SectionBoundary>}
+          {view === "pnl" && <SectionBoundary name="P&L Statement" bg={c.surface} borderColor={c.border} textColor={c.textDim} accentColor={c.accent}><PnlView c={c} onNav={navigate} toast={toast} logActivity={logActivity} orgName={user.orgName} /></SectionBoundary>}
           {view === "forecast" && <SectionBoundary name="Forecast Optimizer" bg={c.surface} borderColor={c.border} textColor={c.textDim} accentColor={c.accent}><ForecastView c={c} toast={toast} /></SectionBoundary>}
           {view === "consolidation" && <SectionBoundary name="Consolidation" bg={c.surface} borderColor={c.border} textColor={c.textDim} accentColor={c.accent}><ConsolidationView c={c} onNav={navigate} toast={toast} /></SectionBoundary>}
           {view === "models" && <SectionBoundary name="Scenario Models" bg={c.surface} borderColor={c.border} textColor={c.textDim} accentColor={c.accent}><ScenariosView c={c} toast={toast} /></SectionBoundary>}
@@ -7010,7 +7010,7 @@ function FinanceOSApp() {
           {view === "integrations" && <SectionBoundary name="Integrations" bg={c.surface} borderColor={c.border} textColor={c.textDim} accentColor={c.accent}><IntegrationsView c={c} toast={toast} /></SectionBoundary>}
           {view === "admin" && <SectionBoundary name="Admin Panel" bg={c.surface} borderColor={c.border} textColor={c.textDim} accentColor={c.accent}><AdminView c={c} toast={toast} onNav={navigate} /></SectionBoundary>}
           {view === "investor" && <SectionBoundary name="Investor Relations" bg={c.surface} borderColor={c.border} textColor={c.textDim} accentColor={c.accent}><InvestorView c={c} toast={toast} /></SectionBoundary>}
-          {view === "settings" && <SectionBoundary name="Settings" bg={c.surface} borderColor={c.border} textColor={c.textDim} accentColor={c.accent}><SettingsView c={c} onLogout={handleLogout} toast={toast} mode={mode} onShowSuitePanel={() => { setSuitePanelOpen(true); try { localStorage.removeItem("financeos-suite-dismissed"); } catch {} }} suitePanelOpen={suitePanelOpen} /></SectionBoundary>}
+          {view === "settings" && <SectionBoundary name="Settings" bg={c.surface} borderColor={c.border} textColor={c.textDim} accentColor={c.accent}><SettingsView c={c} onLogout={handleLogout} toast={toast} mode={mode} user={user} onShowSuitePanel={() => { setSuitePanelOpen(true); try { localStorage.removeItem("financeos-suite-dismissed"); } catch {} }} suitePanelOpen={suitePanelOpen} /></SectionBoundary>}
           </>)}
         </div>
 
