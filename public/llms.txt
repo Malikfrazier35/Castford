@@ -74,3 +74,10 @@ FinanceOS is a cloud-native FP&A platform that replaces legacy FP&A tools and en
 - Vaultline: Treasury management
 - Parallax: Aerospace supplier compliance (AS9100D, CMMC)
 - Emberglow Advisory: ESG and sustainability advisory
+
+## Content Pages
+- FinanceOS vs Anaplan: https://finance-os.app/compare/anaplan
+- FinanceOS vs Pigment: https://finance-os.app/compare/pigment
+- SaaS FP&A Guide: https://finance-os.app/use-cases/saas-fpa
+- Request Demo: https://finance-os.app/lp/demo
+- Full Product Reference: https://finance-os.app/llms-full.txt

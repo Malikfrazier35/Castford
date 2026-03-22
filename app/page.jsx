@@ -705,45 +705,24 @@ const Btn = ({ children, variant = "primary", size = "md", loading, disabled, on
 // ══════════════════════════════════════════════════════════════
 // ENV 2: AI DIGITAL-INTELLIGENCE PIPELINE
 // ══════════════════════════════════════════════════════════════
-const AI_SYSTEM_PROMPT = `You are FinanceOS AI Copilot. You have complete access to the company financials.
+const AI_SYSTEM_PROMPT = `You are FinanceOS AI Copilot. You have access to the company's GL data including chart of accounts, monthly transactions, and budgets.
 
-KEY METRICS (FY2025 YTD):
-- Revenue: $51.19M (+4.3% vs $49.1M plan)
-- Gross Margin: 84.7% | EBITDA: $3.78M (7.4% margin)
-- ARR: $48.6M | NDR: 118% | Rule of 40: 52.1
-- Headcount: 312 (128 Eng, 84 S&M, 52 G&A, 48 CS)
-- Burn Multiple: 0.8x | Cash Runway: 34 months
-
-SEGMENT PERFORMANCE:
-- Enterprise (>$100K ACV): +$3.3M above plan (+16.9%), ACV $142K->$182K (+28%)
-- Mid-market ($25K-$100K): -$800K below plan (-4.2%), win rate declining vs mid-market competitor
-- SMB (<$25K): -$400K below plan (-3.8%)
-- AI module attach rate: 34% (vs 12% planned)
-
-EXPENSE VARIANCES:
-- S&M: $730K over (3 AEs hired early $420K + SaaStr $180K + SDR tools $130K)
-- R&D: $280K under (14 heads behind plan, 8 ML reqs open)
-- Cloud: $640K over (GPU costs for AI training)
-- G&A: On plan
-
-COMPETITIVE INTEL:
-- Mid-market incumbents: $65K+ entry, we win 42% H2H (improving from 35%)
-- Mid-market disruptors: $30-100K, wins 58% mid-market H2H
-- Legacy EPM platforms: $200K+ enterprise, 3-6mo implementation
-- Our moats: visible AI reasoning, published pricing, self-serve onboarding
-
-BOARD CONTEXT:
-- Next board meeting: Q3 review
-- Current guidance: $49.1M (should raise to $52-54M)
-- Key ask: Competitive SWAT team budget ($200K)
-- Risk: Mid-market competitive threat, R&D hiring delay
+CAPABILITIES:
+- Variance analysis: actual vs budget by account, section, or period
+- Revenue trends: monthly, quarterly, annualized growth rates
+- Expense breakdown: by category (R&D, S&M, COGS, G&A) with % of revenue
+- Gross margin and EBITDA computation from P&L sections
+- SaaS metrics: ARR, NDR, Rule of 40, burn multiple (when data available)
+- Scenario modeling: what-if analysis on key financial drivers
+- Competitive benchmarks: industry medians for SaaS companies
 
 RESPONSE FORMAT:
 - Use **bold** for section headers
-- Use bullet points starting with bullet character
-- Include specific numbers — never round without stating you rounded
+- Use bullet points for lists
+- Include specific numbers from the data — never fabricate
 - Keep responses under 300 words unless asked for a deep dive
-- End complex answers with a **Recommendation:** section`;
+- End complex answers with a **Recommendation:** section
+- If you don't have enough data, say what's missing`;
 
 const INSIGHT_SEVERITY = { high: { color: "red", label: "HIGH" }, medium: { color: "amber", label: "MED" }, low: { color: "green", label: "LOW" } };
 
@@ -2042,7 +2021,7 @@ const COPILOT_RESPONSES = {
   "churn": "**Churn & Retention Analysis**\n\n**Logo churn:** 4.2% annualized (8 accounts lost of 192)\n• 5 were SMB (<$25K) — expected at this segment\n• 2 mid-market lost to competitors on price\n• 1 enterprise churned due to M&A (acquired company standardized)\n\n**Revenue churn:** 2.1% gross, offset by 118% NDR\n• Net revenue retention: 118% means every $1 from last year is now $1.18\n• Expansion: AI module upsell (34% attach), seat expansion, tier upgrades\n\n**Cohort trend:** 2023 cohort NDR at 124% (maturing well). 2024 cohort at 112% (still early).\n\n**Recommendation:** Launch mid-market win-back campaign targeting the 2 competitor losses. Pricing flexibility in the $25-50K band.",
   "expense": "**Expense Variance Summary — YTD**\n\n**Over budget (action needed):**\n• S&M: +$730K over (+5.0%) — Hiring $420K ahead of plan, events $180K for re:Invent\n• Cloud/Infra: +$455K over (+12.4%) — AI inference costs scaling faster than modeled\n\n**Under budget (favorable):**\n• R&D: -$278K under (-1.4%) — two senior hires delayed to Q3\n• G&A: -$255K under (-5.0%) — legal fees lower than budgeted\n\n**Total OpEx:** $39.6M vs $39.4M budget (+$200K net, +0.5%)\n\n**Recommendation:** S&M overspend is deliberate (pipeline ROI 7.2x). Cloud costs need attention — set up inference cost alerts at $0.006/query threshold.",
   "forecast": "**Forecast Accuracy Assessment**\n\n**Current model:** ETS + XGBoost + Linear ensemble\n• MAPE: 3.2% (industry median: 8-12%)\n• Best on: Revenue, COGS (1.8% MAPE)\n• Weakest on: S&M timing (6.1% MAPE — event spend lumpy)\n\n**14 drivers tracked:**\n• Pipeline velocity, win rates, ACV, NDR, logo churn\n• Headcount plan, cloud costs, AI usage, event calendar\n• 3 external: Fed rate, SaaS multiples, hiring index\n\n**Confidence intervals:**\n• Q3 revenue: $13.2M ± $420K (95% CI)\n• Full year: $52.8M ± $1.6M\n\n**Recommendation:** Retrain weekly during Q3 (board prep). Add competitor pricing as a driver — 2 recent losses correlated with competitor price drops.",
-  "default": "I have the company's full financials, SaaS metrics, benchmarks, and competitive data loaded. That's a great question — let me analyze the data.\n\nBased on the current performance:\n• Revenue: $51.19M YTD (+4.3% vs plan)\n• Gross margin: 84.7%\n• Rule of 40: 52.1 (top quartile)\n• NDR: 118%\n• Burn multiple: 0.8x (efficient)\n• Cash runway: 34 months ($12.8M)\n\nI can help with variance analysis, scenario modeling, competitive benchmarks, forecasting, churn analysis, or expense deep-dives. What would you like to explore?",
+  "default": "I have your company's full financials loaded from the GL database. I can analyze your actual vs budget performance, identify variances, and help with forecasting.\n\nHere's what I can help with:\n• Variance analysis — drill into any line item\n• Revenue trends — monthly, quarterly, annualized\n• Expense breakdown — by category and department\n• Gross margin and EBITDA analysis\n• Scenario modeling — what-if on key drivers\n• Competitive benchmarks — SaaS metrics comparison\n\nWhat would you like to explore?",
 };
 
 // Inline markdown: **bold** and `code`
@@ -2057,7 +2036,7 @@ const renderInline = (text, c) => {
 
 const CopilotView = ({ c, toast, logActivity }) => {
   const [messages, setMessages] = useState([
-    { role: "assistant", content: "Welcome to FinanceOS AI Copilot.\n\nI have the company's full financials, SaaS metrics, benchmarks, and competitive data loaded. Ask me anything and I'll show my reasoning before answering.\n\n**6 active variances** — Revenue +$2.09M, S&M and Cloud over. Rule of 40 at 52.1 (top quartile)." },
+    { role: "assistant", content: "Welcome to FinanceOS AI Copilot.\n\nI have your financial data loaded from the GL database. Ask me anything about your P&L, variances, forecasts, or SaaS metrics and I'll show my reasoning before answering.\n\nTry: \"What's driving our biggest variances?\" or \"How's our gross margin trending?\"" },
   ]);
   const [input, setInput] = useState("");
   const [thinking, setThinking] = useState(false);
@@ -3290,7 +3269,7 @@ const IntegrationsView = ({ c, toast }) => {
               <div style={{ fontSize: 18, fontWeight: 800, color: c.text, marginBottom: 4 }}>Import Data</div>
               <div style={{ fontSize: 12, color: c.textDim, marginBottom: 20 }}>Upload a CSV or Excel file to import financial data.</div>
               {/* Drop zone */}
-              <div onClick={() => setUploadFile({ name: "acme-actuals-q2.xlsx", size: "2.4 MB", rows: 1247 })} style={{
+              <div onClick={() => setUploadFile({ name: "financial-actuals-q2.xlsx", size: "2.4 MB", rows: 1247 })} style={{
                 border: `2px dashed ${c.border}`, borderRadius: 12, padding: "40px 24px", textAlign: "center", cursor: "pointer",
                 background: c.surfaceAlt, transition: "all 0.2s", marginBottom: 16,
               }}
@@ -3312,7 +3291,7 @@ const IntegrationsView = ({ c, toast }) => {
               </div>
               <div style={{ display: "flex", gap: 8 }}>
                 <button onClick={() => setUploadOpen(false)} style={{ flex: 1, fontSize: 12, padding: "11px 0", borderRadius: 10, border: `1px solid ${c.border}`, background: "transparent", color: c.textSec, cursor: "pointer", fontFamily: "inherit", fontWeight: 600 }}>Cancel</button>
-                <button onClick={() => { if (uploadFile) setUploadStep(1); else { setUploadFile({ name: "acme-actuals-q2.xlsx", size: "2.4 MB", rows: 1247 }); setUploadStep(1); }}} style={{ flex: 1, fontSize: 12, padding: "11px 0", borderRadius: 10, border: "none", background: c.accent, color: "#fff", cursor: "pointer", fontFamily: "inherit", fontWeight: 700 }}>Continue</button>
+                <button onClick={() => { if (uploadFile) setUploadStep(1); else { setUploadFile({ name: "financial-actuals-q2.xlsx", size: "2.4 MB", rows: 1247 }); setUploadStep(1); }}} style={{ flex: 1, fontSize: 12, padding: "11px 0", borderRadius: 10, border: "none", background: c.accent, color: "#fff", cursor: "pointer", fontFamily: "inherit", fontWeight: 700 }}>Continue</button>
               </div>
             </>)}
 
@@ -3589,32 +3568,27 @@ const AdminView = ({ c, toast, onNav }) => {
   ];
 
   const adminKpis = [
-    { label: "Total MRR", value: "$147.2K", delta: "+12.4%", up: true, color: c.accent },
-    { label: "Active Orgs", value: "84", delta: "+6", up: true, color: c.green },
-    { label: "API Calls (24h)", value: "2.4M", delta: "+18%", up: true, color: c.purple },
-    { label: "Error Rate", value: "0.03%", delta: "-0.01%", up: true, color: c.green },
-    { label: "Avg Response", value: "142ms", delta: "-8ms", up: true, color: c.cyan },
-    { label: "Active Users", value: "312", delta: "+24", up: true, color: c.accent },
+    { label: "Plan", value: "Enterprise", delta: "Active", up: true, color: c.accent },
+    { label: "Team Members", value: "1", delta: "Owner", up: true, color: c.green },
+    { label: "Edge Functions", value: "16", delta: "All healthy", up: true, color: c.purple },
+    { label: "GL Accounts", value: "18", delta: "Active", up: true, color: c.green },
+    { label: "Transactions", value: "162", delta: "9 months", up: true, color: c.cyan },
+    { label: "Integrations", value: "1", delta: "Connected", up: true, color: c.accent },
   ];
 
   const users = [
-    { name: "Sarah Chen", email: "sarah@acme.io", role: "Admin", status: "active", lastActive: "2 min ago", sessions: 3 },
-    { name: "James Park", email: "james@acme.io", role: "Manager", status: "active", lastActive: "14 min ago", sessions: 1 },
-    { name: "Maria Lopez", email: "maria@acme.io", role: "Budget Owner", status: "active", lastActive: "1 hr ago", sessions: 1 },
-    { name: "David Kim", email: "david@acme.io", role: "Viewer", status: "inactive", lastActive: "3 days ago", sessions: 0 },
-    { name: "Rachel Green", email: "rachel@acme.io", role: "Manager", status: "active", lastActive: "28 min ago", sessions: 2 },
-    { name: "Tom Wilson", email: "tom@acme.io", role: "Budget Owner", status: "invited", lastActive: "Never", sessions: 0 },
+    { name: "Malik Frazier", email: "support@finance-os.app", role: "Owner", status: "active", lastActive: "Now", sessions: 1 },
   ];
 
   const events = [
-    { action: "User sign-in", actor: "Sarah Chen", time: "2 min ago", type: "auth" },
-    { action: "P&L exported as PDF", actor: "James Park", time: "14 min ago", type: "data" },
-    { action: "Scenario created: Bull Case Q3", actor: "Maria Lopez", time: "1 hr ago", type: "action" },
-    { action: "API key regenerated", actor: "Sarah Chen", time: "2 hr ago", type: "security" },
-    { action: "Integration connected: NetSuite", actor: "James Park", time: "4 hr ago", type: "integration" },
-    { action: "Role changed: David Kim → Viewer", actor: "Sarah Chen", time: "1 day ago", type: "admin" },
-    { action: "Invoice paid: $1,799.00", actor: "System", time: "3 days ago", type: "billing" },
-    { action: "User invited: tom@acme.io", actor: "Sarah Chen", time: "5 days ago", type: "admin" },
+    { action: "GL data loaded from database", actor: "System", time: "Just now", type: "data" },
+    { action: "Stripe Connect account onboarded", actor: "System", time: "1 hr ago", type: "integration" },
+    { action: "Apple Sign In", actor: "Malik Frazier", time: "1 hr ago", type: "auth" },
+    { action: "Plan upgraded to Enterprise", actor: "System", time: "Today", type: "billing" },
+    { action: "Organization created", actor: "System", time: "Mar 20", type: "admin" },
+    { action: "Edge Function deployed: gl-data", actor: "System", time: "Mar 21", type: "action" },
+    { action: "Copilot API key configured", actor: "System", time: "Mar 21", type: "security" },
+    { action: "Connected account verified", actor: "Stripe", time: "Mar 21", type: "integration" },
   ];
 
   const eventColors = { auth: c.green, data: c.accent, action: c.purple, security: c.amber, integration: c.cyan, admin: c.textSec, billing: c.green };
@@ -4229,16 +4203,16 @@ const SettingsView = ({ c, onLogout, toast, mode, onShowSuitePanel, suitePanelOp
           <div style={{ display: "flex", gap: 12, marginBottom: 16 }}>
             <div style={{ flex: 1, padding: "16px 16px", borderRadius: 12, background: `linear-gradient(135deg, ${c.accent}08, ${c.purple}04)`, border: `1px solid ${c.accent}15` }}>
               <div style={{ fontSize: 9, color: c.accent, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 6 }}>Current Plan</div>
-              <div style={{ fontSize: 18, fontWeight: 800, color: c.text }}>Growth</div>
-              <div style={{ fontSize: 11, color: c.textDim, marginTop: 3, fontFamily: "'JetBrains Mono', monospace" }}>$1,799/mo · Annual</div>
+              <div style={{ fontSize: 18, fontWeight: 800, color: c.text }}>{user?.plan ? user.plan.charAt(0).toUpperCase() + user.plan.slice(1) : "Demo"}</div>
+              <div style={{ fontSize: 11, color: c.textDim, marginTop: 3, fontFamily: "'JetBrains Mono', monospace" }}>{user?.plan === "enterprise" ? "Custom pricing" : user?.plan === "business" ? "$3,999/mo" : user?.plan === "growth" ? "$1,499/mo" : user?.plan === "starter" ? "$499/mo" : "Free"}</div>
             </div>
             <div style={{ flex: 1, padding: "16px 16px", borderRadius: 12, background: `linear-gradient(135deg, ${c.green}08, ${c.cyan}04)`, border: `1px solid ${c.green}15` }}>
-              <div style={{ fontSize: 9, color: c.green, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 6 }}>Next Invoice</div>
-              <div style={{ fontSize: 18, fontWeight: 800, color: c.text, fontFamily: "'JetBrains Mono', monospace" }}>$17,988</div>
-              <div style={{ fontSize: 11, color: c.textDim, marginTop: 3 }}>January 15, 2026</div>
+              <div style={{ fontSize: 9, color: c.green, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 6 }}>Status</div>
+              <div style={{ fontSize: 18, fontWeight: 800, color: c.green }}>Active</div>
+              <div style={{ fontSize: 11, color: c.textDim, marginTop: 3 }}>{user?.orgName || "My Organization"}</div>
             </div>
           </div>
-          <div style={{ fontSize: 11, color: c.textDim, marginBottom: 14, padding: "8px 12px", background: c.surfaceAlt, borderRadius: 8 }}>Visa ····4242 · Billing: finance@acme.io</div>
+          <div style={{ fontSize: 11, color: c.textDim, marginBottom: 14, padding: "8px 12px", background: c.surfaceAlt, borderRadius: 8 }}>Manage billing through Stripe Customer Portal below</div>
           <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
             {[
               { label: "Manage Subscription", primary: true },
@@ -4310,7 +4284,7 @@ const SettingsView = ({ c, onLogout, toast, mode, onShowSuitePanel, suitePanelOp
         {/* Sign Out */}
         <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 12, padding: "20px 24px", marginBottom: 16 }}>
           <div style={{ fontSize: 14, fontWeight: 700, color: c.text, marginBottom: 6 }}>Active Session</div>
-          <div style={{ fontSize: 11, color: c.textDim, marginBottom: 14 }}>Signed in as <span style={{ color: c.text, fontWeight: 600 }}>sarah.chen@acme.io</span> · VP Finance</div>
+          <div style={{ fontSize: 11, color: c.textDim, marginBottom: 14 }}>Signed in as <span style={{ color: c.text, fontWeight: 600 }}>{user?.orgName || "My Organization"}</span> · {user?.plan ? user.plan.charAt(0).toUpperCase() + user.plan.slice(1) : "Demo"}</div>
           <div style={{ display: "flex", gap: 8, marginBottom: 12 }}>
             {[{ label: "Device", value: "MacBook Pro" }, { label: "Browser", value: "Chrome 122" }, { label: "Location", value: "San Francisco, CA" }, { label: "IP", value: "192.168.1.***" }].map(d => (
               <div key={d.label} style={{ flex: 1, padding: "8px 10px", borderRadius: 6, background: c.surfaceAlt, fontSize: 10 }}>

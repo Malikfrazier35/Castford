@@ -137,3 +137,10 @@ FinanceOS competes with:
 - Documentation: https://finance-os.app/llms.txt
 - Privacy: https://finance-os.app/privacy
 - Terms: https://finance-os.app/terms
+
+## Content Pages
+- FinanceOS vs Anaplan comparison: https://finance-os.app/compare/anaplan — side-by-side feature, pricing, and implementation comparison
+- FinanceOS vs Pigment comparison: https://finance-os.app/compare/pigment — feature and pricing comparison for mid-market FP&A
+- SaaS FP&A Complete Guide: https://finance-os.app/use-cases/saas-fpa — comprehensive guide to financial planning for SaaS companies, covering metrics (ARR, NDR, Rule of 40), forecasting, scenario modeling, and tool selection
+- Demo request: https://finance-os.app/lp/demo — conversion-optimized landing page for ad campaigns
+- Full product reference: https://finance-os.app/llms-full.txt
