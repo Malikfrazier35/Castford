@@ -1241,7 +1241,28 @@ const InsightRow = memo(({ item, c, onClick }) => {
 // ══════════════════════════════════════════════════════════════
 // DASHBOARD VIEW
 // ══════════════════════════════════════════════════════════════
-const DashboardView = ({ c, onNav, toast, onDrawer, userName, period, closeTasks, activityLog }) => {
+const DashboardView = ({ c, onNav, toast, onDrawer, userName, period, closeTasks, activityLog, glData }) => {
+  // Use database GL data when available, fall back to hardcoded demo data
+  const pnlData = glData?.pnl || PNL_DATA;
+  const isLiveData = glData?.source === "database";
+
+  // Compute KPIs from GL data when available
+  const computedKpis = useMemo(() => {
+    if (!glData?.summary) return null;
+    const s = glData.summary;
+    const arr = s.total_revenue * (12 / (s.periods?.length || 9));
+    const gm = s.gross_margin;
+    return [
+      { label: "Revenue (YTD)", value: `$${(s.total_revenue / 1000).toFixed(1)}M`, delta: `${s.periods?.length || 0} months`, up: true, icon: DollarSign, spark: [], accent: "accent", bench: `Annualized: $${(arr / 1000).toFixed(1)}M` },
+      { label: "Gross Profit", value: `$${(s.gross_profit / 1000).toFixed(1)}M`, delta: `${gm}% margin`, up: parseFloat(gm) > 70, icon: TrendingUp, spark: [], accent: "green", bench: "Benchmark: 70-80%" },
+      { label: "OpEx (YTD)", value: `$${(s.total_opex / 1000).toFixed(1)}M`, delta: `${(s.total_opex / s.total_revenue * 100).toFixed(0)}% of rev`, up: false, icon: Activity, spark: [], accent: "amber", bench: `${pnlData?.find(p => p.section === "Operating Expenses")?.rows?.length || 0} line items` },
+      { label: "Net Income", value: `$${(s.net_income / 1000).toFixed(1)}M`, delta: `${(s.net_income / s.total_revenue * 100).toFixed(1)}% margin`, up: s.net_income > 0, icon: Target, spark: [], accent: s.net_income > 0 ? "green" : "red", bench: "Bottom line" },
+      { label: "COGS", value: `$${(s.total_cogs / 1000).toFixed(1)}M`, delta: `${(s.total_cogs / s.total_revenue * 100).toFixed(1)}% of rev`, up: false, icon: Zap, spark: [], accent: "cyan", bench: `Gross margin: ${gm}%` },
+      { label: "Accounts", value: `${glData.account_count}`, delta: `${glData.transaction_count} txns`, up: true, icon: Users, spark: [], accent: "purple", bench: `${s.periods?.length || 0} months loaded` },
+    ];
+  }, [glData, pnlData]);
+
+  const kpis = computedKpis || KPIS;
   const [hiddenSeries, setHiddenSeries] = useState({});
   const toggleSeries = (key) => setHiddenSeries(prev => ({ ...prev, [key]: !prev[key] }));
   const displayName = userName && userName !== "Guest" ? userName.split(" ")[0] : null;
@@ -1346,8 +1367,8 @@ const DashboardView = ({ c, onNav, toast, onDrawer, userName, period, closeTasks
       <div style={{ position: "absolute", top: 0, left: "10%", right: "10%", height: 2, background: `linear-gradient(90deg, transparent, ${c.accent}30, transparent)`, borderRadius: "0 0 2px 2px" }} />
       <div style={{ display: "flex", alignItems: "center", gap: 0 }}>
         {[
-          { label: "Sources", count: "5 active", icon: "◈", color: c.cyan, detail: "ERP · CRM · Billing" },
-          { label: "Ingestion", count: "3.2M rows", icon: "→", color: c.accent, detail: "Real-time sync" },
+          { label: "Sources", count: isLiveData ? `${glData.account_count} accts` : "5 active", icon: "◈", color: c.cyan, detail: isLiveData ? "GL Database" : "ERP · CRM · Billing" },
+          { label: "Ingestion", count: isLiveData ? `${glData.transaction_count} rows` : "3.2M rows", icon: "→", color: c.accent, detail: isLiveData ? `${glData.summary?.periods?.length || 0} months` : "Real-time sync" },
           { label: "Model", count: "14 drivers", icon: "◆", color: c.purple, detail: "MAPE 3.2%" },
           { label: "Insights", count: "4 active", icon: "✦", color: c.green, detail: "AI-generated" },
         ].map((stage, i, arr) => (
@@ -1376,6 +1397,8 @@ const DashboardView = ({ c, onNav, toast, onDrawer, userName, period, closeTasks
     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
       <div style={{ fontSize: 9, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.12em", color: c.textFaint, display: "flex", alignItems: "center", gap: 8 }}>
         Key Metrics <div style={{ width: 40, height: 1, background: c.borderSub }} />
+        {isLiveData && <span style={{ fontSize: 7, fontWeight: 800, padding: "2px 8px", borderRadius: 4, background: `${c.green}15`, color: c.green, letterSpacing: "0.08em" }}>LIVE DATA</span>}
+        {!isLiveData && <span style={{ fontSize: 7, fontWeight: 800, padding: "2px 8px", borderRadius: 4, background: `${c.amber}15`, color: c.amber, letterSpacing: "0.08em" }}>SAMPLE DATA</span>}
       </div>
       <div style={{ display: "flex", alignItems: "center", gap: 6, padding: "4px 12px", borderRadius: 8, background: `${c.green}08`, border: `1px solid ${c.green}15` }}>
         <span style={{ fontSize: 8, fontWeight: 800, color: c.green, letterSpacing: "0.06em" }}>SERIES A READINESS</span>
@@ -1384,7 +1407,7 @@ const DashboardView = ({ c, onNav, toast, onDrawer, userName, period, closeTasks
       </div>
     </div>
     <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr 1fr" : "repeat(3, 1fr)", gap: isMobile ? 10 : 16, marginBottom: 24 }}>
-      {KPIS.map((k, i) => <KpiCard key={k.label} kpi={k} c={c} onClick={() => onDrawer(k.label)} index={i} />)}
+      {kpis.map((k, i) => <KpiCard key={k.label} kpi={k} c={c} onClick={() => onDrawer(k.label)} index={i} />)}
     </div>
 
     {/* Charts Row */}
@@ -2214,7 +2237,10 @@ const CopilotView = ({ c, toast, logActivity }) => {
 // ══════════════════════════════════════════════════════════════
 // P&L VIEW
 // ══════════════════════════════════════════════════════════════
-const PnlView = ({ c, onNav, toast, orgName }) => {
+const PnlView = ({ c, onNav, toast, orgName, glData }) => {
+  // Use database GL data when available, fall back to hardcoded demo data
+  const pnlData = glData?.pnl || PNL_DATA;
+  const isLiveData = glData?.source === "database";
   const [collapsed, setCollapsed] = useState({});
   const [sortCol, setSortCol] = useState(null); // null | "actual" | "budget" | "variance" | "pctrev"
   const [sortDir, setSortDir] = useState("desc");
@@ -2281,8 +2307,8 @@ const PnlView = ({ c, onNav, toast, orgName }) => {
         </div>
       </div>
       <ExportBar c={c} title=""
-        onCSV={() => { const rows = PNL_DATA.flatMap(s => [...s.rows.map(r => [s.section, r.name, r.actual, r.budget, r.actual - r.budget, r.note || ""]), [s.section, s.total.name, s.total.actual, s.total.budget, s.total.actual - s.total.budget, ""]]); downloadCSV("financeos-pnl-fy2025.csv", ["Section","Line Item","Actual ($K)","Budget ($K)","Variance ($K)","Notes"], rows); toast("P&L exported as CSV", "success"); }}
-        onPDF={() => { const rows = PNL_DATA.flatMap(s => [...s.rows.map(r => [r.name, "$" + r.actual.toLocaleString() + "K", "$" + r.budget.toLocaleString() + "K", "$" + (r.actual - r.budget).toLocaleString() + "K", ((r.actual - r.budget) / Math.abs(r.budget) * 100).toFixed(1) + "%"]), [s.total.name, "$" + s.total.actual.toLocaleString() + "K", "$" + s.total.budget.toLocaleString() + "K", "$" + (s.total.actual - s.total.budget).toLocaleString() + "K", ((s.total.actual - s.total.budget) / Math.abs(s.total.budget) * 100).toFixed(1) + "%"]]); downloadPDF("PnL Statement FY2025", ["Line Item", "Actual", "Budget", "Variance", "Var %"], rows, { subtitle: orgName || "Financial Report" }); toast("P\x26L exported as PDF", "success"); }}
+        onCSV={() => { const rows = pnlData.flatMap(s => [...s.rows.map(r => [s.section, r.name, r.actual, r.budget, r.actual - r.budget, r.note || ""]), [s.section, s.total.name, s.total.actual, s.total.budget, s.total.actual - s.total.budget, ""]]); downloadCSV("financeos-pnl-fy2025.csv", ["Section","Line Item","Actual ($K)","Budget ($K)","Variance ($K)","Notes"], rows); toast("P&L exported as CSV", "success"); }}
+        onPDF={() => { const rows = pnlData.flatMap(s => [...s.rows.map(r => [r.name, "$" + r.actual.toLocaleString() + "K", "$" + r.budget.toLocaleString() + "K", "$" + (r.actual - r.budget).toLocaleString() + "K", ((r.actual - r.budget) / Math.abs(r.budget) * 100).toFixed(1) + "%"]), [s.total.name, "$" + s.total.actual.toLocaleString() + "K", "$" + s.total.budget.toLocaleString() + "K", "$" + (s.total.actual - s.total.budget).toLocaleString() + "K", ((s.total.actual - s.total.budget) / Math.abs(s.total.budget) * 100).toFixed(1) + "%"]]); downloadPDF("PnL Statement FY2025", ["Line Item", "Actual", "Budget", "Variance", "Var %"], rows, { subtitle: orgName || "Financial Report" }); toast("P\x26L exported as PDF", "success"); }}
       />
       {/* Financial Summary KPIs */}
       <div style={{ fontSize: 9, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.12em", color: c.textFaint, marginBottom: 10, display: "flex", alignItems: "center", gap: 8 }}>
@@ -2290,10 +2316,10 @@ const PnlView = ({ c, onNav, toast, orgName }) => {
       </div>
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: 12, marginBottom: 16 }}>
         {[
-          { label: "Total Revenue", value: fmt(PNL_DATA[0]?.total?.actual || 0), delta: fmtPct(variancePct(PNL_DATA[0]?.total?.actual || 0, PNL_DATA[0]?.total?.budget || 1)), fav: true, color: c.green },
-          { label: "Gross Profit", value: fmt((PNL_DATA[0]?.total?.actual || 0) - (PNL_DATA[1]?.total?.actual || 0)), delta: `${(((PNL_DATA[0]?.total?.actual || 0) - (PNL_DATA[1]?.total?.actual || 0)) / (PNL_DATA[0]?.total?.actual || 1) * 100).toFixed(1)}% margin`, fav: true, color: c.accent },
-          { label: "Total OpEx", value: fmt(PNL_DATA[2]?.total?.actual || 0), delta: fmtPct(variancePct(PNL_DATA[2]?.total?.actual || 0, PNL_DATA[2]?.total?.budget || 1)), fav: (PNL_DATA[2]?.total?.actual || 0) <= (PNL_DATA[2]?.total?.budget || 0), color: c.amber },
-          { label: "EBITDA", value: fmt((PNL_DATA[0]?.total?.actual || 0) - (PNL_DATA[1]?.total?.actual || 0) - (PNL_DATA[2]?.total?.actual || 0) + (PNL_DATA[3]?.total?.actual || 0)), delta: `${(((PNL_DATA[0]?.total?.actual || 0) - (PNL_DATA[1]?.total?.actual || 0) - (PNL_DATA[2]?.total?.actual || 0) + (PNL_DATA[3]?.total?.actual || 0)) / (PNL_DATA[0]?.total?.actual || 1) * 100).toFixed(1)}% margin`, fav: true, color: c.green },
+          { label: "Total Revenue", value: fmt(pnlData[0]?.total?.actual || 0), delta: fmtPct(variancePct(pnlData[0]?.total?.actual || 0, pnlData[0]?.total?.budget || 1)), fav: true, color: c.green },
+          { label: "Gross Profit", value: fmt((pnlData[0]?.total?.actual || 0) - (pnlData[1]?.total?.actual || 0)), delta: `${(((pnlData[0]?.total?.actual || 0) - (pnlData[1]?.total?.actual || 0)) / (pnlData[0]?.total?.actual || 1) * 100).toFixed(1)}% margin`, fav: true, color: c.accent },
+          { label: "Total OpEx", value: fmt(pnlData[2]?.total?.actual || 0), delta: fmtPct(variancePct(pnlData[2]?.total?.actual || 0, pnlData[2]?.total?.budget || 1)), fav: (pnlData[2]?.total?.actual || 0) <= (pnlData[2]?.total?.budget || 0), color: c.amber },
+          { label: "EBITDA", value: fmt((pnlData[0]?.total?.actual || 0) - (pnlData[1]?.total?.actual || 0) - (pnlData[2]?.total?.actual || 0) + (pnlData[3]?.total?.actual || 0)), delta: `${(((pnlData[0]?.total?.actual || 0) - (pnlData[1]?.total?.actual || 0) - (pnlData[2]?.total?.actual || 0) + (pnlData[3]?.total?.actual || 0)) / (pnlData[0]?.total?.actual || 1) * 100).toFixed(1)}% margin`, fav: true, color: c.green },
         ].map(k => (
           <div key={k.label} style={{ background: c.glass, backdropFilter: c.glassBlur, WebkitBackdropFilter: c.glassBlur, border: `1px solid ${c.glassBorder}`, borderRadius: 12, padding: "14px 16px", boxShadow: `${c.cardGlow}, ${c.glassHighlight}`, position: "relative", overflow: "hidden" }}>
             <div style={{ position: "absolute", top: 0, left: "15%", right: "15%", height: 2, background: `linear-gradient(90deg, transparent, ${k.color}25, transparent)`, borderRadius: "0 0 2px 2px" }} />
@@ -2333,7 +2359,7 @@ const PnlView = ({ c, onNav, toast, orgName }) => {
             </tr>
           </thead>
           <tbody>
-            {PNL_DATA.map((section, si) => {
+            {pnlData.map((section, si) => {
               const isRev = si === 0;
               const isCollapsed = collapsed[section.section];
               const sectionColor = si === 0 ? c.green : si < 3 ? c.amber : c.red;
@@ -6175,6 +6201,31 @@ function FinanceOSApp() {
   const [aiChatInput, setAiChatInput] = useState("");
   const [aiChatThinking, setAiChatThinking] = useState(false);
 
+  // GL data from database — replaces hardcoded PNL_DATA when available
+  const [glData, setGlData] = useState(null); // { pnl, summary, source }
+  const [glLoading, setGlLoading] = useState(false);
+
+  const fetchGlData = useCallback(async () => {
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session?.access_token) return;
+      setGlLoading(true);
+      const res = await fetch(`${SUPABASE_URL}/functions/v1/gl-data`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "Authorization": `Bearer ${session.access_token}`, "apikey": SUPABASE_KEY },
+        body: JSON.stringify({ action: "pnl" }),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (data.pnl?.length > 0 && data.source === "database") {
+          setGlData(data);
+          console.log(`[FinanceOS] GL data loaded: ${data.account_count} accounts, ${data.transaction_count} transactions`);
+        }
+      }
+    } catch (e) { console.warn("[FinanceOS] GL data fetch failed:", e); }
+    finally { setGlLoading(false); }
+  }, []);
+
   // AI Chat — calls real copilot Edge Function, falls back to canned responses
   const sendAiChat = async (q) => {
     setAiChatMessages(prev => [...prev, { role: "user", content: q }]);
@@ -6303,6 +6354,8 @@ function FinanceOSApp() {
             if (data.org?.plan === "demo" || !data.org?.plan) {
               setShowPlanPicker(true);
             }
+            // Fetch GL data from database
+            fetchGlData();
           } else if (res.status === 429) {
             // Rate limited — back off and retry once after delay
             const retryAfter = parseInt(res.headers.get("Retry-After") || "30", 10);
@@ -7001,9 +7054,9 @@ function FinanceOSApp() {
           <div style={{ position: "fixed", bottom: "15%", right: "10%", width: "35%", height: "35%", borderRadius: "50%", background: `radial-gradient(circle, ${c.purple}05 0%, transparent 70%)`, filter: "blur(80px)", pointerEvents: "none", zIndex: 0 }} />
           <div style={{ position: "fixed", top: "50%", right: "35%", width: "25%", height: "25%", borderRadius: "50%", background: `radial-gradient(circle, ${c.green}04 0%, transparent 70%)`, filter: "blur(60px)", pointerEvents: "none", zIndex: 0 }} />
           {viewLoading ? <LoadingSkeleton c={c} /> : (<>
-          {view === "dashboard" && <SectionBoundary name="Dashboard" bg={c.surface} borderColor={c.border} textColor={c.textDim} accentColor={c.accent}><DashboardView c={c} onNav={navigate} toast={toast} onDrawer={setDrawerKpi} userName={user.name} period={period} closeTasks={closeTasks} activityLog={activityLog} /></SectionBoundary>}
+          {view === "dashboard" && <SectionBoundary name="Dashboard" bg={c.surface} borderColor={c.border} textColor={c.textDim} accentColor={c.accent}><DashboardView c={c} onNav={navigate} toast={toast} onDrawer={setDrawerKpi} userName={user.name} period={period} closeTasks={closeTasks} activityLog={activityLog} glData={glData} /></SectionBoundary>}
           {view === "copilot" && <SectionBoundary name="AI Copilot" bg={c.surface} borderColor={c.border} textColor={c.textDim} accentColor={c.accent}><CopilotView c={c} toast={toast} logActivity={logActivity} /></SectionBoundary>}
-          {view === "pnl" && <SectionBoundary name="P&L Statement" bg={c.surface} borderColor={c.border} textColor={c.textDim} accentColor={c.accent}><PnlView c={c} onNav={navigate} toast={toast} logActivity={logActivity} orgName={user.orgName} /></SectionBoundary>}
+          {view === "pnl" && <SectionBoundary name="P&L Statement" bg={c.surface} borderColor={c.border} textColor={c.textDim} accentColor={c.accent}><PnlView c={c} onNav={navigate} toast={toast} logActivity={logActivity} orgName={user.orgName} glData={glData} /></SectionBoundary>}
           {view === "forecast" && <SectionBoundary name="Forecast Optimizer" bg={c.surface} borderColor={c.border} textColor={c.textDim} accentColor={c.accent}><ForecastView c={c} toast={toast} /></SectionBoundary>}
           {view === "consolidation" && <SectionBoundary name="Consolidation" bg={c.surface} borderColor={c.border} textColor={c.textDim} accentColor={c.accent}><ConsolidationView c={c} onNav={navigate} toast={toast} /></SectionBoundary>}
           {view === "models" && <SectionBoundary name="Scenario Models" bg={c.surface} borderColor={c.border} textColor={c.textDim} accentColor={c.accent}><ScenariosView c={c} toast={toast} /></SectionBoundary>}
