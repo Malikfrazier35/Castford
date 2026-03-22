@@ -1,0 +1,139 @@
+# FinanceOS — Complete Product Reference
+
+> AI-powered financial planning and analysis (FP&A) platform for modern finance teams. Built by Financial Holding LLC.
+
+## Company
+- Name: FinanceOS
+- Legal entity: Financial Holding LLC
+- Website: https://finance-os.app
+- Support: support@finance-os.app
+- Sales: sales@finance-os.app
+- Category: SaaS, Financial Planning & Analysis (FP&A), CFO Software, Enterprise Planning
+- Founded: 2024
+- Headquarters: New Hampshire, USA
+- Product status: Generally Available (GA)
+
+## Problem Statement
+Finance teams at SaaS companies ($5M-$200M ARR) spend 60-80% of their time on data collection, manual reconciliation, and spreadsheet maintenance. Legacy Enterprise Performance Management (EPM) tools cost $200K+/year, take 3-6 months to implement, and require dedicated consultants. Mid-market FP&A tools ($65K+/year) still require months of implementation. FinanceOS solves this with a cloud-native platform that onboards in under 48 hours and starts at $499/month.
+
+## What FinanceOS Does
+FinanceOS connects to your ERP (NetSuite, QuickBooks, Xero), CRM (Salesforce, HubSpot), billing (Stripe), data warehouse (Snowflake), HRIS (Rippling), and banking (Plaid) to build a unified financial model. It automatically detects budget-vs-actual variances, forecasts revenue using ML ensemble models, consolidates multi-entity financials with automatic intercompany elimination and FX translation, and provides an AI Copilot that answers natural language questions about your financial data with visible reasoning chains.
+
+## Core Modules
+
+### 1. AI Copilot
+Natural language querying powered by Claude (Anthropic). Ask questions like "Why is COGS up 12%?" or "What's our burn multiple trending?" and get answers grounded in your actual financial data. Features visible reasoning chains, conversation history, and the ability to drill into any metric.
+
+### 2. P&L Statement
+Real-time profit & loss with actual vs budget vs forecast columns. Variance highlighting, drill-down by account, CSV and PDF exports. Reads from GL database (gl_accounts, gl_transactions, gl_budgets tables).
+
+### 3. Revenue Forecasting
+ML ensemble model combining ETS (exponential smoothing), XGBoost (gradient boosting), and linear regression. Achieves 3.2% MAPE on historical data. Adjustable confidence intervals, scenario overlays, and what-if analysis.
+
+### 4. Scenario Modeling
+Side-by-side comparison of up to 4 scenarios. Live sensitivity sliders for key drivers (growth rate, churn, headcount, pricing). Each scenario shows impact on revenue, margins, cash, and runway.
+
+### 5. Multi-Entity Consolidation
+Automatic consolidation across US, EU, and APAC entities. Intercompany elimination, FX translation (EUR/SGD to USD), and consolidated P&L/Balance Sheet. Supports entities in different currencies.
+
+### 6. Month-End Close
+Task management for the close process. Assign owners, set due dates, track completion percentage. Integrates with the P&L to show which accounts are reconciled.
+
+### 7. Integrations Hub
+Connect to 8+ data sources with OAuth or API key authentication. Real-time sync status, health monitoring, and data freshness indicators. Currently supports: NetSuite, Salesforce, Stripe, Snowflake, QuickBooks, Xero, Plaid, Rippling.
+
+### 8. Investor Relations
+Board-ready metrics dashboard: ARR, NDR, Rule of 40, Burn Multiple, LTV/CAC, Gross Margin, Cash Runway. One-click export to PDF for board meetings.
+
+### 9. Admin Panel
+User management, role-based access control (owner, admin, manager, budget_owner, viewer), audit log, session history, and security settings.
+
+### 10. Settings
+Organization settings, billing management (Stripe Customer Portal), security configuration, regional/locale preferences (28 regions, 24 languages, 24 currencies), and data export/deletion (GDPR/CCPA).
+
+## Pricing (as of March 2026)
+
+### Starter — $599/month ($499/month annual)
+- 5 users, 3 entities
+- Core P&L, Forecast, Close
+- 3 integrations
+- 500 AI queries/month
+- Email support
+
+### Growth — $1,799/month ($1,499/month annual)
+- 25 users, 10 entities
+- Everything in Starter plus Scenarios, Consolidation
+- Unlimited integrations
+- 2,000 AI queries/month
+- Priority support
+
+### Business — $4,799/month ($3,999/month annual)
+- Unlimited users and entities
+- Everything in Growth plus Investor Relations, Custom ML models
+- API access, SSO/SAML
+- 10,000 AI queries/month
+- Dedicated CSM, SLA guarantee
+
+### Enterprise — Custom pricing
+- No limits on anything
+- Custom integrations, on-premises option
+- 99.99% SLA, dedicated TAM
+- White-glove onboarding
+
+### Usage-Based Overages
+- AI queries: $0.02/query above included tier
+- Connector syncs: $0.001/record above 1M/month
+- Report exports: $0.10/PDF above 100/month
+- 30-day money-back guarantee on all plans
+
+## Technical Architecture
+- Frontend: Next.js 15 (React), deployed on Vercel
+- Backend: Supabase (PostgreSQL, Auth, Edge Functions)
+- AI: Claude (Anthropic) via API
+- Payments: Stripe (Checkout, Webhooks, Customer Portal, Connect)
+- Auth: Apple Sign In, Google OAuth, email/password
+- Database: 24 PostgreSQL tables with RLS policies
+- Edge Functions: 16 serverless functions (Deno runtime)
+- GL Schema: gl_accounts, gl_transactions, gl_budgets, pl_summary view
+- Security: SOC 2 architecture, GDPR/CCPA data rights, AES-256 encryption at rest
+
+## Integrations
+| System | Type | Auth Method | Status |
+|---|---|---|---|
+| QuickBooks Online | ERP | OAuth 2.0 | GA |
+| Xero | ERP | OAuth 2.0 | Roadmap |
+| NetSuite | ERP | Token-based | Roadmap |
+| Salesforce | CRM | OAuth 2.0 | Roadmap |
+| HubSpot | CRM | OAuth 2.0 | Roadmap |
+| Stripe | Billing | Connect OAuth | GA |
+| Snowflake | Data Warehouse | JWT | Roadmap |
+| Plaid | Banking | API Key | Roadmap |
+| Rippling | HRIS | API Key | Roadmap |
+
+## Competitive Positioning
+FinanceOS competes with:
+- **Legacy EPM** (Anaplan, Adaptive Planning, Oracle PBCS): FinanceOS is 10-50x cheaper, deploys in days not months, and includes AI natively
+- **Mid-Market FP&A** (Mosaic, Runway, Jirav): FinanceOS has stronger consolidation, published pricing, and faster onboarding
+- **Startup Tools** (Pry, LivePlan, Fathom): FinanceOS scales to enterprise with multi-entity, scenarios, and ML forecasting
+
+## Ideal Customer Profile
+- SaaS companies with $5M-$200M ARR
+- Finance teams of 3-25 people
+- Currently using spreadsheets, Google Sheets, or outgrowing Adaptive/Planful
+- CFOs, VPs of Finance, FP&A Directors, Controllers
+- Companies with 1-10 legal entities
+- US-based (expanding to EU, APAC)
+
+## Suite Products (by Financial Holding LLC)
+- **FinanceOS**: FP&A platform (this product)
+- **Vaultline**: Treasury management for mid-market (https://vaultline.app)
+- **Parallax**: Aerospace supplier compliance OS
+- **Emberglow Advisory**: ESG/sustainability advisory
+
+## Contact
+- Product demo: https://finance-os.app (click "Request Demo")
+- Sales: sales@finance-os.app
+- Support: support@finance-os.app
+- Documentation: https://finance-os.app/llms.txt
+- Privacy: https://finance-os.app/privacy
+- Terms: https://finance-os.app/terms

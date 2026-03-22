@@ -17,6 +17,16 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_KEY, {
 });
 if (typeof window !== "undefined") window.__supabase = supabase;
 
+// UTM attribution helper — captures campaign data for lead forms
+const getUtmData = () => {
+  if (typeof window === "undefined") return {};
+  try {
+    const session = JSON.parse(sessionStorage.getItem("fos_utm") || "{}");
+    const first = JSON.parse(localStorage.getItem("fos_first_touch") || "{}");
+    return { ...first, ...session };
+  } catch { return {}; }
+};
+
 // ═══════════════════════════════════════════════════════════════
 // FINANCEOS — React Production Build
 // Design: Zinc-black dark + optional light, DM Sans + JetBrains Mono
@@ -1249,17 +1259,20 @@ const DashboardView = ({ c, onNav, toast, onDrawer, userName, period, closeTasks
   // Compute KPIs from GL data when available
   const computedKpis = useMemo(() => {
     if (!glData?.summary) return null;
-    const s = glData.summary;
-    const arr = s.total_revenue * (12 / (s.periods?.length || 9));
-    const gm = s.gross_margin;
-    return [
-      { label: "Revenue (YTD)", value: `$${(s.total_revenue / 1000).toFixed(1)}M`, delta: `${s.periods?.length || 0} months`, up: true, icon: DollarSign, spark: [], accent: "accent", bench: `Annualized: $${(arr / 1000).toFixed(1)}M` },
-      { label: "Gross Profit", value: `$${(s.gross_profit / 1000).toFixed(1)}M`, delta: `${gm}% margin`, up: parseFloat(gm) > 70, icon: TrendingUp, spark: [], accent: "green", bench: "Benchmark: 70-80%" },
-      { label: "OpEx (YTD)", value: `$${(s.total_opex / 1000).toFixed(1)}M`, delta: `${(s.total_opex / s.total_revenue * 100).toFixed(0)}% of rev`, up: false, icon: Activity, spark: [], accent: "amber", bench: `${pnlData?.find(p => p.section === "Operating Expenses")?.rows?.length || 0} line items` },
-      { label: "Net Income", value: `$${(s.net_income / 1000).toFixed(1)}M`, delta: `${(s.net_income / s.total_revenue * 100).toFixed(1)}% margin`, up: s.net_income > 0, icon: Target, spark: [], accent: s.net_income > 0 ? "green" : "red", bench: "Bottom line" },
-      { label: "COGS", value: `$${(s.total_cogs / 1000).toFixed(1)}M`, delta: `${(s.total_cogs / s.total_revenue * 100).toFixed(1)}% of rev`, up: false, icon: Zap, spark: [], accent: "cyan", bench: `Gross margin: ${gm}%` },
-      { label: "Accounts", value: `${glData.account_count}`, delta: `${glData.transaction_count} txns`, up: true, icon: Users, spark: [], accent: "purple", bench: `${s.periods?.length || 0} months loaded` },
-    ];
+    try {
+      const s = glData.summary;
+      const rev = s.total_revenue || 1; // guard div/0
+      const arr = s.total_revenue * (12 / (s.periods?.length || 9));
+      const gm = s.gross_margin || "0.0";
+      return [
+        { label: "Revenue (YTD)", value: `$${(s.total_revenue / 1000).toFixed(1)}M`, delta: `${s.periods?.length || 0} months`, up: true, icon: DollarSign, spark: [], accent: "accent", bench: `Annualized: $${(arr / 1000).toFixed(1)}M` },
+        { label: "Gross Profit", value: `$${((s.gross_profit || 0) / 1000).toFixed(1)}M`, delta: `${gm}% margin`, up: parseFloat(gm) > 70, icon: TrendingUp, spark: [], accent: "green", bench: "Benchmark: 70-80%" },
+        { label: "OpEx (YTD)", value: `$${((s.total_opex || 0) / 1000).toFixed(1)}M`, delta: `${((s.total_opex || 0) / rev * 100).toFixed(0)}% of rev`, up: false, icon: Activity, spark: [], accent: "amber", bench: `${pnlData?.find(p => p.section === "Operating Expenses")?.rows?.length || 0} line items` },
+        { label: "Net Income", value: `$${((s.net_income || 0) / 1000).toFixed(1)}M`, delta: `${((s.net_income || 0) / rev * 100).toFixed(1)}% margin`, up: (s.net_income || 0) > 0, icon: Target, spark: [], accent: (s.net_income || 0) > 0 ? "green" : "red", bench: "Bottom line" },
+        { label: "COGS", value: `$${((s.total_cogs || 0) / 1000).toFixed(1)}M`, delta: `${((s.total_cogs || 0) / rev * 100).toFixed(1)}% of rev`, up: false, icon: Zap, spark: [], accent: "cyan", bench: `Gross margin: ${gm}%` },
+        { label: "Accounts", value: `${glData.account_count || 0}`, delta: `${glData.transaction_count || 0} txns`, up: true, icon: Users, spark: [], accent: "purple", bench: `${s.periods?.length || 0} months loaded` },
+      ];
+    } catch { return null; }
   }, [glData, pnlData]);
 
   const kpis = computedKpis || KPIS;
@@ -2256,7 +2269,7 @@ const PnlView = ({ c, onNav, toast, orgName, glData }) => {
       if (sortCol === "actual") { va = a.actual; vb = b.actual; }
       else if (sortCol === "budget") { va = a.budget; vb = b.budget; }
       else if (sortCol === "variance") { va = (a.actual || 0) - (a.budget || 0); vb = (b.actual || 0) - (b.budget || 0); }
-      else if (sortCol === "pctrev") { va = a.actual / 51190; vb = b.actual / 51190; }
+      else if (sortCol === "pctrev") { va = a.actual / (pnlData[0]?.total?.actual || 1); vb = b.actual / (pnlData[0]?.total?.actual || 1); }
       else return 0;
       return sortDir === "desc" ? (vb || 0) - (va || 0) : (va || 0) - (vb || 0);
     });
@@ -2382,8 +2395,8 @@ const PnlView = ({ c, onNav, toast, orgName, glData }) => {
                     <td style={{ textAlign: "right", padding: "10px 14px", color: c.text, fontFamily: "'JetBrains Mono', monospace", fontSize: 11 }}>{fmt(row.actual)}</td>
                     <td style={{ textAlign: "right", padding: "10px 14px", color: c.textDim, fontFamily: "'JetBrains Mono', monospace", fontSize: 11 }}>{fmt(row.budget)}</td>
                     <VarCell actual={row.actual} budget={row.budget} revenue={isRev} />
-                    <td style={{ textAlign: "right", padding: "10px 14px", color: c.textDim, fontSize: 11, fontFamily: "'JetBrains Mono', monospace" }}>{((row.actual / 51190) * 100).toFixed(1)}%</td>
-                    <td style={{ padding: "10px 14px", color: c.textDim, fontSize: 10, maxWidth: 120 }}>{row.note}</td>
+                    <td style={{ textAlign: "right", padding: "10px 14px", color: c.textDim, fontSize: 11, fontFamily: "'JetBrains Mono', monospace" }}>{((row.actual / (pnlData[0]?.total?.actual || 1)) * 100).toFixed(1)}%</td>
+                    <td style={{ padding: "10px 14px", color: c.textDim, fontSize: 10, maxWidth: 120 }}>{row.note || ""}</td>
                   </tr>
                 )) : []),
                 !isCollapsed && (
@@ -2392,29 +2405,47 @@ const PnlView = ({ c, onNav, toast, orgName, glData }) => {
                     <td style={{ textAlign: "right", padding: "8px 12px", fontWeight: 700, color: c.text, fontFamily: "'JetBrains Mono', monospace", fontSize: 11 }}>{fmt(section.total.actual)}</td>
                     <td style={{ textAlign: "right", padding: "8px 12px", color: c.textDim, fontFamily: "'JetBrains Mono', monospace", fontSize: 11 }}>{fmt(section.total.budget)}</td>
                     <VarCell actual={section.total.actual} budget={section.total.budget} revenue={isRev} />
-                    <td style={{ textAlign: "right", padding: "8px 12px", color: c.textDim, fontSize: 11 }}>{((section.total.actual / 51190) * 100).toFixed(1)}%</td>
+                    <td style={{ textAlign: "right", padding: "8px 12px", color: c.textDim, fontSize: 11 }}>{((section.total.actual / (pnlData[0]?.total?.actual || 1)) * 100).toFixed(1)}%</td>
                     <td />
                   </tr>
                 ),
               ];
             }).flat().filter(Boolean)}
-            {/* Grand totals */}
+            {/* Grand totals — computed from pnlData */}
+            {(() => {
+              const rev = pnlData[0]?.total?.actual || 0;
+              const revB = pnlData[0]?.total?.budget || 0;
+              const cogs = pnlData[1]?.total?.actual || 0;
+              const cogsB = pnlData[1]?.total?.budget || 0;
+              const opex = pnlData[2]?.total?.actual || 0;
+              const opexB = pnlData[2]?.total?.budget || 0;
+              const other = pnlData[3]?.total?.actual || 0;
+              const otherB = pnlData[3]?.total?.budget || 0;
+              const gp = rev - cogs;
+              const gpB = revB - cogsB;
+              const ebitda = gp - opex + other;
+              const ebitdaB = gpB - opexB + otherB;
+              const gpVar = gp - gpB;
+              const ebitdaVar = ebitda - ebitdaB;
+              return (<>
             <tr style={{ borderTop: `2px solid ${c.borderBright}`, background: `${c.accent}05` }}>
-              <td style={{ padding: "12px 14px", fontWeight: 800, fontSize: 13, color: c.text, letterSpacing: "-0.01em" }}>Gross Profit</td>
-              <td style={{ textAlign: "right", padding: "12px 14px", fontWeight: 800, color: c.text, fontFamily: "'JetBrains Mono', monospace", fontSize: 12 }}>{fmt(43370)}</td>
-              <td style={{ textAlign: "right", padding: "12px 14px", color: c.textDim, fontFamily: "'JetBrains Mono', monospace", fontSize: 12 }}>{fmt(41735)}</td>
-              <td style={{ textAlign: "right", padding: "12px 14px", fontWeight: 800, color: c.green, fontFamily: "'JetBrains Mono', monospace", fontSize: 12 }}>+{fmt(1635)}</td>
-              <td style={{ textAlign: "right", padding: "12px 14px", fontWeight: 800, color: c.text, fontFamily: "'JetBrains Mono', monospace", fontSize: 12 }}>84.7%</td>
+              <td style={{ padding: "12px 14px", fontWeight: 800, fontSize: 13, color: c.text }}>Gross Profit</td>
+              <td style={{ textAlign: "right", padding: "12px 14px", fontWeight: 800, color: c.text, fontFamily: "'JetBrains Mono', monospace", fontSize: 12 }}>{fmt(gp)}</td>
+              <td style={{ textAlign: "right", padding: "12px 14px", color: c.textDim, fontFamily: "'JetBrains Mono', monospace", fontSize: 12 }}>{fmt(gpB)}</td>
+              <td style={{ textAlign: "right", padding: "12px 14px", fontWeight: 800, color: gpVar >= 0 ? c.green : c.red, fontFamily: "'JetBrains Mono', monospace", fontSize: 12 }}>{gpVar >= 0 ? "+" : ""}{fmt(gpVar)}</td>
+              <td style={{ textAlign: "right", padding: "12px 14px", fontWeight: 800, color: c.text, fontFamily: "'JetBrains Mono', monospace", fontSize: 12 }}>{rev > 0 ? (gp / rev * 100).toFixed(1) : "0.0"}%</td>
               <td />
             </tr>
             <tr style={{ borderTop: `2px solid ${c.borderBright}`, background: `linear-gradient(90deg, ${c.green}06, transparent)` }}>
-              <td style={{ padding: "12px 14px", fontWeight: 800, fontSize: 13, color: c.green, letterSpacing: "-0.01em" }}>EBITDA</td>
-              <td style={{ textAlign: "right", padding: "12px 14px", fontWeight: 800, color: c.green, fontFamily: "'JetBrains Mono', monospace", fontSize: 13 }}>{fmt(3780)}</td>
-              <td style={{ textAlign: "right", padding: "12px 14px", color: c.textDim, fontFamily: "'JetBrains Mono', monospace", fontSize: 12 }}>{fmt(2342)}</td>
-              <td style={{ textAlign: "right", padding: "12px 14px", fontWeight: 800, color: c.green, fontFamily: "'JetBrains Mono', monospace", fontSize: 12 }}>+{fmt(1438)}</td>
-              <td style={{ textAlign: "right", padding: "12px 14px", fontWeight: 800, color: c.green, fontFamily: "'JetBrains Mono', monospace", fontSize: 12 }}>7.4%</td>
+              <td style={{ padding: "12px 14px", fontWeight: 800, fontSize: 13, color: c.green }}>EBITDA</td>
+              <td style={{ textAlign: "right", padding: "12px 14px", fontWeight: 800, color: c.green, fontFamily: "'JetBrains Mono', monospace", fontSize: 13 }}>{fmt(ebitda)}</td>
+              <td style={{ textAlign: "right", padding: "12px 14px", color: c.textDim, fontFamily: "'JetBrains Mono', monospace", fontSize: 12 }}>{fmt(ebitdaB)}</td>
+              <td style={{ textAlign: "right", padding: "12px 14px", fontWeight: 800, color: ebitdaVar >= 0 ? c.green : c.red, fontFamily: "'JetBrains Mono', monospace", fontSize: 12 }}>{ebitdaVar >= 0 ? "+" : ""}{fmt(ebitdaVar)}</td>
+              <td style={{ textAlign: "right", padding: "12px 14px", fontWeight: 800, color: c.green, fontFamily: "'JetBrains Mono', monospace", fontSize: 12 }}>{rev > 0 ? (ebitda / rev * 100).toFixed(1) : "0.0"}%</td>
               <td />
             </tr>
+              </>);
+            })()}
           </tbody>
         </table>
       </div>
@@ -4494,7 +4525,7 @@ const AuthModal = ({ mode: initialMode, onClose, onAuth }) => {
         });
         if (err) { setError(err.message); setLoading(null); return; }
         // Also add to waitlist
-        try { await supabase.from("waitlist").upsert({ email: email.trim(), full_name: name, company, role, interest_type: "trial", source: "signup_modal" }, { onConflict: "email" }); } catch {}
+        try { await supabase.from("waitlist").upsert({ email: email.trim(), full_name: name, company, role, interest_type: "trial", source: "signup_modal", ...(() => { try { const u = getUtmData(); return Object.keys(u).length ? { metadata: JSON.stringify(u) } : {}; } catch { return {}; } })() }, { onConflict: "email" }); } catch {}
         // If auto-confirmed, trigger login immediately
         if (data?.session) { onAuth({ method: "email" }); return; }
         // Email confirmation required — show interstitial
@@ -4517,7 +4548,7 @@ const AuthModal = ({ mode: initialMode, onClose, onAuth }) => {
   const handleDemo = async () => {
     setLoading("email");
     setError(null);
-    try { await supabase.from("waitlist").upsert({ email: email.trim(), full_name: name, company, role, interest_type: "demo", source: "demo_modal" }, { onConflict: "email" }); } catch {}
+    try { await supabase.from("waitlist").upsert({ email: email.trim(), full_name: name, company, role, interest_type: "demo", source: "demo_modal", ...(() => { try { const u = getUtmData(); return Object.keys(u).length ? { metadata: JSON.stringify(u) } : {}; } catch { return {}; } })() }, { onConflict: "email" }); } catch {}
     setLoading(null);
     onAuth({ method: "demo" });
   };
@@ -5453,7 +5484,7 @@ const LandingPage = ({ onLogin }) => {
     if (!heroEmail.trim() || !heroEmail.includes("@")) { enterDemo(); return; }
     setEmailStatus("saving");
     try {
-      await supabase.from("waitlist").upsert({ email: heroEmail.trim(), interest_type: "trial", source: "hero" }, { onConflict: "email" });
+      await supabase.from("waitlist").upsert({ email: heroEmail.trim(), interest_type: "trial", source: getUtmData().utm_source || "hero" }, { onConflict: "email" });
       setEmailStatus("saved");
     } catch { setEmailStatus("error"); }
     onLogin({ name: heroEmail.split("@")[0], email: heroEmail, plan: "demo" });

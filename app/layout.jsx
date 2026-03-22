@@ -51,6 +51,7 @@ export default function RootLayout({ children }) {
         <link rel="manifest" href="/manifest.json" />
         <link rel="canonical" href="https://finance-os.app" />
         <link rel="alternate" type="text/plain" href="https://finance-os.app/llms.txt" title="LLM-readable product summary" />
+        <link rel="alternate" type="text/plain" href="https://finance-os.app/llms-full.txt" title="LLM-readable full product reference" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link rel="preconnect" href="https://crecesswagluelvkesul.supabase.co" />
@@ -112,6 +113,41 @@ export default function RootLayout({ children }) {
         {children}
         <Analytics />
         <PlausibleAnalytics />
+        {/* UTM Parameter Capture — stores campaign attribution for lead forms */}
+        <script dangerouslySetInnerHTML={{ __html: `
+          (function(){
+            try {
+              var p = new URLSearchParams(window.location.search);
+              var utms = ['utm_source','utm_medium','utm_campaign','utm_content','utm_term','ref','via','gclid','fbclid','msclkid'];
+              var d = {};
+              utms.forEach(function(k){ var v = p.get(k); if(v) d[k] = v; });
+              if(Object.keys(d).length > 0) {
+                d._ts = Date.now();
+                d._landing = window.location.pathname;
+                d._referrer = document.referrer || '';
+                sessionStorage.setItem('fos_utm', JSON.stringify(d));
+              }
+              // Also capture first-touch attribution (survives session)
+              if(Object.keys(d).length > 0 && !localStorage.getItem('fos_first_touch')) {
+                localStorage.setItem('fos_first_touch', JSON.stringify(d));
+              }
+            } catch(e){}
+          })();
+        `}} />
+        {/* Google Ads Conversion Tracking — PLACEHOLDER */}
+        {/* Uncomment and add your Google Ads tag when ready:
+        <script async src="https://www.googletagmanager.com/gtag/js?id=AW-XXXXXXXXXX"></script>
+        <script dangerouslySetInnerHTML={{ __html: "window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','AW-XXXXXXXXXX');" }} />
+        */}
+        {/* Meta (Facebook) Pixel — PLACEHOLDER */}
+        {/* Uncomment and add your Pixel ID when ready:
+        <script dangerouslySetInnerHTML={{ __html: "!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');fbq('init','YOUR_PIXEL_ID');fbq('track','PageView');" }} />
+        */}
+        {/* LinkedIn Insight Tag — PLACEHOLDER */}
+        {/* Uncomment and add your partner ID when ready:
+        <script dangerouslySetInnerHTML={{ __html: "_linkedin_partner_id='YOUR_PARTNER_ID';window._linkedin_data_partner_ids=window._linkedin_data_partner_ids||[];window._linkedin_data_partner_ids.push(_linkedin_partner_id);" }} />
+        <script async src="https://snap.licdn.com/li.lms-analytics/insight.min.js" />
+        */}
       </body>
     </html>
   );
