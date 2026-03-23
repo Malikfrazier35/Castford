@@ -6106,6 +6106,15 @@ const LandingPage = ({ onLogin }) => {
                   body: JSON.stringify(demoForm),
                 });
               } catch {}
+              // Fire conversion events
+              if (typeof window !== "undefined") {
+                if (window.gtag) {
+                  window.gtag("event", "conversion", { send_to: "AW-18032992189/6hiYCNWJoY0cEL2_5pZD", value: 1.0, currency: "USD" });
+                  window.gtag("event", "generate_lead", { event_category: "engagement", event_label: "demo_request_homepage" });
+                }
+                if (window.fbq) window.fbq("track", "Lead");
+                if (window.plausible) window.plausible("DemoRequest", { props: { source: "homepage_modal" }});
+              }
               setDemoSubmitting(false);
               setDemoSuccess(true);
             }} disabled={demoSubmitting || !demoForm.full_name || !demoForm.email?.includes("@")} style={{
