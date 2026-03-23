@@ -2974,9 +2974,109 @@ const CloseView = ({ c, toast, tasks, setTasks, logActivity }) => {
         </div>
       </div>
 
+      {/* Analytics row */}
+      <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 14 }}>
+        <div style={{ fontSize: 10, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.12em", color: c.textFaint }}>Close Analytics</div>
+        <div style={{ flex: 1, height: 1, background: `linear-gradient(90deg, ${c.borderSub}, transparent)` }} />
+      </div>
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 14, marginBottom: 24 }}>
+        {/* Burndown chart */}
+        <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, padding: "20px 22px", transition: "all 0.2s" }}>
+          <div style={{ fontSize: 11, fontWeight: 800, color: c.text, marginBottom: 14 }}>Close Burndown</div>
+          <svg viewBox="0 0 200 80" style={{ width: "100%", height: 80 }}>
+            <defs>
+              <linearGradient id="burnGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor={c.accent} stopOpacity={0.2} /><stop offset="100%" stopColor={c.accent} stopOpacity={0} /></linearGradient>
+            </defs>
+            {/* Grid lines */}
+            {[0, 20, 40, 60].map(y => <line key={y} x1="0" y1={y} x2="200" y2={y} stroke={c.borderSub} strokeWidth="0.5" strokeDasharray="4 4" />)}
+            {/* Ideal line */}
+            <line x1="10" y1="5" x2="190" y2="70" stroke={c.textFaint} strokeWidth="1" strokeDasharray="3 3" opacity="0.4" />
+            {/* Actual burndown */}
+            {(() => {
+              const remaining = tasks.length;
+              const pts = [
+                { x: 10, y: 5 },
+                { x: 40, y: 5 + (2 / remaining) * 65 },
+                { x: 70, y: 5 + (2 / remaining) * 65 },
+                { x: 100, y: 5 + (doneCount / remaining) * 65 },
+                { x: 130, y: 5 + (doneCount / remaining) * 65 },
+                { x: 190, y: 5 + (doneCount / remaining) * 65 },
+              ];
+              const path = `M${pts.map(p => `${p.x},${p.y}`).join("L")}`;
+              const area = `${path}L190,75L10,75Z`;
+              return (<>
+                <path d={area} fill="url(#burnGrad)" />
+                <path d={path} fill="none" stroke={c.accent} strokeWidth="2" strokeLinecap="round" />
+                <circle cx={pts[3].x} cy={pts[3].y} r="3.5" fill={c.accent} stroke={c.surface} strokeWidth="2" />
+              </>);
+            })()}
+            {/* Labels */}
+            <text x="10" y="78" fontSize="7" fill={c.textFaint}>Day 1</text>
+            <text x="180" y="78" fontSize="7" fill={c.textFaint} textAnchor="end">Day 6</text>
+          </svg>
+          <div style={{ display: "flex", justifyContent: "space-between", fontSize: 9, color: c.textDim, marginTop: 6 }}>
+            <span>Ideal <span style={{ color: c.textFaint }}>—</span></span>
+            <span>Actual <span style={{ color: c.accent, fontWeight: 700 }}>{tasks.length - doneCount} remaining</span></span>
+          </div>
+        </div>
+
+        {/* Category breakdown */}
+        <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, padding: "20px 22px", transition: "all 0.2s" }}>
+          <div style={{ fontSize: 11, fontWeight: 800, color: c.text, marginBottom: 14 }}>By Category</div>
+          {["Accounting", "Consolidation", "Compliance", "Reporting", "Review"].filter(cat => tasks.some(t => t.cat === cat)).map(cat => {
+            const catTasks = tasks.filter(t => t.cat === cat);
+            const catDone = catTasks.filter(t => t.status === "done").length;
+            const catPct = Math.round((catDone / catTasks.length) * 100);
+            const catColors = { Accounting: c.accent, Consolidation: c.cyan, Compliance: c.purple, Reporting: c.green, Review: c.amber };
+            const clr = catColors[cat] || c.accent;
+            return (
+              <div key={cat} style={{ marginBottom: 8 }}>
+                <div style={{ display: "flex", justifyContent: "space-between", fontSize: 10, marginBottom: 3 }}>
+                  <span style={{ color: c.textDim, fontWeight: 600 }}>{cat}</span>
+                  <span style={{ fontFamily: "'JetBrains Mono', monospace", fontWeight: 800, color: catPct === 100 ? c.green : clr, fontSize: 9 }}>{catDone}/{catTasks.length}</span>
+                </div>
+                <div style={{ height: 6, background: c.bg2, borderRadius: 3, overflow: "hidden" }}>
+                  <div style={{ width: `${catPct}%`, height: "100%", background: `linear-gradient(90deg, ${clr}80, ${clr})`, borderRadius: 3, transition: "width 0.6s ease" }} />
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Owner workload */}
+        <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, padding: "20px 22px", transition: "all 0.2s" }}>
+          <div style={{ fontSize: 11, fontWeight: 800, color: c.text, marginBottom: 14 }}>Owner Workload</div>
+          {[...new Set(tasks.map(t => t.owner))].map(owner => {
+            const ownerTasks = tasks.filter(t => t.owner === owner);
+            const ownerDone = ownerTasks.filter(t => t.status === "done").length;
+            const ownerPending = ownerTasks.length - ownerDone;
+            return (
+              <div key={owner} style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 10, padding: "6px 0" }}>
+                <div style={{ width: 26, height: 26, borderRadius: 8, background: `linear-gradient(135deg, ${c.accent}20, ${c.purple}10)`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 10, fontWeight: 800, color: c.accent, flexShrink: 0 }}>
+                  {owner.charAt(0)}
+                </div>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ fontSize: 11, fontWeight: 600, color: c.text, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{owner}</div>
+                  <div style={{ display: "flex", gap: 3, marginTop: 3 }}>
+                    {ownerTasks.map((t, i) => (
+                      <div key={i} style={{ width: 10, height: 10, borderRadius: 3, background: t.status === "done" ? c.green : t.status === "progress" ? c.accent : c.borderSub, border: `1px solid ${t.status === "done" ? c.green : t.status === "progress" ? c.accent : c.borderSub}20`, transition: "all 0.3s" }} />
+                    ))}
+                  </div>
+                </div>
+                <div style={{ fontSize: 9, fontWeight: 700, color: ownerPending === 0 ? c.green : c.textDim, fontFamily: "'JetBrains Mono', monospace" }}>
+                  {ownerPending === 0 ? "✓ Done" : `${ownerPending} left`}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
       {/* Task list — grouped by category */}
-      <div style={{ fontSize: 9, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.12em", color: c.textFaint, marginBottom: 10, display: "flex", alignItems: "center", gap: 8 }}>
-        Close Checklist
+      <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 14 }}>
+        <div style={{ fontSize: 10, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.12em", color: c.textFaint }}>Close Checklist</div>
+        <div style={{ flex: 1, height: 1, background: `linear-gradient(90deg, ${c.borderSub}, transparent)` }} />
+        <span style={{ fontSize: 9, color: c.textFaint, fontFamily: "'JetBrains Mono', monospace" }}>{doneCount}/{tasks.length} complete</span>
       </div>
       <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
         {["Accounting", "Consolidation", "Compliance", "Reporting", "Review"].filter(cat => tasks.some(t => t.cat === cat)).map(cat => {
@@ -4172,23 +4272,95 @@ const ScenariosView = ({ c, toast }) => {
         </div>
       </div>
 
-      {/* Horizontal bar comparison */}
-      <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 12, padding: "24px 24px 18px", marginBottom: 16, boxShadow: "0 1px 3px rgba(0,0,0,0.04)" }}>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
-          <div style={{ fontSize: 12, fontWeight: 800, color: c.text }}>Revenue Comparison</div>
-          <div style={{ fontSize: 9, color: c.textDim, fontFamily: "'JetBrains Mono', monospace" }}>EBITDA →</div>
-        </div>
-        {scenarios.map((s, i) => (
-          <div key={s.name} onClick={() => setSelected(i)} style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 10, cursor: "pointer", opacity: selected === i ? 1 : 0.55, transition: "all 0.2s", transform: selected === i ? "translateX(2px)" : "none" }}>
-            <div style={{ width: 120, fontSize: 11, fontWeight: selected === i ? 700 : 500, color: selected === i ? c.text : c.textDim, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{s.name}</div>
-            <div style={{ flex: 1, height: 28, background: c.surfaceAlt, borderRadius: 8, overflow: "hidden", position: "relative" }}>
-              <div style={{ height: "100%", width: `${(s.revenue / barMax) * 100}%`, background: s.status === "Active" ? `linear-gradient(90deg, ${c.accent}, ${c.accent}90)` : `linear-gradient(90deg, ${c.borderBright}, ${c.borderBright}80)`, borderRadius: 8, transition: "width 0.6s ease", display: "flex", alignItems: "center", justifyContent: "flex-end", paddingRight: 10, boxShadow: selected === i && s.status === "Active" ? `0 0 12px ${c.accent}20` : "none" }}>
-                <span style={{ fontSize: 11, fontWeight: 800, color: s.status === "Active" ? "#fff" : c.textDim, fontFamily: "'JetBrains Mono', monospace" }}>${s.revenue}M</span>
+      {/* Multi-metric scenario comparison */}
+      <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 14 }}>
+        <div style={{ fontSize: 10, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.12em", color: c.textFaint }}>Scenario Comparison</div>
+        <div style={{ flex: 1, height: 1, background: `linear-gradient(90deg, ${c.borderSub}, transparent)` }} />
+      </div>
+      <div style={{ display: "grid", gridTemplateColumns: "1.3fr 1fr", gap: 16, marginBottom: 24 }}>
+        {/* Revenue / OpEx / EBITDA stacked bars */}
+        <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, padding: "22px 24px", transition: "all 0.2s" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 18 }}>
+            <div style={{ width: 30, height: 30, borderRadius: 9, background: `linear-gradient(135deg, ${c.accent}18, ${c.purple}10)`, border: `1px solid ${c.accent}15`, display: "flex", alignItems: "center", justifyContent: "center" }}>
+              <Layers size={14} color={c.accent} />
+            </div>
+            <div>
+              <div style={{ fontSize: 13, fontWeight: 800, color: c.text }}>Multi-Metric Comparison</div>
+              <div style={{ fontSize: 10, color: c.textDim }}>Revenue · OpEx · EBITDA across all scenarios</div>
+            </div>
+          </div>
+          {scenarios.map((s, i) => {
+            const ebitdaVal = typeof s.ebitda === 'number' ? s.ebitda : parseFloat(s.ebitda);
+            const isActive = selected === i;
+            return (
+            <div key={s.name} onClick={() => setSelected(i)} style={{ marginBottom: 14, cursor: "pointer", opacity: isActive ? 1 : 0.6, transition: "all 0.2s", transform: isActive ? "translateX(2px)" : "none" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
+                <span style={{ fontSize: 11, fontWeight: isActive ? 800 : 500, color: isActive ? c.text : c.textDim }}>{s.name}</span>
+                <div style={{ display: "flex", gap: 6 }}>
+                  <span style={{ fontSize: 9, fontWeight: 700, padding: "2px 6px", borderRadius: 4, background: `${c.accent}08`, color: c.accent, fontFamily: "'JetBrains Mono', monospace" }}>${s.revenue}M</span>
+                  <span style={{ fontSize: 9, fontWeight: 700, padding: "2px 6px", borderRadius: 4, background: ebitdaVal > 5 ? `${c.green}08` : `${c.amber}08`, color: ebitdaVal > 5 ? c.green : c.amber, fontFamily: "'JetBrains Mono', monospace" }}>{ebitdaVal}%</span>
+                </div>
+              </div>
+              <div style={{ display: "flex", gap: 3, height: 14, borderRadius: 4, overflow: "hidden" }}>
+                <div style={{ width: `${(s.revenue / 70) * 50}%`, height: "100%", background: `linear-gradient(90deg, ${c.accent}${isActive ? "" : "80"}, ${c.accent}${isActive ? "cc" : "50"})`, borderRadius: "4px 0 0 4px", transition: "width 0.4s" }} title={`Revenue: $${s.revenue}M`} />
+                <div style={{ width: `${(s.opex / 70) * 50}%`, height: "100%", background: `linear-gradient(90deg, ${c.amber}${isActive ? "" : "60"}, ${c.amber}${isActive ? "aa" : "40"})`, transition: "width 0.4s" }} title={`OpEx: $${s.opex}M`} />
+                <div style={{ flex: 1, height: "100%", background: ebitdaVal > 5 ? `${c.green}${isActive ? "40" : "20"}` : `${c.red}${isActive ? "40" : "20"}`, borderRadius: "0 4px 4px 0" }} title={`EBITDA: ${ebitdaVal}%`} />
               </div>
             </div>
-            <div style={{ width: 52, fontSize: 10, fontWeight: 700, padding: "3px 8px", borderRadius: 5, textAlign: "center", fontFamily: "'JetBrains Mono', monospace", background: (typeof s.ebitda === 'number' ? s.ebitda : parseFloat(s.ebitda)) > 5 ? c.greenDim : (typeof s.ebitda === 'number' ? s.ebitda : parseFloat(s.ebitda)) > 0 ? c.amberDim : c.redDim, color: (typeof s.ebitda === 'number' ? s.ebitda : parseFloat(s.ebitda)) > 5 ? c.green : (typeof s.ebitda === 'number' ? s.ebitda : parseFloat(s.ebitda)) > 0 ? c.amber : c.red }}>{typeof s.ebitda === 'number' ? s.ebitda : s.ebitda}%</div>
+            );
+          })}
+          <div style={{ display: "flex", gap: 14, marginTop: 14, paddingTop: 10, borderTop: `1px solid ${c.borderSub}`, fontSize: 9, color: c.textDim }}>
+            {[{ l: "Revenue", color: c.accent }, { l: "OpEx", color: c.amber }, { l: "EBITDA", color: c.green }].map(s => (
+              <span key={s.l} style={{ display: "flex", alignItems: "center", gap: 4, fontWeight: 600 }}>
+                <span style={{ width: 8, height: 8, borderRadius: 2, background: s.color }} />{s.l}
+              </span>
+            ))}
           </div>
-        ))}
+        </div>
+
+        {/* Sensitivity tornado chart */}
+        <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, padding: "22px 24px", transition: "all 0.2s" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 18 }}>
+            <div style={{ width: 30, height: 30, borderRadius: 9, background: `linear-gradient(135deg, ${c.red}18, ${c.green}10)`, border: `1px solid ${c.amber}15`, display: "flex", alignItems: "center", justifyContent: "center" }}>
+              <Activity size={14} color={c.amber} />
+            </div>
+            <div>
+              <div style={{ fontSize: 13, fontWeight: 800, color: c.text }}>Sensitivity Analysis</div>
+              <div style={{ fontSize: 10, color: c.textDim }}>Impact on revenue per ±10% change</div>
+            </div>
+          </div>
+          {[
+            { driver: "NDR Rate", low: -4.2, high: 5.8, unit: "$M" },
+            { driver: "Pipeline Conv.", low: -3.1, high: 3.8, unit: "$M" },
+            { driver: "Gross Churn", low: -2.8, high: 1.9, unit: "$M" },
+            { driver: "Headcount", low: -1.5, high: -0.8, unit: "$M" },
+            { driver: "ACV Trend", low: -1.2, high: 2.4, unit: "$M" },
+          ].map((d, i) => {
+            const maxAbs = 6;
+            const lowPct = Math.abs(d.low) / maxAbs * 50;
+            const highPct = Math.abs(d.high) / maxAbs * 50;
+            return (
+              <div key={d.driver} style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}>
+                <span style={{ width: 90, fontSize: 10, color: c.textDim, fontWeight: 600, textAlign: "right" }}>{d.driver}</span>
+                <div style={{ flex: 1, height: 16, display: "flex", alignItems: "center", position: "relative" }}>
+                  {/* Center line */}
+                  <div style={{ position: "absolute", left: "50%", top: 0, bottom: 0, width: 1, background: c.borderSub }} />
+                  {/* Low bar (left of center) */}
+                  <div style={{ position: "absolute", right: "50%", height: "100%", width: `${lowPct}%`, background: `linear-gradient(270deg, ${c.red}60, ${c.red}20)`, borderRadius: "4px 0 0 4px", transition: "width 0.4s" }} />
+                  {/* High bar (right of center) */}
+                  <div style={{ position: "absolute", left: "50%", height: "100%", width: `${highPct}%`, background: `linear-gradient(90deg, ${c.green}60, ${c.green}20)`, borderRadius: "0 4px 4px 0", transition: "width 0.4s" }} />
+                </div>
+                <div style={{ width: 70, display: "flex", justifyContent: "space-between", fontSize: 9, fontFamily: "'JetBrains Mono', monospace" }}>
+                  <span style={{ color: c.red, fontWeight: 700 }}>{d.low > 0 ? "+" : ""}{d.low}</span>
+                  <span style={{ color: c.green, fontWeight: 700 }}>+{d.high}</span>
+                </div>
+              </div>
+            );
+          })}
+          <div style={{ display: "flex", justifyContent: "center", gap: 20, marginTop: 12, paddingTop: 10, borderTop: `1px solid ${c.borderSub}`, fontSize: 9, color: c.textFaint }}>
+            <span>← Downside risk</span><span>Upside potential →</span>
+          </div>
+        </div>
       </div>
 
       <div style={{ fontSize: 9, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.12em", color: c.textFaint, marginBottom: 10, display: "flex", alignItems: "center", gap: 8 }}>
