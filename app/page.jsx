@@ -857,16 +857,19 @@ const StatusBanner = memo(({ dark }) => {
 
 const DemoBanner = memo(({ c, onNav, onUpgrade, orgName }) => (
   <div style={{
-    display: "flex", alignItems: "center", justifyContent: "center", gap: 12, padding: "8px 16px",
-    background: `linear-gradient(90deg, ${c.accent}15, ${c.purple}10)`, borderBottom: `1px solid ${c.accent}20`,
+    display: "flex", alignItems: "center", justifyContent: "center", gap: 12, padding: "10px 16px",
+    background: `linear-gradient(90deg, #f59e0b18, #f59e0b08)`, borderBottom: `1px solid #f59e0b30`,
     fontSize: 11, color: c.textSec, flexShrink: 0, flexWrap: "wrap",
   }}>
-    <span style={{ fontSize: 8, fontWeight: 800, padding: "2px 6px", borderRadius: 3, background: c.accentDim, color: c.accent, letterSpacing: "0.06em" }}>DEMO</span>
-    <span>Viewing sample data for <strong style={{ color: c.text }}>{orgName || "your organization"}</strong></span>
+    <span style={{ display: "inline-flex", alignItems: "center", gap: 5, fontSize: 9, fontWeight: 800, padding: "3px 10px", borderRadius: 4, background: "#f59e0b20", color: "#f59e0b", letterSpacing: "0.06em", border: "1px solid #f59e0b25" }}>
+      <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#f59e0b", animation: "pulse 2s infinite" }} />
+      DEMO MODE
+    </span>
+    <span>You are viewing <strong style={{ color: c.text }}>sample data</strong> — connect your ERP to see real financials</span>
     <span style={{ width: 3, height: 3, borderRadius: "50%", background: c.textFaint }} />
-    <span onClick={() => onNav("integrations")} style={{ fontSize: 10, color: c.accent, fontWeight: 700, cursor: "pointer" }}>Connect Your ERP</span>
+    <span onClick={() => onNav("integrations")} style={{ fontSize: 10, color: c.accent, fontWeight: 700, cursor: "pointer", textDecoration: "underline", textDecorationStyle: "dotted", textUnderlineOffset: 2 }}>Connect Your Data</span>
     <span style={{ width: 3, height: 3, borderRadius: "50%", background: c.textFaint }} />
-    <span onClick={onUpgrade} style={{ fontSize: 10, fontWeight: 700, padding: "3px 10px", borderRadius: 5, background: `linear-gradient(135deg, ${c.accent}, ${c.purple})`, color: "#fff", cursor: "pointer" }}>Upgrade Now</span>
+    <span onClick={onUpgrade} style={{ fontSize: 10, fontWeight: 700, padding: "4px 12px", borderRadius: 5, background: `linear-gradient(135deg, ${c.accent}, ${c.purple})`, color: "#fff", cursor: "pointer" }}>Subscribe</span>
   </div>
 ));
 
@@ -2872,7 +2875,24 @@ const timeAgo = (ts) => {
 };
 
 const IntegrationsView = ({ c, toast }) => {
-  const [conns, setConns] = useState(CONNECTORS);
+  // Load connector state from localStorage, falling back to defaults
+  const [conns, setConns] = useState(() => {
+    try {
+      const saved = localStorage.getItem("fos_connectors");
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        // Merge saved state with CONNECTORS template (preserves new connectors added to code)
+        return CONNECTORS.map(def => {
+          const s = parsed.find(p => p.name === def.name);
+          if (s && s.status === "connected") {
+            return { ...def, status: "connected", records: s.records || def.records, syncedAt: Date.now() - (s.age || 120000), health: s.health ?? def.health ?? 100 };
+          }
+          return def;
+        });
+      }
+    } catch {}
+    return CONNECTORS;
+  });
   const [filter, setFilter] = useState("all");
   const [search, setSearch] = useState("");
   const [connectingName, setConnectingName] = useState(null);
@@ -2888,6 +2908,16 @@ const IntegrationsView = ({ c, toast }) => {
   useEffect(() => () => { mountedRef.current = false; }, []);
   // Tick every 1s to update live sync times
   useEffect(() => { const i = setInterval(() => setTick(t => t + 1), 1000); return () => clearInterval(i); }, []);
+  // Persist connector state to localStorage (survives page refresh)
+  useEffect(() => {
+    try {
+      const toSave = conns.filter(co => co.status === "connected").map(co => ({
+        name: co.name, status: co.status, records: co.records, health: co.health,
+        age: co.syncedAt ? Math.max(0, Date.now() - co.syncedAt) : 120000,
+      }));
+      localStorage.setItem("fos_connectors", JSON.stringify(toSave));
+    } catch {}
+  }, [conns]);
 
   const startConnect = (name) => {
     const conn = conns.find(co => co.name === name);
