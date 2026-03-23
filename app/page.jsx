@@ -2485,8 +2485,9 @@ const ForecastView = ({ c, toast }) => {
       </div>
 
       {/* Chart */}
-      <div style={{ fontSize: 9, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.12em", color: c.textFaint, marginBottom: 10, display: "flex", alignItems: "center", gap: 8 }}>
-        Forecast Model
+      <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 14 }}>
+        <div style={{ fontSize: 10, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.12em", color: c.textFaint }}>Forecast Model</div>
+        <div style={{ flex: 1, height: 1, background: `linear-gradient(90deg, ${c.borderSub}, transparent)` }} />
       </div>
       <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, padding: "24px 24px 18px", boxShadow: c.cardGlow || "0 1px 3px rgba(0,0,0,0.04)", transition: "all 0.2s ease", marginBottom: 16 }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
@@ -2540,8 +2541,87 @@ const ForecastView = ({ c, toast }) => {
         </div>
       </div>
 
-      <div style={{ fontSize: 9, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.12em", color: c.textFaint, marginBottom: 10, display: "flex", alignItems: "center", gap: 8 }}>
-        Drivers & Assumptions
+      <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 14 }}>
+        <div style={{ fontSize: 10, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.12em", color: c.textFaint }}>Forecast Accuracy & Scenarios</div>
+        <div style={{ flex: 1, height: 1, background: `linear-gradient(90deg, ${c.borderSub}, transparent)` }} />
+      </div>
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 14, marginBottom: 24 }}>
+        {/* Accuracy gauge */}
+        <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, padding: "20px 22px", transition: "all 0.2s" }}>
+          <div style={{ fontSize: 11, fontWeight: 800, color: c.text, marginBottom: 12 }}>Model Accuracy</div>
+          <div style={{ position: "relative", width: 120, height: 70, margin: "0 auto 12px" }}>
+            <svg viewBox="0 0 120 70" style={{ width: "100%", height: "100%" }}>
+              <defs>
+                <linearGradient id="gaugeGrad" x1="0" y1="0" x2="1" y2="0">
+                  <stop offset="0%" stopColor={c.red} /><stop offset="40%" stopColor={c.amber} /><stop offset="70%" stopColor={c.green} /><stop offset="100%" stopColor={c.green} />
+                </linearGradient>
+              </defs>
+              <path d="M 15 60 A 45 45 0 0 1 105 60" fill="none" stroke={c.bg2} strokeWidth="8" strokeLinecap="round" />
+              <path d="M 15 60 A 45 45 0 0 1 105 60" fill="none" stroke="url(#gaugeGrad)" strokeWidth="8" strokeLinecap="round" strokeDasharray={`${(retrained ? 0.97 : 0.968) * 141} 141`} />
+              <circle cx={60 + 45 * Math.cos(Math.PI - (retrained ? 0.97 : 0.968) * Math.PI)} cy={60 - 45 * Math.sin(Math.PI - (retrained ? 0.97 : 0.968) * Math.PI)} r="5" fill={c.green} stroke={c.surface} strokeWidth="2" />
+            </svg>
+          </div>
+          <div style={{ textAlign: "center" }}>
+            <div style={{ fontSize: 28, fontWeight: 800, color: c.green, fontFamily: "'JetBrains Mono', monospace" }}>{retrained ? "97.1" : "96.8"}%</div>
+            <div style={{ fontSize: 10, color: c.textDim, marginTop: 2 }}>MAPE: {retrained ? "2.9" : "3.2"}% · R²: 0.94</div>
+          </div>
+        </div>
+
+        {/* Scenario comparison bars */}
+        <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, padding: "20px 22px", transition: "all 0.2s" }}>
+          <div style={{ fontSize: 11, fontWeight: 800, color: c.text, marginBottom: 12 }}>Scenario Comparison</div>
+          {[
+            { label: "Bear", value: (FORECAST_DATA[11]?.bear || 8200) / 1000, color: c.red, max: 13 },
+            { label: "Base", value: scenario, color: c.green, max: 13 },
+            { label: "Bull", value: (FORECAST_DATA[11]?.bull || 12500) / 1000, color: c.accent, max: 13 },
+          ].map(s => (
+            <div key={s.label} style={{ marginBottom: 10 }}>
+              <div style={{ display: "flex", justifyContent: "space-between", fontSize: 10, marginBottom: 4 }}>
+                <span style={{ color: c.textDim, fontWeight: 600 }}>{s.label}</span>
+                <span style={{ color: s.color, fontWeight: 800, fontFamily: "'JetBrains Mono', monospace" }}>${s.value.toFixed(1)}M</span>
+              </div>
+              <div style={{ height: 10, background: c.bg2, borderRadius: 5, overflow: "hidden" }}>
+                <div style={{ width: `${(s.value / s.max) * 100}%`, height: "100%", background: `linear-gradient(90deg, ${s.color}80, ${s.color})`, borderRadius: 5, transition: "width 0.6s ease" }} />
+              </div>
+            </div>
+          ))}
+          <div style={{ fontSize: 9, color: c.textFaint, marginTop: 8, padding: "6px 8px", background: c.surfaceAlt, borderRadius: 6 }}>
+            Spread: <span style={{ fontFamily: "'JetBrains Mono', monospace", fontWeight: 700, color: c.textSec }}>${((FORECAST_DATA[11]?.bull || 12500) / 1000 - (FORECAST_DATA[11]?.bear || 8200) / 1000).toFixed(1)}M</span> · Confidence: 80%
+          </div>
+        </div>
+
+        {/* Monthly accuracy heatmap */}
+        <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, padding: "20px 22px", transition: "all 0.2s" }}>
+          <div style={{ fontSize: 11, fontWeight: 800, color: c.text, marginBottom: 12 }}>Monthly Accuracy</div>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 6 }}>
+            {[
+              { m: "Jul", acc: 98.2 }, { m: "Aug", acc: 96.5 }, { m: "Sep", acc: 97.8 }, { m: "Oct", acc: 95.1 },
+              { m: "Nov", acc: 97.4 }, { m: "Dec", acc: 94.3 }, { m: "Jan", acc: 98.6 }, { m: "Feb", acc: 96.9 },
+              { m: "Mar", acc: 97.1 }, { m: "Apr", acc: 95.8 }, { m: "May", acc: 98.0 }, { m: "Jun", acc: null },
+            ].map(d => {
+              const intensity = d.acc ? Math.max(0, (d.acc - 90) / 10) : 0;
+              const clr = d.acc ? (d.acc >= 97 ? c.green : d.acc >= 95 ? c.accent : c.amber) : c.borderSub;
+              return (
+                <div key={d.m} style={{ padding: "8px 4px", borderRadius: 6, background: d.acc ? `${clr}${Math.round(intensity * 20).toString(16).padStart(2, "0")}` : c.surfaceAlt, textAlign: "center", border: `1px solid ${d.acc ? `${clr}15` : c.borderSub}`, transition: "all 0.15s", cursor: "default" }}
+                  onMouseEnter={e => { if (d.acc) e.currentTarget.style.transform = "scale(1.05)"; }}
+                  onMouseLeave={e => { e.currentTarget.style.transform = "none"; }}>
+                  <div style={{ fontSize: 8, color: c.textFaint, fontWeight: 700, marginBottom: 2 }}>{d.m}</div>
+                  <div style={{ fontSize: 11, fontWeight: 800, color: d.acc ? clr : c.textFaint, fontFamily: "'JetBrains Mono', monospace" }}>{d.acc ? `${d.acc}%` : "—"}</div>
+                </div>
+              );
+            })}
+          </div>
+          <div style={{ display: "flex", gap: 10, justifyContent: "center", marginTop: 10, fontSize: 8, color: c.textFaint }}>
+            <span style={{ display: "flex", alignItems: "center", gap: 3 }}><span style={{ width: 8, height: 8, borderRadius: 2, background: `${c.green}30` }} />97%+</span>
+            <span style={{ display: "flex", alignItems: "center", gap: 3 }}><span style={{ width: 8, height: 8, borderRadius: 2, background: `${c.accent}30` }} />95-97%</span>
+            <span style={{ display: "flex", alignItems: "center", gap: 3 }}><span style={{ width: 8, height: 8, borderRadius: 2, background: `${c.amber}30` }} />&lt;95%</span>
+          </div>
+        </div>
+      </div>
+
+      <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 14 }}>
+        <div style={{ fontSize: 10, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.12em", color: c.textFaint }}>Drivers & Assumptions</div>
+        <div style={{ flex: 1, height: 1, background: `linear-gradient(90deg, ${c.borderSub}, transparent)` }} />
       </div>
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
         {/* Driver importance */}
@@ -2696,12 +2776,82 @@ const ConsolidationView = ({ c, onNav, toast }) => {
         })}
       </div>
 
-      {/* Consolidated P&L */}
-      <div style={{ fontSize: 9, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.12em", color: c.textFaint, marginBottom: 10, display: "flex", alignItems: "center", gap: 8 }}>
-        Consolidated Financials
+      {/* Revenue Mix + FX Impact */}
+      <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 14 }}>
+        <div style={{ fontSize: 10, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.12em", color: c.textFaint }}>Revenue Mix & FX Impact</div>
+        <div style={{ flex: 1, height: 1, background: `linear-gradient(90deg, ${c.borderSub}, transparent)` }} />
       </div>
-      <div style={{ fontSize: 9, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.12em", color: c.textFaint, marginTop: 4, marginBottom: 10, display: "flex", alignItems: "center", gap: 8 }}>
-        Consolidated Financials
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 24 }}>
+        {/* Entity Revenue Contribution */}
+        <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, padding: "22px 24px", transition: "all 0.2s" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 16 }}>
+            <div style={{ width: 30, height: 30, borderRadius: 9, background: `linear-gradient(135deg, ${c.accent}18, ${c.purple}10)`, border: `1px solid ${c.accent}15`, display: "flex", alignItems: "center", justifyContent: "center" }}>
+              <Layers size={14} color={c.accent} />
+            </div>
+            <div style={{ fontSize: 13, fontWeight: 800, color: c.text }}>Entity Contribution</div>
+          </div>
+          <div style={{ display: "flex", gap: 16, alignItems: "center" }}>
+            {/* Visual bar breakdown */}
+            <div style={{ flex: 1 }}>
+              {ENTITIES.map((e, i) => {
+                const pct = ((e.revenue / 51190) * 100).toFixed(1);
+                const colors = [c.accent, c.purple, c.cyan];
+                return (
+                  <div key={e.name} style={{ marginBottom: 12 }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", fontSize: 11, marginBottom: 4 }}>
+                      <span style={{ color: c.text, fontWeight: 600 }}>{e.name}</span>
+                      <span style={{ fontFamily: "'JetBrains Mono', monospace", fontWeight: 800, color: colors[i] }}>{fmt(e.revenue)} <span style={{ fontSize: 9, opacity: 0.6 }}>({pct}%)</span></span>
+                    </div>
+                    <div style={{ height: 8, background: c.bg2, borderRadius: 4, overflow: "hidden" }}>
+                      <div style={{ width: `${pct}%`, height: "100%", background: `linear-gradient(90deg, ${colors[i]}80, ${colors[i]})`, borderRadius: 4, transition: "width 0.8s ease" }} />
+                    </div>
+                  </div>
+                );
+              })}
+              <div style={{ display: "flex", justifyContent: "space-between", fontSize: 10, padding: "8px 10px", background: c.surfaceAlt, borderRadius: 8, marginTop: 8 }}>
+                <span style={{ color: c.textDim, fontWeight: 600 }}>Total Consolidated</span>
+                <span style={{ fontFamily: "'JetBrains Mono', monospace", fontWeight: 800, color: c.text }}>${(51190 / 1000).toFixed(1)}M</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* FX & IC Impact */}
+        <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, padding: "22px 24px", transition: "all 0.2s" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 16 }}>
+            <div style={{ width: 30, height: 30, borderRadius: 9, background: `linear-gradient(135deg, ${c.amber}18, ${c.red}10)`, border: `1px solid ${c.amber}15`, display: "flex", alignItems: "center", justifyContent: "center" }}>
+              <Globe size={14} color={c.amber} />
+            </div>
+            <div style={{ fontSize: 13, fontWeight: 800, color: c.text }}>FX & IC Adjustments</div>
+          </div>
+          {/* Waterfall-style adjustment bars */}
+          {[
+            { label: "Pre-adjustment Revenue", value: 51190 + 1200 + 104, color: c.accent, type: "total" },
+            { label: "IC Eliminations", value: -1200, color: c.amber, type: "adj" },
+            { label: "FX Impact (EUR)", value: -142, color: c.red, type: "adj" },
+            { label: "FX Impact (SGD)", value: 38, color: c.green, type: "adj" },
+            { label: "Consolidated Revenue", value: 51190, color: c.green, type: "total" },
+          ].map((item, i) => (
+            <div key={item.label} style={{ display: "flex", alignItems: "center", gap: 10, padding: "8px 0", borderBottom: i < 4 ? `1px solid ${c.borderSub}` : "none" }}>
+              <span style={{ flex: 1, fontSize: 11, color: item.type === "total" ? c.text : c.textDim, fontWeight: item.type === "total" ? 700 : 500 }}>{item.label}</span>
+              <div style={{ width: 80, height: 6, background: c.bg2, borderRadius: 3, overflow: "hidden" }}>
+                <div style={{ width: `${Math.abs(item.value) / 524}%`, height: "100%", background: item.color, borderRadius: 3, marginLeft: item.value < 0 ? "auto" : 0 }} />
+              </div>
+              <span style={{ fontSize: 11, fontWeight: 800, color: item.type === "total" ? c.text : (item.value >= 0 ? c.green : c.red), fontFamily: "'JetBrains Mono', monospace", width: 70, textAlign: "right" }}>
+                {item.type === "adj" && (item.value >= 0 ? "+" : "")}{fmt(item.value)}
+              </span>
+            </div>
+          ))}
+          <div style={{ fontSize: 9, color: c.textFaint, marginTop: 10, padding: "6px 8px", background: c.surfaceAlt, borderRadius: 6, display: "flex", alignItems: "center", gap: 4 }}>
+            <Globe size={10} color={c.textFaint} /> FX rates: EUR/USD 1.087 · SGD/USD 0.746 · Updated {fmtTime(new Date())}
+          </div>
+        </div>
+      </div>
+
+      {/* Consolidated P&L */}
+      <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 14 }}>
+        <div style={{ fontSize: 10, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.12em", color: c.textFaint }}>Consolidated Financials</div>
+        <div style={{ flex: 1, height: 1, background: `linear-gradient(90deg, ${c.borderSub}, transparent)` }} />
       </div>
       <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, overflow: "hidden", position: "relative" }}>
         <div style={{ padding: "16px 20px", display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: `2px solid ${c.borderBright}` }}>
