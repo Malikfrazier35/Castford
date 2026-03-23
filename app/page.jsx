@@ -4181,16 +4181,17 @@ const SettingsView = ({ c, onLogout, toast, mode, onShowSuitePanel, suitePanelOp
                 onMouseEnter={e => { e.currentTarget.style.borderColor = c.accent; e.currentTarget.style.color = c.accent; }}
                 onMouseLeave={e => { e.currentTarget.style.borderColor = b.primary ? c.accent : c.border; e.currentTarget.style.color = b.primary ? c.accent : c.textSec; }}
                 onClick={async () => {
-                  toast(`Opening ${b.label}...`, "info");
                   try {
                     const { data: { session } } = await supabase.auth.getSession();
                     if (!session?.access_token) { toast("Please sign in to manage billing", "warning"); return; }
+                    toast(`Opening ${b.label}...`, "info");
                     const res = await fetch(`${SUPABASE_URL}/functions/v1/manage-subscription`, {
                       method: "POST",
                       headers: { "Content-Type": "application/json", "Authorization": `Bearer ${session.access_token}`, "apikey": SUPABASE_KEY },
                     });
                     const data = await res.json();
                     if (data.url) { window.open(data.url, "_blank"); }
+                    else if (res.status === 404) { toast("No active subscription yet — choose a plan to get started", "info"); onNav("settings"); }
                     else { toast(data.error || "Could not open billing portal", "error"); }
                   } catch { toast("Billing portal unavailable — contact support@finance-os.app", "error"); }
                 }}
@@ -5079,21 +5080,32 @@ const PlanPicker = ({ c, userName, onSkip, onSelect, isDemo, isAuthenticated }) 
                   if (p.enterprise) { window.open("mailto:sales@finance-os.app?subject=Enterprise%20Pricing%20Inquiry", "_blank"); return; }
                   setCheckoutLoading(p.name);
                   try {
-                    // Store is not yet live — add to waitlist with plan interest
                     const { data: { session: authSession } } = await supabase.auth.getSession();
-                    const email = authSession?.user?.email;
-                    if (email) {
-                      await supabase.from("waitlist").upsert({
-                        email, interest_type: "subscribe",
-                        source: "plan_picker",
-                        full_name: authSession?.user?.user_metadata?.full_name || "",
-                        company: p.name.toLowerCase(),
-                        role: `${p.name} ${billing}`,
-                      }, { onConflict: "email" });
+                    if (!authSession?.access_token) {
+                      // Not logged in — redirect to signup first
+                      toast("Create an account to subscribe", "warning");
+                      setCheckoutLoading(null);
+                      return;
                     }
-                    setCheckoutPending(p.name);
-                  } catch {
-                    setCheckoutPending(p.name);
+                    // Call create-checkout Edge Function → Stripe Checkout
+                    const res = await fetch(`${SUPABASE_URL}/functions/v1/create-checkout`, {
+                      method: "POST",
+                      headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${authSession.access_token}`,
+                        "apikey": SUPABASE_KEY,
+                      },
+                      body: JSON.stringify({ plan: p.name.toLowerCase(), interval: billing }),
+                    });
+                    const data = await res.json();
+                    if (data.url) {
+                      // Redirect to Stripe Checkout
+                      window.location.href = data.url;
+                    } else {
+                      toast(data.error || "Checkout unavailable — contact support@finance-os.app", "error");
+                    }
+                  } catch (err) {
+                    toast("Checkout error — please try again", "error");
                   }
                   setCheckoutLoading(null);
                 }} disabled={checkoutLoading === p.name} style={{
