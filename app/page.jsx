@@ -2379,8 +2379,8 @@ const ForecastView = ({ c, toast }) => {
   return (
     <div style={{ padding: 32 }}>
       <ExportBar c={c} title="Forecast"
-        onCSV={() => { downloadCSV("financeos-forecast.csv", ["Month","Actual ($K)","Budget ($K)","Forecast ($K)","Bull ($K)","Bear ($K)"], FORECAST_DATA.map(d => [d.month, d.actual || "", d.budget, d.forecast, d.bull, d.bear])); toast("Forecast exported as CSV", "success"); }}
-        onPDF={() => { downloadPDF("Revenue Forecast FY2025", ["Month", "Actual", "Budget", "Forecast", "Bull", "Bear"], FORECAST_DATA.map(d => [d.month, d.actual ? "$" + d.actual + "K" : "—", "$" + d.budget + "K", "$" + d.forecast + "K", "$" + d.bull + "K", "$" + d.bear + "K"])); toast("Forecast exported as PDF", "success"); }}
+        onCSV={() => { downloadCSV("financeos-forecast.csv", ["Month","Actual ($K)","Base ($K)","Bull ($K)","Bear ($K)"], FORECAST_DATA.map(d => [d.month, d.actual || "", d.base || "", d.bull || "", d.bear || ""])); toast("Forecast exported as CSV", "success"); }}
+        onPDF={() => { downloadPDF("Revenue Forecast FY2025", ["Month", "Actual", "Base", "Bull", "Bear"], FORECAST_DATA.map(d => [d.month, d.actual ? "$" + d.actual + "K" : "—", d.base ? "$" + d.base + "K" : "—", d.bull ? "$" + d.bull + "K" : "—", d.bear ? "$" + d.bear + "K" : "—"])); toast("Forecast exported as PDF", "success"); }}
       />
       {/* View Header */}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 20 }}>
@@ -2462,7 +2462,7 @@ const ForecastView = ({ c, toast }) => {
             </span>
           ))}
           <span style={{ marginLeft: "auto", display: "flex", gap: 10 }}>
-            <span style={{ fontWeight: 700, fontFamily: "'JetBrains Mono', monospace", color: c.green }}>Base: ${adjusted.toFixed(1)}M</span>
+            <span style={{ fontWeight: 700, fontFamily: "'JetBrains Mono', monospace", color: c.green }}>Base: ${scenario.toFixed(1)}M</span>
             <span style={{ fontWeight: 600, fontFamily: "'JetBrains Mono', monospace", color: c.textFaint }}>Spread: ${((FORECAST_DATA[11]?.bull || 0) / 1000).toFixed(1)}M – ${((FORECAST_DATA[11]?.bear || 0) / 1000).toFixed(1)}M</span>
           </span>
         </div>
@@ -3882,7 +3882,7 @@ const ScenariosView = ({ c, toast }) => {
       <div style={{ fontSize: 9, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.12em", color: c.textFaint, marginBottom: 10, display: "flex", alignItems: "center", gap: 8 }}>
         {showCompare ? "Side-by-Side Comparison" : "Scenario Detail"}
       </div>
-      <div style={{ display: "grid", gridTemplateColumns: showCompare ? "1fr auto 1fr" : "1fr 280px", gap: showCompare ? 8 : 16 }}>
+      <div style={{ display: "grid", gridTemplateColumns: showCompare ? "1fr auto 1fr" : "1fr 320px", gap: showCompare ? 8 : 16 }}>
         {/* Scenario cards or comparison */}
         {showCompare ? (() => {
           const s1 = scenarios[compare[0]];
@@ -3920,11 +3920,12 @@ const ScenariosView = ({ c, toast }) => {
           </>);
         })() : (
           <>
-            {/* Scenario cards */}
-            <div style={{ fontSize: 9, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.12em", color: c.textFaint, marginBottom: 10, display: "flex", alignItems: "center", gap: 8 }}>
-              Scenario Models
-            </div>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+            {/* Left column: Scenario cards */}
+            <div>
+              <div style={{ fontSize: 9, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.12em", color: c.textFaint, marginBottom: 10, display: "flex", alignItems: "center", gap: 8 }}>
+                Scenario Models
+              </div>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
               {scenarios.map((s, i) => (
                 <div key={s.name} onClick={() => setSelected(i)} style={{
                   background: c.glass, backdropFilter: c.glassBlur, WebkitBackdropFilter: c.glassBlur, border: `1px solid ${selected === i ? c.accent : c.border}`, borderRadius: 12, padding: 18, boxShadow: "0 1px 3px rgba(0,0,0,0.04)",
@@ -3949,9 +3950,11 @@ const ScenariosView = ({ c, toast }) => {
                 </div>
               ))}
             </div>
+            </div>
 
-            {/* Sensitivity sliders */}
-            <div style={{ fontSize: 9, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.12em", color: c.textFaint, marginTop: 16, marginBottom: 10, display: "flex", alignItems: "center", gap: 8 }}>
+            {/* Right column: Assumption sliders */}
+            <div>
+            <div style={{ fontSize: 9, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.12em", color: c.textFaint, marginBottom: 10, display: "flex", alignItems: "center", gap: 8 }}>
               Assumption Drivers
             </div>
             <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 12, padding: "22px 24px", boxShadow: "0 1px 3px rgba(0,0,0,0.04)" }}>
@@ -3980,6 +3983,7 @@ const ScenariosView = ({ c, toast }) => {
                 );
               })}
               <div style={{ fontSize: 9, color: c.textFaint, marginTop: 4, lineHeight: 1.5, padding: "8px 10px", background: c.surfaceAlt, borderRadius: 8 }}>Drivers apply to Base Case · Drag sliders to model impact on revenue and margin</div>
+            </div>
             </div>
           </>
         )}
