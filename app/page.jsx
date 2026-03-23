@@ -1395,32 +1395,40 @@ const DashboardView = ({ c, onNav, toast, onDrawer, userName, period, closeTasks
             <Tooltip content={<ChartTooltip c={c} />} cursor={{ stroke: c.accent, strokeWidth: 1, strokeDasharray: "4 4", strokeOpacity: 0.4 }} />
             <ReferenceLine y={7800} stroke={c.amber} strokeDasharray="8 4" strokeWidth={1} strokeOpacity={0.4} label={{ value: "AVG", fill: c.amber, fontSize: 8, fontWeight: 800, position: "right" }} />
             {/* Bear/Bull confidence band */}
-            {!hiddenSeries.forecast && <Area type="monotone" dataKey="bull" stroke="none" fill="url(#gBand)" name="Bull" connectNulls={false} animationDuration={1200} animationEasing="ease-out" />}
-            {!hiddenSeries.forecast && <Area type="monotone" dataKey="bear" stroke="none" fill="url(#gBand)" name="Bear" connectNulls={false} animationDuration={1200} animationEasing="ease-out" />}
+            <Area type="monotone" dataKey="bull" stroke="none" fill="url(#gBand)" name="Bull" connectNulls={false} animationDuration={800} animationEasing="ease-out" fillOpacity={hiddenSeries.forecast ? 0 : 1} style={{ transition: "opacity 0.5s ease" }} />
+            <Area type="monotone" dataKey="bear" stroke="none" fill="url(#gBand)" name="Bear" connectNulls={false} animationDuration={800} animationEasing="ease-out" fillOpacity={hiddenSeries.forecast ? 0 : 1} style={{ transition: "opacity 0.5s ease" }} />
             {/* YoY comparison (prior year) */}
             <Line type="monotone" dataKey="yoy" stroke={c.textFaint} strokeWidth={1} strokeDasharray="2 4" name="Prior Year" dot={false} strokeOpacity={0.3} animationDuration={1400} animationEasing="ease-out" />
-            {!hiddenSeries.actual && <Area type="monotone" dataKey="actual" stroke={c.accent} fill="url(#gAct)" strokeWidth={2.5} name="Actual" dot={{ r: 4, fill: c.surface, stroke: c.accent, strokeWidth: 2.5 }} activeDot={{ r: 7, fill: c.accent, stroke: c.surface, strokeWidth: 3, style: { filter: `drop-shadow(0 0 6px ${c.accent})` } }} connectNulls={false} animationDuration={1000} animationEasing="ease-out" />}
-            {!hiddenSeries.budget && <Line type="monotone" dataKey="budget" stroke={c.textFaint} strokeWidth={1.5} strokeDasharray="5 5" name="Budget" dot={false} animationDuration={1200} animationEasing="ease-out" />}
-            {!hiddenSeries.forecast && <Area type="monotone" dataKey="forecast" stroke={c.green} fill="url(#gFc)" strokeWidth={2} strokeDasharray="8 4" name="Forecast" dot={{ r: 3.5, fill: c.surface, stroke: c.green, strokeWidth: 2 }} activeDot={{ r: 6, fill: c.green, stroke: c.surface, strokeWidth: 2, style: { filter: `drop-shadow(0 0 6px ${c.green})` } }} connectNulls={false} animationDuration={1400} animationEasing="ease-out" />}
+            <Area type="monotone" dataKey="actual" stroke={c.accent} fill="url(#gAct)" strokeWidth={hiddenSeries.actual ? 0 : 2.5} name="Actual" dot={hiddenSeries.actual ? false : { r: 4, fill: c.surface, stroke: c.accent, strokeWidth: 2.5 }} activeDot={hiddenSeries.actual ? false : { r: 7, fill: c.accent, stroke: c.surface, strokeWidth: 3, style: { filter: `drop-shadow(0 0 6px ${c.accent})` } }} connectNulls={false} animationDuration={600} animationEasing="ease-out" fillOpacity={hiddenSeries.actual ? 0 : 1} strokeOpacity={hiddenSeries.actual ? 0 : 1} />
+            <Line type="monotone" dataKey="budget" stroke={c.textFaint} strokeWidth={hiddenSeries.budget ? 0 : 1.5} strokeDasharray="5 5" name="Budget" dot={false} animationDuration={600} animationEasing="ease-out" strokeOpacity={hiddenSeries.budget ? 0 : 1} />
+            <Area type="monotone" dataKey="forecast" stroke={c.green} fill="url(#gFc)" strokeWidth={hiddenSeries.forecast ? 0 : 2} strokeDasharray="8 4" name="Forecast" dot={hiddenSeries.forecast ? false : { r: 3.5, fill: c.surface, stroke: c.green, strokeWidth: 2 }} activeDot={hiddenSeries.forecast ? false : { r: 6, fill: c.green, stroke: c.surface, strokeWidth: 2, style: { filter: `drop-shadow(0 0 6px ${c.green})` } }} connectNulls={false} animationDuration={600} animationEasing="ease-out" fillOpacity={hiddenSeries.forecast ? 0 : 1} strokeOpacity={hiddenSeries.forecast ? 0 : 1} />
           </ComposedChart>
         </ResponsiveContainer>
         {/* Legend row */}
-        <div style={{ display: "flex", gap: 8, marginTop: 12, fontSize: 10, color: c.textDim, alignItems: "center", paddingTop: 12, borderTop: `1px solid ${c.borderSub}`, flexWrap: "wrap" }}>
+        <div style={{ display: "flex", gap: 6, marginTop: 12, fontSize: 10, color: c.textDim, alignItems: "center", paddingTop: 12, borderTop: `1px solid ${c.borderSub}`, flexWrap: "wrap" }}>
           {[
-            { key: "actual", label: "Actual", color: c.accent },
-            { key: "budget", label: "Budget", color: c.textFaint },
-            { key: "forecast", label: "Forecast", color: c.green },
-          ].map(s => (
+            { key: "actual", label: "Actual", color: c.accent, type: "solid" },
+            { key: "budget", label: "Budget", color: c.textFaint, type: "dashed" },
+            { key: "forecast", label: "Forecast", color: c.green, type: "solid" },
+          ].map(s => {
+            const hidden = hiddenSeries[s.key];
+            return (
             <span key={s.key} onClick={() => toggleSeries(s.key)} style={{
-              display: "flex", alignItems: "center", gap: 5, cursor: "pointer", padding: "4px 10px", borderRadius: 6,
-              opacity: hiddenSeries[s.key] ? 0.35 : 1, background: hiddenSeries[s.key] ? "transparent" : `${s.color}08`,
-              border: `1px solid ${hiddenSeries[s.key] ? c.borderSub : `${s.color}15`}`, transition: "all 0.2s",
-              transition: "all 0.2s", fontWeight: 600,
-            }}>
-              <span style={{ width: 10, height: 10, borderRadius: 3, background: `${s.color}20`, border: `2px solid ${s.color}`, display: "inline-block", opacity: hiddenSeries[s.key] ? 0.3 : 1 }} />
-              {s.label}
+              display: "flex", alignItems: "center", gap: 6, cursor: "pointer", padding: "5px 12px", borderRadius: 8,
+              opacity: hidden ? 0.4 : 1, background: hidden ? "transparent" : `${s.color}06`,
+              border: `1.5px solid ${hidden ? c.borderSub : `${s.color}25`}`, transition: "all 0.3s ease",
+              fontWeight: 700, userSelect: "none",
+            }}
+            onMouseEnter={e => { if (hidden) e.currentTarget.style.opacity = "0.7"; }}
+            onMouseLeave={e => { if (hidden) e.currentTarget.style.opacity = "0.4"; }}
+            >
+              <span style={{ width: 12, height: 12, borderRadius: 3, border: `2px solid ${hidden ? c.borderSub : s.color}`, background: hidden ? "transparent" : `${s.color}15`, display: "flex", alignItems: "center", justifyContent: "center", transition: "all 0.3s" }}>
+                {!hidden && <span style={{ fontSize: 8, color: s.color, fontWeight: 900 }}>✓</span>}
+              </span>
+              <span style={{ textDecoration: hidden ? "line-through" : "none", transition: "all 0.3s" }}>{s.label}</span>
             </span>
-          ))}
+            );
+          })}
           <span style={{ fontSize: 9, color: c.textFaint, display: "flex", alignItems: "center", gap: 3 }}><span style={{ width: 8, height: 0, borderTop: `1px dashed ${c.textFaint}40` }} />YoY</span>
           <span style={{ marginLeft: "auto", display: "flex", gap: 10, alignItems: "center" }}>
             <span style={{ fontSize: 9, fontWeight: 700, padding: "2px 7px", borderRadius: 4, background: c.greenDim, color: c.green, border: `1px solid ${c.green}10` }}>+$2.09M beat</span>
