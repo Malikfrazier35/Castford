@@ -4316,12 +4316,12 @@ const SettingsView = ({ c, onLogout, toast, mode, onShowSuitePanel, suitePanelOp
           </button>
         </div>
         {/* Data Privacy & Rights — GDPR/CCPA */}
-        <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 12, padding: "20px 24px" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6 }}>
-            <Shield size={16} color={c.accent} />
-            <div style={{ fontSize: 14, fontWeight: 700, color: c.text }}>Data Privacy & Rights</div>
+        <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 12, padding: "22px 24px", marginBottom: 16 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}>
+            <div style={{ width: 26, height: 26, borderRadius: 7, background: `${c.purple}10`, display: "flex", alignItems: "center", justifyContent: "center" }}><Shield size={13} color={c.purple} /></div>
+            <div style={{ fontSize: 13, fontWeight: 700, color: c.text }}>Data Privacy & Rights</div>
           </div>
-          <div style={{ fontSize: 12, color: c.textDim, lineHeight: 1.7, marginBottom: 16 }}>You have full control over your data. Export, review, or request deletion at any time under GDPR and CCPA.</div>
+          <div style={{ fontSize: 11, color: c.textDim, lineHeight: 1.7, marginBottom: 16, paddingLeft: 34 }}>Full control over your data under GDPR and CCPA.</div>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 14 }}>
             <button onClick={async () => {
               toast("Preparing your data export...", "info");
@@ -4334,34 +4334,48 @@ const SettingsView = ({ c, onLogout, toast, mode, onShowSuitePanel, suitePanelOp
                 });
                 if (res.ok) {
                   const data = await res.json();
-                  const blob = new Blob([JSON.stringify(data.data, null, 2)], { type: "application/json" });
-                  const url = URL.createObjectURL(blob);
-                  const a = document.createElement("a"); a.href = url; a.download = `financeos-data-export-${new Date().toISOString().split("T")[0]}.json`; a.click();
-                  URL.revokeObjectURL(url);
-                  toast("Data export downloaded successfully", "success");
-                } else { toast("Export failed — try again", "warning"); }
+                  if (data.success) {
+                    const blob = new Blob([JSON.stringify(data.data, null, 2)], { type: "application/json" });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement("a"); a.href = url; a.download = `financeos-data-export-${new Date().toISOString().split("T")[0]}.json`; a.click();
+                    URL.revokeObjectURL(url);
+                    toast("Data export downloaded successfully", "success");
+                  } else { toast(data.error || "Export failed", "warning"); }
+                } else {
+                  const err = await res.json().catch(() => ({}));
+                  toast(err.error || "Export failed — try again", "warning");
+                }
               } catch { toast("Export failed", "warning"); }
-            }} style={{ fontSize: 11, padding: "10px 16px", borderRadius: 8, border: `1px solid ${c.accent}30`, background: `${c.accent}08`, color: c.accent, cursor: "pointer", fontFamily: "inherit", fontWeight: 700, display: "flex", alignItems: "center", justifyContent: "center", gap: 6 }}>
+            }} style={{ fontSize: 11, padding: "14px 16px", borderRadius: 10, border: `1px solid ${c.accent}30`, background: `${c.accent}06`, color: c.accent, cursor: "pointer", fontFamily: "inherit", fontWeight: 700, display: "flex", alignItems: "center", justifyContent: "center", gap: 6, transition: "all 0.2s" }}
+              onMouseEnter={e => { e.currentTarget.style.background = `${c.accent}12`; e.currentTarget.style.transform = "translateY(-1px)"; }}
+              onMouseLeave={e => { e.currentTarget.style.background = `${c.accent}06`; e.currentTarget.style.transform = "none"; }}>
               <Globe size={13} /> Export My Data
             </button>
-            <button onClick={() => window.location.href = "/privacy"} style={{ fontSize: 11, padding: "10px 16px", borderRadius: 8, border: `1px solid ${c.border}`, background: "transparent", color: c.textSec, cursor: "pointer", fontFamily: "inherit", fontWeight: 600, display: "flex", alignItems: "center", justifyContent: "center", gap: 6 }}>
+            <button onClick={() => window.location.href = "/privacy"} style={{ fontSize: 11, padding: "14px 16px", borderRadius: 10, border: `1px solid ${c.border}`, background: c.surfaceAlt, color: c.textSec, cursor: "pointer", fontFamily: "inherit", fontWeight: 600, display: "flex", alignItems: "center", justifyContent: "center", gap: 6, transition: "all 0.2s" }}
+              onMouseEnter={e => { e.currentTarget.style.borderColor = c.accent; e.currentTarget.style.color = c.accent; e.currentTarget.style.transform = "translateY(-1px)"; }}
+              onMouseLeave={e => { e.currentTarget.style.borderColor = c.border; e.currentTarget.style.color = c.textSec; e.currentTarget.style.transform = "none"; }}>
               <Eye size={13} /> View Privacy Policy
             </button>
           </div>
-          <div style={{ fontSize: 10, color: c.textFaint, lineHeight: 1.6, padding: "10px 14px", background: c.surfaceAlt, borderRadius: 8, border: `1px solid ${c.borderSub}` }}>
-            <div style={{ fontWeight: 700, color: c.textDim, marginBottom: 4 }}>Your rights include:</div>
-            <div>Access — Download all data we hold about you in JSON format</div>
-            <div>Portability — Machine-readable export (GDPR Article 20)</div>
-            <div>Deletion — Request complete erasure (GDPR Article 17 / CCPA §1798.105)</div>
-            <div>Rectification — Correct inaccurate data via Settings above</div>
-            <div style={{ marginTop: 6 }}>Contact <span style={{ color: c.accent }}>privacy@finance-os.app</span> for formal data subject requests.</div>
+          <div style={{ fontSize: 10, color: c.textFaint, lineHeight: 1.8, padding: "12px 16px", background: c.surfaceAlt, borderRadius: 10, border: `1px solid ${c.borderSub}` }}>
+            <div style={{ fontWeight: 700, color: c.textDim, marginBottom: 6, fontSize: 11 }}>Your rights</div>
+            {["Access — Download all data we hold about you in JSON format", "Portability — Machine-readable export (GDPR Article 20)", "Deletion — Request complete erasure (GDPR Article 17 / CCPA §1798.105)", "Rectification — Correct inaccurate data via Settings"].map(r => (
+              <div key={r} style={{ display: "flex", gap: 6, alignItems: "flex-start", marginBottom: 3 }}><span style={{ color: c.green, fontSize: 10, marginTop: 1 }}>✓</span><span>{r}</span></div>
+            ))}
+            <div style={{ marginTop: 8, paddingTop: 8, borderTop: `1px solid ${c.borderSub}` }}>Contact <span style={{ color: c.accent, fontWeight: 600 }}>privacy@finance-os.app</span> for formal data subject requests.</div>
           </div>
         </div>
 
-        {/* Delete Account */}
-        <div style={{ background: c.surface, border: `1px solid ${c.red}30`, borderRadius: 12, padding: "20px 24px" }}>
-          <div style={{ fontSize: 14, fontWeight: 700, color: c.red, marginBottom: 6 }}>Delete Account & Data</div>
-          <div style={{ fontSize: 12, color: c.textDim, lineHeight: 1.7, marginBottom: 14 }}>Permanently delete your organization, all users, financial data, integrations, and AI conversation history. This complies with GDPR Article 17 (Right to Erasure). This action is irreversible and takes effect immediately.</div>
+        {/* Delete Account — Danger Zone */}
+        <div style={{ background: c.surface, border: `1px solid ${c.red}20`, borderRadius: 12, padding: "22px 24px" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}>
+            <div style={{ width: 26, height: 26, borderRadius: 7, background: `${c.red}10`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12 }}>⚠</div>
+            <div>
+              <div style={{ fontSize: 13, fontWeight: 700, color: c.red }}>Delete Account & Data</div>
+              <div style={{ fontSize: 9, fontWeight: 700, color: c.red, opacity: 0.6, textTransform: "uppercase", letterSpacing: "0.08em" }}>Danger Zone</div>
+            </div>
+          </div>
+          <div style={{ fontSize: 11, color: c.textDim, lineHeight: 1.7, marginBottom: 14, paddingLeft: 34 }}>Permanently delete your organization, all users, financial data, integrations, and AI conversation history. GDPR Article 17 compliant. Irreversible.</div>
           {!deleteConfirm ? (
             <button onClick={() => setDeleteConfirm(true)} style={{ fontSize: 11, padding: "9px 18px", borderRadius: 8, border: `1px solid ${c.red}40`, background: c.redDim, color: c.red, cursor: "pointer", fontFamily: "inherit", fontWeight: 700 }}>Delete Account</button>
           ) : (
