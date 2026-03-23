@@ -318,66 +318,181 @@ const DETAIL_DATA = {
     { label: "Enterprise LTV/CAC", value: "5.8x", color: "green" }, { label: "SMB LTV/CAC", value: "2.6x", color: "amber" },
     { label: "Benchmark (healthy)", value: ">3.0x", color: "text" }, { label: "Trend", value: "+0.4x YoY", color: "green" },
   ]},
+  // Forecast metrics
+  "Base Forecast": { title: "Base Case Revenue Forecast", value: "$62.8M", trend: [48,50,52,54,56,58,60,62.8], details: [
+    { label: "Current Run Rate", value: "$51.2M", color: "accent" }, { label: "Implied Growth", value: "+22.6%", color: "green" },
+    { label: "Subscription Rev", value: "$56.4M", color: "accent" }, { label: "Services Rev", value: "$4.2M", color: "purple" },
+    { label: "AI Module Rev", value: "$2.2M", color: "cyan" }, { label: "Model Confidence", value: "96.8%", color: "green" },
+    { label: "MAPE", value: "3.2%", color: "green" }, { label: "Last Retrained", value: "6 hours ago", color: "text" },
+  ]},
+  "Pipeline": { title: "Pipeline Analysis", value: "$42M", trend: [28,30,32,34,36,38,40,42], details: [
+    { label: "Weighted Pipeline", value: "$42M", color: "accent" }, { label: "Unweighted Total", value: "$98M", color: "text" },
+    { label: "Win Rate (Blended)", value: "38%", color: "green" }, { label: "Enterprise Pipeline", value: "$28M", color: "accent" },
+    { label: "Mid-Market Pipeline", value: "$10M", color: "purple" }, { label: "SMB Pipeline", value: "$4M", color: "cyan" },
+    { label: "Avg Deal Size", value: "$142K", color: "text" }, { label: "Avg Sales Cycle", value: "48 days", color: "amber" },
+  ]},
+  // Revenue metrics
+  "Revenue (YTD)": { title: "Revenue Year-to-Date", value: "$51.2M", trend: [38,40,42,44,46,48,50,51.2], details: [
+    { label: "Subscription", value: "$46.4M", color: "accent" }, { label: "Professional Services", value: "$3.2M", color: "purple" },
+    { label: "Usage / AI Module", value: "$1.6M", color: "cyan" }, { label: "YoY Growth", value: "+44.7%", color: "green" },
+    { label: "vs Budget", value: "+$2.09M", color: "green" }, { label: "Annualized", value: "$68.3M", color: "accent" },
+  ]},
+  "Net Income": { title: "Net Income", value: "$3.8M", trend: [-2,-1,0,0.5,1.2,2,3,3.8], details: [
+    { label: "Revenue", value: "$51.2M", color: "text" }, { label: "Gross Profit", value: "$43.4M", color: "green" },
+    { label: "Operating Expenses", value: "$39.6M", color: "amber" }, { label: "Net Margin", value: "7.4%", color: "green" },
+    { label: "Improvement QoQ", value: "+$1.2M", color: "green" }, { label: "Free Cash Flow", value: "$2.1M", color: "green" },
+  ]},
+  "Accounts": { title: "Chart of Accounts", value: "18", trend: [10,12,14,15,16,17,17,18], details: [
+    { label: "Revenue Accounts", value: "3", color: "green" }, { label: "COGS Accounts", value: "3", color: "amber" },
+    { label: "OpEx Accounts", value: "9", color: "accent" }, { label: "Other Accounts", value: "3", color: "text" },
+    { label: "Total Transactions", value: "162", color: "purple" }, { label: "Months Loaded", value: "9", color: "cyan" },
+  ]},
 };
 
 const DetailDrawer = ({ kpi, c, onClose }) => {
   const data = DETAIL_DATA[kpi] || DETAIL_DATA["ARR"];
   const colorMap = { green: c.green, red: c.red, amber: c.amber, accent: c.accent, text: c.text, purple: c.purple, cyan: c.cyan };
+  
+  // Compute max value for proportional bars
+  const numericValues = data.details.map(d => {
+    const num = parseFloat(d.value.replace(/[$%MKxmo,+\s]/g, ""));
+    return isNaN(num) ? 0 : Math.abs(num);
+  });
+  const maxVal = Math.max(...numericValues, 1);
+
   return (
     <>
-    <div onClick={onClose} style={{ position: "fixed", inset: 0, zIndex: 999, background: "rgba(0,0,0,0.3)", backdropFilter: "blur(4px)", animation: "fadeIn 0.15s" }} />
+    <div onClick={onClose} style={{ position: "fixed", inset: 0, zIndex: 999, background: "rgba(0,0,0,0.35)", backdropFilter: "blur(6px)", animation: "fadeIn 0.15s" }} />
     <div style={{
-      position: "fixed", top: 0, right: 0, bottom: 0, width: 400, background: c.surface, borderLeft: `1px solid ${c.border}`,
-      zIndex: 1000, boxShadow: "-12px 0 50px rgba(0,0,0,0.25)", display: "flex", flexDirection: "column",
+      position: "fixed", top: 0, right: 0, bottom: 0, width: 420, background: c.surface, borderLeft: `1px solid ${c.border}`,
+      zIndex: 1000, boxShadow: `-16px 0 60px rgba(0,0,0,0.3)`, display: "flex", flexDirection: "column",
       animation: "drawerIn 0.25s ease",
     }}>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "18px 24px", borderBottom: `1px solid ${c.borderSub}`, position: "relative" }}>
-        <div style={{ position: "absolute", bottom: 0, left: "10%", right: "10%", height: 2, background: `linear-gradient(90deg, transparent, ${c.accent}30, transparent)` }} />
-        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-          <div style={{ width: 30, height: 30, borderRadius: 9, background: `linear-gradient(135deg, ${c.accent}15, ${c.purple}08)`, border: `1px solid ${c.accent}10`, display: "flex", alignItems: "center", justifyContent: "center" }}>
-            <Activity size={14} color={c.accent} />
-          </div>
-          <span style={{ fontSize: 15, fontWeight: 800, color: c.text, letterSpacing: "-0.02em" }}>{data.title}</span>
-        </div>
-        <div onClick={onClose} style={{ cursor: "pointer", padding: 4, borderRadius: 6, transition: "background 0.15s" }}
-          onMouseEnter={e => e.currentTarget.style.background = c.surfaceAlt}
-          onMouseLeave={e => e.currentTarget.style.background = "transparent"}
-        ><X size={16} color={c.textDim} /></div>
-      </div>
-      <div style={{ flex: 1, overflow: "auto", padding: "24px 24px" }}>
-        <div style={{ fontSize: 40, fontWeight: 800, color: c.accent, letterSpacing: "-0.03em", marginBottom: 6, fontFamily: "'JetBrains Mono', monospace" }}>{data.value}</div>
-        <div style={{ marginBottom: 24, padding: "12px 0", borderBottom: `1px solid ${c.borderSub}` }}>
-          <Spark data={data.trend} color={c.green} width={340} height={52} />
-        </div>
-        <div style={{ fontSize: 9, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.1em", color: c.textFaint, marginBottom: 14, display: "flex", alignItems: "center", gap: 8 }}>
-          <span>Breakdown</span>
-          <div style={{ flex: 1, height: 1, background: `linear-gradient(90deg, ${c.borderSub}, transparent)` }} />
-          <span style={{ fontWeight: 600, color: c.textDim, textTransform: "none", letterSpacing: "normal" }}>{data.details.length} metrics</span>
-        </div>
-        {data.details.map((d, i) => {
-          const clr = colorMap[d.color] || c.text;
-          const isNeg = d.value.startsWith("-");
-          const isPct = d.value.endsWith("%");
-          const pctVal = isPct ? parseFloat(d.value) : null;
-          return (
-          <div key={d.label} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "12px 8px", margin: "0 -8px", borderRadius: 8, borderBottom: `1px solid ${c.borderSub}`, transition: "all 0.15s", cursor: "default" }}
-            onMouseEnter={e => { e.currentTarget.style.background = `${clr}06`; }}
-            onMouseLeave={e => { e.currentTarget.style.background = "transparent"; }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-              <span style={{ width: 6, height: 6, borderRadius: 2, background: clr, opacity: 0.6, flexShrink: 0 }} />
-              <span style={{ fontSize: 12, color: c.textSec, fontWeight: 500 }}>{d.label}</span>
+      {/* Header */}
+      <div style={{ padding: "20px 24px", borderBottom: `1px solid ${c.borderSub}`, position: "relative" }}>
+        <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, height: 2, background: `linear-gradient(90deg, ${c.accent}40, ${c.purple}20, transparent)` }} />
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+            <div style={{ width: 32, height: 32, borderRadius: 10, background: `linear-gradient(135deg, ${c.accent}18, ${c.purple}10)`, border: `1px solid ${c.accent}12`, display: "flex", alignItems: "center", justifyContent: "center" }}>
+              <Activity size={15} color={c.accent} />
             </div>
-            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-              {isPct && pctVal !== null && pctVal <= 100 && pctVal > 0 && (
-                <div style={{ width: 40, height: 4, background: c.bg2, borderRadius: 2, overflow: "hidden" }}>
-                  <div style={{ width: `${Math.min(pctVal, 100)}%`, height: "100%", background: clr, borderRadius: 2 }} />
+            <div>
+              <div style={{ fontSize: 15, fontWeight: 800, color: c.text, letterSpacing: "-0.02em" }}>{data.title}</div>
+              <div style={{ fontSize: 10, color: c.textFaint, marginTop: 1 }}>Click any row to drill deeper</div>
+            </div>
+          </div>
+          <div onClick={onClose} style={{ width: 28, height: 28, borderRadius: 8, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", transition: "all 0.15s", border: `1px solid ${c.borderSub}` }}
+            onMouseEnter={e => { e.currentTarget.style.background = c.surfaceAlt; e.currentTarget.style.borderColor = c.border; }}
+            onMouseLeave={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.borderColor = c.borderSub; }}
+          ><X size={14} color={c.textDim} /></div>
+        </div>
+      </div>
+
+      {/* Content */}
+      <div style={{ flex: 1, overflow: "auto", padding: "0" }}>
+        {/* Hero value + sparkline */}
+        <div style={{ padding: "24px 24px 20px", background: `linear-gradient(180deg, ${c.accent}04 0%, transparent 100%)` }}>
+          <div style={{ fontSize: 42, fontWeight: 800, color: c.accent, letterSpacing: "-0.04em", lineHeight: 1, fontFamily: "'JetBrains Mono', monospace", marginBottom: 8 }}>{data.value}</div>
+          <div style={{ display: "flex", gap: 8, marginBottom: 16 }}>
+            {data.details.slice(0, 2).map(d => {
+              const clr = colorMap[d.color] || c.text;
+              return (
+                <span key={d.label} style={{ fontSize: 10, fontWeight: 700, padding: "3px 10px", borderRadius: 6, background: `${clr}10`, color: clr, border: `1px solid ${clr}12` }}>
+                  {d.label}: {d.value}
+                </span>
+              );
+            })}
+          </div>
+          <div style={{ borderRadius: 10, padding: "2px 0", overflow: "hidden" }}>
+            <Spark data={data.trend} color={c.accent} width={360} height={56} />
+          </div>
+        </div>
+
+        {/* Breakdown section */}
+        <div style={{ padding: "0 24px 24px" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 16, paddingTop: 4 }}>
+            <div style={{ fontSize: 10, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.1em", color: c.textFaint }}>Breakdown</div>
+            <div style={{ flex: 1, height: 1, background: `linear-gradient(90deg, ${c.borderSub}, transparent)` }} />
+            <span style={{ fontSize: 9, fontWeight: 600, color: c.textDim, padding: "2px 8px", borderRadius: 4, background: c.surfaceAlt }}>{data.details.length} metrics</span>
+          </div>
+
+          {data.details.map((d, i) => {
+            const clr = colorMap[d.color] || c.text;
+            const numVal = parseFloat(d.value.replace(/[$%MKxmo,+\s]/g, ""));
+            const isNeg = d.value.startsWith("-");
+            const isPct = d.value.endsWith("%");
+            const pctVal = isPct ? parseFloat(d.value) : null;
+            const barWidth = !isNaN(numVal) && maxVal > 0 ? Math.min((Math.abs(numVal) / maxVal) * 100, 100) : 0;
+            const isMoney = d.value.includes("$");
+            const showBar = (isMoney || isPct) && barWidth > 3;
+
+            return (
+            <div key={d.label} style={{ padding: "10px 10px", margin: "0 -10px", borderRadius: 10, transition: "all 0.2s", cursor: "default", borderBottom: i < data.details.length - 1 ? `1px solid ${c.borderSub}` : "none" }}
+              onMouseEnter={e => { e.currentTarget.style.background = `${clr}06`; e.currentTarget.style.transform = "translateX(2px)"; }}
+              onMouseLeave={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.transform = "none"; }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: showBar ? 6 : 0 }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                  <div style={{ width: 8, height: 8, borderRadius: 3, background: clr, opacity: 0.7, flexShrink: 0 }} />
+                  <span style={{ fontSize: 12, color: c.textSec, fontWeight: 500 }}>{d.label}</span>
+                </div>
+                <span style={{ fontSize: 14, fontWeight: 800, color: clr, fontFamily: "'JetBrains Mono', monospace", letterSpacing: "-0.01em" }}>{d.value}</span>
+              </div>
+              {showBar && (
+                <div style={{ height: 4, background: c.bg2, borderRadius: 2, overflow: "hidden", marginLeft: 16 }}>
+                  <div style={{ width: `${barWidth}%`, height: "100%", background: `linear-gradient(90deg, ${clr}60, ${clr})`, borderRadius: 2, transition: "width 0.4s ease" }} />
                 </div>
               )}
-              <span style={{ fontSize: 13, fontWeight: 800, color: clr, fontFamily: "'JetBrains Mono', monospace" }}>{d.value}</span>
             </div>
+            );
+          })}
+
+          {/* Distribution mini-chart */}
+          {data.details.length >= 3 && (() => {
+            const moneyItems = data.details.filter(d => d.value.includes("$") && !d.value.startsWith("-"));
+            if (moneyItems.length < 2) return null;
+            const total = moneyItems.reduce((a, d) => a + (parseFloat(d.value.replace(/[$MK,+\s]/g, "")) || 0), 0);
+            if (total <= 0) return null;
+            return (
+              <div style={{ marginTop: 20, padding: "16px 16px", background: c.surfaceAlt, borderRadius: 12, border: `1px solid ${c.borderSub}` }}>
+                <div style={{ fontSize: 9, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.08em", color: c.textFaint, marginBottom: 10 }}>Distribution</div>
+                <div style={{ display: "flex", height: 8, borderRadius: 4, overflow: "hidden", gap: 2 }}>
+                  {moneyItems.map((d, i) => {
+                    const val = parseFloat(d.value.replace(/[$MK,+\s]/g, "")) || 0;
+                    const pct = (val / total) * 100;
+                    const colors = [c.accent, c.green, c.purple, c.cyan, c.amber];
+                    return <div key={i} style={{ width: `${pct}%`, height: "100%", background: colors[i % colors.length], borderRadius: i === 0 ? "4px 0 0 4px" : i === moneyItems.length - 1 ? "0 4px 4px 0" : 0, transition: "width 0.4s" }} />;
+                  })}
+                </div>
+                <div style={{ display: "flex", gap: 10, marginTop: 8, flexWrap: "wrap" }}>
+                  {moneyItems.map((d, i) => {
+                    const val = parseFloat(d.value.replace(/[$MK,+\s]/g, "")) || 0;
+                    const colors = [c.accent, c.green, c.purple, c.cyan, c.amber];
+                    return (
+                      <span key={i} style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 9, color: c.textDim }}>
+                        <span style={{ width: 6, height: 6, borderRadius: 2, background: colors[i % colors.length] }} />
+                        {d.label.split(" ")[0]} <span style={{ fontWeight: 700, color: colors[i % colors.length], fontFamily: "'JetBrains Mono', monospace" }}>{((val / total) * 100).toFixed(0)}%</span>
+                      </span>
+                    );
+                  })}
+                </div>
+              </div>
+            );
+          })()}
+
+          {/* Action buttons */}
+          <div style={{ display: "flex", gap: 8, marginTop: 20 }}>
+            <button onClick={() => { onClose(); }} style={{ flex: 1, fontSize: 11, padding: "10px 0", borderRadius: 10, border: `1px solid ${c.accent}30`, background: `${c.accent}06`, color: c.accent, cursor: "pointer", fontFamily: "inherit", fontWeight: 700, display: "flex", alignItems: "center", justifyContent: "center", gap: 6, transition: "all 0.2s" }}
+              onMouseEnter={e => { e.currentTarget.style.background = `${c.accent}12`; }}
+              onMouseLeave={e => { e.currentTarget.style.background = `${c.accent}06`; }}>
+              <Sparkles size={12} /> Ask AI About This
+            </button>
+            <button onClick={onClose} style={{ flex: 1, fontSize: 11, padding: "10px 0", borderRadius: 10, border: `1px solid ${c.border}`, background: c.surfaceAlt, color: c.textSec, cursor: "pointer", fontFamily: "inherit", fontWeight: 600, transition: "all 0.2s" }}
+              onMouseEnter={e => { e.currentTarget.style.borderColor = c.accent; e.currentTarget.style.color = c.accent; }}
+              onMouseLeave={e => { e.currentTarget.style.borderColor = c.border; e.currentTarget.style.color = c.textSec; }}>
+              Export Data
+            </button>
           </div>
-          );
-        })}
+        </div>
       </div>
     </div>
     </>
@@ -2503,7 +2618,7 @@ const DRIVERS = [
   { name: "Seasonal pattern", shap: 1.3 },
 ];
 
-const ForecastView = ({ c, toast }) => {
+const ForecastView = ({ c, toast, onDrawer }) => {
   const [ndr, setNdr] = useState(118);
   const [pipeline, setPipeline] = useState(40);
   const [churn, setChurn] = useState(82);
@@ -7728,7 +7843,7 @@ function FinanceOSApp() {
           {view === "dashboard" && <SectionBoundary name="Dashboard" bg={c.surface} borderColor={c.border} textColor={c.textDim} accentColor={c.accent}><DashboardView c={c} onNav={navigate} toast={toast} onDrawer={setDrawerKpi} userName={user.name} period={period} closeTasks={closeTasks} activityLog={activityLog} glData={glData} /></SectionBoundary>}
           {view === "copilot" && <SectionBoundary name="AI Copilot" bg={c.surface} borderColor={c.border} textColor={c.textDim} accentColor={c.accent}><CopilotView c={c} toast={toast} logActivity={logActivity} /></SectionBoundary>}
           {view === "pnl" && <SectionBoundary name="P&L Statement" bg={c.surface} borderColor={c.border} textColor={c.textDim} accentColor={c.accent}><PnlView c={c} onNav={navigate} toast={toast} logActivity={logActivity} orgName={user.orgName} glData={glData} onDrawer={setDrawerKpi} /></SectionBoundary>}
-          {view === "forecast" && <SectionBoundary name="Forecast Optimizer" bg={c.surface} borderColor={c.border} textColor={c.textDim} accentColor={c.accent}><ForecastView c={c} toast={toast} /></SectionBoundary>}
+          {view === "forecast" && <SectionBoundary name="Forecast Optimizer" bg={c.surface} borderColor={c.border} textColor={c.textDim} accentColor={c.accent}><ForecastView c={c} toast={toast} onDrawer={setDrawerKpi} /></SectionBoundary>}
           {view === "consolidation" && <SectionBoundary name="Consolidation" bg={c.surface} borderColor={c.border} textColor={c.textDim} accentColor={c.accent}><ConsolidationView c={c} onNav={navigate} toast={toast} onDrawer={setDrawerKpi} /></SectionBoundary>}
           {view === "models" && <SectionBoundary name="Scenario Models" bg={c.surface} borderColor={c.border} textColor={c.textDim} accentColor={c.accent}><ScenariosView c={c} toast={toast} /></SectionBoundary>}
           {view === "close" && <SectionBoundary name="Month-End Close" bg={c.surface} borderColor={c.border} textColor={c.textDim} accentColor={c.accent}><CloseView c={c} toast={toast} tasks={closeTasks} setTasks={setCloseTasks} logActivity={logActivity} /></SectionBoundary>}
