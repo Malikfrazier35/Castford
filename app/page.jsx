@@ -277,7 +277,7 @@ const DetailDrawer = ({ kpi, c, onClose }) => {
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "18px 24px", borderBottom: `1px solid ${c.borderSub}`, position: "relative" }}>
         <div style={{ position: "absolute", bottom: 0, left: "10%", right: "10%", height: 2, background: `linear-gradient(90deg, transparent, ${c.accent}30, transparent)` }} />
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-          <div style={{ width: 28, height: 28, borderRadius: 8, background: `linear-gradient(135deg, ${c.accent}15, ${c.purple}08)`, border: `1px solid ${c.accent}10`, display: "flex", alignItems: "center", justifyContent: "center" }}>
+          <div style={{ width: 30, height: 30, borderRadius: 9, background: `linear-gradient(135deg, ${c.accent}15, ${c.purple}08)`, border: `1px solid ${c.accent}10`, display: "flex", alignItems: "center", justifyContent: "center" }}>
             <Activity size={14} color={c.accent} />
           </div>
           <span style={{ fontSize: 15, fontWeight: 800, color: c.text, letterSpacing: "-0.02em" }}>{data.title}</span>
@@ -1037,21 +1037,20 @@ const ChartTooltip = memo(({ active, payload, label, c }) => {
   const variance = actual && budget ? actual - budget : null;
   const variancePct = actual && budget ? ((actual - budget) / budget * 100) : null;
   const yoyDelta = actual && yoy ? ((actual - yoy) / yoy * 100) : null;
-  // Find composition data from REVENUE_DATA
   const monthData = REVENUE_DATA.find(d => d.month === label);
 
   return (
     <div style={{
-      background: `${c.surface}f5`, border: `1px solid ${c.borderBright}`, borderRadius: 12, padding: "16px 20px",
-      fontSize: 12, boxShadow: `0 12px 40px rgba(0,0,0,0.3), 0 0 0 1px ${c.accent}08`, backdropFilter: "blur(20px)", WebkitBackdropFilter: "blur(20px)",
-      minWidth: 240,
+      background: c.surface, border: `1px solid ${c.borderBright}`, borderRadius: 14, padding: "14px 18px",
+      fontSize: 12, boxShadow: `0 16px 48px rgba(0,0,0,0.35), 0 0 0 1px ${c.accent}06`, backdropFilter: "blur(24px)", WebkitBackdropFilter: "blur(24px)",
+      minWidth: 220, position: "relative", overflow: "hidden",
     }}>
-      <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 2, background: `linear-gradient(90deg, ${c.accent}60, ${c.purple}40, transparent)` }} />
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
-        <span style={{ fontWeight: 800, color: c.text, fontSize: 10, textTransform: "uppercase", letterSpacing: "0.08em" }}>{label} 2025</span>
+      <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 2, background: `linear-gradient(90deg, ${c.accent}, ${c.purple}80, transparent)`, borderRadius: "14px 14px 0 0" }} />
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8, paddingBottom: 7, borderBottom: `1px solid ${c.borderSub}` }}>
+        <span style={{ fontWeight: 800, color: c.text, fontSize: 11, letterSpacing: "-0.01em" }}>{label} 2025</span>
         {variance !== null && (
-          <span style={{ fontSize: 9, fontWeight: 800, padding: "2px 6px", borderRadius: 4, background: variance >= 0 ? `${c.green}15` : `${c.red}15`, color: variance >= 0 ? c.green : c.red }}>
-            {variance >= 0 ? "+" : ""}{variancePct?.toFixed(1)}% vs plan
+          <span style={{ fontSize: 10, fontWeight: 800, padding: "3px 8px", borderRadius: 6, background: variance >= 0 ? `${c.green}12` : `${c.red}12`, color: variance >= 0 ? c.green : c.red, fontFamily: "'JetBrains Mono', monospace" }}>
+            {variance >= 0 ? "+" : ""}{variancePct?.toFixed(1)}%
           </span>
         )}
       </div>
@@ -1150,24 +1149,63 @@ const Spark = memo(({ data, color, width = 64, height = 24 }) => {
 const KpiCard = memo(({ kpi, c, onClick }) => {
   const Icon = kpi.icon;
   const accentColor = c[kpi.accent] || c.accent;
+  // Build sparkline path
+  const spark = kpi.spark || [];
+  let sparkPath = "";
+  let sparkAreaPath = "";
+  if (spark.length > 1) {
+    const min = Math.min(...spark); const max = Math.max(...spark); const range = max - min || 1;
+    const w = 80; const h = 28; const pad = 2;
+    const pts = spark.map((v, i) => {
+      const x = pad + (i / (spark.length - 1)) * (w - pad * 2);
+      const y = pad + (1 - (v - min) / range) * (h - pad * 2);
+      return `${x},${y}`;
+    });
+    sparkPath = `M${pts.join("L")}`;
+    sparkAreaPath = `${sparkPath}L${w - pad},${h}L${pad},${h}Z`;
+  }
   return (
     <div onClick={onClick} style={{
-      background: c.surface, border: `1px solid ${c.border}`, borderRadius: 12, padding: "18px 20px",
-      cursor: "pointer", transition: "all 0.15s ease",
+      background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, padding: "18px 20px",
+      cursor: "pointer", transition: "all 0.2s ease", position: "relative", overflow: "hidden",
     }}
-    onMouseEnter={e => { e.currentTarget.style.borderColor = `${accentColor}40`; }}
-    onMouseLeave={e => { e.currentTarget.style.borderColor = c.border; }}
+    onMouseEnter={e => { e.currentTarget.style.borderColor = `${accentColor}50`; e.currentTarget.style.transform = "translateY(-2px)"; e.currentTarget.style.boxShadow = `0 8px 24px ${accentColor}12`; }}
+    onMouseLeave={e => { e.currentTarget.style.borderColor = c.border; e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = "none"; }}
     >
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 12 }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 10 }}>
         <div style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", color: c.textFaint }}>{kpi.label}</div>
-        <Icon size={14} color={accentColor} strokeWidth={2} />
+        <div style={{ width: 26, height: 26, borderRadius: 8, background: `${accentColor}10`, border: `1px solid ${accentColor}12`, display: "flex", alignItems: "center", justifyContent: "center" }}>
+          <Icon size={13} color={accentColor} strokeWidth={2.5} />
+        </div>
       </div>
-      <div style={{ fontSize: 26, fontWeight: 800, color: c.text, letterSpacing: "-0.03em", lineHeight: 1, fontFamily: "'JetBrains Mono', monospace", marginBottom: 8 }}>{kpi.value}</div>
-      <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-        <span style={{ fontSize: 11, fontWeight: 700, color: kpi.up ? c.green : c.red, display: "inline-flex", alignItems: "center", gap: 2 }}>
-          {kpi.up ? <ArrowUpRight size={11} /> : <ArrowDownRight size={11} />} {kpi.delta}
-        </span>
-        {kpi.bench && <span style={{ fontSize: 8, color: c.textFaint }}>{kpi.bench}</span>}
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end" }}>
+        <div>
+          <div style={{ fontSize: 26, fontWeight: 800, color: c.text, letterSpacing: "-0.03em", lineHeight: 1, fontFamily: "'JetBrains Mono', monospace", marginBottom: 8 }}>{kpi.value}</div>
+          <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+            <span style={{ fontSize: 11, fontWeight: 700, color: kpi.up ? c.green : c.red, display: "inline-flex", alignItems: "center", gap: 2, padding: "2px 6px", borderRadius: 5, background: kpi.up ? `${c.green}10` : `${c.red}10` }}>
+              {kpi.up ? <ArrowUpRight size={11} /> : <ArrowDownRight size={11} />} {kpi.delta}
+            </span>
+          </div>
+          {kpi.bench && <div style={{ fontSize: 9, color: c.textFaint, marginTop: 5 }}>{kpi.bench}</div>}
+        </div>
+        {sparkPath && (
+          <svg width={80} height={28} style={{ flexShrink: 0, opacity: 0.8 }}>
+            <defs>
+              <linearGradient id={`sp-${kpi.label.replace(/\s/g,"")}`} x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor={accentColor} stopOpacity={0.25} />
+                <stop offset="100%" stopColor={accentColor} stopOpacity={0} />
+              </linearGradient>
+            </defs>
+            <path d={sparkAreaPath} fill={`url(#sp-${kpi.label.replace(/\s/g,"")})`} />
+            <path d={sparkPath} fill="none" stroke={accentColor} strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" />
+            {spark.length > 0 && (() => {
+              const min = Math.min(...spark); const max = Math.max(...spark); const range = max - min || 1;
+              const lastX = 2 + ((spark.length - 1) / (spark.length - 1)) * 76;
+              const lastY = 2 + (1 - (spark[spark.length - 1] - min) / range) * 24;
+              return <circle cx={lastX} cy={lastY} r={2.5} fill={accentColor} stroke={c.surface} strokeWidth={1.5} />;
+            })()}
+          </svg>
+        )}
       </div>
     </div>
   );
@@ -1179,14 +1217,14 @@ const InsightRow = memo(({ item, c, onClick }) => {
   const sevColor = c[sev.color] || c.accent;
   return (
     <div onClick={onClick} style={{
-      display: "flex", gap: 12, alignItems: "flex-start", padding: "12px 16px",
+      display: "flex", gap: 12, alignItems: "flex-start", padding: "14px 16px",
       background: c.surfaceAlt, border: `1px solid ${c.borderSub}`, borderRadius: 12,
       cursor: "pointer", transition: "all 0.2s ease", marginBottom: 8,
       borderLeft: `3px solid ${item.color}`, boxShadow: c.shadow1,
       position: "relative", overflow: "hidden",
     }}
-    onMouseEnter={e => { e.currentTarget.style.borderColor = `${c.accent}40`; e.currentTarget.style.borderLeftColor = item.color; e.currentTarget.style.boxShadow = c.shadow2; e.currentTarget.style.transform = "translateX(3px)"; }}
-    onMouseLeave={e => { e.currentTarget.style.borderColor = c.borderSub; e.currentTarget.style.boxShadow = c.shadow1; }}
+    onMouseEnter={e => { e.currentTarget.style.borderColor = `${c.accent}30`; e.currentTarget.style.borderLeftColor = item.color; e.currentTarget.style.boxShadow = `0 6px 20px ${item.color}10`; e.currentTarget.style.transform = "translateX(4px)"; }}
+    onMouseLeave={e => { e.currentTarget.style.borderColor = c.borderSub; e.currentTarget.style.boxShadow = c.shadow1; e.currentTarget.style.transform = "none"; }}
     >
       <div style={{ flex: 1, minWidth: 0 }}>
         <div style={{ fontSize: 12.5, color: c.text, lineHeight: 1.55, fontWeight: 500 }}>{item.text}</div>
@@ -1318,24 +1356,24 @@ const DashboardView = ({ c, onNav, toast, onDrawer, userName, period, closeTasks
     <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1.6fr 1fr", gap: 16, marginBottom: 24 }}>
       {/* Revenue Chart */}
       <ChartPanel title="Revenue Performance" glass={c.glass} borderColor={c.border} textColor={c.textDim} accentColor={c.accent}>
-      <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 12, padding: "24px 24px 18px", boxShadow: "0 1px 3px rgba(0,0,0,0.04)" }}>
+      <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, padding: "24px 24px 18px", boxShadow: c.cardGlow || "0 1px 3px rgba(0,0,0,0.04)", transition: "all 0.2s ease" }}>
         {/* Gradient accent top edge */}
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 18 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-            <div style={{ width: 28, height: 28, borderRadius: 8, background: `linear-gradient(135deg, ${c.accent}18, ${c.purple}10)`, border: `1px solid ${c.accent}15`, display: "flex", alignItems: "center", justifyContent: "center" }}>
+            <div style={{ width: 30, height: 30, borderRadius: 9, background: `linear-gradient(135deg, ${c.accent}18, ${c.purple}10)`, border: `1px solid ${c.accent}15`, display: "flex", alignItems: "center", justifyContent: "center" }}>
               <TrendingUp size={14} color={c.accent} />
             </div>
             <div>
               <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                <div style={{ fontSize: 13, fontWeight: 800, color: c.text, letterSpacing: "-0.01em" }}>Revenue Performance</div>
+                <div style={{ fontSize: 14, fontWeight: 800, color: c.text, letterSpacing: "-0.02em" }}>Revenue Performance</div>
                 <span style={{ fontSize: 7, fontWeight: 800, padding: "2px 6px", borderRadius: 3, background: `${c.green}15`, color: c.green, letterSpacing: "0.06em", display: "flex", alignItems: "center", gap: 3 }}><span style={{ width: 4, height: 4, borderRadius: "50%", background: c.green, animation: "pulse 2s infinite" }} />LIVE</span>
               </div>
               <div style={{ fontSize: 10, color: c.textDim, marginTop: 1 }}>Actual vs Budget vs Forecast ($K)</div>
             </div>
           </div>
-          <div style={{ display: "flex", gap: 2, background: c.surfaceAlt, borderRadius: 8, padding: 2, border: `1px solid ${c.borderSub}` }}>
+          <div style={{ display: "flex", gap: 2, background: c.surfaceAlt, borderRadius: 10, padding: 3, border: `1px solid ${c.borderSub}` }}>
             {["QTD", "YTD", "12M"].map(p => (
-              <span key={p} onClick={() => setChartPeriod(p)} style={{ fontSize: 9, fontWeight: 700, padding: "4px 10px", borderRadius: 6, background: chartPeriod === p ? c.accent : "transparent", color: chartPeriod === p ? "#fff" : c.textFaint, cursor: "pointer", transition: "all 0.15s" }}>{p}</span>
+              <span key={p} onClick={() => setChartPeriod(p)} style={{ fontSize: 10, fontWeight: 700, padding: "5px 12px", borderRadius: 7, background: chartPeriod === p ? `linear-gradient(135deg, ${c.accent}, ${c.purple})` : "transparent", color: chartPeriod === p ? "#fff" : c.textFaint, cursor: "pointer", transition: "all 0.2s", boxShadow: chartPeriod === p ? `0 2px 8px ${c.accent}30` : "none", letterSpacing: "0.02em" }}>{p}</span>
             ))}
           </div>
         </div>
@@ -1347,7 +1385,7 @@ const DashboardView = ({ c, onNav, toast, onDrawer, userName, period, closeTasks
               <linearGradient id="gBand" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor={c.green} stopOpacity={0.08} /><stop offset="100%" stopColor={c.green} stopOpacity={0.02} /></linearGradient>
               <filter id="glowAct"><feGaussianBlur stdDeviation="3" result="blur" /><feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge></filter>
             </defs>
-            <CartesianGrid stroke={c.chartGrid} strokeDasharray="3 6" vertical={false} horizontalPoints={[]} />
+            <CartesianGrid stroke={c.chartGrid} strokeDasharray="4 8" vertical={false} horizontalPoints={[]} />
             <XAxis dataKey="month" tick={{ fontSize: 10, fill: c.chartAxis, fontWeight: 600 }} axisLine={false} tickLine={false} />
             <YAxis tick={{ fontSize: 10, fill: c.chartAxis }} axisLine={false} tickLine={false} tickFormatter={v => `${csym()}${v / 1000}M${csfx()}`} domain={["auto", "auto"]} />
             <Tooltip content={<ChartTooltip c={c} />} cursor={{ stroke: c.accent, strokeWidth: 1, strokeDasharray: "4 4", strokeOpacity: 0.4 }} />
@@ -1363,15 +1401,16 @@ const DashboardView = ({ c, onNav, toast, onDrawer, userName, period, closeTasks
           </ComposedChart>
         </ResponsiveContainer>
         {/* Legend row */}
-        <div style={{ display: "flex", gap: 12, marginTop: 12, fontSize: 10, color: c.textDim, alignItems: "center", paddingTop: 10, borderTop: `1px solid ${c.borderSub}`, flexWrap: "wrap" }}>
+        <div style={{ display: "flex", gap: 8, marginTop: 12, fontSize: 10, color: c.textDim, alignItems: "center", paddingTop: 12, borderTop: `1px solid ${c.borderSub}`, flexWrap: "wrap" }}>
           {[
             { key: "actual", label: "Actual", color: c.accent },
             { key: "budget", label: "Budget", color: c.textFaint },
             { key: "forecast", label: "Forecast", color: c.green },
           ].map(s => (
             <span key={s.key} onClick={() => toggleSeries(s.key)} style={{
-              display: "flex", alignItems: "center", gap: 5, cursor: "pointer", padding: "3px 8px", borderRadius: 5,
-              opacity: hiddenSeries[s.key] ? 0.3 : 1, background: hiddenSeries[s.key] ? "transparent" : `${s.color}08`,
+              display: "flex", alignItems: "center", gap: 5, cursor: "pointer", padding: "4px 10px", borderRadius: 6,
+              opacity: hiddenSeries[s.key] ? 0.35 : 1, background: hiddenSeries[s.key] ? "transparent" : `${s.color}08`,
+              border: `1px solid ${hiddenSeries[s.key] ? c.borderSub : `${s.color}15`}`, transition: "all 0.2s",
               transition: "all 0.2s", fontWeight: 600,
             }}>
               <span style={{ width: 10, height: 10, borderRadius: 3, background: `${s.color}20`, border: `2px solid ${s.color}`, display: "inline-block", opacity: hiddenSeries[s.key] ? 0.3 : 1 }} />
@@ -1390,9 +1429,9 @@ const DashboardView = ({ c, onNav, toast, onDrawer, userName, period, closeTasks
 
       {/* Segment Donut */}
       <ChartPanel title="Revenue by Segment" glass={c.glass} borderColor={c.border} textColor={c.textDim} accentColor={c.accent}>
-      <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 12, padding: "24px 24px 18px", boxShadow: "0 1px 3px rgba(0,0,0,0.04)" }}>
+      <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, padding: "24px 24px 18px", boxShadow: c.cardGlow || "0 1px 3px rgba(0,0,0,0.04)", transition: "all 0.2s ease" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 18 }}>
-          <div style={{ width: 28, height: 28, borderRadius: 8, background: `linear-gradient(135deg, ${c.purple}18, ${c.cyan}10)`, border: `1px solid ${c.purple}15`, display: "flex", alignItems: "center", justifyContent: "center" }}>
+          <div style={{ width: 30, height: 30, borderRadius: 9, background: `linear-gradient(135deg, ${c.purple}18, ${c.cyan}10)`, border: `1px solid ${c.purple}15`, display: "flex", alignItems: "center", justifyContent: "center" }}>
             <Target size={14} color={c.purple} />
           </div>
           <div>
@@ -1407,7 +1446,7 @@ const DashboardView = ({ c, onNav, toast, onDrawer, userName, period, closeTasks
                 <linearGradient key={i} id={`seg${i}`} x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stopColor={s.color} stopOpacity={1} /><stop offset="100%" stopColor={s.color} stopOpacity={0.7} /></linearGradient>
               ))}
             </defs>
-            <Pie data={SEGMENT_DATA} cx="50%" cy="50%" innerRadius={48} outerRadius={72} paddingAngle={4} dataKey="value" stroke="none" cornerRadius={3}>
+            <Pie data={SEGMENT_DATA} cx="50%" cy="50%" innerRadius={52} outerRadius={76} paddingAngle={3} dataKey="value" stroke="none" cornerRadius={4}>
               {SEGMENT_DATA.map((s, i) => <Cell key={i} fill={`url(#seg${i})`} />)}
             </Pie>
             <Tooltip content={<ChartTooltip c={c} />} />
@@ -1451,9 +1490,9 @@ const DashboardView = ({ c, onNav, toast, onDrawer, userName, period, closeTasks
     <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: 16, marginBottom: 24 }}>
       {/* Revenue Waterfall — New Biz / Expansion / Services / Churn */}
       <ChartPanel title="Revenue Composition" glass={c.glass} borderColor={c.border} textColor={c.textDim} accentColor={c.accent}>
-      <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 12, padding: "24px 24px 18px", boxShadow: "0 1px 3px rgba(0,0,0,0.04)" }}>
+      <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, padding: "24px 24px 18px", boxShadow: c.cardGlow || "0 1px 3px rgba(0,0,0,0.04)", transition: "all 0.2s ease" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 16 }}>
-          <div style={{ width: 28, height: 28, borderRadius: 8, background: `linear-gradient(135deg, ${c.cyan}18, ${c.green}08)`, border: `1px solid ${c.cyan}15`, display: "flex", alignItems: "center", justifyContent: "center" }}>
+          <div style={{ width: 30, height: 30, borderRadius: 9, background: `linear-gradient(135deg, ${c.cyan}18, ${c.green}08)`, border: `1px solid ${c.cyan}15`, display: "flex", alignItems: "center", justifyContent: "center" }}>
             <Layers size={14} color={c.cyan} />
           </div>
           <div>
@@ -1468,7 +1507,7 @@ const DashboardView = ({ c, onNav, toast, onDrawer, userName, period, closeTasks
               <linearGradient id="gExpan" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor={c.green} stopOpacity={0.9}/><stop offset="100%" stopColor={c.green} stopOpacity={0.6}/></linearGradient>
               <linearGradient id="gSvc" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor={c.purple} stopOpacity={0.8}/><stop offset="100%" stopColor={c.purple} stopOpacity={0.5}/></linearGradient>
             </defs>
-            <CartesianGrid stroke={c.chartGrid} strokeDasharray="3 6" vertical={false} />
+            <CartesianGrid stroke={c.chartGrid} strokeDasharray="4 8" vertical={false} />
             <XAxis dataKey="month" tick={{ fontSize: 10, fill: c.chartAxis, fontWeight: 600 }} axisLine={false} tickLine={false} />
             <YAxis tick={{ fontSize: 9, fill: c.chartAxis }} axisLine={false} tickLine={false} tickFormatter={v => `${csym()}${v / 1000}K${csfx()}`} />
             <Tooltip content={<ChartTooltip c={c} />} cursor={{ fill: `${c.accent}06` }} />
@@ -1495,10 +1534,10 @@ const DashboardView = ({ c, onNav, toast, onDrawer, userName, period, closeTasks
 
       {/* Cash Runway */}
       <ChartPanel title="Cash & Runway" glass={c.glass} borderColor={c.border} textColor={c.textDim} accentColor={c.accent}>
-      <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 12, padding: "24px 24px 18px", boxShadow: "0 1px 3px rgba(0,0,0,0.04)" }}>
+      <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, padding: "24px 24px 18px", boxShadow: c.cardGlow || "0 1px 3px rgba(0,0,0,0.04)", transition: "all 0.2s ease" }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 16 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-            <div style={{ width: 28, height: 28, borderRadius: 8, background: `linear-gradient(135deg, ${c.green}18, ${c.cyan}08)`, border: `1px solid ${c.green}15`, display: "flex", alignItems: "center", justifyContent: "center" }}>
+            <div style={{ width: 30, height: 30, borderRadius: 9, background: `linear-gradient(135deg, ${c.green}18, ${c.cyan}08)`, border: `1px solid ${c.green}15`, display: "flex", alignItems: "center", justifyContent: "center" }}>
               <DollarSign size={14} color={c.green} />
             </div>
             <div>
@@ -1516,7 +1555,7 @@ const DashboardView = ({ c, onNav, toast, onDrawer, userName, period, closeTasks
             <defs>
               <linearGradient id="gCash" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor={c.green} stopOpacity={0.2}/><stop offset="100%" stopColor={c.green} stopOpacity={0}/></linearGradient>
             </defs>
-            <CartesianGrid stroke={c.chartGrid} strokeDasharray="3 6" vertical={false} />
+            <CartesianGrid stroke={c.chartGrid} strokeDasharray="4 8" vertical={false} />
             <XAxis dataKey="month" tick={{ fontSize: 10, fill: c.chartAxis, fontWeight: 600 }} axisLine={false} tickLine={false} />
             <YAxis tick={{ fontSize: 9, fill: c.chartAxis }} axisLine={false} tickLine={false} tickFormatter={v => `${csym()}${v / 1000}K${csfx()}`} />
             <Tooltip content={<ChartTooltip c={c} />} cursor={{ stroke: c.green, strokeWidth: 1, strokeDasharray: "3 3", strokeOpacity: 0.3 }} />
@@ -1543,9 +1582,9 @@ const DashboardView = ({ c, onNav, toast, onDrawer, userName, period, closeTasks
     <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(340px, 1fr))", gap: 16 }}>
       {/* Expense Breakdown */}
       <ChartPanel title="OpEx Breakdown" glass={c.glass} borderColor={c.border} textColor={c.textDim} accentColor={c.accent}>
-      <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 12, padding: "24px 24px 18px", boxShadow: "0 1px 3px rgba(0,0,0,0.04)" }}>
+      <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, padding: "24px 24px 18px", boxShadow: c.cardGlow || "0 1px 3px rgba(0,0,0,0.04)", transition: "all 0.2s ease" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 18 }}>
-          <div style={{ width: 28, height: 28, borderRadius: 8, background: `linear-gradient(135deg, ${c.amber}18, ${c.red}08)`, border: `1px solid ${c.amber}15`, display: "flex", alignItems: "center", justifyContent: "center" }}>
+          <div style={{ width: 30, height: 30, borderRadius: 9, background: `linear-gradient(135deg, ${c.amber}18, ${c.red}08)`, border: `1px solid ${c.amber}15`, display: "flex", alignItems: "center", justifyContent: "center" }}>
             <DollarSign size={14} color={c.amber} />
           </div>
           <div>
@@ -1559,7 +1598,7 @@ const DashboardView = ({ c, onNav, toast, onDrawer, userName, period, closeTasks
               <linearGradient id="gExpAct" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stopColor={c.accent} stopOpacity={0.9} /><stop offset="100%" stopColor={c.accent} stopOpacity={0.6} /></linearGradient>
               <linearGradient id="gExpBud" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stopColor={c.textFaint} stopOpacity={0.35} /><stop offset="100%" stopColor={c.textFaint} stopOpacity={0.15} /></linearGradient>
             </defs>
-            <CartesianGrid stroke={c.chartGrid} strokeDasharray="3 6" horizontal={false} />
+            <CartesianGrid stroke={c.chartGrid} strokeDasharray="4 8" horizontal={false} />
             <XAxis type="number" tick={{ fontSize: 10, fill: c.chartAxis }} axisLine={false} tickLine={false} tickFormatter={v => `${csym()}${v / 1000}K${csfx()}`} />
             <YAxis type="category" dataKey="name" tick={{ fontSize: 11, fill: c.textSec, fontWeight: 600 }} axisLine={false} tickLine={false} width={40} />
             <Tooltip content={<ChartTooltip c={c} />} cursor={{ fill: `${c.accent}06` }} />
@@ -1598,10 +1637,10 @@ const DashboardView = ({ c, onNav, toast, onDrawer, userName, period, closeTasks
       </div>
       </ChartPanel>
       <ChartPanel title="AI Insights" glass={c.glass} borderColor={c.border} textColor={c.textDim} accentColor={c.accent}>
-      <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 12, padding: "24px 24px 18px", boxShadow: "0 1px 3px rgba(0,0,0,0.04)" }}>
+      <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, padding: "24px 24px 18px", boxShadow: c.cardGlow || "0 1px 3px rgba(0,0,0,0.04)", transition: "all 0.2s ease" }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 18 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-            <div style={{ width: 28, height: 28, borderRadius: 8, background: `linear-gradient(135deg, ${c.purple}18, ${c.accent}10)`, border: `1px solid ${c.purple}15`, display: "flex", alignItems: "center", justifyContent: "center" }}>
+            <div style={{ width: 30, height: 30, borderRadius: 9, background: `linear-gradient(135deg, ${c.purple}18, ${c.accent}10)`, border: `1px solid ${c.purple}15`, display: "flex", alignItems: "center", justifyContent: "center" }}>
               <Sparkles size={14} color={c.purple} />
             </div>
             <div>
@@ -1629,7 +1668,7 @@ const DashboardView = ({ c, onNav, toast, onDrawer, userName, period, closeTasks
         onMouseLeave={e => { e.currentTarget.style.borderColor = c.glassBorder; }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 16 }}>
-          <div style={{ width: 28, height: 28, borderRadius: 8, background: `linear-gradient(135deg, ${c.green}18, ${c.accent}08)`, border: `1px solid ${c.green}12`, display: "flex", alignItems: "center", justifyContent: "center" }}>
+          <div style={{ width: 30, height: 30, borderRadius: 9, background: `linear-gradient(135deg, ${c.green}18, ${c.accent}08)`, border: `1px solid ${c.green}12`, display: "flex", alignItems: "center", justifyContent: "center" }}>
             <DollarSign size={14} color={c.green} />
           </div>
           <div>
@@ -1672,7 +1711,7 @@ const DashboardView = ({ c, onNav, toast, onDrawer, userName, period, closeTasks
         onMouseLeave={e => { e.currentTarget.style.borderColor = c.glassBorder; }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 16 }}>
-          <div style={{ width: 28, height: 28, borderRadius: 8, background: `linear-gradient(135deg, ${c.accent}18, ${c.purple}08)`, border: `1px solid ${c.accent}12`, display: "flex", alignItems: "center", justifyContent: "center" }}>
+          <div style={{ width: 30, height: 30, borderRadius: 9, background: `linear-gradient(135deg, ${c.accent}18, ${c.purple}08)`, border: `1px solid ${c.accent}12`, display: "flex", alignItems: "center", justifyContent: "center" }}>
             <TrendingUp size={14} color={c.accent} />
           </div>
           <div>
@@ -1710,7 +1749,7 @@ const DashboardView = ({ c, onNav, toast, onDrawer, userName, period, closeTasks
         onMouseLeave={e => { e.currentTarget.style.borderColor = c.glassBorder; }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 16 }}>
-          <div style={{ width: 28, height: 28, borderRadius: 8, background: `linear-gradient(135deg, ${c.purple}18, ${c.green}08)`, border: `1px solid ${c.purple}12`, display: "flex", alignItems: "center", justifyContent: "center" }}>
+          <div style={{ width: 30, height: 30, borderRadius: 9, background: `linear-gradient(135deg, ${c.purple}18, ${c.green}08)`, border: `1px solid ${c.purple}12`, display: "flex", alignItems: "center", justifyContent: "center" }}>
             <Target size={14} color={c.purple} />
           </div>
           <div>
@@ -1809,10 +1848,10 @@ const DashboardView = ({ c, onNav, toast, onDrawer, userName, period, closeTasks
       Retention & Cohorts
     </div>
     <ChartPanel title="Cohort Retention" glass={c.glass} borderColor={c.border} textColor={c.textDim} accentColor={c.accent}>
-    <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 12, padding: "24px 24px 18px", boxShadow: "0 1px 3px rgba(0,0,0,0.04)", transition: "all 0.15s ease" }}>
+    <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, padding: "24px 24px 18px", boxShadow: c.cardGlow || "0 1px 3px rgba(0,0,0,0.04)", transition: "all 0.2s ease", transition: "all 0.15s ease" }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-          <div style={{ width: 28, height: 28, borderRadius: 8, background: `linear-gradient(135deg, ${c.cyan}18, ${c.green}08)`, border: `1px solid ${c.cyan}15`, display: "flex", alignItems: "center", justifyContent: "center" }}>
+          <div style={{ width: 30, height: 30, borderRadius: 9, background: `linear-gradient(135deg, ${c.cyan}18, ${c.green}08)`, border: `1px solid ${c.cyan}15`, display: "flex", alignItems: "center", justifyContent: "center" }}>
             <Activity size={14} color={c.cyan} />
           </div>
           <div>
@@ -2416,10 +2455,10 @@ const ForecastView = ({ c, toast }) => {
       <div style={{ fontSize: 9, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.12em", color: c.textFaint, marginBottom: 10, display: "flex", alignItems: "center", gap: 8 }}>
         Forecast Model
       </div>
-      <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 12, padding: "24px 24px 18px", boxShadow: "0 1px 3px rgba(0,0,0,0.04)", marginBottom: 16 }}>
+      <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, padding: "24px 24px 18px", boxShadow: c.cardGlow || "0 1px 3px rgba(0,0,0,0.04)", transition: "all 0.2s ease", marginBottom: 16 }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-            <div style={{ width: 28, height: 28, borderRadius: 8, background: `linear-gradient(135deg, ${c.green}18, ${c.accent}10)`, border: `1px solid ${c.green}15`, display: "flex", alignItems: "center", justifyContent: "center" }}>
+            <div style={{ width: 30, height: 30, borderRadius: 9, background: `linear-gradient(135deg, ${c.green}18, ${c.accent}10)`, border: `1px solid ${c.green}15`, display: "flex", alignItems: "center", justifyContent: "center" }}>
               <TrendingUp size={14} color={c.green} />
             </div>
             <div>
@@ -2438,7 +2477,7 @@ const ForecastView = ({ c, toast }) => {
               <linearGradient id="gBear" x1="0" y1="1" x2="0" y2="0"><stop offset="0%" stopColor={c.red} stopOpacity={0.08} /><stop offset="50%" stopColor={c.red} stopOpacity={0.02} /><stop offset="100%" stopColor={c.red} stopOpacity={0} /></linearGradient>
               <linearGradient id="gActFc" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor={c.accent} stopOpacity={0.18} /><stop offset="100%" stopColor={c.accent} stopOpacity={0} /></linearGradient>
             </defs>
-            <CartesianGrid stroke={c.chartGrid || c.borderSub} strokeDasharray="3 6" vertical={false} />
+            <CartesianGrid stroke={c.chartGrid || c.borderSub} strokeDasharray="4 8" vertical={false} />
             <XAxis dataKey="month" tick={{ fontSize: 10, fill: c.chartAxis || c.textDim, fontWeight: 600 }} axisLine={false} tickLine={false} />
             <YAxis tick={{ fontSize: 10, fill: c.chartAxis || c.textDim }} axisLine={false} tickLine={false} tickFormatter={v => `${csym()}${(v/1000).toFixed(0)}M${csfx()}`} />
             <Tooltip content={<ChartTooltip c={c} />} cursor={{ stroke: c.accent, strokeWidth: 1, strokeDasharray: "3 3", strokeOpacity: 0.3 }} />
@@ -2473,7 +2512,7 @@ const ForecastView = ({ c, toast }) => {
       </div>
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
         {/* Driver importance */}
-        <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 12, padding: "24px 24px 18px", boxShadow: "0 1px 3px rgba(0,0,0,0.04)" }}>
+        <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, padding: "24px 24px 18px", boxShadow: c.cardGlow || "0 1px 3px rgba(0,0,0,0.04)", transition: "all 0.2s ease" }}>
           <div style={{ fontSize: 12, fontWeight: 800, color: c.text, marginBottom: 4 }}>Top Drivers</div>
           <div style={{ fontSize: 10, color: c.textDim, marginBottom: 14 }}>SHAP feature importance</div>
           {DRIVERS.map((d, i) => (
@@ -2489,7 +2528,7 @@ const ForecastView = ({ c, toast }) => {
         </div>
 
         {/* Assumption sliders */}
-        <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 12, padding: "24px 24px 18px", boxShadow: "0 1px 3px rgba(0,0,0,0.04)" }}>
+        <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, padding: "24px 24px 18px", boxShadow: c.cardGlow || "0 1px 3px rgba(0,0,0,0.04)", transition: "all 0.2s ease" }}>
           <div style={{ fontSize: 12, fontWeight: 800, color: c.text, marginBottom: 4 }}>Key Assumptions</div>
           <div style={{ fontSize: 10, color: c.textDim, marginBottom: 14 }}>Drag to adjust forecast inputs</div>
           {[
@@ -6751,6 +6790,7 @@ function FinanceOSApp() {
           transition: background 0.4s ease, background-color 0.4s ease, color 0.3s ease, border-color 0.4s ease, box-shadow 0.4s ease;
         }
         @keyframes pulse { 0%,100% { opacity: 0.3; transform: scale(1); } 50% { opacity: 1; transform: scale(1.2); } }
+        @keyframes chartCardHover { from { transform: translateY(0); } to { transform: translateY(-2px); } }
         @keyframes toastIn { from { opacity: 0; transform: translateX(40px); } to { opacity: 1; transform: translateX(0); } }
         @keyframes drawerIn { from { transform: translateX(100%); } to { transform: translateX(0); } }
         @keyframes cmdIn { from { opacity: 0; transform: scale(0.96) translateY(-8px); } to { opacity: 1; transform: scale(1) translateY(0); } }
@@ -7374,7 +7414,7 @@ function FinanceOSApp() {
             {/* Header */}
             <div style={{ padding: "16px 18px 12px", borderBottom: `1px solid ${c.borderSub}`, display: "flex", alignItems: "center", justifyContent: "space-between", flexShrink: 0 }}>
               <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                <div style={{ width: 28, height: 28, borderRadius: 8, background: `linear-gradient(135deg, ${c.accent}15, ${c.purple}08)`, border: `1px solid ${c.accent}12`, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                <div style={{ width: 30, height: 30, borderRadius: 9, background: `linear-gradient(135deg, ${c.accent}15, ${c.purple}08)`, border: `1px solid ${c.accent}12`, display: "flex", alignItems: "center", justifyContent: "center" }}>
                   <Sparkles size={14} color={c.accent} />
                 </div>
                 <div>
