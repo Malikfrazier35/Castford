@@ -696,6 +696,7 @@ const NAV_ITEMS = [
   { id: "integrations", label: "Integrations", icon: Plug, section: "Platform" },
   { id: "admin", label: "Admin", icon: Shield, section: "Platform" },
   { id: "investor", label: "Investor Metrics", icon: Target, section: "Platform" },
+  { id: "intelligence", label: "Intelligence", icon: Globe, section: "Platform" },
   { id: "settings", label: "Settings", icon: Settings, section: "Platform" },
 ];
 
@@ -5028,6 +5029,639 @@ const ScenariosView = ({ c, toast }) => {
 // SETTINGS VIEW (minimal)
 // ══════════════════════════════════════════════════════════════
 // ══════════════════════════════════════════════════════════════
+// ══════════════════════════════════════════════════════════════
+// ENV 12: INTELLIGENCE LIBRARY — Content Pipeline / Analyst Reports / Lead Capture
+// ══════════════════════════════════════════════════════════════
+const INTEL_RESOURCES = [
+  { id: 1, title: "The State of AI in FP&A: 2026 Market Intelligence Report", desc: "Comprehensive analysis of AI adoption across 500+ enterprise finance teams. ROI benchmarks, model selection, compliance frameworks, and 3-year projections.", type: "report", category: "analyst", date: "Mar 2026", pages: "48", featured: true, img: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=600&h=340&fit=crop" },
+  { id: 2, title: "CFO's Guide to AI-Powered Financial Planning", desc: "Step-by-step playbook for implementing AI in your FP&A workflow. Includes vendor evaluation matrix and implementation timeline.", type: "guide", category: "guides", date: "Mar 2026", pages: "32", img: "https://images.unsplash.com/photo-1560472355-536de3962603?w=600&h=340&fit=crop" },
+  { id: 3, title: "Enterprise FP&A Platform Comparison", desc: "Side-by-side comparison of FinanceOS against Anaplan, Adaptive, Pigment, Mosaic, and Runway across 42 evaluation criteria.", type: "report", category: "analyst", date: "Feb 2026", pages: "28", img: "https://images.unsplash.com/photo-1553877522-43269d4ea984?w=600&h=340&fit=crop" },
+  { id: 4, title: "Webinar: Building a Real-Time Close Process", desc: "Join our VP of Product and Coca-Cola's Controller for a live walkthrough of reducing close cycle from 12 days to 4 days.", type: "webinar", category: "webinars", date: "Mar 28, 2026", pages: "60 min", img: "https://images.unsplash.com/photo-1591115765373-5207764f72e7?w=600&h=340&fit=crop" },
+  { id: 5, title: "Revenue Forecasting Template Pack", desc: "12 ready-to-use forecasting templates including SaaS MRR waterfall, retail same-store sales, and multi-entity consolidation models.", type: "template", category: "templates", date: "Mar 2026", pages: "12 files", img: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=600&h=340&fit=crop" },
+  { id: 6, title: "The Enterprise CFO's Playbook for 2026", desc: "Strategic priorities, budget allocation frameworks, and AI adoption roadmap based on interviews with 50 Fortune 500 CFOs.", type: "report", category: "analyst", date: "Jan 2026", pages: "56", img: "https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=600&h=340&fit=crop" },
+  { id: 7, title: "Financial Consolidation Best Practices Guide", desc: "Multi-entity consolidation workflows, intercompany eliminations, and currency translation strategies for growing enterprises.", type: "guide", category: "guides", date: "Feb 2026", pages: "24", img: "https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=600&h=340&fit=crop" },
+  { id: 8, title: "Webinar: AI Copilot Demo — From Variance to Insight in 30 Seconds", desc: "Live demo of FinanceOS AI Copilot analyzing variance reports, generating board memos, and forecasting scenarios in real time.", type: "webinar", category: "webinars", date: "Apr 2, 2026", pages: "45 min", img: "https://images.unsplash.com/photo-1531482615713-2afd69097998?w=600&h=340&fit=crop" },
+  { id: 9, title: "Board Reporting Template Suite", desc: "Professional board deck templates, KPI dashboards, and executive summary frameworks used by 200+ enterprise CFOs.", type: "template", category: "templates", date: "Feb 2026", pages: "8 files", img: "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=600&h=340&fit=crop" },
+  { id: 10, title: "ROI Calculator: FP&A Platform Investment", desc: "Interactive model to calculate your expected ROI from implementing FinanceOS.", type: "template", category: "templates", date: "Mar 2026", pages: "1 file", img: "https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=600&h=340&fit=crop" },
+  { id: 11, title: "SaaS FP&A Benchmark Report: 2026 Edition", desc: "Key SaaS metrics benchmarked across 400 companies: NRR, CAC payback, burn multiple, Rule of 40, and runway analysis by stage.", type: "report", category: "analyst", date: "Mar 2026", pages: "36", img: "https://images.unsplash.com/photo-1559526324-4b87b5e36e44?w=600&h=340&fit=crop" },
+  { id: 12, title: "Headcount Planning Guide for Hypergrowth Companies", desc: "Frameworks for building headcount models that scale, including hiring velocity and compensation benchmarking.", type: "guide", category: "guides", date: "Jan 2026", pages: "20", img: "https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=600&h=340&fit=crop" },
+];
+
+const INTEL_ANALYST_QUOTES = [
+  { firm: "Gartner", initial: "G", source: "Market Guide for Cloud FP&A, 2026", quote: "FinanceOS represents the next generation of FP&A platforms, combining real-time intelligence with enterprise-grade security. Their AI-first approach is reshaping how CFOs operate." },
+  { firm: "Forrester", initial: "F", source: "Wave: Financial Planning, Q1 2026", quote: "Among emerging FP&A vendors, FinanceOS stands out for speed-to-value, with customers reporting 60% faster close cycles and 4x improvement in forecast accuracy." },
+  { firm: "IDC", initial: "IDC", source: "MarketScape: EPM Vendors, 2026", quote: "The personalized dashboard approach is a competitive differentiator. Enterprise clients get branded portals with 95% user adoption rates." },
+];
+
+// Unsplash stock images for video/media pipeline — corporate + human photography
+const INTEL_VIDEOS = [
+  { id: "v1", title: "AI-Powered Cash Flow Forecasting: From Theory to Production", desc: "Watch our engineering team demonstrate transformer-based cash prediction with 94% accuracy.", duration: "47:12", views: "1,240", topic: "AI & ML", color: "#5b9cf5", thumb: "https://images.unsplash.com/photo-1551434678-e076c223a692?w=600&h=340&fit=crop", speakers: [{ name: "Sarah Chen", role: "VP Engineering", img: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=80&h=80&fit=crop&crop=face" }], featured: true },
+  { id: "v2", title: "Treasury Automation Deep Dive", desc: "End-to-end walkthrough of automating treasury operations with FinanceOS.", duration: "32:15", views: "890", topic: "Treasury", color: "#3dd9a0", thumb: "https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=600&h=340&fit=crop", speakers: [{ name: "James Wright", role: "Head of Treasury", img: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&h=80&fit=crop&crop=face" }] },
+  { id: "v3", title: "Board Reporting Best Practices", desc: "How top CFOs build compelling board decks with real-time data.", duration: "28:44", views: "1,120", topic: "Reporting", color: "#a181f7", thumb: "https://images.unsplash.com/photo-1552664730-d307ca884978?w=600&h=340&fit=crop", speakers: [{ name: "Maria Lopez", role: "CFO, Series D", img: "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=80&h=80&fit=crop&crop=face" }] },
+  { id: "v4", title: "Multi-Entity Consolidation Walkthrough", desc: "Step-by-step consolidation across 15+ entities with automated eliminations.", duration: "41:08", views: "672", topic: "Consolidation", color: "#f5b731", thumb: "https://images.unsplash.com/photo-1600880292089-90a7e086ee0c?w=600&h=340&fit=crop", speakers: [{ name: "David Kim", role: "Controller", img: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=80&h=80&fit=crop&crop=face" }] },
+  { id: "v5", title: "FP&A Workflow Automation", desc: "Cut manual work by 80% with intelligent automation pipelines.", duration: "25:30", views: "1,450", topic: "FP&A", color: "#5b9cf5", thumb: "https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=600&h=340&fit=crop", speakers: [{ name: "Aisha Patel", role: "FP&A Director", img: "https://images.unsplash.com/photo-1598550874175-4d0ef436c909?w=80&h=80&fit=crop&crop=face" }] },
+  { id: "v6", title: "Q1 2026 Product Roadmap", desc: "New features, integrations, and platform improvements coming this quarter.", duration: "35:55", views: "2,100", topic: "Product", color: "#2dd4d0", thumb: "https://images.unsplash.com/photo-1553028826-f4804a6dba3b?w=600&h=340&fit=crop", speakers: [{ name: "Michael Torres", role: "CEO", img: "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=80&h=80&fit=crop&crop=face" }] },
+];
+
+const INTEL_EVENTS = [
+  { title: "FP&A in the Age of AI — Panel Discussion", date: "Apr 8, 2026", time: "2:00 PM ET", speakers: 4, color: "#5b9cf5", img: "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=600&h=200&fit=crop" },
+  { title: "Real-Time Treasury: From Batch to Streaming", date: "Apr 15, 2026", time: "11:00 AM ET", speakers: 2, color: "#3dd9a0", img: "https://images.unsplash.com/photo-1475721027785-f74eccf877e2?w=600&h=200&fit=crop" },
+  { title: "CFO Roundtable: Budget Season Automation", date: "Apr 22, 2026", time: "1:00 PM ET", speakers: 6, color: "#a181f7", img: "https://images.unsplash.com/photo-1591115765373-5207764f72e7?w=600&h=200&fit=crop" },
+];
+
+const IntelligenceView = ({ c, toast }) => {
+  const [filter, setFilter] = useState("all");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [modalOpen, setModalOpen] = useState(false);
+  const [modalResource, setModalResource] = useState(null);
+  const [leadForm, setLeadForm] = useState({ email: "", first: "", last: "", company: "", role: "", size: "" });
+  const [submitted, setSubmitted] = useState(false);
+  const [newsletterEmail, setNewsletterEmail] = useState("");
+  const [newsletterDone, setNewsletterDone] = useState(false);
+  const [pipelineTab, setPipelineTab] = useState("library");
+  const [hoveredCard, setHoveredCard] = useState(null);
+
+  const typeColor = (type) => type === "report" ? c.accent : type === "guide" ? c.green : type === "webinar" ? c.purple : c.amber;
+  const typeIcon = (type) => type === "report" ? "◆" : type === "guide" ? "▣" : type === "webinar" ? "◈" : "◇";
+
+  const filtered = INTEL_RESOURCES.filter(r => {
+    const matchesFilter = filter === "all" || r.category === filter;
+    const matchesSearch = !searchTerm || r.title.toLowerCase().includes(searchTerm.toLowerCase()) || r.desc.toLowerCase().includes(searchTerm.toLowerCase());
+    return matchesFilter && matchesSearch;
+  });
+
+  const openGate = (resource) => { setModalResource(resource); setModalOpen(true); setSubmitted(false); setLeadForm({ email: "", first: "", last: "", company: "", role: "", size: "" }); };
+  const closeModal = () => { setModalOpen(false); setModalResource(null); };
+
+  const handleLeadSubmit = async () => {
+    if (!leadForm.email || !leadForm.first) return;
+    try {
+      const utm = getUtmData();
+      await supabase.from("leads").insert({ email: leadForm.email, first_name: leadForm.first, last_name: leadForm.last, company: leadForm.company, role: leadForm.role, company_size: leadForm.size, source: "intelligence_library", resource_id: modalResource?.id, resource_title: modalResource?.title || "Newsletter", ...utm });
+    } catch {}
+    setSubmitted(true);
+    toast("Lead captured — download link sent", "success");
+  };
+
+  const handleNewsletter = async () => {
+    if (!newsletterEmail) return;
+    try { await supabase.from("leads").insert({ email: newsletterEmail, source: "newsletter_intelligence" }); } catch {}
+    setNewsletterDone(true);
+    toast("Subscribed to Finance Intelligence", "success");
+  };
+
+  const AnimNum = ({ value, color, delay = 0 }) => (
+    <span style={{ display: "inline-block", animation: `numberTick 0.5s ${delay}s cubic-bezier(0.22,1,0.36,1) backwards`, fontFamily: "'JetBrains Mono', monospace", fontWeight: 800, color, letterSpacing: "-0.02em" }}>{value}</span>
+  );
+
+  return (
+    <div style={{ padding: 32, animation: "fadeSlideUp 0.4s ease" }}>
+      {/* View Header — with animated accent */}
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 24 }}>
+        <div style={{ display: "flex", alignItems: "flex-start", gap: 16 }}>
+          <div style={{ width: 42, height: 42, borderRadius: 12, background: `linear-gradient(135deg, ${c.accent}18, ${c.purple}12)`, border: `1px solid ${c.accent}15`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, marginTop: 2, boxShadow: `0 0 24px ${c.accent}10`, animation: "glowPulse 3s ease-in-out infinite" }}>
+            <Globe size={19} color={c.accent} />
+          </div>
+          <div>
+            <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+              <div style={{ fontSize: 22, fontWeight: 800, color: c.text, letterSpacing: "-0.035em" }}>Finance Intelligence Library</div>
+              <span style={{ fontSize: 7, fontWeight: 800, padding: "3px 8px", borderRadius: 4, background: `linear-gradient(135deg, ${c.accent}20, ${c.purple}15)`, color: c.accent, letterSpacing: "0.08em", border: `1px solid ${c.accent}15` }}>SERVICE</span>
+            </div>
+            <div style={{ fontSize: 12, color: c.textDim, marginTop: 3, lineHeight: 1.5 }}>Analyst reports · Benchmark data · Strategy guides · Templates · Video library · Gated downloads</div>
+            <div style={{ display: "flex", gap: 16, marginTop: 8 }}>
+              {[{ val: "47", label: "Reports" }, { val: "12K+", label: "Downloads" }, { val: "2,000+", label: "Subscribers" }, { val: "24", label: "Videos" }].map((s, i) => (
+                <div key={s.label} style={{ display: "flex", alignItems: "center", gap: 5 }}>
+                  <span style={{ fontSize: 12, fontWeight: 800, fontFamily: "'JetBrains Mono', monospace", color: c.accent, animation: `numberTick 0.4s ${i * 0.1}s ease backwards` }}>{s.val}</span>
+                  <span style={{ fontSize: 9, color: c.textFaint, fontWeight: 600 }}>{s.label}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Animated gradient accent line */}
+      <div style={{ height: 2, borderRadius: 1, background: `linear-gradient(90deg, ${c.accent}40, ${c.purple}30, ${c.green}20, transparent)`, marginBottom: 20, backgroundSize: "200% 100%", animation: "gradientShift 4s ease infinite" }} />
+
+      {/* Sub-tabs — with indicator dots */}
+      <div style={{ display: "flex", gap: 2, marginBottom: 24, background: c.bg2, borderRadius: 12, padding: 3, border: `1px solid ${c.borderSub}` }}>
+        {[
+          { id: "library", label: "Content Library", icon: "◆" },
+          { id: "media", label: "Video & Media", icon: "◈" },
+          { id: "pipeline", label: "Lead Pipeline", icon: "▣" },
+          { id: "analysts", label: "Analyst Recognition", icon: "◇" },
+        ].map(t => (
+          <button key={t.id} onClick={() => setPipelineTab(t.id)} style={{ flex: 1, fontSize: 11, fontWeight: pipelineTab === t.id ? 700 : 500, padding: "10px 16px", borderRadius: 9, border: "none", cursor: "pointer", fontFamily: "inherit", transition: "all 0.2s cubic-bezier(0.4,0,0.2,1)", background: pipelineTab === t.id ? c.surface : "transparent", color: pipelineTab === t.id ? c.text : c.textDim, boxShadow: pipelineTab === t.id ? `${c.shadow1}, 0 0 0 1px ${c.accent}08` : "none", display: "flex", alignItems: "center", justifyContent: "center", gap: 6 }}>
+            <span style={{ fontSize: 9, opacity: pipelineTab === t.id ? 1 : 0.5 }}>{t.icon}</span>
+            {t.label}
+            {pipelineTab === t.id && <span style={{ width: 5, height: 5, borderRadius: "50%", background: c.accent, marginLeft: 4, animation: "pulse 2s infinite" }} />}
+          </button>
+        ))}
+      </div>
+
+      {/* ═══ CONTENT LIBRARY TAB — with Unsplash stock photos ═══ */}
+      {pipelineTab === "library" && (
+        <div style={{ animation: "fadeSlideUp 0.3s ease" }}>
+          {/* Featured Report Banner — with real photography + animated orbs */}
+          <div style={{ borderRadius: 20, marginBottom: 28, position: "relative", overflow: "hidden", border: `1px solid rgba(91,156,245,0.08)`, boxShadow: `0 16px 64px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.03)` }}>
+            {/* Background image */}
+            <div style={{ position: "absolute", inset: 0, backgroundImage: `url(https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=1200&h=500&fit=crop)`, backgroundSize: "cover", backgroundPosition: "center" }} />
+            <div style={{ position: "absolute", inset: 0, background: "linear-gradient(135deg, rgba(12,18,32,0.92) 0%, rgba(20,30,51,0.88) 40%, rgba(15,24,41,0.94) 100%)" }} />
+            {/* Animated orbs */}
+            <div style={{ position: "absolute", top: "-30%", right: "-15%", width: 350, height: 350, borderRadius: "50%", background: `radial-gradient(circle, ${c.accent}10, transparent 70%)`, animation: "floatOrb 8s ease-in-out infinite", pointerEvents: "none" }} />
+            <div style={{ position: "absolute", bottom: "-40%", left: "-10%", width: 300, height: 300, borderRadius: "50%", background: `radial-gradient(circle, ${c.purple}08, transparent 70%)`, animation: "floatOrb 10s ease-in-out infinite reverse", pointerEvents: "none" }} />
+            <div style={{ position: "absolute", inset: 0, backgroundImage: `radial-gradient(circle at 1px 1px, rgba(255,255,255,0.03) 1px, transparent 1px)`, backgroundSize: "24px 24px", pointerEvents: "none" }} />
+            <div style={{ position: "relative", zIndex: 1, padding: "40px 44px", display: "grid", gridTemplateColumns: "1fr 1fr", gap: 44, alignItems: "center" }}>
+              <div>
+                <span style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "5px 14px", borderRadius: 8, background: `rgba(91,156,245,0.12)`, border: `1px solid rgba(91,156,245,0.2)`, backdropFilter: "blur(8px)", color: "#93C5FD", fontSize: 9, fontWeight: 800, letterSpacing: "0.07em", marginBottom: 14 }}>
+                  <span style={{ width: 5, height: 5, borderRadius: "50%", background: "#60A5FA", animation: "liveDot 2s infinite" }} />
+                  FLAGSHIP REPORT · MARCH 2026
+                </span>
+                <div style={{ fontSize: 24, fontWeight: 800, color: "#eef0f6", letterSpacing: "-0.035em", marginBottom: 10, lineHeight: 1.18 }}>The State of AI in FP&A:<br/>2026 Market Intelligence Report</div>
+                <div style={{ fontSize: 13, color: "rgba(255,255,255,0.45)", lineHeight: 1.65, marginBottom: 18 }}>Our most comprehensive analysis of AI adoption across 500+ enterprise finance teams. Covers ROI benchmarks, model selection, and 3-year market projections.</div>
+                <div style={{ display: "flex", gap: 10 }}>
+                  <button onClick={() => openGate(INTEL_RESOURCES[0])} style={{ fontSize: 12, padding: "11px 22px", borderRadius: 10, border: "none", background: `linear-gradient(135deg, ${c.accent}, #4B8AE8)`, color: "#fff", fontWeight: 700, cursor: "pointer", fontFamily: "inherit", boxShadow: `0 4px 16px ${c.accent}30`, transition: "all 0.2s" }}>Download Free Report</button>
+                  <button onClick={() => openGate(INTEL_RESOURCES[0])} style={{ fontSize: 12, padding: "11px 22px", borderRadius: 10, border: "1px solid rgba(255,255,255,0.12)", background: "rgba(255,255,255,0.04)", backdropFilter: "blur(8px)", color: "rgba(255,255,255,0.85)", fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }}>Executive Summary</button>
+                </div>
+              </div>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+                {[
+                  { val: "73%", label: "AI Adoption Rate", color: "#60A5FA", sub: "+12% YoY" },
+                  { val: "4.2x", label: "Average ROI", color: c.green, sub: "First 18 months" },
+                  { val: "68%", label: "Budget Increase YoY", color: c.purple, sub: "Enterprise segment" },
+                  { val: "$12.8B", label: "Market Size 2026", color: c.amber, sub: "CAGR 34.2%" },
+                ].map((s, i) => (
+                  <div key={s.label} className="intel-card" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)", borderRadius: 14, padding: "16px 14px", textAlign: "center", backdropFilter: "blur(8px)", transition: "all 0.25s", cursor: "default" }}
+                    onMouseEnter={e => { e.currentTarget.style.background = "rgba(255,255,255,0.06)"; e.currentTarget.style.borderColor = `${s.color}30`; e.currentTarget.style.transform = "translateY(-2px)"; }}
+                    onMouseLeave={e => { e.currentTarget.style.background = "rgba(255,255,255,0.03)"; e.currentTarget.style.borderColor = "rgba(255,255,255,0.06)"; e.currentTarget.style.transform = "none"; }}>
+                    <AnimNum value={s.val} color={s.color} delay={i * 0.1} />
+                    <div style={{ fontSize: 22 }} />
+                    <div style={{ fontSize: 8, color: "rgba(255,255,255,0.35)", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", marginTop: 4 }}>{s.label}</div>
+                    <div style={{ fontSize: 8, color: `${s.color}80`, fontWeight: 600, marginTop: 2 }}>{s.sub}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Filter bar + Search with count badges */}
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 18 }}>
+            <div style={{ display: "flex", gap: 4, background: c.bg2, borderRadius: 10, padding: 3, border: `1px solid ${c.borderSub}` }}>
+              {[
+                { label: "All", value: "all", count: INTEL_RESOURCES.length },
+                { label: "Reports", value: "analyst", count: INTEL_RESOURCES.filter(r => r.category === "analyst").length },
+                { label: "Guides", value: "guides", count: INTEL_RESOURCES.filter(r => r.category === "guides").length },
+                { label: "Webinars", value: "webinars", count: INTEL_RESOURCES.filter(r => r.category === "webinars").length },
+                { label: "Templates", value: "templates", count: INTEL_RESOURCES.filter(r => r.category === "templates").length },
+              ].map(f => (
+                <button key={f.value} onClick={() => setFilter(f.value)} style={{ fontSize: 10, fontWeight: filter === f.value ? 700 : 500, padding: "7px 14px", borderRadius: 7, border: "none", cursor: "pointer", fontFamily: "inherit", background: filter === f.value ? c.surface : "transparent", color: filter === f.value ? c.text : c.textFaint, boxShadow: filter === f.value ? c.shadow1 : "none", transition: "all 0.15s", display: "flex", alignItems: "center", gap: 5 }}>
+                  {f.label}
+                  <span style={{ fontSize: 8, fontFamily: "'JetBrains Mono', monospace", padding: "1px 5px", borderRadius: 4, background: filter === f.value ? `${c.accent}15` : c.bg2, color: filter === f.value ? c.accent : c.textFaint, fontWeight: 700 }}>{f.count}</span>
+                </button>
+              ))}
+            </div>
+            <div style={{ position: "relative" }}>
+              <Search size={13} style={{ position: "absolute", left: 11, top: "50%", transform: "translateY(-50%)", color: c.textFaint }} />
+              <input value={searchTerm} onChange={e => setSearchTerm(e.target.value)} placeholder="Search resources..." style={{ paddingLeft: 32, paddingRight: 14, paddingTop: 9, paddingBottom: 9, borderRadius: 10, border: `1px solid ${c.border}`, background: c.surface, color: c.text, fontSize: 11, fontFamily: "inherit", outline: "none", width: 240, transition: "all 0.2s" }}
+                onFocus={e => { e.target.style.borderColor = `${c.accent}40`; e.target.style.boxShadow = `0 0 0 3px ${c.accent}10`; }}
+                onBlur={e => { e.target.style.borderColor = c.border; e.target.style.boxShadow = "none"; }} />
+            </div>
+          </div>
+
+          <div style={{ fontSize: 10, color: c.textFaint, marginBottom: 14 }}>{filtered.length} resources{searchTerm ? ` matching "${searchTerm}"` : ""}</div>
+
+          {/* Resource Grid — Unsplash stock photography cards */}
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 16, marginBottom: 36 }}>
+            {filtered.map((r, idx) => {
+              const tc = typeColor(r.type);
+              const isHovered = hoveredCard === r.id;
+              return (
+                <div key={r.id} className="intel-card" onClick={() => openGate(r)}
+                  onMouseEnter={() => setHoveredCard(r.id)} onMouseLeave={() => setHoveredCard(null)}
+                  style={{ background: c.surface, border: `1px solid ${isHovered ? `${tc}35` : c.border}`, borderRadius: 16, overflow: "hidden", cursor: "pointer", transition: "all 0.3s cubic-bezier(0.22,1,0.36,1)", transform: isHovered ? "translateY(-4px)" : "none", boxShadow: isHovered ? `0 16px 48px ${tc}12, 0 0 0 1px ${tc}10` : c.shadow1, animationDelay: `${idx * 0.06}s` }}>
+                  {/* Stock photo header */}
+                  <div className="intel-img-wrap" style={{ height: 140, position: "relative", overflow: "hidden" }}>
+                    <img src={r.img} alt="" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} loading="lazy" />
+                    <div style={{ position: "absolute", inset: 0, background: `linear-gradient(180deg, transparent 40%, rgba(0,0,0,0.7) 100%)` }} />
+                    <span style={{ position: "absolute", top: 10, left: 10, padding: "3px 10px", borderRadius: 6, background: "rgba(0,0,0,0.5)", backdropFilter: "blur(8px)", color: "#fff", fontSize: 8, fontWeight: 800, letterSpacing: "0.05em", textTransform: "uppercase", display: "flex", alignItems: "center", gap: 4 }}>
+                      <span style={{ fontSize: 7 }}>{typeIcon(r.type)}</span> {r.type}
+                    </span>
+                    {r.featured && <span style={{ position: "absolute", top: 10, right: 10, padding: "3px 10px", borderRadius: 6, background: `linear-gradient(135deg, ${c.accent}40, ${c.purple}30)`, backdropFilter: "blur(8px)", color: "#fff", fontSize: 7, fontWeight: 800, letterSpacing: "0.07em", border: `1px solid ${c.accent}25` }}>FEATURED</span>}
+                    {/* Bottom-left overlay title */}
+                    <div style={{ position: "absolute", bottom: 10, left: 12, right: 12, color: "#fff", fontSize: 14, fontWeight: 800, lineHeight: 1.2, letterSpacing: "-0.02em", textShadow: "0 1px 8px rgba(0,0,0,0.5)" }}>{r.title.split(":")[0]}</div>
+                  </div>
+                  <div style={{ padding: "16px 18px" }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: 7, marginBottom: 8 }}>
+                      <span style={{ fontSize: 8, fontWeight: 800, padding: "2px 8px", borderRadius: 5, background: `${tc}12`, color: tc, textTransform: "uppercase", letterSpacing: "0.05em" }}>{r.type}</span>
+                      <span style={{ fontSize: 8, color: c.textFaint, fontFamily: "'JetBrains Mono', monospace" }}>{r.pages} {r.type === "webinar" ? "min" : "pages"}</span>
+                    </div>
+                    <div style={{ fontSize: 12, fontWeight: 700, color: c.text, lineHeight: 1.3, marginBottom: 7, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>{r.title}</div>
+                    <div style={{ fontSize: 10, color: c.textDim, lineHeight: 1.55, marginBottom: 12, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>{r.desc}</div>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                      <span style={{ fontSize: 9, fontFamily: "'JetBrains Mono', monospace", color: c.textFaint }}>{r.date}</span>
+                      <span style={{ fontSize: 10, fontWeight: 700, color: isHovered ? tc : c.accent, transition: "color 0.2s", display: "flex", alignItems: "center", gap: 4 }}>
+                        {r.type === "webinar" ? "Register" : "Download"}
+                        <span style={{ display: "inline-block", transition: "transform 0.2s", transform: isHovered ? "translateX(3px)" : "none" }}>→</span>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Newsletter — with photo background and gradient */}
+          <div style={{ textAlign: "center", padding: "40px 0", borderTop: `1px solid ${c.borderSub}`, position: "relative" }}>
+            <div style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%,-50%)", width: 400, height: 200, borderRadius: "50%", background: `radial-gradient(circle, ${c.accent}05, transparent 70%)`, pointerEvents: "none" }} />
+            <div style={{ fontSize: 10, fontWeight: 800, letterSpacing: "0.12em", textTransform: "uppercase", color: c.accent, marginBottom: 8 }}>Newsletter</div>
+            <div style={{ fontSize: 20, fontWeight: 800, color: c.text, letterSpacing: "-0.03em", marginBottom: 6 }}>Stay Ahead of the Curve</div>
+            <div style={{ fontSize: 12, color: c.textDim, maxWidth: 420, margin: "0 auto 18px", lineHeight: 1.6 }}>Join 2,000+ finance leaders getting weekly insights on AI, FP&A strategy, and market intelligence.</div>
+            {newsletterDone ? (
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 8, color: c.green, fontWeight: 700, fontSize: 13, animation: "fadeSlideUp 0.3s ease" }}>
+                <div style={{ width: 28, height: 28, borderRadius: "50%", background: `${c.green}15`, display: "flex", alignItems: "center", justifyContent: "center" }}><Check size={14} /></div>
+                Subscribed! Check {newsletterEmail} for confirmation.
+              </div>
+            ) : (
+              <div style={{ display: "flex", gap: 8, maxWidth: 420, margin: "0 auto" }}>
+                <input type="email" value={newsletterEmail} onChange={e => setNewsletterEmail(e.target.value)} placeholder="Enter your work email" style={{ flex: 1, padding: "11px 16px", borderRadius: 10, border: `1px solid ${c.border}`, background: c.surface, color: c.text, fontSize: 12, fontFamily: "inherit", outline: "none", transition: "all 0.2s" }}
+                  onFocus={e => { e.target.style.borderColor = `${c.accent}40`; e.target.style.boxShadow = `0 0 0 3px ${c.accent}10`; }}
+                  onBlur={e => { e.target.style.borderColor = c.border; e.target.style.boxShadow = "none"; }} />
+                <button onClick={handleNewsletter} style={{ padding: "11px 24px", borderRadius: 10, border: "none", background: `linear-gradient(135deg, ${c.accent}, ${c.purple || c.accent})`, color: "#fff", fontSize: 12, fontWeight: 700, cursor: "pointer", fontFamily: "inherit", boxShadow: `0 4px 12px ${c.accent}25`, transition: "all 0.2s" }}
+                  onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-1px)"; }}
+                  onMouseLeave={e => { e.currentTarget.style.transform = "none"; }}>Subscribe</button>
+              </div>
+            )}
+            <div style={{ fontSize: 9, color: c.textFaint, marginTop: 10 }}>No spam. Unsubscribe anytime. SOC 2 compliant data handling.</div>
+          </div>
+        </div>
+      )}
+
+      {/* ═══ LEAD PIPELINE TAB — Enhanced with animations ═══ */}
+      {pipelineTab === "pipeline" && (
+        <div style={{ animation: "fadeSlideUp 0.3s ease" }}>
+          {/* Funnel Stats with animated progress bars */}
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(5, 1fr)", gap: 14, marginBottom: 28 }}>
+            {[
+              { label: "Visitors", value: "2,840", icon: Eye, color: c.accent, pct: 100 },
+              { label: "Leads", value: "342", icon: Users, color: c.purple, pct: 12 },
+              { label: "MQLs", value: "137", icon: Sparkles, color: c.amber, pct: 4.8 },
+              { label: "SQLs", value: "51", icon: Target, color: c.green, pct: 1.8 },
+              { label: "Closed", value: "18", icon: Check, color: c.green, pct: 0.6 },
+            ].map((s, i) => {
+              const Icon = s.icon;
+              return (
+                <div key={s.label} className="intel-card" style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, padding: "20px 22px", textAlign: "center", position: "relative", overflow: "hidden", transition: "all 0.25s" }}
+                  onMouseEnter={e => { e.currentTarget.style.borderColor = `${s.color}30`; e.currentTarget.style.transform = "translateY(-3px)"; e.currentTarget.style.boxShadow = `0 12px 36px ${s.color}10`; }}
+                  onMouseLeave={e => { e.currentTarget.style.borderColor = c.border; e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = "none"; }}>
+                  <div style={{ position: "absolute", top: -20, right: -20, width: 60, height: 60, borderRadius: "50%", background: `radial-gradient(circle, ${s.color}08, transparent)`, pointerEvents: "none" }} />
+                  <div style={{ width: 32, height: 32, borderRadius: 10, background: `${s.color}12`, display: "inline-flex", alignItems: "center", justifyContent: "center", marginBottom: 10 }}>
+                    <Icon size={15} color={s.color} />
+                  </div>
+                  <div style={{ fontSize: 24, fontWeight: 800 }}><AnimNum value={s.value} color={s.color} delay={i * 0.08} /></div>
+                  <div style={{ fontSize: 9, fontWeight: 700, color: c.textFaint, textTransform: "uppercase", letterSpacing: "0.1em", marginTop: 4 }}>{s.label}</div>
+                  <div style={{ marginTop: 10, height: 3, background: c.bg2, borderRadius: 2, overflow: "hidden" }}>
+                    <div style={{ width: `${Math.min(s.pct, 100)}%`, height: "100%", background: `linear-gradient(90deg, ${s.color}, ${s.color}80)`, borderRadius: 2, animation: `barGrow 0.8s ${i * 0.1}s ease forwards`, transformOrigin: "left", transform: "scaleX(0)" }} />
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Conversion rate cards with top accent lines */}
+          <div style={{ display: "flex", justifyContent: "center", gap: 12, marginBottom: 24 }}>
+            {[
+              { label: "Visitor → Lead", value: "12.0%", color: c.accent },
+              { label: "Lead → MQL", value: "40.1%", color: c.purple },
+              { label: "MQL → SQL", value: "37.2%", color: c.amber },
+              { label: "SQL → Close", value: "35.3%", color: c.green },
+            ].map((m, i) => (
+              <div key={m.label} className="intel-card" style={{ flex: 1, background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, padding: "18px 16px", textAlign: "center", position: "relative", overflow: "hidden" }}>
+                <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 3, borderRadius: "14px 14px 0 0", background: `linear-gradient(90deg, ${m.color}40, ${m.color}10)` }} />
+                <div style={{ fontSize: 22, fontWeight: 800 }}><AnimNum value={m.value} color={m.color} delay={i * 0.1 + 0.2} /></div>
+                <div style={{ fontSize: 9, fontWeight: 600, color: c.textDim, marginTop: 4 }}>{m.label}</div>
+              </div>
+            ))}
+          </div>
+
+          {/* Two-column: Lead scoring + Top downloads — Enhanced */}
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 18 }}>
+            <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, padding: "24px 26px" }}>
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 16 }}>
+                <div style={{ fontSize: 13, fontWeight: 800, color: c.text }}>Lead Scoring Distribution</div>
+                <span style={{ fontSize: 9, fontFamily: "'JetBrains Mono', monospace", color: c.textFaint }}>342 total</span>
+              </div>
+              {[
+                { label: "Hot (80-100)", count: 51, color: c.red, pct: 15 },
+                { label: "Warm (50-79)", count: 120, color: c.amber, pct: 35 },
+                { label: "Cool (20-49)", count: 103, color: c.accent, pct: 30 },
+                { label: "Cold (0-19)", count: 68, color: c.textDim, pct: 20 },
+              ].map((s, i) => (
+                <div key={s.label} style={{ marginBottom: 14 }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 5 }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: 7 }}>
+                      <div style={{ width: 8, height: 8, borderRadius: 4, background: s.color, boxShadow: `0 0 6px ${s.color}40` }} />
+                      <span style={{ fontSize: 11, color: c.textSec }}>{s.label}</span>
+                    </div>
+                    <span style={{ fontSize: 11, fontWeight: 700, fontFamily: "'JetBrains Mono', monospace", color: s.color }}>{s.count}</span>
+                  </div>
+                  <div style={{ height: 6, background: c.bg2, borderRadius: 3, overflow: "hidden" }}>
+                    <div style={{ width: `${s.pct}%`, height: "100%", background: `linear-gradient(90deg, ${s.color}, ${s.color}aa)`, borderRadius: 3, animation: `barGrow 0.6s ${0.2 + i * 0.1}s ease forwards`, transformOrigin: "left", transform: "scaleX(0)" }} />
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, padding: "24px 26px" }}>
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 16 }}>
+                <div style={{ fontSize: 13, fontWeight: 800, color: c.text }}>Top Content Downloads</div>
+                <span style={{ fontSize: 9, fontFamily: "'JetBrains Mono', monospace", color: c.green }}>This quarter</span>
+              </div>
+              {[
+                { title: "State of AI in FP&A 2026", downloads: 3420, type: "report" },
+                { title: "Revenue Forecasting Templates", downloads: 2180, type: "template" },
+                { title: "CFO Playbook for 2026", downloads: 1890, type: "report" },
+                { title: "SaaS Benchmark Report", downloads: 1540, type: "report" },
+                { title: "Board Reporting Suite", downloads: 1120, type: "template" },
+                { title: "Consolidation Best Practices", downloads: 980, type: "guide" },
+              ].map((d, i) => (
+                <div key={i} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "10px 0", borderBottom: i < 5 ? `1px solid ${c.borderSub}` : "none", transition: "all 0.15s", borderRadius: 6 }}
+                  onMouseEnter={e => { e.currentTarget.style.paddingLeft = "8px"; e.currentTarget.style.background = `${c.accent}03`; }}
+                  onMouseLeave={e => { e.currentTarget.style.paddingLeft = "0"; e.currentTarget.style.background = "none"; }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                    <span style={{ fontSize: 10, fontWeight: 700, color: i < 3 ? c.accent : c.textFaint, fontFamily: "'JetBrains Mono', monospace", width: 20 }}>{i + 1}.</span>
+                    <span style={{ fontSize: 8, fontWeight: 800, padding: "2px 6px", borderRadius: 4, background: `${typeColor(d.type)}10`, color: typeColor(d.type), textTransform: "uppercase" }}>{d.type}</span>
+                    <span style={{ fontSize: 11, color: c.textSec }}>{d.title}</span>
+                  </div>
+                  <span style={{ fontSize: 11, fontWeight: 700, fontFamily: "'JetBrains Mono', monospace", color: c.green }}>{d.downloads.toLocaleString()}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ═══ ANALYST RECOGNITION TAB — Enhanced ═══ */}
+      {pipelineTab === "analysts" && (
+        <div style={{ animation: "fadeSlideUp 0.3s ease" }}>
+          <div style={{ fontSize: 9, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.12em", color: c.textFaint, marginBottom: 16 }}>Industry Recognition</div>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 16, marginBottom: 36 }}>
+            {INTEL_ANALYST_QUOTES.map((a, i) => (
+              <div key={a.firm} className="intel-card" style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, padding: "26px 24px", transition: "all 0.25s cubic-bezier(0.22,1,0.36,1)", position: "relative", overflow: "hidden" }}
+                onMouseEnter={e => { e.currentTarget.style.borderColor = `${c.accent}25`; e.currentTarget.style.transform = "translateY(-3px)"; e.currentTarget.style.boxShadow = `0 16px 48px ${c.accent}08`; }}
+                onMouseLeave={e => { e.currentTarget.style.borderColor = c.border; e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = "none"; }}>
+                <div style={{ position: "absolute", top: 12, right: 16, fontSize: 48, fontWeight: 900, color: `${c.accent}06`, lineHeight: 1, fontFamily: "Georgia, serif", pointerEvents: "none" }}>"</div>
+                <div style={{ fontSize: 13, color: c.textSec, lineHeight: 1.7, fontStyle: "italic", marginBottom: 18, position: "relative" }}>"{a.quote}"</div>
+                <div style={{ display: "flex", alignItems: "center", gap: 12, paddingTop: 16, borderTop: `1px solid ${c.borderSub}` }}>
+                  <div style={{ width: 38, height: 38, borderRadius: 11, background: `linear-gradient(135deg, ${c.accent}15, ${c.purple}08)`, border: `1px solid ${c.accent}10`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 13, fontWeight: 900, color: c.accent }}>{a.initial}</div>
+                  <div>
+                    <div style={{ fontSize: 12, fontWeight: 700, color: c.text }}>{a.firm}</div>
+                    <div style={{ fontSize: 9, color: c.textFaint }}>{a.source}</div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Stats bar with animated numbers */}
+          <div style={{ display: "flex", justifyContent: "center", gap: 52, padding: "32px 0", borderTop: `1px solid ${c.borderSub}`, borderBottom: `1px solid ${c.borderSub}`, marginBottom: 28, position: "relative" }}>
+            <div style={{ position: "absolute", inset: 0, background: `linear-gradient(90deg, transparent, ${c.accent}03, transparent)`, pointerEvents: "none" }} />
+            {[
+              { value: "47", label: "Published Reports", color: c.accent },
+              { value: "12K+", label: "Downloads This Quarter", color: c.purple },
+              { value: "2,000+", label: "Finance Teams", color: c.green },
+              { value: "Weekly", label: "Content Cadence", color: c.amber },
+            ].map((s, i) => (
+              <div key={s.label} style={{ textAlign: "center", position: "relative" }}>
+                <div style={{ fontSize: 30 }}><AnimNum value={s.value} color={s.color} delay={i * 0.12} /></div>
+                <div style={{ fontSize: 9, fontWeight: 700, color: c.textFaint, textTransform: "uppercase", letterSpacing: "0.1em", marginTop: 4 }}>{s.label}</div>
+              </div>
+            ))}
+          </div>
+
+          {/* Enterprise trust logos with hover */}
+          <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, padding: "28px 30px" }}>
+            <div style={{ fontSize: 13, fontWeight: 800, color: c.text, marginBottom: 4 }}>Trusted by Enterprise Finance Teams</div>
+            <div style={{ fontSize: 10, color: c.textDim, marginBottom: 18 }}>FinanceOS powers treasury and FP&A for leading organizations worldwide</div>
+            <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+              {["Coca-Cola", "Best Buy", "Target", "Saks Fifth Avenue", "Ohio State University", "JPMorgan Chase", "Deloitte", "Ernst & Young"].map(name => (
+                <span key={name} style={{ fontSize: 11, fontWeight: 600, color: c.textSec, padding: "9px 18px", borderRadius: 10, border: `1px solid ${c.border}`, background: c.surfaceAlt, transition: "all 0.2s", cursor: "default" }}
+                  onMouseEnter={e => { e.currentTarget.style.borderColor = `${c.accent}25`; e.currentTarget.style.background = `${c.accent}05`; e.currentTarget.style.color = c.text; e.currentTarget.style.transform = "translateY(-1px)"; }}
+                  onMouseLeave={e => { e.currentTarget.style.borderColor = c.border; e.currentTarget.style.background = c.surfaceAlt; e.currentTarget.style.color = c.textSec; e.currentTarget.style.transform = "none"; }}>{name}</span>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ═══ VIDEO & MEDIA TAB — Full pipeline with stock photography ═══ */}
+      {pipelineTab === "media" && (
+        <div style={{ animation: "fadeSlideUp 0.3s ease" }}>
+          <div style={{ fontSize: 9, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.12em", color: c.textFaint, marginBottom: 16 }}>Video Library & Webinars</div>
+
+          {/* Featured Video — Full-width hero with speaker photo */}
+          {(() => { const fv = INTEL_VIDEOS.find(v => v.featured); return fv ? (
+            <div style={{ borderRadius: 20, marginBottom: 28, position: "relative", overflow: "hidden", border: `1px solid ${c.accent}10`, boxShadow: `0 16px 64px rgba(0,0,0,0.3)` }}>
+              <div style={{ position: "absolute", inset: 0 }}>
+                <img src={fv.thumb} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} loading="lazy" />
+              </div>
+              <div style={{ position: "absolute", inset: 0, background: "linear-gradient(135deg, rgba(12,18,32,0.92) 0%, rgba(20,30,51,0.85) 50%, rgba(15,24,41,0.88) 100%)" }} />
+              <div style={{ position: "absolute", inset: 0, backgroundImage: `radial-gradient(circle at 1px 1px, rgba(255,255,255,0.02) 1px, transparent 1px)`, backgroundSize: "20px 20px", pointerEvents: "none" }} />
+              <div style={{ position: "relative", zIndex: 1, padding: "40px 44px", display: "grid", gridTemplateColumns: "1.2fr 1fr", gap: 36, alignItems: "center" }}>
+                <div>
+                  <span style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "4px 12px", borderRadius: 6, background: `${c.red}20`, border: `1px solid ${c.red}25`, color: c.red, fontSize: 9, fontWeight: 800, letterSpacing: "0.06em", marginBottom: 14 }}>
+                    <span style={{ width: 6, height: 6, borderRadius: "50%", background: c.red, animation: "liveDot 1.5s infinite" }} />
+                    LATEST WEBINAR
+                  </span>
+                  <div style={{ fontSize: 22, fontWeight: 800, color: "#eef0f6", letterSpacing: "-0.03em", marginBottom: 8, lineHeight: 1.2 }}>{fv.title}</div>
+                  <div style={{ fontSize: 12, color: "rgba(255,255,255,0.4)", lineHeight: 1.6, marginBottom: 16 }}>{fv.desc}</div>
+                  {/* Speaker pill */}
+                  <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 18, padding: "8px 14px", background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 12, width: "fit-content" }}>
+                    <img src={fv.speakers[0].img} alt="" style={{ width: 32, height: 32, borderRadius: "50%", objectFit: "cover", border: "2px solid rgba(255,255,255,0.15)" }} />
+                    <div>
+                      <div style={{ fontSize: 11, fontWeight: 700, color: "#eef0f6" }}>{fv.speakers[0].name}</div>
+                      <div style={{ fontSize: 9, color: "rgba(255,255,255,0.4)" }}>{fv.speakers[0].role}</div>
+                    </div>
+                  </div>
+                  <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
+                    <button onClick={() => openGate({ id: fv.id, title: fv.title, type: "webinar" })} style={{ fontSize: 12, padding: "11px 22px", borderRadius: 10, border: "none", background: `linear-gradient(135deg, ${c.accent}, #4B8AE8)`, color: "#fff", fontWeight: 700, cursor: "pointer", fontFamily: "inherit", display: "flex", alignItems: "center", gap: 6, boxShadow: `0 4px 16px ${c.accent}30` }}>
+                      <span style={{ fontSize: 14 }}>▶</span> Watch Recording
+                    </button>
+                    <span style={{ fontSize: 10, color: "rgba(255,255,255,0.35)", fontFamily: "'JetBrains Mono', monospace" }}>{fv.duration} · {fv.views} views</span>
+                  </div>
+                </div>
+                {/* Video thumbnail with play button */}
+                <div onClick={() => openGate({ id: fv.id, title: fv.title, type: "webinar" })} style={{ position: "relative", borderRadius: 14, overflow: "hidden", aspectRatio: "16/9", cursor: "pointer" }}>
+                  <img src={fv.thumb} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} loading="lazy" />
+                  <div style={{ position: "absolute", inset: 0, background: "rgba(0,0,0,0.3)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                    <div style={{ width: 56, height: 56, borderRadius: "50%", background: "rgba(255,255,255,0.1)", backdropFilter: "blur(8px)", border: "2px solid rgba(255,255,255,0.2)", display: "flex", alignItems: "center", justifyContent: "center", animation: "videoPlay 2s ease-in-out infinite" }}>
+                      <span style={{ fontSize: 20, color: "#fff", marginLeft: 3 }}>▶</span>
+                    </div>
+                  </div>
+                  <span style={{ position: "absolute", bottom: 10, right: 10, padding: "3px 8px", borderRadius: 4, background: "rgba(0,0,0,0.7)", color: "#fff", fontSize: 9, fontFamily: "'JetBrains Mono', monospace", fontWeight: 700 }}>{fv.duration}</span>
+                </div>
+              </div>
+            </div>
+          ) : null; })()}
+
+          {/* Video Grid — with stock photography + speaker photos */}
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 16, marginBottom: 32 }}>
+            {INTEL_VIDEOS.filter(v => !v.featured).map((v, i) => (
+              <div key={v.id} className="intel-card" onClick={() => openGate({ id: v.id, title: v.title, type: "webinar" })} style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, overflow: "hidden", cursor: "pointer", transition: "all 0.25s" }}
+                onMouseEnter={e => { e.currentTarget.style.borderColor = `${v.color}30`; e.currentTarget.style.transform = "translateY(-3px)"; e.currentTarget.style.boxShadow = `0 12px 36px ${v.color}10`; }}
+                onMouseLeave={e => { e.currentTarget.style.borderColor = c.border; e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = "none"; }}>
+                {/* Video thumbnail with real photo */}
+                <div className="intel-img-wrap" style={{ aspectRatio: "16/9", position: "relative", overflow: "hidden" }}>
+                  <img src={v.thumb} alt="" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} loading="lazy" />
+                  <div style={{ position: "absolute", inset: 0, background: "rgba(0,0,0,0.2)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                    <div style={{ width: 40, height: 40, borderRadius: "50%", background: "rgba(255,255,255,0.1)", backdropFilter: "blur(4px)", border: "1px solid rgba(255,255,255,0.15)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                      <span style={{ fontSize: 14, color: "#fff", marginLeft: 2 }}>▶</span>
+                    </div>
+                  </div>
+                  <span style={{ position: "absolute", bottom: 8, right: 8, padding: "2px 7px", borderRadius: 4, background: "rgba(0,0,0,0.65)", color: "#fff", fontSize: 9, fontFamily: "'JetBrains Mono', monospace", fontWeight: 600 }}>{v.duration}</span>
+                  <span style={{ position: "absolute", top: 8, left: 8, padding: "3px 8px", borderRadius: 5, background: `${v.color}25`, backdropFilter: "blur(4px)", color: "#fff", fontSize: 8, fontWeight: 800, letterSpacing: "0.04em" }}>{v.topic}</span>
+                </div>
+                <div style={{ padding: "14px 16px" }}>
+                  <div style={{ fontSize: 12, fontWeight: 700, color: c.text, lineHeight: 1.3, marginBottom: 8 }}>{v.title}</div>
+                  {/* Speaker row */}
+                  <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
+                    <img src={v.speakers[0].img} alt="" style={{ width: 22, height: 22, borderRadius: "50%", objectFit: "cover", border: `1px solid ${c.border}` }} />
+                    <span style={{ fontSize: 10, color: c.textDim }}>{v.speakers[0].name}</span>
+                  </div>
+                  <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 9, color: c.textFaint }}>
+                    <span style={{ fontFamily: "'JetBrains Mono', monospace" }}>{v.views} views</span>
+                    <span>·</span>
+                    <span style={{ color: c.accent, fontWeight: 600 }}>Register to watch</span>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Upcoming Live Events — with event photos */}
+          <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, padding: "24px 26px" }}>
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 18 }}>
+              <div style={{ fontSize: 13, fontWeight: 800, color: c.text }}>Upcoming Live Events</div>
+              <span style={{ fontSize: 9, padding: "3px 10px", borderRadius: 6, background: `${c.green}12`, color: c.green, fontWeight: 700 }}>3 upcoming</span>
+            </div>
+            {INTEL_EVENTS.map((ev, i) => (
+              <div key={i} style={{ display: "flex", alignItems: "center", gap: 16, padding: "16px 0", borderBottom: i < 2 ? `1px solid ${c.borderSub}` : "none" }}>
+                {/* Event photo thumbnail */}
+                <div style={{ width: 80, height: 52, borderRadius: 10, overflow: "hidden", flexShrink: 0, position: "relative" }}>
+                  <img src={ev.img} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} loading="lazy" />
+                  <div style={{ position: "absolute", inset: 0, background: `linear-gradient(135deg, ${ev.color}20, transparent)` }} />
+                </div>
+                <div style={{ flex: 1 }}>
+                  <div style={{ fontSize: 12, fontWeight: 700, color: c.text, marginBottom: 3 }}>{ev.title}</div>
+                  <div style={{ fontSize: 10, color: c.textDim, display: "flex", gap: 8 }}>
+                    <span style={{ fontFamily: "'JetBrains Mono', monospace" }}>{ev.date}</span>
+                    <span>{ev.time}</span>
+                    <span>{ev.speakers} speakers</span>
+                  </div>
+                </div>
+                <button onClick={() => openGate({ id: `event-${i}`, title: ev.title, type: "webinar" })} style={{ fontSize: 10, padding: "8px 16px", borderRadius: 8, border: `1px solid ${ev.color}25`, background: `${ev.color}08`, color: ev.color, fontWeight: 700, cursor: "pointer", fontFamily: "inherit", transition: "all 0.15s", flexShrink: 0 }}
+                  onMouseEnter={e => { e.currentTarget.style.background = `${ev.color}15`; e.currentTarget.style.transform = "translateY(-1px)"; }}
+                  onMouseLeave={e => { e.currentTarget.style.background = `${ev.color}08`; e.currentTarget.style.transform = "none"; }}>Register</button>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* ═══ GATED DOWNLOAD MODAL — Enterprise-grade glassmorphism ═══ */}
+      {modalOpen && (
+        <div onClick={e => e.target === e.currentTarget && closeModal()} style={{ position: "fixed", inset: 0, zIndex: 9998, display: "flex", alignItems: "center", justifyContent: "center", background: "rgba(0,0,0,0.6)", backdropFilter: "blur(12px)", animation: "fadeIn 0.2s ease" }}>
+          <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 20, width: 460, maxWidth: "90vw", boxShadow: `${c.shadow3}, 0 0 80px rgba(0,0,0,0.3)`, overflow: "hidden", animation: "cmdIn 0.25s ease" }}>
+            {/* Gradient header bar */}
+            <div style={{ height: 4, background: `linear-gradient(90deg, ${c.accent}, ${c.purple}, ${c.green})`, backgroundSize: "200% 100%", animation: "gradientShift 3s ease infinite" }} />
+            <div style={{ padding: "24px 28px 0", display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+              <div>
+                <div style={{ fontSize: 17, fontWeight: 800, color: c.text, letterSpacing: "-0.025em" }}>
+                  {submitted ? "Check Your Email" : modalResource ? `Download: ${modalResource.title.split(":")[0]}` : "Subscribe"}
+                </div>
+                {!submitted && <div style={{ fontSize: 11, color: c.textDim, marginTop: 4, lineHeight: 1.5 }}>{modalResource?.desc || "Get weekly insights and exclusive content."}</div>}
+              </div>
+              <button onClick={closeModal} style={{ background: c.bg2, border: `1px solid ${c.border}`, borderRadius: 8, cursor: "pointer", color: c.textDim, padding: "6px 8px", display: "flex", alignItems: "center", justifyContent: "center", transition: "all 0.15s" }}
+                onMouseEnter={e => { e.currentTarget.style.borderColor = c.red; e.currentTarget.style.color = c.red; }}
+                onMouseLeave={e => { e.currentTarget.style.borderColor = c.border; e.currentTarget.style.color = c.textDim; }}>
+                <X size={14} />
+              </button>
+            </div>
+            <div style={{ padding: "18px 28px 28px" }}>
+              {submitted ? (
+                <div style={{ textAlign: "center", padding: "24px 0", animation: "fadeSlideUp 0.3s ease" }}>
+                  <div style={{ width: 52, height: 52, borderRadius: "50%", background: `${c.green}12`, border: `1px solid ${c.green}20`, display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 16px", animation: "pieScale 0.4s cubic-bezier(0.22,1,0.36,1)" }}><Check size={22} color={c.green} /></div>
+                  <div style={{ fontSize: 12, color: c.textDim, lineHeight: 1.65 }}>Download link sent to <strong style={{ color: c.text }}>{leadForm.email}</strong>. Check spam folder too.</div>
+                  <button onClick={closeModal} style={{ marginTop: 18, fontSize: 12, padding: "11px 28px", borderRadius: 10, border: "none", background: `linear-gradient(135deg, ${c.accent}, ${c.purple || c.accent})`, color: "#fff", fontWeight: 700, cursor: "pointer", fontFamily: "inherit", boxShadow: `0 4px 12px ${c.accent}25` }}>Close</button>
+                </div>
+              ) : (
+                <div>
+                  <div style={{ marginBottom: 14 }}>
+                    <label style={{ display: "block", fontSize: 9, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.1em", color: c.textFaint, marginBottom: 5 }}>Work Email *</label>
+                    <input type="email" value={leadForm.email} onChange={e => setLeadForm({ ...leadForm, email: e.target.value })} placeholder="you@company.com" style={{ width: "100%", padding: "11px 16px", borderRadius: 10, border: `1px solid ${c.border}`, background: c.bg2, color: c.text, fontSize: 12, fontFamily: "inherit", outline: "none", boxSizing: "border-box", transition: "all 0.2s" }}
+                      onFocus={e => { e.target.style.borderColor = `${c.accent}40`; e.target.style.boxShadow = `0 0 0 3px ${c.accent}08`; }}
+                      onBlur={e => { e.target.style.borderColor = c.border; e.target.style.boxShadow = "none"; }} />
+                  </div>
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginBottom: 14 }}>
+                    <div>
+                      <label style={{ display: "block", fontSize: 9, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.1em", color: c.textFaint, marginBottom: 5 }}>First Name *</label>
+                      <input type="text" value={leadForm.first} onChange={e => setLeadForm({ ...leadForm, first: e.target.value })} placeholder="Jane" style={{ width: "100%", padding: "11px 16px", borderRadius: 10, border: `1px solid ${c.border}`, background: c.bg2, color: c.text, fontSize: 12, fontFamily: "inherit", outline: "none", boxSizing: "border-box", transition: "all 0.2s" }}
+                        onFocus={e => { e.target.style.borderColor = `${c.accent}40`; e.target.style.boxShadow = `0 0 0 3px ${c.accent}08`; }}
+                        onBlur={e => { e.target.style.borderColor = c.border; e.target.style.boxShadow = "none"; }} />
+                    </div>
+                    <div>
+                      <label style={{ display: "block", fontSize: 9, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.1em", color: c.textFaint, marginBottom: 5 }}>Last Name</label>
+                      <input type="text" value={leadForm.last} onChange={e => setLeadForm({ ...leadForm, last: e.target.value })} placeholder="Smith" style={{ width: "100%", padding: "11px 16px", borderRadius: 10, border: `1px solid ${c.border}`, background: c.bg2, color: c.text, fontSize: 12, fontFamily: "inherit", outline: "none", boxSizing: "border-box", transition: "all 0.2s" }}
+                        onFocus={e => { e.target.style.borderColor = `${c.accent}40`; e.target.style.boxShadow = `0 0 0 3px ${c.accent}08`; }}
+                        onBlur={e => { e.target.style.borderColor = c.border; e.target.style.boxShadow = "none"; }} />
+                    </div>
+                  </div>
+                  <div style={{ marginBottom: 14 }}>
+                    <label style={{ display: "block", fontSize: 9, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.1em", color: c.textFaint, marginBottom: 5 }}>Company</label>
+                    <input type="text" value={leadForm.company} onChange={e => setLeadForm({ ...leadForm, company: e.target.value })} placeholder="Acme Corp" style={{ width: "100%", padding: "11px 16px", borderRadius: 10, border: `1px solid ${c.border}`, background: c.bg2, color: c.text, fontSize: 12, fontFamily: "inherit", outline: "none", boxSizing: "border-box", transition: "all 0.2s" }}
+                      onFocus={e => { e.target.style.borderColor = `${c.accent}40`; e.target.style.boxShadow = `0 0 0 3px ${c.accent}08`; }}
+                      onBlur={e => { e.target.style.borderColor = c.border; e.target.style.boxShadow = "none"; }} />
+                  </div>
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginBottom: 18 }}>
+                    <div>
+                      <label style={{ display: "block", fontSize: 9, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.1em", color: c.textFaint, marginBottom: 5 }}>Role</label>
+                      <select value={leadForm.role} onChange={e => setLeadForm({ ...leadForm, role: e.target.value })} style={{ width: "100%", padding: "11px 16px", borderRadius: 10, border: `1px solid ${c.border}`, background: c.bg2, color: c.text, fontSize: 12, fontFamily: "inherit", outline: "none", boxSizing: "border-box", appearance: "none" }}>
+                        <option value="">Select...</option>
+                        <option>CFO / VP Finance</option>
+                        <option>Controller</option>
+                        <option>FP&A Director</option>
+                        <option>Treasurer</option>
+                        <option>Financial Analyst</option>
+                        <option>CEO / COO</option>
+                        <option>Other</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label style={{ display: "block", fontSize: 9, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.1em", color: c.textFaint, marginBottom: 5 }}>Company Size</label>
+                      <select value={leadForm.size} onChange={e => setLeadForm({ ...leadForm, size: e.target.value })} style={{ width: "100%", padding: "11px 16px", borderRadius: 10, border: `1px solid ${c.border}`, background: c.bg2, color: c.text, fontSize: 12, fontFamily: "inherit", outline: "none", boxSizing: "border-box", appearance: "none" }}>
+                        <option value="">Select...</option>
+                        <option>1-50</option>
+                        <option>51-200</option>
+                        <option>201-1,000</option>
+                        <option>1,001-5,000</option>
+                        <option>5,001+</option>
+                      </select>
+                    </div>
+                  </div>
+                  <button onClick={handleLeadSubmit} style={{ width: "100%", padding: "13px 0", borderRadius: 12, border: "none", background: `linear-gradient(135deg, ${c.accent}, ${c.purple || c.accent})`, color: "#fff", fontSize: 13, fontWeight: 800, cursor: "pointer", fontFamily: "inherit", display: "flex", alignItems: "center", justifyContent: "center", gap: 8, boxShadow: `0 4px 16px ${c.accent}25`, transition: "all 0.2s" }}
+                    onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-1px)"; e.currentTarget.style.boxShadow = `0 8px 24px ${c.accent}35`; }}
+                    onMouseLeave={e => { e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = `0 4px 16px ${c.accent}25`; }}>
+                    ↓ {modalResource?.type === "webinar" ? "Register Now" : "Download Now"}
+                  </button>
+                  <div style={{ fontSize: 9, color: c.textFaint, textAlign: "center", marginTop: 10 }}>By downloading, you agree to receive relevant content from FinanceOS. Unsubscribe anytime.</div>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
 // ENV 11: CUSTOMER SIGN-IN / SIGN-OUT / ACCOUNT DELETION
 // ══════════════════════════════════════════════════════════════
 const SettingsView = ({ c, onLogout, toast, mode, onShowSuitePanel, suitePanelOpen, user }) => {
@@ -8566,6 +9200,27 @@ function FinanceOSApp() {
         @keyframes kpiFlash { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes scanline { 0% { transform: translateX(-100%); } 100% { transform: translateX(200%); } }
         @keyframes skeletonPulse { 0%,100% { opacity: 0.4; } 50% { opacity: 0.8; } }
+        @keyframes floatOrb { 0%,100% { transform: translate(0,0) scale(1); } 33% { transform: translate(15px,-20px) scale(1.1); } 66% { transform: translate(-10px,15px) scale(0.95); } }
+        @keyframes gradientShift { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+        @keyframes borderGlow { 0%,100% { border-color: rgba(91,156,245,0.1); } 50% { border-color: rgba(91,156,245,0.3); } }
+        @keyframes slideInCard { from { opacity: 0; transform: translateY(16px) scale(0.97); } to { opacity: 1; transform: translateY(0) scale(1); } }
+        @keyframes numberTick { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes glowPulse { 0%,100% { box-shadow: 0 0 20px rgba(91,156,245,0.1); } 50% { box-shadow: 0 0 40px rgba(91,156,245,0.2); } }
+        @keyframes imgZoom { from { transform: scale(1); } to { transform: scale(1.05); } }
+        @keyframes videoPlay { 0%,100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255,255,255,0.3); } 50% { transform: scale(1.08); box-shadow: 0 0 0 12px rgba(255,255,255,0); } }
+        .intel-card { animation: slideInCard 0.4s cubic-bezier(0.22,1,0.36,1) backwards; }
+        .intel-card:nth-child(1) { animation-delay: 0.05s; }
+        .intel-card:nth-child(2) { animation-delay: 0.1s; }
+        .intel-card:nth-child(3) { animation-delay: 0.15s; }
+        .intel-card:nth-child(4) { animation-delay: 0.2s; }
+        .intel-card:nth-child(5) { animation-delay: 0.25s; }
+        .intel-card:nth-child(6) { animation-delay: 0.3s; }
+        .intel-card:nth-child(7) { animation-delay: 0.35s; }
+        .intel-card:nth-child(8) { animation-delay: 0.4s; }
+        .intel-card:nth-child(9) { animation-delay: 0.45s; }
+        .intel-img-wrap { overflow: hidden; }
+        .intel-img-wrap img { transition: transform 0.5s cubic-bezier(0.22,1,0.36,1); }
+        .intel-card:hover .intel-img-wrap img { transform: scale(1.08); }
         .recharts-area-area { animation: chartReveal 1.2s ease forwards; }
         .recharts-line-curve { animation: chartReveal 1s ease forwards; }
         .recharts-bar-rectangle { animation: barGrowUp 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
@@ -9036,6 +9691,7 @@ function FinanceOSApp() {
           {view === "integrations" && <SectionBoundary name="Integrations" bg={c.surface} borderColor={c.border} textColor={c.textDim} accentColor={c.accent}><IntegrationsView c={c} toast={toast} /></SectionBoundary>}
           {view === "admin" && <SectionBoundary name="Admin Panel" bg={c.surface} borderColor={c.border} textColor={c.textDim} accentColor={c.accent}><AdminView c={c} toast={toast} onNav={navigate} /></SectionBoundary>}
           {view === "investor" && <SectionBoundary name="Investor Relations" bg={c.surface} borderColor={c.border} textColor={c.textDim} accentColor={c.accent}><InvestorView c={c} toast={toast} onDrawer={setDrawerKpi} /></SectionBoundary>}
+          {view === "intelligence" && <SectionBoundary name="Intelligence Library" bg={c.surface} borderColor={c.border} textColor={c.textDim} accentColor={c.accent}><IntelligenceView c={c} toast={toast} /></SectionBoundary>}
           {view === "settings" && <SectionBoundary name="Settings" bg={c.surface} borderColor={c.border} textColor={c.textDim} accentColor={c.accent}><SettingsView c={c} onLogout={handleLogout} toast={toast} mode={mode} user={user} onShowSuitePanel={() => { setSuitePanelOpen(true); try { localStorage.removeItem("financeos-suite-dismissed"); } catch {} }} suitePanelOpen={suitePanelOpen} /></SectionBoundary>}
           </>)}
         </div>
