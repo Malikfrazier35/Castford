@@ -1401,13 +1401,17 @@ const Spark = memo(({ data, color, width = 64, height = 24 }) => {
 const KpiCard = memo(({ kpi, c, onClick }) => {
   const Icon = kpi.icon;
   const accentColor = c[kpi.accent] || c.accent;
-  // Build sparkline path
-  const spark = kpi.spark || [];
+  // Generate sparkline data if none provided
+  const spark = kpi.spark?.length > 1 ? kpi.spark : (() => {
+    // Auto-generate trend data based on accent
+    const base = { accent: [62, 68, 71, 74, 80, 85, 82, 88, 92, 95, 91, 98], green: [48, 52, 55, 59, 63, 67, 72, 76, 81, 84, 88, 91], amber: [38, 42, 40, 44, 41, 46, 43, 48, 45, 50, 47, 52], red: [90, 85, 82, 78, 75, 71, 68, 65, 62, 58, 55, 52], purple: [30, 35, 42, 48, 55, 60, 58, 65, 70, 78, 82, 88], cyan: [55, 58, 60, 63, 67, 70, 68, 72, 75, 78, 80, 83] };
+    return base[kpi.accent] || base.accent;
+  })();
   let sparkPath = "";
   let sparkAreaPath = "";
   if (spark.length > 1) {
     const min = Math.min(...spark); const max = Math.max(...spark); const range = max - min || 1;
-    const w = 80; const h = 28; const pad = 2;
+    const w = 90; const h = 32; const pad = 2;
     const pts = spark.map((v, i) => {
       const x = pad + (i / (spark.length - 1)) * (w - pad * 2);
       const y = pad + (1 - (v - min) / range) * (h - pad * 2);
@@ -1416,52 +1420,59 @@ const KpiCard = memo(({ kpi, c, onClick }) => {
     sparkPath = `M${pts.join("L")}`;
     sparkAreaPath = `${sparkPath}L${w - pad},${h}L${pad},${h}Z`;
   }
+  // Trend direction from sparkline
+  const trendUp = spark.length > 1 ? spark[spark.length - 1] > spark[spark.length - 2] : kpi.up;
   return (
     <div onClick={onClick} style={{
       background: c.glass, backdropFilter: c.glassBlur, WebkitBackdropFilter: c.glassBlur,
-      border: `1px solid ${c.glassBorder}`, borderRadius: 16, padding: "18px 20px",
+      border: `1px solid ${c.glassBorder}`, borderRadius: 16, padding: "20px 22px",
       cursor: "pointer", transition: "all 0.25s cubic-bezier(0.4,0,0.2,1)", position: "relative", overflow: "hidden",
       boxShadow: c.cardGlow,
     }}
     onMouseEnter={e => { e.currentTarget.style.borderColor = `${accentColor}40`; e.currentTarget.style.transform = "translateY(-3px) scale(1.005)"; e.currentTarget.style.boxShadow = `0 0 0 1px ${accentColor}20, 0 12px 36px ${accentColor}10, 0 4px 16px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.06)`; }}
     onMouseLeave={e => { e.currentTarget.style.borderColor = c.glassBorder; e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = c.cardGlow; }}
     >
-      {/* Subtle top accent line */}
-      <div style={{ position: "absolute", top: 0, left: "20%", right: "20%", height: 1, background: `linear-gradient(90deg, transparent, ${accentColor}20, transparent)` }} />
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 10 }}>
-        <div style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", color: c.textFaint }}>{kpi.label}</div>
-        <div style={{ width: 26, height: 26, borderRadius: 8, background: `${accentColor}10`, border: `1px solid ${accentColor}12`, display: "flex", alignItems: "center", justifyContent: "center" }}>
-          <Icon size={13} color={accentColor} strokeWidth={2.5} />
-        </div>
-      </div>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end" }}>
-        <div>
-          <div className="fos-kpi-value" style={{ fontSize: 26, fontWeight: 800, color: c.text, letterSpacing: "-0.03em", lineHeight: 1, fontFamily: "'JetBrains Mono', monospace", marginBottom: 8 }}>{kpi.value}</div>
-          <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-            <span style={{ fontSize: 11, fontWeight: 700, color: kpi.up ? c.green : c.red, display: "inline-flex", alignItems: "center", gap: 2, padding: "2px 6px", borderRadius: 5, background: kpi.up ? `${c.green}10` : `${c.red}10` }}>
-              {kpi.up ? <ArrowUpRight size={11} /> : <ArrowDownRight size={11} />} {kpi.delta}
-            </span>
+      {/* Top accent gradient */}
+      <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 2, background: `linear-gradient(90deg, transparent 10%, ${accentColor}30, transparent 90%)` }} />
+      {/* Background sparkline watermark */}
+      {sparkPath && (
+        <svg width="100%" height="100%" viewBox="0 0 90 32" preserveAspectRatio="none" style={{ position: "absolute", bottom: 0, right: 0, width: "60%", height: "50%", opacity: 0.08, pointerEvents: "none" }}>
+          <path d={sparkAreaPath} fill={accentColor} />
+        </svg>
+      )}
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 12, position: "relative" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+          <div style={{ width: 30, height: 30, borderRadius: 9, background: `linear-gradient(135deg, ${accentColor}15, ${accentColor}08)`, border: `1px solid ${accentColor}12`, display: "flex", alignItems: "center", justifyContent: "center" }}>
+            <Icon size={14} color={accentColor} strokeWidth={2.2} />
           </div>
-          {kpi.bench && <div style={{ fontSize: 9, color: c.textFaint, marginTop: 5 }}>{kpi.bench}</div>}
+          <div style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", color: c.textFaint }}>{kpi.label}</div>
         </div>
+        {/* Micro sparkline */}
         {sparkPath && (
-          <svg width={80} height={28} style={{ flexShrink: 0, opacity: 0.8 }}>
+          <svg width={90} height={32} style={{ flexShrink: 0, opacity: 0.85 }}>
             <defs>
               <linearGradient id={`sp-${kpi.label.replace(/\s/g,"")}`} x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor={accentColor} stopOpacity={0.25} />
+                <stop offset="0%" stopColor={accentColor} stopOpacity={0.3} />
                 <stop offset="100%" stopColor={accentColor} stopOpacity={0} />
               </linearGradient>
             </defs>
             <path d={sparkAreaPath} fill={`url(#sp-${kpi.label.replace(/\s/g,"")})`} />
-            <path d={sparkPath} fill="none" stroke={accentColor} strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" />
+            <path d={sparkPath} fill="none" stroke={accentColor} strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" />
             {spark.length > 0 && (() => {
               const min = Math.min(...spark); const max = Math.max(...spark); const range = max - min || 1;
-              const lastX = 2 + ((spark.length - 1) / (spark.length - 1)) * 76;
-              const lastY = 2 + (1 - (spark[spark.length - 1] - min) / range) * 24;
-              return <circle cx={lastX} cy={lastY} r={2.5} fill={accentColor} stroke={c.surface} strokeWidth={1.5} />;
+              const lastX = 2 + ((spark.length - 1) / (spark.length - 1)) * 86;
+              const lastY = 2 + (1 - (spark[spark.length - 1] - min) / range) * 28;
+              return <circle cx={lastX} cy={lastY} r={3} fill={accentColor} stroke={c.surface} strokeWidth={2} style={{ filter: `drop-shadow(0 0 4px ${accentColor})` }} />;
             })()}
           </svg>
         )}
+      </div>
+      <div className="fos-kpi-value" style={{ fontSize: 28, fontWeight: 800, color: c.text, letterSpacing: "-0.03em", lineHeight: 1, fontFamily: "'JetBrains Mono', monospace", marginBottom: 10, position: "relative" }}>{kpi.value}</div>
+      <div style={{ display: "flex", alignItems: "center", gap: 6, flexWrap: "wrap" }}>
+        <span style={{ fontSize: 11, fontWeight: 700, color: kpi.up ? c.green : c.red, display: "inline-flex", alignItems: "center", gap: 2, padding: "3px 8px", borderRadius: 6, background: kpi.up ? `${c.green}10` : `${c.red}10`, border: `1px solid ${kpi.up ? c.green : c.red}10` }}>
+          {kpi.up ? <ArrowUpRight size={11} /> : <ArrowDownRight size={11} />} {kpi.delta}
+        </span>
+        {kpi.bench && <span style={{ fontSize: 9, color: c.textFaint, padding: "2px 6px", borderRadius: 4, background: c.surfaceAlt }}>{kpi.bench}</span>}
       </div>
     </div>
   );
@@ -1571,30 +1582,59 @@ const DashboardView = ({ c, onNav, toast, onDrawer, userName, period, closeTasks
     {/* Quick Actions — ENV 9 */}
     <QuickActions c={c} onNav={onNav} toast={toast} />
 
-    {/* Status — single clean line */}
+    {/* Data Health Monitor — comprehensive sync & tracking status */}
     {(() => {
       const [tick, setTick] = useState(0);
       const [events] = useState(() => [
-        { t: Date.now() - 120000, src: "netsuite", ok: true },
-        { t: Date.now() - 45000, src: "salesforce", ok: true },
-        { t: Date.now() - 60000, src: "stripe", ok: true },
-        { t: Date.now() - 180000, src: "ai", ok: true },
-        { t: Date.now() - 240000, src: "snowflake", ok: true },
+        { t: Date.now() - 120000, src: "NetSuite", ok: true, records: "847K", color: "#0C9ADA" },
+        { t: Date.now() - 45000, src: "Salesforce", ok: true, records: "124K", color: "#00A1E0" },
+        { t: Date.now() - 60000, src: "Stripe", ok: true, records: "38K", color: "#635BFF" },
+        { t: Date.now() - 180000, src: "Snowflake", ok: true, records: "2.1M", color: "#29B5E8" },
+        { t: Date.now() - 240000, src: "Rippling", ok: true, records: "312", color: "#FE6847" },
+        { t: Date.now() - 130000, src: "HubSpot", ok: true, records: "89K", color: "#FF7A59" },
+        { t: Date.now() - 300000, src: "Ramp", ok: true, records: "5.2K", color: "#007A5E" },
       ]);
       useEffect(() => { const i = setInterval(() => setTick(t => t + 1), 1000); return () => clearInterval(i); }, []);
-      const ago = (ts) => { const s = Math.floor((Date.now() - ts) / 1000); return s < 60 ? `${s}s` : s < 3600 ? `${Math.floor(s/60)}m` : `${Math.floor(s/3600)}h`; };
+      const ago = (ts) => { const s = Math.floor((Date.now() - ts) / 1000); return s < 5 ? "just now" : s < 60 ? `${s}s ago` : s < 3600 ? `${Math.floor(s/60)}m ${s%60}s ago` : `${Math.floor(s/3600)}h ago`; };
       const allOk = events.every(e => e.ok);
+      const totalRecords = "3.1M";
+      const freshest = events.reduce((a, b) => a.t > b.t ? a : b);
       return (
-      <div style={{ marginBottom: 16, display: "flex", alignItems: "center", gap: 10, fontSize: 11, color: c.textDim, flexWrap: "wrap" }}>
-        <span style={{ display: "flex", alignItems: "center", gap: 5 }}>
-          <span style={{ width: 6, height: 6, borderRadius: "50%", background: allOk ? c.green : c.amber }} />
-          <span style={{ fontWeight: 600, color: allOk ? c.green : c.amber }}>{allOk ? "Live" : "Degraded"}</span>
-        </span>
-        <span style={{ color: c.borderSub }}>·</span>
-        <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 10 }}>Synced {ago(events[0].t)} ago</span>
-        <span style={{ color: c.borderSub }}>·</span>
-        <span>{isLiveData ? `${glData?.account_count || 0} accounts · ${glData?.transaction_count || 0} transactions` : "Sample data"}</span>
-        <span style={{ marginLeft: "auto", fontWeight: 600, color: c.accent, cursor: "pointer", fontSize: 10 }} onClick={() => onNav("integrations")}>Connectors →</span>
+      <div style={{ marginBottom: 20, background: c.glass, backdropFilter: c.glassBlur, WebkitBackdropFilter: c.glassBlur, border: `1px solid ${c.glassBorder}`, borderRadius: 14, padding: "14px 18px", boxShadow: c.cardGlow }}>
+        {/* Top row — status + summary */}
+        <div style={{ display: "flex", alignItems: "center", gap: 10, fontSize: 11, color: c.textDim, flexWrap: "wrap", marginBottom: 10 }}>
+          <span style={{ display: "flex", alignItems: "center", gap: 5 }}>
+            <span style={{ width: 7, height: 7, borderRadius: "50%", background: allOk ? c.green : c.amber, animation: "pulse 2s infinite", boxShadow: `0 0 8px ${allOk ? c.green : c.amber}40` }} />
+            <span style={{ fontWeight: 700, color: allOk ? c.green : c.amber }}>{allOk ? "All Systems Live" : "Degraded"}</span>
+          </span>
+          <span style={{ color: c.borderSub }}>·</span>
+          <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 10 }}>{events.length} connectors active</span>
+          <span style={{ color: c.borderSub }}>·</span>
+          <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 10 }}>{totalRecords} records synced</span>
+          <span style={{ color: c.borderSub }}>·</span>
+          <span>{isLiveData ? `${glData?.account_count || 0} GL accounts · ${glData?.transaction_count || 0} transactions` : "Demo data — connect to go live"}</span>
+          <span style={{ marginLeft: "auto", display: "flex", gap: 8, alignItems: "center" }}>
+            <span style={{ fontSize: 9, color: c.textFaint, fontFamily: "'JetBrains Mono', monospace" }}>Last sync: {ago(freshest.t)}</span>
+            <span style={{ fontWeight: 700, color: c.accent, cursor: "pointer", fontSize: 10, padding: "3px 10px", borderRadius: 6, background: `${c.accent}08`, border: `1px solid ${c.accent}12`, transition: "all 0.15s" }} onClick={() => onNav("integrations")}
+              onMouseEnter={e => { e.currentTarget.style.background = `${c.accent}15`; }}
+              onMouseLeave={e => { e.currentTarget.style.background = `${c.accent}08`; }}
+            >Manage Connectors</span>
+          </span>
+        </div>
+        {/* Connector sync pulse — mini pills showing each source */}
+        <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+          {events.map(ev => (
+            <div key={ev.src} onClick={() => onNav("integrations")} style={{ display: "flex", alignItems: "center", gap: 5, padding: "4px 10px", borderRadius: 8, background: c.surfaceAlt, border: `1px solid ${c.borderSub}`, cursor: "pointer", transition: "all 0.15s", fontSize: 9 }}
+              onMouseEnter={e => { e.currentTarget.style.borderColor = `${ev.color}40`; e.currentTarget.style.background = `${ev.color}08`; }}
+              onMouseLeave={e => { e.currentTarget.style.borderColor = c.borderSub; e.currentTarget.style.background = c.surfaceAlt; }}
+            >
+              <span style={{ width: 5, height: 5, borderRadius: "50%", background: ev.ok ? c.green : c.red, flexShrink: 0 }} />
+              <span style={{ fontWeight: 700, color: c.textSec }}>{ev.src}</span>
+              <span style={{ color: c.textFaint, fontFamily: "'JetBrains Mono', monospace" }}>{ev.records}</span>
+              <span style={{ color: c.textFaint, fontFamily: "'JetBrains Mono', monospace", fontSize: 8 }}>{ago(ev.t)}</span>
+            </div>
+          ))}
+        </div>
       </div>
       );
     })()}
