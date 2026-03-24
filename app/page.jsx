@@ -3614,21 +3614,21 @@ const CloseView = ({ c, toast, tasks, setTasks, logActivity }) => {
 // INTEGRATIONS VIEW
 // ══════════════════════════════════════════════════════════════
 const CONNECTORS = [
-  { name: "NetSuite", cat: "ERP", status: "connected", records: "847K", color: "#0C9ADA", syncedAt: Date.now() - 120000, health: 100 },
-  { name: "Salesforce", cat: "CRM", status: "connected", records: "124K", color: "#00A1E0", syncedAt: Date.now() - 45000, health: 100 },
-  { name: "Stripe", cat: "Billing", status: "connected", records: "38K", color: "#635BFF", syncedAt: Date.now() - 60000, health: 100, badge: "CONNECT" },
-  { name: "Rippling", cat: "HRIS", status: "connected", records: "312", color: "#FE6847", syncedAt: Date.now() - 240000, health: 98 },
-  { name: "Snowflake", cat: "Data Warehouse", status: "connected", records: "2.1M", color: "#29B5E8", syncedAt: Date.now() - 180000, health: 100 },
-  { name: "HubSpot", cat: "CRM", status: "connected", records: "89K", color: "#FF7A59", syncedAt: Date.now() - 130000, health: 100 },
-  { name: "Ramp", cat: "Expenses", status: "connected", records: "5.2K", color: "#007A5E", syncedAt: Date.now() - 300000, health: 97 },
-  { name: "Plaid", cat: "Banking", status: "available", records: null, color: "#0A85EA", badge: "NEW" },
-  { name: "QuickBooks", cat: "ERP", status: "available", records: null, color: "#2CA01C", badge: "OAUTH" },
-  { name: "Xero", cat: "ERP", status: "available", records: null, color: "#13B5EA" },
-  { name: "Workday", cat: "HRIS", status: "available", records: null, color: "#0875E1" },
-  { name: "Google Sheets", cat: "Files", status: "available", records: null, color: "#34A853" },
-  { name: "Slack", cat: "Notifications", status: "available", records: null, color: "#4A154B" },
-  { name: "CSV / Excel", cat: "Files", status: "available", records: null, color: "#217346", badge: "UPLOAD" },
-  { name: "REST API", cat: "Developer", status: "available", records: null, color: "#8b92a5", badge: "BETA" },
+  { name: "NetSuite", cat: "ERP", status: "connected", records: "847K", color: "#0C9ADA", syncedAt: Date.now() - 120000, health: 100, logo: "https://companieslogo.com/img/orig/N-3a4b9f2a.png", desc: "Cloud ERP for financial management, CRM, and e-commerce" },
+  { name: "Salesforce", cat: "CRM", status: "connected", records: "124K", color: "#00A1E0", syncedAt: Date.now() - 45000, health: 100, logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f9/Salesforce.com_logo.svg/320px-Salesforce.com_logo.svg.png", desc: "CRM platform for sales pipeline and customer data" },
+  { name: "Stripe", cat: "Billing", status: "connected", records: "38K", color: "#635BFF", syncedAt: Date.now() - 60000, health: 100, badge: "CONNECT", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/ba/Stripe_Logo%2C_revised_2016.svg/320px-Stripe_Logo%2C_revised_2016.svg.png", desc: "Payment processing, billing, and revenue recognition" },
+  { name: "Rippling", cat: "HRIS", status: "connected", records: "312", color: "#FE6847", syncedAt: Date.now() - 240000, health: 98, desc: "Workforce management, payroll, and HR platform" },
+  { name: "Snowflake", cat: "Data Warehouse", status: "connected", records: "2.1M", color: "#29B5E8", syncedAt: Date.now() - 180000, health: 100, logo: "https://companieslogo.com/img/orig/SNOW-35164165.png", desc: "Cloud data platform for analytics and data sharing" },
+  { name: "HubSpot", cat: "CRM", status: "connected", records: "89K", color: "#FF7A59", syncedAt: Date.now() - 130000, health: 100, logo: "https://companieslogo.com/img/orig/HUBS-cad731e2.png", desc: "Inbound marketing, sales, and service CRM" },
+  { name: "Ramp", cat: "Expenses", status: "connected", records: "5.2K", color: "#007A5E", syncedAt: Date.now() - 300000, health: 97, desc: "Corporate card and expense management platform" },
+  { name: "Plaid", cat: "Banking", status: "available", records: null, color: "#0A85EA", badge: "NEW", desc: "Bank account aggregation and financial data" },
+  { name: "QuickBooks", cat: "ERP", status: "available", records: null, color: "#2CA01C", badge: "OAUTH", logo: "https://companieslogo.com/img/orig/INTU-81e8fe7e.png", desc: "Small business accounting and bookkeeping" },
+  { name: "Xero", cat: "ERP", status: "available", records: null, color: "#13B5EA", desc: "Cloud accounting for growing businesses" },
+  { name: "Workday", cat: "HRIS", status: "available", records: null, color: "#0875E1", logo: "https://companieslogo.com/img/orig/WDAY-beb08ca0.png", desc: "Enterprise HR, finance, and planning" },
+  { name: "Google Sheets", cat: "Files", status: "available", records: null, color: "#34A853", desc: "Spreadsheet import and live sync" },
+  { name: "Slack", cat: "Notifications", status: "available", records: null, color: "#4A154B", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d5/Slack_icon_2019.svg/120px-Slack_icon_2019.svg.png", desc: "Real-time alerts and team notifications" },
+  { name: "CSV / Excel", cat: "Files", status: "available", records: null, color: "#217346", badge: "UPLOAD", desc: "Import spreadsheets and flat files" },
+  { name: "REST API", cat: "Developer", status: "available", records: null, color: "#8b92a5", badge: "BETA", desc: "Custom integrations via REST endpoints" },
 ];
 
 // Live time-ago formatter
@@ -3880,29 +3880,40 @@ const IntegrationsView = ({ c, toast }) => {
       <div style={{ fontSize: 9, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.12em", color: c.textFaint, marginBottom: 10, display: "flex", alignItems: "center", gap: 8 }}>
         Available Connectors
       </div>
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: 16 }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 16 }}>
         {filtered.map(co => (
-          <div key={co.name} style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, padding: "22px 20px", boxShadow: "0 1px 3px rgba(0,0,0,0.04)", transition: "all 0.15s ease" }}
-            onMouseEnter={e => { e.currentTarget.style.borderColor = `${co.color}50`; }}
-            onMouseLeave={e => { e.currentTarget.style.borderColor = c.border; e.currentTarget.style.boxShadow = c.cardGlow; }}
+          <div key={co.name} style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, padding: "22px 22px", boxShadow: c.cardGlow, transition: "all 0.25s cubic-bezier(0.4,0,0.2,1)", position: "relative", overflow: "hidden" }}
+            onMouseEnter={e => { e.currentTarget.style.borderColor = `${co.color}40`; e.currentTarget.style.transform = "translateY(-2px)"; e.currentTarget.style.boxShadow = `0 8px 30px ${co.color}12, ${c.cardGlow}`; }}
+            onMouseLeave={e => { e.currentTarget.style.borderColor = c.border; e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = c.cardGlow; }}
           >
-            {co.status === "connected" && <div style={{ position: "absolute", top: 0, left: "15%", right: "15%", height: 2, background: `linear-gradient(90deg, transparent, ${co.color}40, transparent)`, borderRadius: "0 0 2px 2px" }} />}
-            <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 14 }}>
-              <div style={{ width: 38, height: 38, borderRadius: 10, background: `linear-gradient(135deg, ${co.color}18, ${co.color}08)`, border: `1px solid ${co.color}12`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 15, fontWeight: 800, color: co.color }}>{co.name[0]}</div>
-              <div style={{ flex: 1 }}>
-                <div style={{ fontSize: 14, fontWeight: 700, color: c.text }}>{co.name}</div>
-                <div style={{ fontSize: 10, color: c.textDim, fontWeight: 500 }}>{co.cat}</div>
+            {co.status === "connected" && <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 2, background: `linear-gradient(90deg, ${co.color}60, ${co.color}20, ${co.color}60)` }} />}
+            <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 12 }}>
+              <div style={{ width: 44, height: 44, borderRadius: 12, background: co.logo ? "#fff" : `linear-gradient(135deg, ${co.color}18, ${co.color}08)`, border: `1px solid ${co.color}15`, display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden", flexShrink: 0, boxShadow: `0 2px 8px ${co.color}10` }}>
+                {co.logo ? (
+                  <img src={co.logo} alt={co.name} style={{ width: 28, height: 28, objectFit: "contain" }} loading="lazy" onError={e => { e.target.style.display = "none"; e.target.parentElement.innerHTML = `<span style="font-size:16px;font-weight:800;color:${co.color}">${co.name[0]}</span>`; }} />
+                ) : (
+                  <span style={{ fontSize: 16, fontWeight: 800, color: co.color }}>{co.name[0]}</span>
+                )}
+              </div>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                  <div style={{ fontSize: 14, fontWeight: 700, color: c.text }}>{co.name}</div>
+                  {co.badge && co.status !== "connected" && (
+                    <span style={{ fontSize: 7, fontWeight: 800, padding: "2px 6px", borderRadius: 3, background: co.badge === "NEW" ? c.greenDim : co.badge === "UPLOAD" ? c.accentDim : co.badge === "BETA" ? c.purpleDim : c.accentDim, color: co.badge === "NEW" ? c.green : co.badge === "UPLOAD" ? c.accent : co.badge === "BETA" ? c.purple : c.accent, letterSpacing: "0.05em" }}>{co.badge}</span>
+                  )}
+                </div>
+                <div style={{ fontSize: 10, color: c.textDim, fontWeight: 500, display: "flex", alignItems: "center", gap: 4 }}>
+                  <span style={{ padding: "1px 6px", borderRadius: 3, background: `${co.color}10`, color: co.color, fontSize: 8, fontWeight: 700 }}>{co.cat}</span>
+                </div>
               </div>
               {co.status === "connected" && (
-                <div style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 9, fontWeight: 700, color: c.green, background: c.greenDim, padding: "3px 8px", borderRadius: 5, border: `1px solid ${c.green}12` }}>
-                  <div style={{ width: 6, height: 6, borderRadius: "50%", background: c.green, animation: "pulse 2s infinite" }} />
+                <div style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 9, fontWeight: 700, color: c.green, background: c.greenDim, padding: "3px 10px", borderRadius: 6, border: `1px solid ${c.green}12` }}>
+                  <div style={{ width: 5, height: 5, borderRadius: "50%", background: c.green, animation: "pulse 2s infinite" }} />
                   Live
                 </div>
               )}
-              {co.badge && co.status !== "connected" && (
-                <span style={{ fontSize: 8, fontWeight: 800, padding: "2px 7px", borderRadius: 4, background: co.badge === "NEW" ? c.greenDim : co.badge === "UPLOAD" ? c.accentDim : c.purpleDim, color: co.badge === "NEW" ? c.green : co.badge === "UPLOAD" ? c.accent : c.purple, letterSpacing: "0.04em" }}>{co.badge}</span>
-              )}
             </div>
+            {co.desc && <div style={{ fontSize: 10, color: c.textFaint, lineHeight: 1.4, marginBottom: 12, paddingLeft: 2 }}>{co.desc}</div>}
             {co.status === "connected" && (
               <div style={{ fontSize: 10, marginBottom: 10 }}>
                 <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 5, padding: "6px 10px", borderRadius: 6, background: c.surfaceAlt }}>
@@ -3946,7 +3957,9 @@ const IntegrationsView = ({ c, toast }) => {
         <div onClick={() => setConnectingName(null)} style={{ position: "fixed", inset: 0, zIndex: 2000, background: "rgba(0,0,0,0.5)", backdropFilter: "blur(4px)", display: "flex", alignItems: "center", justifyContent: "center", animation: "fadeIn 0.15s" }}>
           <div onClick={e => e.stopPropagation()} style={{ width: 420, background: c.surface, border: `1px solid ${c.border}`, borderRadius: 12, boxShadow: "0 20px 60px rgba(0,0,0,0.4)", padding: "28px 32px", animation: "cmdIn 0.2s ease" }}>
             <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 20 }}>
-              <div style={{ width: 40, height: 40, borderRadius: 10, background: `${conn?.color || c.accent}15`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16, fontWeight: 800, color: conn?.color || c.accent }}>{connectingName[0]}</div>
+              <div style={{ width: 44, height: 44, borderRadius: 12, background: conn?.logo ? "#fff" : `${conn?.color || c.accent}15`, border: `1px solid ${conn?.color || c.accent}15`, display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden", boxShadow: `0 2px 8px ${conn?.color || c.accent}10` }}>
+                {conn?.logo ? <img src={conn.logo} alt="" style={{ width: 28, height: 28, objectFit: "contain" }} /> : <span style={{ fontSize: 16, fontWeight: 800, color: conn?.color || c.accent }}>{connectingName[0]}</span>}
+              </div>
               <div>
                 <div style={{ fontSize: 16, fontWeight: 800, color: c.text }}>Connect {connectingName}</div>
                 <div style={{ fontSize: 11, color: c.textDim }}>{conn?.cat || "Integration"} · Bi-directional sync</div>
@@ -4379,11 +4392,11 @@ const TeamView = ({ c, toast, onNav, userName }) => {
   const [assignOpen, setAssignOpen] = useState(false);
 
   const teamMembers = [
-    { id: 1, name: userName || "Malik Frazier", initials: (userName || "MF").split(" ").map(w => w[0]).join("").slice(0,2), role: "Owner", title: "CEO & Founder", dept: "Executive", status: "online", statusMsg: "Working on Q1 close", avatar: null, email: "support@finance-os.app", tasks: 4, lastActive: "Now" },
-    { id: 2, name: "Sarah Chen", initials: "SC", role: "Admin", title: "VP of Finance", dept: "Finance", status: "online", statusMsg: "Reviewing forecasts", avatar: null, email: "s.chen@company.com", tasks: 6, lastActive: "2 min ago" },
-    { id: 3, name: "James Rodriguez", initials: "JR", role: "Manager", title: "FP&A Manager", dept: "Finance", status: "away", statusMsg: "In a meeting until 3pm", avatar: null, email: "j.rodriguez@company.com", tasks: 3, lastActive: "15 min ago" },
-    { id: 4, name: "Priya Patel", initials: "PP", role: "Budget Owner", title: "Controller", dept: "Accounting", status: "online", statusMsg: "", avatar: null, email: "p.patel@company.com", tasks: 8, lastActive: "Just now" },
-    { id: 5, name: "David Kim", initials: "DK", role: "Viewer", title: "Revenue Analyst", dept: "RevOps", status: "offline", statusMsg: "", avatar: null, email: "d.kim@company.com", tasks: 2, lastActive: "1 hr ago" },
+    { id: 1, name: userName || "Malik Frazier", initials: (userName || "MF").split(" ").map(w => w[0]).join("").slice(0,2), role: "Owner", title: "CEO & Founder", dept: "Executive", status: "online", statusMsg: "Working on Q1 close", avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=120&h=120&fit=crop&crop=face", coverImg: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=400&h=120&fit=crop", email: "support@finance-os.app", tasks: 4, lastActive: "Now" },
+    { id: 2, name: "Sarah Chen", initials: "SC", role: "Admin", title: "VP of Finance", dept: "Finance", status: "online", statusMsg: "Reviewing forecasts", avatar: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=120&h=120&fit=crop&crop=face", coverImg: "https://images.unsplash.com/photo-1497366216548-37526070297c?w=400&h=120&fit=crop", email: "s.chen@company.com", tasks: 6, lastActive: "2 min ago" },
+    { id: 3, name: "James Rodriguez", initials: "JR", role: "Manager", title: "FP&A Manager", dept: "Finance", status: "away", statusMsg: "In a meeting until 3pm", avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=120&h=120&fit=crop&crop=face", coverImg: "https://images.unsplash.com/photo-1497215842964-222b430dc094?w=400&h=120&fit=crop", email: "j.rodriguez@company.com", tasks: 3, lastActive: "15 min ago" },
+    { id: 4, name: "Priya Patel", initials: "PP", role: "Budget Owner", title: "Controller", dept: "Accounting", status: "online", statusMsg: "", avatar: "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=120&h=120&fit=crop&crop=face", coverImg: "https://images.unsplash.com/photo-1497366811353-6870744d04b2?w=400&h=120&fit=crop", email: "p.patel@company.com", tasks: 8, lastActive: "Just now" },
+    { id: 5, name: "David Kim", initials: "DK", role: "Viewer", title: "Revenue Analyst", dept: "RevOps", status: "offline", statusMsg: "", avatar: "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=120&h=120&fit=crop&crop=face", coverImg: "https://images.unsplash.com/photo-1497215728101-856f4ea42174?w=400&h=120&fit=crop", email: "d.kim@company.com", tasks: 2, lastActive: "1 hr ago" },
   ];
 
   const messages = [
@@ -4450,22 +4463,33 @@ const TeamView = ({ c, toast, onNav, userName }) => {
 
       {/* MEMBERS TAB */}
       {tab === "members" && (
-        <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "repeat(auto-fill, minmax(280px, 1fr))", gap: 14 }}>
+        <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "repeat(auto-fill, minmax(290px, 1fr))", gap: 16 }}>
           {teamMembers.map((m, i) => (
-            <div key={m.id} style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, padding: "22px 20px", transition: "all 0.2s", position: "relative", overflow: "hidden" }}
-              onMouseEnter={e => { e.currentTarget.style.borderColor = `${c.accent}25`; e.currentTarget.style.transform = "translateY(-2px)"; }}
-              onMouseLeave={e => { e.currentTarget.style.borderColor = c.border; e.currentTarget.style.transform = "none"; }}>
-              <div style={{ position: "absolute", top: 0, left: "15%", right: "15%", height: 1, background: `linear-gradient(90deg, transparent, ${c.accent}12, transparent)` }} />
-              <div style={{ display: "flex", gap: 14, alignItems: "center", marginBottom: 14 }}>
+            <div key={m.id} style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 18, transition: "all 0.25s cubic-bezier(0.4,0,0.2,1)", position: "relative", overflow: "hidden" }}
+              onMouseEnter={e => { e.currentTarget.style.borderColor = `${c.accent}25`; e.currentTarget.style.transform = "translateY(-3px)"; e.currentTarget.style.boxShadow = `0 12px 36px ${c.accent}08`; }}
+              onMouseLeave={e => { e.currentTarget.style.borderColor = c.border; e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = "none"; }}>
+              {/* Cover image */}
+              {m.coverImg && (
+                <div style={{ height: 64, position: "relative", overflow: "hidden" }}>
+                  <img src={m.coverImg} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} loading="lazy" />
+                  <div style={{ position: "absolute", inset: 0, background: `linear-gradient(180deg, transparent 30%, ${c.surface}ee 90%, ${c.surface})` }} />
+                </div>
+              )}
+              <div style={{ padding: "0 20px 20px", marginTop: m.coverImg ? -20 : 22 }}>
+              <div style={{ display: "flex", gap: 14, alignItems: "center", marginBottom: 12 }}>
                 <div style={{ position: "relative" }}>
-                  <div style={{ width: 44, height: 44, borderRadius: 14, background: avatarGradients[i % 5], display: "flex", alignItems: "center", justifyContent: "center", fontSize: 14, fontWeight: 800, color: "#fff", boxShadow: `0 4px 12px ${c.accent}15` }}>{m.initials}</div>
-                  <div style={{ position: "absolute", bottom: -1, right: -1, width: 12, height: 12, borderRadius: "50%", background: statusColors[m.status], border: `2.5px solid ${c.surface}` }} />
+                  {m.avatar ? (
+                    <img src={m.avatar} alt={m.name} style={{ width: 48, height: 48, borderRadius: 14, objectFit: "cover", border: `3px solid ${c.surface}`, boxShadow: `0 4px 12px ${c.accent}12` }} loading="lazy" />
+                  ) : (
+                    <div style={{ width: 48, height: 48, borderRadius: 14, background: avatarGradients[i % 5], display: "flex", alignItems: "center", justifyContent: "center", fontSize: 15, fontWeight: 800, color: "#fff", border: `3px solid ${c.surface}`, boxShadow: `0 4px 12px ${c.accent}12` }}>{m.initials}</div>
+                  )}
+                  <div style={{ position: "absolute", bottom: 0, right: 0, width: 12, height: 12, borderRadius: "50%", background: statusColors[m.status], border: `2.5px solid ${c.surface}` }} />
                 </div>
                 <div style={{ flex: 1 }}>
                   <div style={{ fontSize: 14, fontWeight: 700, color: c.text }}>{m.name}</div>
                   <div style={{ fontSize: 11, color: c.textDim }}>{m.title}</div>
                 </div>
-                <span style={{ fontSize: 8, fontWeight: 700, padding: "3px 8px", borderRadius: 4, background: `${c.accent}10`, color: c.accent, letterSpacing: "0.04em" }}>{m.role.toUpperCase()}</span>
+                <span style={{ fontSize: 7, fontWeight: 800, padding: "3px 8px", borderRadius: 4, background: m.role === "Owner" ? `linear-gradient(135deg, ${c.accent}15, ${c.purple}10)` : `${c.accent}10`, color: m.role === "Owner" ? c.purple : c.accent, letterSpacing: "0.04em", border: m.role === "Owner" ? `1px solid ${c.purple}15` : "none" }}>{m.role.toUpperCase()}</span>
               </div>
               <div style={{ display: "flex", gap: 8, fontSize: 10, color: c.textFaint, marginBottom: 10 }}>
                 <span>{m.dept}</span>
@@ -4489,6 +4513,7 @@ const TeamView = ({ c, toast, onNav, userName }) => {
                   >{btn.icon} {btn.label}</button>
                 ))}
               </div>
+              </div>{/* close padding wrapper */}
             </div>
           ))}
         </div>
