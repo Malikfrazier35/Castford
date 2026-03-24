@@ -87,7 +87,7 @@ function buildEmailHTML({ type, subject, badge, badgeClass, fields, ctaText, cta
 
 function demoRequestEmail(data) {
   return {
-    subject: `🎯 New Demo Request — ${data.full_name || "Unknown"}`,
+    subject: `[Demo Request] ${data.full_name || "Unknown"} — FinanceOS`,
     html: buildEmailHTML({
       type: "demo_request",
       subject: "New Demo Request",
@@ -112,7 +112,7 @@ function demoRequestEmail(data) {
 
 function waitlistEmail(data) {
   return {
-    subject: `📥 New ${data.interest_type === "demo" ? "Demo Signup" : "Waitlist Signup"} — ${data.email || "Unknown"}`,
+    subject: `[${data.interest_type === "demo" ? "Demo Signup" : "Waitlist"}] ${data.email || "Unknown"} — FinanceOS`,
     html: buildEmailHTML({
       type: "waitlist",
       subject: data.interest_type === "demo" ? "Demo Signup" : "New Waitlist Signup",
@@ -136,7 +136,7 @@ function waitlistEmail(data) {
 
 function investorEmail(data) {
   return {
-    subject: `💰 Investor Deck Request — ${data.name || data.email || "Unknown"}`,
+    subject: `[Investor Inquiry] ${data.name || data.email || "Unknown"} — FinanceOS`,
     html: buildEmailHTML({
       type: "investor_inquiry",
       subject: "Investor Deck Request",
@@ -158,7 +158,7 @@ function investorEmail(data) {
 
 function salesEmail(data) {
   return {
-    subject: `🏢 Enterprise Sales Inquiry — ${data.company || data.email || "Unknown"}`,
+    subject: `[Enterprise Lead] ${data.company || data.email || "Unknown"} — FinanceOS`,
     html: buildEmailHTML({
       type: "sales_inquiry",
       subject: "Enterprise Sales Inquiry",

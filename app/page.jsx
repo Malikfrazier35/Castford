@@ -5290,9 +5290,9 @@ const AdminView = ({ c, toast, onNav }) => {
               {/* Mini notification pipeline animation */}
               <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 4, padding: "10px 0 14px", position: "relative" }}>
                 {[
-                  { icon: "⚡", label: "Event", color: c.amber },
-                  { icon: "⊕", label: "Route", color: c.accent },
-                  { icon: "✉", label: "Deliver", color: c.green },
+                  { icon: <Zap size={11} />, label: "Event", color: c.amber },
+                  { icon: <GitBranch size={11} />, label: "Route", color: c.accent },
+                  { icon: <Mail size={11} />, label: "Deliver", color: c.green },
                 ].map((step, si) => (
                   <React.Fragment key={step.label}>
                     <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 3 }}>
@@ -8401,19 +8401,19 @@ const LandingPage = ({ onLogin }) => {
           <div style={{ position: "absolute", right: 0, top: 0, bottom: 0, width: 80, background: `linear-gradient(270deg, ${lp.bg}, transparent)`, zIndex: 2 }} />
           <div className="fos-scroll-row1" style={{ display: "flex", gap: 14, animation: "fosScrollLeft 50s linear infinite", width: "max-content" }}>
             {[...Array(2)].map((_, dup) => [
-              { name: "NetSuite", logo: "https://cdn.simpleicons.org/netsuite/1B3D6D", desc: "ERP — GL, AP/AR, inventory, consolidation", color: "#1B3D6D", tag: "ERP" },
+              { name: "NetSuite", logo: "https://companieslogo.com/img/orig/N-3a1a9e97.png?t=1720244493", desc: "ERP — GL, AP/AR, inventory, consolidation", color: "#1B3D6D", tag: "ERP" },
               { name: "SAP", logo: "https://cdn.simpleicons.org/sap/0FAAFF", desc: "Enterprise resource planning & financials", color: "#0FAAFF", tag: "ERP" },
               { name: "Salesforce", logo: "https://cdn.simpleicons.org/salesforce/00A1E0", desc: "CRM & revenue pipeline data", color: "#00A1E0", tag: "CRM" },
               { name: "Stripe", logo: "https://cdn.simpleicons.org/stripe/635BFF", desc: "Payment processing & billing automation", color: "#635BFF", tag: "BILLING" },
-              { name: "Workday", logo: "https://cdn.simpleicons.org/workday/F68D2E", desc: "HRIS, payroll & workforce planning", color: "#F68D2E", tag: "HRIS" },
+              { name: "Workday", logo: "https://companieslogo.com/img/orig/WDAY-05e5d34f.png?t=1720244579", desc: "HRIS, payroll & workforce planning", color: "#F68D2E", tag: "HRIS" },
               { name: "QuickBooks", logo: "https://cdn.simpleicons.org/quickbooks/2CA01C", desc: "GL, AP/AR & journal entries", color: "#2CA01C", tag: "ERP" },
               { name: "Sage", logo: "https://cdn.simpleicons.org/sage/00DC00", desc: "Cloud accounting & multi-entity", color: "#00DC00", tag: "ERP" },
-              { name: "Zuora", logo: "https://cdn.simpleicons.org/zuora/2E2E38", desc: "Subscription billing & revenue recognition", color: "#2E2E38", tag: "BILLING" },
+              { name: "Zuora", logo: "https://companieslogo.com/img/orig/ZUO-97cf4f94.png?t=1720244581", desc: "Subscription billing & revenue recognition", color: "#2E2E38", tag: "BILLING" },
               { name: "HubSpot", logo: "https://cdn.simpleicons.org/hubspot/FF7A59", desc: "Marketing & sales pipeline data", color: "#FF7A59", tag: "CRM" },
               { name: "Xero", logo: "https://cdn.simpleicons.org/xero/13B5EA", desc: "Cloud accounting & invoicing", color: "#13B5EA", tag: "ERP" },
               { name: "Plaid", logo: "https://cdn.simpleicons.org/plaid/000000", desc: "Bank account & transaction data", color: "#111111", tag: "BANKING" },
               { name: "Anthropic", logo: "https://cdn.simpleicons.org/anthropic/D4A574", desc: "AI reasoning & Copilot engine", color: "#D4A574", featured: true, tag: "AI" },
-              { name: "Ramp", logo: "https://cdn.simpleicons.org/ramp/3ECF8E", desc: "Corporate card & expense data", color: "#3ECF8E", tag: "EXPENSE" },
+              { name: "Ramp", logo: "https://companieslogo.com/img/orig/ramp-4e96c7cd.png?t=1720244492", desc: "Corporate card & expense data", color: "#3ECF8E", tag: "EXPENSE" },
               { name: "Dynamics 365", logo: "https://cdn.simpleicons.org/dynamics365/002050", desc: "Microsoft ERP & business central", color: "#002050", tag: "ERP" },
             ].map((item, i) => (
               <div key={`${dup}-${item.name}`} className="fos-logo-card" style={{ display: "flex", alignItems: "center", gap: 12, padding: "12px 18px", borderRadius: 14, background: lpMode === "dark" ? `linear-gradient(135deg, rgba(16,19,26,0.8), rgba(16,19,26,0.5))` : `linear-gradient(135deg, rgba(248,249,251,0.95), rgba(255,255,255,0.8))`, border: `1px solid ${item.featured ? `${lp.purple}30` : lp.border}`, backdropFilter: "blur(12px)", flexShrink: 0, minWidth: 195, cursor: "default", transition: "all 0.25s cubic-bezier(0.22,1,0.36,1)", position: "relative" }}
@@ -8441,15 +8441,15 @@ const LandingPage = ({ onLogin }) => {
             {[...Array(2)].map((_, dup) => [
               { name: "Snowflake", logo: "https://cdn.simpleicons.org/snowflake/29B5E8", desc: "Cloud data warehouse & analytics", color: "#29B5E8", tag: "DATA" },
               { name: "Databricks", logo: "https://cdn.simpleicons.org/databricks/FF3621", desc: "Data lakehouse & ML platform", color: "#FF3621", tag: "DATA" },
-              { name: "Rippling", logo: "https://cdn.simpleicons.org/rippling/FDE74B", desc: "HRIS, payroll & headcount data", color: "#FDE74B", tag: "HRIS" },
+              { name: "Rippling", logo: "https://asset.brandfetch.io/idL0iThUh6/idbeH18mk_.png", desc: "HRIS, payroll & headcount data", color: "#FDE74B", tag: "HRIS" },
               { name: "ADP", logo: "https://cdn.simpleicons.org/adp/D0271D", desc: "Payroll & workforce management", color: "#D0271D", tag: "HRIS" },
-              { name: "BambooHR", logo: "https://cdn.simpleicons.org/bamboo/73C41D", desc: "HRIS & employee lifecycle data", color: "#73C41D", tag: "HRIS" },
-              { name: "Brex", logo: "https://cdn.simpleicons.org/brex/F5A623", desc: "Corporate cards & cash management", color: "#F5A623", tag: "EXPENSE" },
+              { name: "BambooHR", logo: "https://asset.brandfetch.io/idZ7mXGTaR/idIjPsOetN.svg", desc: "HRIS & employee lifecycle data", color: "#73C41D", tag: "HRIS" },
+              { name: "Brex", logo: "https://asset.brandfetch.io/id3MiLlyQR/idC5JL8wJB.svg", desc: "Corporate cards & cash management", color: "#F5A623", tag: "EXPENSE" },
               { name: "Slack", logo: "https://cdn.simpleicons.org/slack/4A154B", desc: "Alerts, approvals & team messaging", color: "#4A154B", tag: "COMMS" },
               { name: "AWS", logo: "https://cdn.simpleicons.org/amazonaws/FF9900", desc: "Cloud infrastructure & compute", color: "#FF9900", tag: "CLOUD" },
               { name: "DocuSign", logo: "https://cdn.simpleicons.org/docusign/4088FF", desc: "Contract & eSignature workflows", color: "#4088FF", tag: "ESIGN" },
-              { name: "Gusto", logo: "https://cdn.simpleicons.org/gusto/F45D48", desc: "Payroll, benefits & HR platform", color: "#F45D48", tag: "HRIS" },
-              { name: "Mercury", logo: "https://cdn.simpleicons.org/mercury/5A2FBA", desc: "Business banking & treasury", color: "#5A2FBA", tag: "BANKING" },
+              { name: "Gusto", logo: "https://asset.brandfetch.io/idrBXv7jhw/idzuN5A8Bj.svg", desc: "Payroll, benefits & HR platform", color: "#F45D48", tag: "HRIS" },
+              { name: "Mercury", logo: "https://asset.brandfetch.io/idFB6e4fGj/id26hoeJdM.svg", desc: "Business banking & treasury", color: "#5A2FBA", tag: "BANKING" },
               { name: "BigQuery", logo: "https://cdn.simpleicons.org/googlebigquery/669DF6", desc: "Google Cloud data warehouse", color: "#669DF6", tag: "DATA" },
               { name: "Intercom", logo: "https://cdn.simpleicons.org/intercom/1F8DED", desc: "Customer support & engagement", color: "#1F8DED", tag: "SUPPORT" },
             ].map((item, i) => (
@@ -8481,9 +8481,9 @@ const LandingPage = ({ onLogin }) => {
               { name: "Cloudflare", logo: "https://cdn.simpleicons.org/cloudflare/F48120", desc: "Security, CDN & DDoS protection", color: "#F48120", tag: "SECURITY" },
               { name: "Tableau", logo: "https://cdn.simpleicons.org/tableau/E97627", desc: "Business intelligence & dashboards", color: "#E97627", tag: "BI" },
               { name: "Power BI", logo: "https://cdn.simpleicons.org/powerbi/F2C811", desc: "Microsoft analytics & reporting", color: "#F2C811", tag: "BI" },
-              { name: "S&P Global", logo: "https://cdn.simpleicons.org/standardandpoors/0033A0", desc: "Market data & benchmarks", color: "#0033A0", tag: "MARKET DATA" },
-              { name: "FactSet", logo: "https://cdn.simpleicons.org/factset/1679C4", desc: "Financial data & analytics", color: "#1679C4", tag: "MARKET DATA" },
-              { name: "Morningstar", logo: "https://cdn.simpleicons.org/morningstar/FC5301", desc: "Investment research & ratings", color: "#FC5301", tag: "RESEARCH" },
+              { name: "S&P Global", logo: "https://companieslogo.com/img/orig/SPGI-8a4bed69.png?t=1720244495", desc: "Market data & benchmarks", color: "#0033A0", tag: "MARKET DATA" },
+              { name: "FactSet", logo: "https://companieslogo.com/img/orig/FDS-4581e478.png?t=1720244493", desc: "Financial data & analytics", color: "#1679C4", tag: "MARKET DATA" },
+              { name: "Morningstar", logo: "https://companieslogo.com/img/orig/MORN-5ac30c74.png?t=1720244494", desc: "Investment research & ratings", color: "#FC5301", tag: "RESEARCH" },
               { name: "Square", logo: "https://cdn.simpleicons.org/square/3E4348", desc: "POS & payment data", color: "#3E4348", tag: "PAYMENTS" },
               { name: "Gmail", logo: "https://cdn.simpleicons.org/gmail/EA4335", desc: "Email notifications & alerts", color: "#EA4335", tag: "EMAIL" },
               { name: "Calendly", logo: "https://cdn.simpleicons.org/calendly/006BFF", desc: "Meeting scheduling & booking", color: "#006BFF", tag: "SCHEDULING" },
@@ -8986,7 +8986,7 @@ const LandingPage = ({ onLogin }) => {
             <h2 style={{ fontSize: 32, fontWeight: 800, letterSpacing: "-0.03em", marginBottom: 10, color: "#fff" }}>Replace 6 tools with one platform</h2>
             <p style={{ fontSize: 15, color: "rgba(255,255,255,0.75)", maxWidth: 500, marginBottom: 24, lineHeight: 1.65 }}>From budgeting to board decks, FinanceOS consolidates your entire FP&A workflow. Same-day deployment. 96.8% forecast accuracy.</p>
             <div style={{ display: "flex", gap: 12 }}>
-              <button onClick={enterDemo} style={{ fontSize: 13, padding: "12px 24px", borderRadius: 10, border: "none", background: "linear-gradient(135deg, #60a5fa, #a78bfa)", color: "#fff", cursor: "pointer", fontFamily: "inherit", fontWeight: 700 }}>Try the Demo ▸</button>
+              <button onClick={enterDemo} style={{ fontSize: 13, padding: "12px 24px", borderRadius: 10, border: "none", background: "linear-gradient(135deg, #60a5fa, #a78bfa)", color: "#fff", cursor: "pointer", fontFamily: "inherit", fontWeight: 700 }}>Try the Demo</button>
               <a href="https://calendly.com/finance-os-support/30min" target="_blank" rel="noopener" style={{ fontSize: 13, padding: "12px 24px", borderRadius: 10, border: "1px solid rgba(255,255,255,0.2)", background: "transparent", color: "#fff", cursor: "pointer", fontFamily: "inherit", fontWeight: 700, textDecoration: "none", display: "inline-flex", alignItems: "center" }}>Book a Demo</a>
             </div>
           </div>
@@ -9188,7 +9188,7 @@ const LandingPage = ({ onLogin }) => {
                   {/* AI Copilot */}
                   <div style={{ padding: "16px 18px", borderRadius: 14, background: "rgba(16,19,26,0.6)", border: "1px solid rgba(26,31,46,0.5)", display: "flex", flexDirection: "column" }}>
                     <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 12 }}>
-                      <span style={{ fontSize: 12 }}>◎</span>
+                      <Cpu size={12} color="#a78bfa" />
                       <span style={{ fontSize: 10, fontWeight: 800, color: "#eef0f6" }}>AI Copilot</span>
                       <span style={{ fontSize: 7, fontWeight: 700, padding: "2px 5px", borderRadius: 3, background: "#a78bfa12", color: "#a78bfa", marginLeft: "auto" }}>Claude</span>
                     </div>
@@ -10153,9 +10153,9 @@ const LandingPage = ({ onLogin }) => {
               {/* Notification pipeline visual */}
               <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 8, marginBottom: 20, animation: "fosFadeSlideUp 0.5s ease-out 0.5s both" }}>
                 {[
-                  { icon: "✓", label: "Received", color: "#34d399", done: true },
-                  { icon: "→", label: "Routed", color: "#60a5fa", done: true },
-                  { icon: "✉", label: "Alert sent", color: "#a78bfa", done: true },
+                  { icon: <Check size={11} />, label: "Received", color: "#34d399", done: true },
+                  { icon: <ArrowRight size={11} />, label: "Routed", color: "#60a5fa", done: true },
+                  { icon: <Mail size={11} />, label: "Alert sent", color: "#a78bfa", done: true },
                 ].map((step, si) => (
                   <React.Fragment key={step.label}>
                     {si > 0 && <div style={{ width: 20, height: 2, background: `linear-gradient(90deg, ${[...["#34d399","#60a5fa","#a78bfa"]][si-1]}, ${step.color})`, borderRadius: 1, animation: `fosBarGrow 0.4s ease-out ${0.6 + si * 0.15}s both`, transformOrigin: "left" }} />}
