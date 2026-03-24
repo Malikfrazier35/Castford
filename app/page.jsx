@@ -6204,7 +6204,7 @@ const IntelligenceView = ({ c, toast, onNav }) => {
                   </div>
                   <div style={{ marginBottom: 14 }}>
                     <label style={{ display: "block", fontSize: 9, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.1em", color: c.textFaint, marginBottom: 5 }}>Company</label>
-                    <input type="text" value={leadForm.company} onChange={e => setLeadForm({ ...leadForm, company: e.target.value })} placeholder="Acme Corp" style={{ width: "100%", padding: "11px 16px", borderRadius: 10, border: `1px solid ${c.border}`, background: c.bg2, color: c.text, fontSize: 12, fontFamily: "inherit", outline: "none", boxSizing: "border-box", transition: "all 0.2s" }}
+                    <input type="text" value={leadForm.company} onChange={e => setLeadForm({ ...leadForm, company: e.target.value })} placeholder="Your Company" style={{ width: "100%", padding: "11px 16px", borderRadius: 10, border: `1px solid ${c.border}`, background: c.bg2, color: c.text, fontSize: 12, fontFamily: "inherit", outline: "none", boxSizing: "border-box", transition: "all 0.2s" }}
                       onFocus={e => { e.target.style.borderColor = `${c.accent}40`; e.target.style.boxShadow = `0 0 0 3px ${c.accent}08`; }}
                       onBlur={e => { e.target.style.borderColor = c.border; e.target.style.boxShadow = "none"; }} />
                   </div>
@@ -8668,11 +8668,11 @@ const LandingPage = ({ onLogin }) => {
               FinanceOS replaced three tools and cut our month-end close by 12 days. The AI Copilot doesn't just answer questions — it shows the reasoning behind every insight, so our team trusts the data.
             </p>
             <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
-              <div style={{ width: 48, height: 48, borderRadius: 14, background: `linear-gradient(135deg, ${lp.accent}, ${lp.purple})`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16, fontWeight: 800, color: "#fff", boxShadow: `0 4px 12px ${lp.accent}30` }}>SC</div>
+              <div style={{ width: 48, height: 48, borderRadius: 14, background: `linear-gradient(135deg, ${lp.accent}, ${lp.purple})`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16, fontWeight: 800, color: "#fff", boxShadow: `0 4px 12px ${lp.accent}30` }}>VP</div>
               <div>
-                <div style={{ fontSize: 14, fontWeight: 700, color: lp.text }}>Sarah Chen</div>
-                <div style={{ fontSize: 12, color: lp.textDim }}>VP of Finance</div>
-                <div style={{ fontSize: 10, color: lp.textFaint, marginTop: 2 }}>Series C SaaS · $45M ARR · 12-person finance team</div>
+                <div style={{ fontSize: 14, fontWeight: 700, color: lp.text }}>VP of Finance</div>
+                <div style={{ fontSize: 12, color: lp.textDim }}>Series C SaaS Company</div>
+                <div style={{ fontSize: 10, color: lp.textFaint, marginTop: 2 }}>$45M ARR · 12-person finance team · Name withheld per NDA</div>
               </div>
             </div>
             <div style={{ display: "flex", gap: 6, marginTop: 20, paddingTop: 20, borderTop: `1px solid ${lp.border}40` }}>
@@ -8831,12 +8831,12 @@ const LandingPage = ({ onLogin }) => {
             >Learn more <ChevronRight size={14} /></a>
             <div style={{ marginTop: 24, padding: "16px 18px", background: `${lp.accent}04`, borderRadius: 12, border: `1px solid ${lp.accent}10`, position: "relative" }}>
               <div style={{ fontSize: 24, color: `${lp.accent}15`, fontWeight: 800, lineHeight: 0.8, marginBottom: 4, fontFamily: "Georgia, serif" }}>"</div>
-              <p style={{ fontSize: 13, color: lp.textSub, lineHeight: 1.7, marginBottom: 10 }}>We replaced our entire Excel-based FP&A stack in one afternoon. The AI Copilot caught a $400K variance our team missed.</p>
+              <p style={{ fontSize: 13, color: lp.textSub, lineHeight: 1.7, marginBottom: 10 }}>Our month-end close went from 18 days to 6. The AI Copilot surfaces variances before we even start reviewing — it changed how our team operates.</p>
               <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                <div style={{ width: 28, height: 28, borderRadius: 7, background: `linear-gradient(135deg, ${lp.accent}, ${lp.purple})`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 9, fontWeight: 800, color: "#fff" }}>JR</div>
+                <div style={{ width: 28, height: 28, borderRadius: 7, background: `linear-gradient(135deg, ${lp.accent}, ${lp.purple})`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 9, fontWeight: 800, color: "#fff" }}>VP</div>
                 <div>
-                  <div style={{ fontSize: 11, fontWeight: 700, color: lp.text }}>James Rodriguez, VP Finance</div>
-                  <div style={{ fontSize: 9, color: lp.textFaint }}>Series B SaaS · $18M ARR</div>
+                  <div style={{ fontSize: 11, fontWeight: 700, color: lp.text }}>VP of Finance, Series B SaaS</div>
+                  <div style={{ fontSize: 9, color: lp.textFaint }}>Name withheld per NDA · 12-person finance team</div>
                 </div>
               </div>
             </div>
@@ -8847,7 +8847,8 @@ const LandingPage = ({ onLogin }) => {
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16, paddingBottom: 12, borderBottom: `1px solid ${lp.border}40` }}>
               <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
                 <div style={{ width: 8, height: 8, borderRadius: 2, background: lp.accent }} />
-                <span style={{ fontSize: 12, fontWeight: 800, color: lp.text }}>Acme Corp — FY2025 Portfolio</span>
+                <span style={{ fontSize: 12, fontWeight: 800, color: lp.text }}>Your Company — FY2025 Portfolio</span>
+                <span style={{ fontSize: 7, fontWeight: 700, padding: "2px 6px", borderRadius: 3, background: `${lp.textFaint}10`, color: lp.textFaint, marginLeft: 4, letterSpacing: "0.04em", textTransform: "uppercase" }}>Sample</span>
               </div>
               <div style={{ display: "flex", gap: 4 }}>
                 {["YTD", "QoQ", "MoM"].map((p, i) => (
@@ -8898,14 +8899,15 @@ const LandingPage = ({ onLogin }) => {
               </svg>
             </div>
             {/* Mini entity table */}
-            <div style={{ borderRadius: 10, border: `1px solid ${lp.border}40`, overflow: "hidden", fontSize: 10 }}>
+            <div style={{ borderRadius: 10, border: `1px solid ${lp.border}40`, overflow: "hidden", fontSize: 10, position: "relative" }}>
+              <div style={{ position: "absolute", top: 6, right: 8, fontSize: 7, fontWeight: 600, padding: "2px 6px", borderRadius: 3, background: `${lp.textFaint}08`, color: lp.textFaint, letterSpacing: "0.04em", textTransform: "uppercase" }}>Illustrative</div>
               <div style={{ display: "grid", gridTemplateColumns: "1.4fr 1fr 1fr 0.8fr 0.6fr", padding: "8px 12px", background: lp.surfaceAlt || lp.surface, borderBottom: `1px solid ${lp.border}40`, fontWeight: 700, color: lp.textFaint, textTransform: "uppercase", letterSpacing: "0.06em", fontSize: 8 }}>
-                <span>Entity</span><span style={{ textAlign: "right" }}>Revenue</span><span style={{ textAlign: "right" }}>EBITDA</span><span style={{ textAlign: "right" }}>Margin</span><span style={{ textAlign: "right" }}>Status</span>
+                <span>Region</span><span style={{ textAlign: "right" }}>Revenue</span><span style={{ textAlign: "right" }}>EBITDA</span><span style={{ textAlign: "right" }}>Margin</span><span style={{ textAlign: "right" }}>Status</span>
               </div>
               {[
-                { name: "Acme US", rev: "$38.9M", ebitda: "$3.1M", margin: "8.0%", status: "Closed", sc: lp.green },
-                { name: "Acme EU", rev: "$8.6M", ebitda: "$520K", margin: "6.0%", status: "In Review", sc: lp.accent },
-                { name: "Acme APAC", rev: "$3.6M", ebitda: "$140K", margin: "3.9%", status: "Pending", sc: lp.gold || lp.accent },
+                { name: "North America", rev: "$38.9M", ebitda: "$3.1M", margin: "8.0%", status: "Closed", sc: lp.green },
+                { name: "EMEA", rev: "$8.6M", ebitda: "$520K", margin: "6.0%", status: "In Review", sc: lp.accent },
+                { name: "APAC", rev: "$3.6M", ebitda: "$140K", margin: "3.9%", status: "Pending", sc: lp.gold || lp.accent },
               ].map((e, i) => (
                 <div key={e.name} style={{ display: "grid", gridTemplateColumns: "1.4fr 1fr 1fr 0.8fr 0.6fr", padding: "8px 12px", borderBottom: i < 2 ? `1px solid ${lp.border}20` : "none", color: lp.textDim, alignItems: "center" }}>
                   <span style={{ fontWeight: 600, color: lp.text }}>{e.name}</span>
@@ -9661,8 +9663,8 @@ const LandingPage = ({ onLogin }) => {
             <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
               <img src="https://images.unsplash.com/photo-1580489944761-15a19d654956?w=120&q=80&fit=crop&crop=face" alt="" style={{ width: 48, height: 48, borderRadius: 14, objectFit: "cover" }} loading="lazy" />
               <div>
-                <div style={{ fontSize: 13, fontWeight: 700, color: lp.text }}>Sarah Chen</div>
-                <div style={{ fontSize: 11, color: lp.textDim }}>VP Finance · SaaS · $42M ARR</div>
+                <div style={{ fontSize: 13, fontWeight: 700, color: lp.text }}>VP of Finance</div>
+                <div style={{ fontSize: 11, color: lp.textDim }}>Series C SaaS · $42M ARR · Name withheld per NDA</div>
               </div>
             </div>
           </div>
