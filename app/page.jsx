@@ -6269,6 +6269,7 @@ const LandingPage = ({ onLogin }) => {
   const [billing, setBilling] = useState("annual");
   const [authModal, setAuthModal] = useState(null);
   const [heroEmail, setHeroEmail] = useState("");
+  const [previewIndustry, setPreviewIndustry] = useState("saas");
   const [demoModal, setDemoModal] = useState(false);
   const [demoForm, setDemoForm] = useState({ full_name: "", email: "", company: "", title: "", company_size: "", use_case: "", current_tools: "" });
   const [demoSubmitting, setDemoSubmitting] = useState(false);
@@ -6623,6 +6624,194 @@ const LandingPage = ({ onLogin }) => {
             </div>
           ))}
         </div>
+      </div>
+
+      {/* ═══ PERSONALIZED DASHBOARD PREVIEW — "Designed for your decisions" ═══ */}
+      <div style={{ padding: isMobile ? "40px 20px" : "80px 48px", maxWidth: 1100, margin: "0 auto" }}>
+        <div style={{ textAlign: "center", marginBottom: 40 }}>
+          <div style={{ display: "inline-block", padding: "6px 14px", borderRadius: 20, background: "rgba(61,217,160,0.06)", border: "1px solid rgba(61,217,160,0.12)", fontSize: 10, fontWeight: 700, color: "#3dd9a0", marginBottom: 16, letterSpacing: "0.06em", textTransform: "uppercase" }}>Designed for your decisions</div>
+          <h2 style={{ fontSize: 36, fontWeight: 800, letterSpacing: "-0.03em", marginBottom: 10 }}>See what FinanceOS looks like<br />for <span style={{ color: "#60a5fa" }}>your</span> business</h2>
+          <p style={{ fontSize: 15, color: "#8b92a5", maxWidth: 520, margin: "0 auto" }}>Every dashboard is personalized to your industry, metrics, and workflow. Select your business type to preview.</p>
+        </div>
+
+        {/* Industry selector tabs */}
+        <div style={{ display: "flex", justifyContent: "center", gap: 6, marginBottom: 32, flexWrap: "wrap" }}>
+          {[
+            { id: "saas", label: "SaaS / Software", icon: "💻" },
+            { id: "ecom", label: "E-Commerce", icon: "🛒" },
+            { id: "services", label: "Professional Services", icon: "📋" },
+            { id: "mfg", label: "Manufacturing", icon: "🏭" },
+          ].map(tab => (
+            <button key={tab.id} onClick={() => setPreviewIndustry(tab.id)} style={{
+              fontSize: 12, fontWeight: 700, padding: "10px 20px", borderRadius: 10, border: "none", cursor: "pointer", fontFamily: "inherit",
+              background: previewIndustry === tab.id ? "rgba(96,165,250,0.12)" : "rgba(16,19,26,0.6)",
+              color: previewIndustry === tab.id ? "#60a5fa" : "#636d84",
+              borderWidth: 1, borderStyle: "solid",
+              borderColor: previewIndustry === tab.id ? "rgba(96,165,250,0.25)" : "#1a1f2e",
+              display: "flex", alignItems: "center", gap: 8, transition: "all 0.25s cubic-bezier(0.4,0,0.2,1)",
+            }}>{tab.icon} {tab.label}</button>
+          ))}
+        </div>
+
+        {/* Personalized dashboard preview */}
+        {(() => {
+          const configs = {
+            saas: {
+              title: "SaaS Command Center",
+              subtitle: "Real-time ARR tracking, cohort analysis, and expansion revenue intelligence",
+              kpis: [
+                { l: "ARR", v: "$48.6M", d: "+24% YoY", c: "#60a5fa" },
+                { l: "NDR", v: "118%", d: "+3pp QoQ", c: "#3dd9a0" },
+                { l: "Gross Margin", v: "84.7%", d: "+2.1pp", c: "#a78bfa" },
+                { l: "Rule of 40", v: "52.1", d: "Top 10%", c: "#3dd9a0" },
+                { l: "CAC Payback", v: "14.2 mo", d: "-2.1 mo", c: "#60a5fa" },
+                { l: "Burn Multiple", v: "0.8x", d: "Efficient", c: "#f5b731" },
+              ],
+              aiQ: "What drove the $2.1M revenue beat this quarter?",
+              aiA: "Enterprise expansion drove 68% of the beat. NDR hit 126% in Enterprise, with AI module attach rate at 42% — up from 28% last quarter. Three expansion deals over $200K closed in the final week.",
+              chartLabel: "ARR Growth · Actual vs Forecast",
+              quote: "We replaced Adaptive Planning and 4 spreadsheets in one afternoon.",
+            },
+            ecom: {
+              title: "E-Commerce Financial Hub",
+              subtitle: "GMV tracking, COGS analysis, channel profitability, and inventory cost modeling",
+              kpis: [
+                { l: "GMV", v: "$127.3M", d: "+31% YoY", c: "#60a5fa" },
+                { l: "AOV", v: "$84.20", d: "+$12.40", c: "#3dd9a0" },
+                { l: "Gross Margin", v: "62.4%", d: "+1.8pp", c: "#a78bfa" },
+                { l: "CAC", v: "$28.50", d: "-14% QoQ", c: "#3dd9a0" },
+                { l: "LTV/CAC", v: "4.2x", d: "+0.6x", c: "#60a5fa" },
+                { l: "Return Rate", v: "8.1%", d: "-1.2pp", c: "#f5b731" },
+              ],
+              aiQ: "Which channels have the best unit economics this quarter?",
+              aiA: "DTC web has the highest contribution margin at 71%. Amazon is 48% but growing 2.4x faster. TikTok Shop is running -$3.20 per order after fulfillment — recommend pausing paid spend until AOV exceeds $65.",
+              chartLabel: "GMV by Channel · Monthly Trend",
+              quote: "We finally see true channel profitability, not just top-line GMV.",
+            },
+            services: {
+              title: "Professional Services Dashboard",
+              subtitle: "Utilization rates, project profitability, pipeline forecasting, and bench cost tracking",
+              kpis: [
+                { l: "Revenue", v: "$22.8M", d: "+18% YoY", c: "#60a5fa" },
+                { l: "Utilization", v: "78.4%", d: "+3.2pp", c: "#3dd9a0" },
+                { l: "Avg Bill Rate", v: "$285/hr", d: "+$15", c: "#a78bfa" },
+                { l: "Project Margin", v: "41.2%", d: "+2.8pp", c: "#3dd9a0" },
+                { l: "Bench Cost", v: "$184K/mo", d: "-$42K", c: "#60a5fa" },
+                { l: "Pipeline", v: "$8.4M", d: "3.2 mo", c: "#f5b731" },
+              ],
+              aiQ: "Which practice areas are dragging down blended margin?",
+              aiA: "Implementation Services is at 28% margin vs target 38%. Root cause: two fixed-price engagements exceeded scope by 340 hours combined. Staff augmentation is at 52% — carrying the blended rate. Recommend renegotiating MSA on the Meridian account.",
+              chartLabel: "Utilization & Revenue · By Practice Area",
+              quote: "We went from 'I think we're profitable' to knowing exactly where every dollar goes.",
+            },
+            mfg: {
+              title: "Manufacturing Finance Center",
+              subtitle: "COGS variance, production efficiency, supply chain cost modeling, and tariff impact analysis",
+              kpis: [
+                { l: "Revenue", v: "$89.2M", d: "+12% YoY", c: "#60a5fa" },
+                { l: "COGS %", v: "58.4%", d: "-1.6pp", c: "#3dd9a0" },
+                { l: "Gross Margin", v: "41.6%", d: "+1.6pp", c: "#a78bfa" },
+                { l: "OEE", v: "84.2%", d: "+2.1pp", c: "#3dd9a0" },
+                { l: "Inventory Days", v: "42", d: "-6 days", c: "#60a5fa" },
+                { l: "Tariff Impact", v: "$2.1M", d: "Scenario A", c: "#f06b6b" },
+              ],
+              aiQ: "What's the P&L impact if Section 301 tariffs increase to 35%?",
+              aiA: "At 35%, annual COGS increases $4.8M. Gross margin drops to 36.2%. Mitigations: nearshoring Component Group B saves $1.9M; passing 40% to customers recovers $1.4M. Net impact after mitigations: -$1.5M (-1.7pp margin).",
+              chartLabel: "COGS Variance · Actual vs Standard",
+              quote: "We modeled 14 tariff scenarios in one afternoon — used to take the team a full week.",
+            },
+          };
+          const cfg = configs[previewIndustry] || configs.saas;
+          return (
+            <div style={{ borderRadius: 20, border: "1px solid #1a1f2e", overflow: "hidden", boxShadow: "0 24px 64px rgba(0,0,0,0.4)", transition: "all 0.4s cubic-bezier(0.4,0,0.2,1)" }}>
+              {/* Window chrome */}
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "10px 18px", background: "#10131a", borderBottom: "1px solid #1a1f2e" }}>
+                <div style={{ display: "flex", gap: 6 }}><div style={{ width: 10, height: 10, borderRadius: "50%", background: "#f06b6b" }} /><div style={{ width: 10, height: 10, borderRadius: "50%", background: "#f5b731" }} /><div style={{ width: 10, height: 10, borderRadius: "50%", background: "#3dd9a0" }} /></div>
+                <div style={{ fontSize: 10, color: "#3d4558", fontFamily: "'JetBrains Mono', monospace", background: "#06080c80", padding: "3px 14px", borderRadius: 5 }}>finance-os.app/{previewIndustry}-dashboard</div>
+                <div style={{ width: 50 }} />
+              </div>
+
+              {/* Dashboard content */}
+              <div style={{ padding: isMobile ? "16px" : "28px 32px", background: "linear-gradient(180deg, #06080c, #10131a)" }}>
+                {/* Title bar */}
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
+                  <div>
+                    <div style={{ fontSize: 18, fontWeight: 800, color: "#eef0f6", letterSpacing: "-0.02em" }}>{cfg.title}</div>
+                    <div style={{ fontSize: 11, color: "#3d4558", marginTop: 2 }}>{cfg.subtitle}</div>
+                  </div>
+                  <div style={{ display: "flex", gap: 6 }}>
+                    {["This Quarter", "YTD", "12M"].map((p, i) => (
+                      <span key={p} style={{ fontSize: 8, fontWeight: 700, padding: "4px 10px", borderRadius: 6, background: i === 0 ? "rgba(96,165,250,0.12)" : "transparent", color: i === 0 ? "#60a5fa" : "#3d4558", border: `1px solid ${i === 0 ? "rgba(96,165,250,0.2)" : "#1a1f2e"}` }}>{p}</span>
+                    ))}
+                  </div>
+                </div>
+
+                {/* 6 KPI cards */}
+                <div style={{ display: "grid", gridTemplateColumns: isMobile ? "repeat(2, 1fr)" : "repeat(6, 1fr)", gap: 10, marginBottom: 20 }}>
+                  {cfg.kpis.map(k => (
+                    <div key={k.l} style={{ padding: "14px 14px", borderRadius: 12, background: "rgba(16,19,26,0.7)", backdropFilter: "blur(8px)", border: "1px solid rgba(26,31,46,0.6)", position: "relative", overflow: "hidden" }}>
+                      <div style={{ position: "absolute", top: 0, left: "15%", right: "15%", height: 1, background: `linear-gradient(90deg, transparent, ${k.c}15, transparent)` }} />
+                      <div style={{ fontSize: 7, fontWeight: 700, color: "#3d4558", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 4 }}>{k.l}</div>
+                      <div style={{ fontSize: 16, fontWeight: 800, color: "#eef0f6", fontFamily: "'JetBrains Mono', monospace", marginBottom: 3 }}>{k.v}</div>
+                      <span style={{ fontSize: 8, fontWeight: 700, color: k.c, padding: "1px 5px", borderRadius: 3, background: `${k.c}10` }}>{k.d}</span>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Chart + AI Copilot */}
+                <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1.4fr 1fr", gap: 14, marginBottom: 16 }}>
+                  {/* Chart */}
+                  <div style={{ padding: "16px 18px", borderRadius: 14, background: "rgba(16,19,26,0.6)", border: "1px solid rgba(26,31,46,0.5)" }}>
+                    <div style={{ fontSize: 11, fontWeight: 800, color: "#eef0f6", marginBottom: 4 }}>{cfg.chartLabel}</div>
+                    <div style={{ fontSize: 8, color: "#3d4558", marginBottom: 12 }}>Auto-generated from GL data</div>
+                    <svg viewBox="0 0 300 80" style={{ width: "100%", height: 80 }}>
+                      <defs><linearGradient id={`pg${previewIndustry}`} x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor="#60a5fa" stopOpacity={0.2} /><stop offset="100%" stopColor="#60a5fa" stopOpacity={0} /></linearGradient></defs>
+                      {[16,32,48,64].map(y => <line key={y} x1="0" y1={y} x2="300" y2={y} stroke="#1a1f2e" strokeWidth="0.4" strokeDasharray="1 6" strokeLinecap="round" />)}
+                      <path d="M5,68 L35,60 L65,55 L95,48 L125,40 L155,35 L185,28 L215,22 L245,18 L275,14" fill={`url(#pg${previewIndustry})`} />
+                      <path d="M5,68 L35,60 L65,55 L95,48 L125,40 L155,35 L185,28 L215,22 L245,18 L275,14" fill="none" stroke="#60a5fa" strokeWidth="2" strokeLinecap="round" />
+                      <path d="M5,70 L35,65 L65,60 L95,54 L125,48 L155,44 L185,38 L215,34 L245,30 L275,26" fill="none" stroke="#3d4558" strokeWidth="1" strokeDasharray="3 4" />
+                      <circle cx="275" cy="14" r="3" fill="#60a5fa" stroke="#06080c" strokeWidth="2"><animate attributeName="r" values="3;5;3" dur="2s" repeatCount="indefinite" /></circle>
+                    </svg>
+                    <div style={{ display: "flex", gap: 10, fontSize: 8, color: "#3d4558", marginTop: 6 }}>
+                      <span style={{ display: "flex", alignItems: "center", gap: 3 }}><span style={{ width: 8, height: 2, borderRadius: 1, background: "#60a5fa" }} />Actual</span>
+                      <span style={{ display: "flex", alignItems: "center", gap: 3 }}><span style={{ width: 8, height: 1, borderTop: "1px dashed #3d4558" }} />Budget</span>
+                      <span style={{ marginLeft: "auto", fontWeight: 700, color: "#3dd9a0" }}>Beating plan</span>
+                    </div>
+                  </div>
+
+                  {/* AI Copilot */}
+                  <div style={{ padding: "16px 18px", borderRadius: 14, background: "rgba(16,19,26,0.6)", border: "1px solid rgba(26,31,46,0.5)", display: "flex", flexDirection: "column" }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 12 }}>
+                      <span style={{ fontSize: 12 }}>🧠</span>
+                      <span style={{ fontSize: 10, fontWeight: 800, color: "#eef0f6" }}>AI Copilot</span>
+                      <span style={{ fontSize: 7, fontWeight: 700, padding: "2px 5px", borderRadius: 3, background: "#a78bfa12", color: "#a78bfa", marginLeft: "auto" }}>Claude</span>
+                    </div>
+                    <div style={{ padding: "8px 10px", borderRadius: 8, background: "rgba(96,165,250,0.06)", border: "1px solid rgba(96,165,250,0.08)", fontSize: 10, color: "#636d84", marginBottom: 6 }}>"{cfg.aiQ}"</div>
+                    <div style={{ flex: 1, padding: "8px 10px", borderRadius: 8, background: "#161a24", border: "1px solid #1a1f2e", fontSize: 10, color: "#9ea5b8", lineHeight: 1.55 }}>
+                      <div style={{ fontSize: 7, fontWeight: 700, color: "#3dd9a0", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 4 }}>Thought & work process →</div>
+                      {cfg.aiA}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Bottom quote */}
+                <div style={{ textAlign: "center", padding: "12px 0 0", borderTop: "1px solid #1a1f2e" }}>
+                  <p style={{ fontSize: 12, color: "#636d84", fontStyle: "italic", marginBottom: 4 }}>"{cfg.quote}"</p>
+                  <span style={{ fontSize: 9, fontWeight: 700, color: "#3d4558" }}>— FinanceOS customer</span>
+                </div>
+              </div>
+
+              {/* CTA bar */}
+              <div style={{ padding: "16px 24px", background: "#10131a", borderTop: "1px solid #1a1f2e", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <span style={{ fontSize: 11, color: "#636d84" }}>Want a dashboard customized for your business?</span>
+                <div style={{ display: "flex", gap: 8 }}>
+                  <button onClick={enterDemo} style={{ fontSize: 11, padding: "8px 16px", borderRadius: 8, border: "none", background: "linear-gradient(135deg, #60a5fa, #a78bfa)", color: "#fff", cursor: "pointer", fontFamily: "inherit", fontWeight: 700 }}>Try It Free →</button>
+                  <button onClick={() => setDemoModal(true)} style={{ fontSize: 11, padding: "8px 16px", borderRadius: 8, border: "1px solid #1a1f2e", background: "transparent", color: "#636d84", cursor: "pointer", fontFamily: "inherit", fontWeight: 600 }}>Send Us Your Data</button>
+                </div>
+              </div>
+            </div>
+          );
+        })()}
       </div>
 
       {/* Features */}
