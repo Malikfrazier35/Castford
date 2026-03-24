@@ -1532,7 +1532,7 @@ const DashboardView = ({ c, onNav, toast, onDrawer, userName, period, closeTasks
     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 28 }}>
       <div>
         <div style={{ fontSize: 10, fontWeight: 700, color: c.textFaint, textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 6, display: "flex", alignItems: "center", gap: 6 }}>
-          <span>{new Date().getHours() < 6 ? "🌙" : new Date().getHours() < 12 ? "☀️" : new Date().getHours() < 17 ? "🌤" : "🌙"}</span>
+          <span>{new Date().getHours() < 6 ? "◆" : new Date().getHours() < 12 ? "☀️" : new Date().getHours() < 17 ? "◇" : "◆"}</span>
           {fmtDate(new Date())}
         </div>
         <div style={{ fontSize: 26, fontWeight: 800, color: c.text, letterSpacing: "-0.03em", lineHeight: 1.2 }}>Good {new Date().getHours() < 12 ? "morning" : new Date().getHours() < 17 ? "afternoon" : "evening"}{displayName ? `, ${displayName}` : ""}
@@ -3953,7 +3953,7 @@ const IntegrationsView = ({ c, toast }) => {
                   </div>
                 ) : (
                   <div>
-                    <div style={{ fontSize: 28, marginBottom: 8, opacity: 0.5 }}>📄</div>
+                    <div style={{ fontSize: 28, marginBottom: 8, opacity: 0.5 }}>◻</div>
                     <div style={{ fontSize: 14, fontWeight: 700, color: c.textSec, marginBottom: 4 }}>Drop your CSV here or click to browse</div>
                     <div style={{ fontSize: 10, color: c.textFaint, marginBottom: 12 }}>Supports .csv files · Trial balances, P&L exports, journal entries</div>
                     <div style={{ fontSize: 9, color: c.textFaint, padding: "8px 12px", background: c.bg2, borderRadius: 8, display: "inline-block" }}>
@@ -5372,10 +5372,10 @@ const SettingsView = ({ c, onLogout, toast, mode, onShowSuitePanel, suitePanelOp
               const locale = typeof navigator !== "undefined" ? (navigator.language || "en-US") : "en-US";
               const screenRes = typeof window !== "undefined" ? `${window.screen?.width || "?"}×${window.screen?.height || "?"}` : "—";
               return [
-                { label: "Device", value: device, icon: isiPhone || isiPad || isAndroid ? "📱" : "▦", color: c.accent },
-                { label: "Browser", value: `${browser} ${browserVer}`, icon: isSafari ? "◆" : isFirefox ? "◇" : "🌐", color: c.purple },
-                { label: "Timezone", value: tz.split("/").pop()?.replace(/_/g, " ") || tz, icon: "🕐", color: c.cyan },
-                { label: "Screen", value: screenRes, icon: "🖥", color: c.green },
+                { label: "Device", value: device, icon: isiPhone || isiPad || isAndroid ? "▪" : "▦", color: c.accent },
+                { label: "Browser", value: `${browser} ${browserVer}`, icon: isSafari ? "◆" : isFirefox ? "◇" : "◎", color: c.purple },
+                { label: "Timezone", value: tz.split("/").pop()?.replace(/_/g, " ") || tz, icon: "▫", color: c.cyan },
+                { label: "Screen", value: screenRes, icon: "▦", color: c.green },
               ];
             })().map(d => (
               <div key={d.label} style={{ padding: "12px 12px", borderRadius: 10, background: c.surfaceAlt, border: `1px solid ${c.borderSub}`, transition: "all 0.15s" }}
@@ -6748,16 +6748,16 @@ const LandingPage = ({ onLogin }) => {
         <div style={{ display: "flex", justifyContent: "center", gap: 12, flexWrap: "wrap", alignItems: "center" }}>
           {[
             { label: "SOC 2 Type II", icon: "■️" },
-            { label: "AES-256", icon: "🔒" },
+            { label: "AES-256", icon: "■" },
             { label: "99.9% Uptime", icon: "▸" },
-            { label: "GDPR Ready", icon: "🇪🇺" },
+            { label: "GDPR Ready", icon: "◇" },
           ].map(b => (
             <div key={b.label} style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 9, fontWeight: 600, color: "#3d4558", padding: "5px 10px", borderRadius: 6, background: "rgba(16,19,26,0.5)", border: "1px solid #1a1f2e" }}>
               <span style={{ fontSize: 10 }}>{b.icon}</span> {b.label}
             </div>
           ))}
           <div style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 9, fontWeight: 700, color: "#f5b731", padding: "5px 10px", borderRadius: 6, background: "rgba(245,183,49,0.06)", border: "1px solid rgba(245,183,49,0.12)" }}>
-            ★ 4.9 Rating
+            ■ 4.9 Rating
           </div>
         </div>
       </div>
@@ -6794,7 +6794,7 @@ const LandingPage = ({ onLogin }) => {
       <div style={{ padding: isMobile ? "40px 20px" : "60px 48px", maxWidth: 1100, margin: "0 auto" }}>
         <div style={{ textAlign: "center", marginBottom: 48 }}>
           <div style={{ display: "flex", justifyContent: "center", gap: 8, marginBottom: 16 }}>
-            {["◎", "◆", "🔍"].map((icon, i) => (
+            {["◎", "◆", "◈"].map((icon, i) => (
               <div key={i} style={{ width: 40, height: 40, borderRadius: 12, background: ["#60a5fa12", "#3dd9a012", "#a78bfa12"][i], border: `1px solid ${["#60a5fa", "#3dd9a0", "#a78bfa"][i]}15`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18 }}>{icon}</div>
             ))}
           </div>
@@ -6977,6 +6977,51 @@ const LandingPage = ({ onLogin }) => {
                     <span style={{ color: p.color, fontWeight: 700, fontSize: 12 }}>✓</span> {f}
                   </div>
                 ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* ═══ FULL-WIDTH CORPORATE CTA BREAK — Template Pattern B ═══ */}
+      <div style={{ position: "relative", overflow: "hidden", margin: "0 auto", maxWidth: 1200 }}>
+        <div style={{ position: "relative", borderRadius: 24, overflow: "hidden", margin: isMobile ? "0 16px" : "0 48px" }}>
+          <img src="https://images.unsplash.com/photo-1497366216548-37526070297c?w=1400&q=80&fit=crop" alt="Modern corporate office" style={{ width: "100%", height: 340, objectFit: "cover", display: "block" }} loading="lazy" />
+          <div style={{ position: "absolute", inset: 0, background: "linear-gradient(135deg, rgba(6,8,12,0.82), rgba(16,19,26,0.7))" }} />
+          <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", textAlign: "center", padding: 32 }}>
+            <h2 style={{ fontSize: 32, fontWeight: 800, letterSpacing: "-0.03em", marginBottom: 10, color: "#fff" }}>Replace 6 tools with one platform</h2>
+            <p style={{ fontSize: 15, color: "rgba(255,255,255,0.75)", maxWidth: 500, marginBottom: 24, lineHeight: 1.65 }}>From budgeting to board decks, FinanceOS consolidates your entire FP&A workflow. Same-day deployment. 96.8% forecast accuracy.</p>
+            <div style={{ display: "flex", gap: 12 }}>
+              <button onClick={enterDemo} style={{ fontSize: 13, padding: "12px 24px", borderRadius: 10, border: "none", background: "linear-gradient(135deg, #60a5fa, #a78bfa)", color: "#fff", cursor: "pointer", fontFamily: "inherit", fontWeight: 700 }}>Try the Demo ▸</button>
+              <a href="https://calendly.com/finance-os-support/30min" target="_blank" rel="noopener" style={{ fontSize: 13, padding: "12px 24px", borderRadius: 10, border: "1px solid rgba(255,255,255,0.2)", background: "transparent", color: "#fff", cursor: "pointer", fontFamily: "inherit", fontWeight: 700, textDecoration: "none", display: "inline-flex", alignItems: "center" }}>Book a Demo</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* ═══ BUILT FOR EVERY FINANCE ROLE — Personalized dashboards as key selling point ═══ */}
+      <div style={{ padding: isMobile ? "40px 20px" : "80px 48px", maxWidth: 1100, margin: "0 auto" }}>
+        <div style={{ textAlign: "center", marginBottom: 40 }}>
+          <div style={{ display: "inline-block", padding: "6px 14px", borderRadius: 20, background: "rgba(96,165,250,0.06)", border: "1px solid rgba(96,165,250,0.12)", fontSize: 10, fontWeight: 700, color: "#60a5fa", marginBottom: 16, letterSpacing: "0.06em", textTransform: "uppercase" }}>Tailored to your role</div>
+          <h2 style={{ fontSize: 36, fontWeight: 800, letterSpacing: "-0.03em", marginBottom: 10 }}>One platform. Every finance role.</h2>
+          <p style={{ fontSize: 15, color: "#8b92a5", maxWidth: 540, margin: "0 auto" }}>Every executive sees the KPIs that matter to them. Personalized dashboards are not an add-on — they are how FinanceOS works.</p>
+        </div>
+        <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "repeat(4, 1fr)", gap: 16 }}>
+          {[
+            { role: "CFO", focus: "Revenue, margins, cash flow, ROIC, EPS, dividend yield, board deck export", photo: "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=400&q=80&fit=crop&crop=face", color: "#60a5fa" },
+            { role: "CEO", focus: "Strategic KPIs, segment growth, market position, Rule of 40, fundraising readiness", photo: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&q=80&fit=crop&crop=face", color: "#a78bfa" },
+            { role: "Controller", focus: "Close progress, reconciliation status, GL summary, AP/AR aging, compliance", photo: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&q=80&fit=crop&crop=face", color: "#3dd9a0" },
+            { role: "FP&A Manager", focus: "Variance analysis, budget vs actual, forecast accuracy, scenario comparison", photo: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=400&q=80&fit=crop&crop=face", color: "#f5b731" },
+          ].map(p => (
+            <div key={p.role} style={{ background: "#10131a", border: "1px solid #1a1f2e", borderRadius: 18, overflow: "hidden", transition: "all 0.25s cubic-bezier(0.4,0,0.2,1)" }}>
+              <div style={{ position: "relative", height: 180, overflow: "hidden" }}>
+                <img src={p.photo} alt={p.role} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} loading="lazy" />
+                <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, height: "50%", background: "linear-gradient(transparent, #10131a)" }} />
+                <div style={{ position: "absolute", bottom: 12, left: 16, fontSize: 18, fontWeight: 800, color: "#fff", letterSpacing: "-0.02em" }}>{p.role}</div>
+              </div>
+              <div style={{ padding: "16px 18px 20px" }}>
+                <p style={{ fontSize: 11, color: "#636d84", lineHeight: 1.6, marginBottom: 12 }}>{p.focus}</p>
+                <button onClick={enterDemo} style={{ fontSize: 10, fontWeight: 700, color: p.color, background: "none", border: "none", cursor: "pointer", fontFamily: "inherit", padding: 0 }}>See {p.role} dashboard ▸</button>
               </div>
             </div>
           ))}
@@ -7558,6 +7603,27 @@ const LandingPage = ({ onLogin }) => {
           ))}
         </div>
         <div style={{ textAlign: "center", marginTop: 24, fontSize: 11, color: "#3d4558" }}>All plans include: SOC 2 architecture · AES-256 encryption · 24/7 monitoring · Email support</div>
+      </div>
+
+      {/* ═══ CUSTOMER SUCCESS — Photo testimonial panel (Template Pattern D) ═══ */}
+      <div style={{ padding: isMobile ? "20px 20px 40px" : "40px 48px 60px", maxWidth: 1100, margin: "0 auto" }}>
+        <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1.2fr 1fr", gap: 0, borderRadius: 20, overflow: "hidden", border: "1px solid #1a1f2e" }}>
+          <div style={{ padding: isMobile ? "28px 24px" : "48px 40px", background: "#10131a", display: "flex", flexDirection: "column", justifyContent: "center" }}>
+            <div style={{ fontSize: 28, color: "#f5b731", marginBottom: 16, letterSpacing: 2 }}>■ ■ ■ ■ ■</div>
+            <p style={{ fontSize: 18, color: "#eef0f6", lineHeight: 1.7, fontStyle: "italic", marginBottom: 20, fontWeight: 500 }}>"We went from 3-day board deck cycles to 15-minute exports. The AI copilot caught a $2.1M revenue variance our team missed in manual review."</p>
+            <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+              <img src="https://images.unsplash.com/photo-1580489944761-15a19d654956?w=120&q=80&fit=crop&crop=face" alt="" style={{ width: 48, height: 48, borderRadius: 14, objectFit: "cover" }} loading="lazy" />
+              <div>
+                <div style={{ fontSize: 13, fontWeight: 700, color: "#eef0f6" }}>Sarah Chen</div>
+                <div style={{ fontSize: 11, color: "#636d84" }}>VP Finance · SaaS · $42M ARR</div>
+              </div>
+            </div>
+          </div>
+          <div style={{ position: "relative", minHeight: 280, overflow: "hidden" }}>
+            <img src="https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=700&q=80&fit=crop" alt="Finance team reviewing dashboard" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} loading="lazy" />
+            <div style={{ position: "absolute", inset: 0, background: "linear-gradient(270deg, transparent 50%, #10131a)" }} />
+          </div>
+        </div>
       </div>
 
       {/* ═══ Enterprise Sales Enablement — Why Teams Switch ═══ */}
