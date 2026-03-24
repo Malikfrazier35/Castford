@@ -2885,7 +2885,7 @@ const DRIVERS = [
   { name: "Seasonal pattern", shap: 1.3 },
 ];
 
-const ForecastView = ({ c, toast, onDrawer }) => {
+const ForecastView = ({ c, toast, onDrawer, onNav, closeTasks }) => {
   const isMobile = useMediaQuery("(max-width: 768px)");
   const [ndr, setNdr] = useState(118);
   const [pipeline, setPipeline] = useState(40);
@@ -3142,6 +3142,38 @@ const ForecastView = ({ c, toast, onDrawer }) => {
           </div>
         </div>
       </div>
+
+      {/* ── Cross-View Data Pipeline ── */}
+      <div style={{ marginTop: 24 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 14 }}>
+          <div style={{ fontSize: 10, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.12em", color: c.textFaint }}>Connected Pipelines</div>
+          <div style={{ flex: 1, height: 1, background: `linear-gradient(90deg, ${c.borderSub}, transparent)` }} />
+        </div>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 12 }}>
+          {[
+            { label: "P&L Actuals", desc: "Revenue actuals feeding forecast baseline", view: "pnl", icon: FileText, color: c.accent, metric: "$51.2M rev" },
+            { label: "Consolidation", desc: "Multi-entity rollup uses forecast projections", view: "consolidation", icon: Layers, color: c.cyan || c.accent, metric: "3 entities" },
+            { label: "Scenario Models", desc: "Scenarios inherit forecast sensitivity inputs", view: "models", icon: GitBranch, color: c.purple, metric: "6 scenarios" },
+            { label: "Close Tasks", desc: `${closeTasks ? closeTasks.filter(t => t.status === "done").length : 0}/${closeTasks ? closeTasks.length : 0} tasks feed data quality score`, view: "close", icon: CheckSquare, color: c.amber, metric: closeTasks ? `${Math.round((closeTasks.filter(t => t.status === "done").length / closeTasks.length) * 100)}% closed` : "—" },
+            { label: "AI Copilot", desc: "Ask natural language questions about this forecast", view: "copilot", icon: Brain, color: c.green, metric: "14 drivers" },
+          ].map(p => (
+            <div key={p.label} onClick={() => onNav && onNav(p.view)} style={{ background: c.glass, backdropFilter: c.glassBlur, WebkitBackdropFilter: c.glassBlur, border: `1px solid ${c.glassBorder}`, borderRadius: 12, padding: "16px 18px", cursor: "pointer", transition: "all 0.2s" }}
+              onMouseEnter={e => { e.currentTarget.style.borderColor = `${p.color}40`; e.currentTarget.style.transform = "translateY(-1px)"; }}
+              onMouseLeave={e => { e.currentTarget.style.borderColor = c.glassBorder; e.currentTarget.style.transform = "translateY(0)"; }}
+            >
+              <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
+                <div style={{ width: 26, height: 26, borderRadius: 7, background: `${p.color}12`, border: `1px solid ${p.color}18`, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                  <p.icon size={13} color={p.color} />
+                </div>
+                <span style={{ fontSize: 12, fontWeight: 700, color: c.text }}>{p.label}</span>
+                <ArrowUpRight size={10} color={c.textFaint} style={{ marginLeft: "auto" }} />
+              </div>
+              <div style={{ fontSize: 10, color: c.textDim, lineHeight: 1.5, marginBottom: 6 }}>{p.desc}</div>
+              <div style={{ fontSize: 10, fontWeight: 700, color: p.color, fontFamily: "'JetBrains Mono', monospace" }}>{p.metric}</div>
+            </div>
+          ))}
+        </div>
+      </div>
     </div>
   );
 };
@@ -3357,6 +3389,8 @@ const ConsolidationView = ({ c, onNav, toast, onDrawer }) => {
             <span style={{ fontSize: 11, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.06em", color: c.textDim }}>Consolidated P&L — Eliminations Applied</span>
           </div>
           <span style={{ fontSize: 9, color: c.purple, fontWeight: 700, padding: "3px 8px", borderRadius: 5, background: c.purpleDim, border: `1px solid ${c.purple}10` }}>IC: -$1.2M auto-eliminated</span>
+          <button onClick={() => onNav && onNav("close")} style={{ fontSize: 9, fontWeight: 700, padding: "3px 10px", borderRadius: 5, background: c.accentDim, color: c.accent, border: `1px solid ${c.accent}15`, cursor: "pointer", fontFamily: "inherit", marginLeft: 4 }}>Close Tasks ▸</button>
+          <button onClick={() => onNav && onNav("forecast")} style={{ fontSize: 9, fontWeight: 700, padding: "3px 10px", borderRadius: 5, background: c.greenDim, color: c.green, border: `1px solid ${c.green}15`, cursor: "pointer", fontFamily: "inherit", marginLeft: 4 }}>Forecast ▸</button>
         </div>
         <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 11 }}>
           <thead>
@@ -3408,7 +3442,7 @@ const CLOSE_TASKS = [
   { id: 8, task: "Management review sign-off", owner: "CFO", status: "notstarted", due: "Mar 8", priority: "med", cat: "Review" },
 ];
 
-const CloseView = ({ c, toast, tasks, setTasks, logActivity }) => {
+const CloseView = ({ c, toast, tasks, setTasks, logActivity, onNav }) => {
   const isMobile = useMediaQuery("(max-width: 768px)");
 
   const statusLabel = { done: "Complete", progress: "In Progress", notstarted: "Not Started" };
@@ -3658,6 +3692,37 @@ const CloseView = ({ c, toast, tasks, setTasks, logActivity }) => {
               </div>
             );
           })}
+        </div>
+      </div>
+
+      {/* ── Cross-View Pipeline ── */}
+      <div style={{ marginTop: 24 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 14 }}>
+          <div style={{ fontSize: 10, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.12em", color: c.textFaint }}>Connected Pipelines</div>
+          <div style={{ flex: 1, height: 1, background: `linear-gradient(90deg, ${c.borderSub}, transparent)` }} />
+        </div>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: 12 }}>
+          {[
+            { label: "Consolidation", desc: "Close status gates entity consolidation", view: "consolidation", icon: Layers, color: c.cyan || c.accent, metric: "3 entities" },
+            { label: "P&L Statement", desc: "Reconciled actuals flow into P&L reports", view: "pnl", icon: FileText, color: c.accent, metric: "$51.2M rev" },
+            { label: "Forecast", desc: "Closed months recalibrate ML forecast model", view: "forecast", icon: TrendingUp, color: c.green, metric: "MAPE 3.2%" },
+            { label: "Dashboard", desc: "Close progress updates KPI health scores", view: "dashboard", icon: LayoutDashboard, color: c.purple, metric: `${pct}% closed` },
+          ].map(p => (
+            <div key={p.label} onClick={() => onNav && onNav(p.view)} style={{ background: c.glass, backdropFilter: c.glassBlur, WebkitBackdropFilter: c.glassBlur, border: `1px solid ${c.glassBorder}`, borderRadius: 12, padding: "14px 16px", cursor: "pointer", transition: "all 0.2s" }}
+              onMouseEnter={e => { e.currentTarget.style.borderColor = `${p.color}40`; e.currentTarget.style.transform = "translateY(-1px)"; }}
+              onMouseLeave={e => { e.currentTarget.style.borderColor = c.glassBorder; e.currentTarget.style.transform = "translateY(0)"; }}
+            >
+              <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6 }}>
+                <div style={{ width: 24, height: 24, borderRadius: 6, background: `${p.color}12`, border: `1px solid ${p.color}18`, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                  <p.icon size={12} color={p.color} />
+                </div>
+                <span style={{ fontSize: 11, fontWeight: 700, color: c.text }}>{p.label}</span>
+                <ArrowUpRight size={9} color={c.textFaint} style={{ marginLeft: "auto" }} />
+              </div>
+              <div style={{ fontSize: 9, color: c.textDim, lineHeight: 1.4, marginBottom: 4 }}>{p.desc}</div>
+              <div style={{ fontSize: 9, fontWeight: 700, color: p.color, fontFamily: "'JetBrains Mono', monospace" }}>{p.metric}</div>
+            </div>
+          ))}
         </div>
       </div>
     </div>
@@ -5264,7 +5329,7 @@ const AdminView = ({ c, toast, onNav }) => {
   );
 };
 
-const ScenariosView = ({ c, toast }) => {
+const ScenariosView = ({ c, toast, onNav }) => {
   const [selected, setSelected] = useState(0);
   const [compare, setCompare] = useState([0, 2]); // side-by-side compare indices
   const [drivers, setDrivers] = useState({ ndr: 118, pipeline: 42, churn: 2.1, headcount: 128 });
@@ -5555,7 +5620,7 @@ const INTEL_EVENTS = [
   { title: "CFO Roundtable: Budget Season Automation", date: "Apr 22, 2026", time: "1:00 PM ET", speakers: 6, color: "#a181f7", img: "https://images.unsplash.com/photo-1591115765373-5207764f72e7?w=600&h=200&fit=crop" },
 ];
 
-const IntelligenceView = ({ c, toast }) => {
+const IntelligenceView = ({ c, toast, onNav }) => {
   const [filter, setFilter] = useState("all");
   const [searchTerm, setSearchTerm] = useState("");
   const [modalOpen, setModalOpen] = useState(false);
@@ -7903,9 +7968,73 @@ const LandingPage = ({ onLogin }) => {
       </nav>
 
       {/* Hero */}
-      <div style={{ position: "relative", zIndex: 1, textAlign: "center", padding: isMobile ? "40px 20px 32px" : "80px 48px 40px", maxWidth: 900, margin: "0 auto" }}>
-        {/* Top logos strip — subtle social proof */}
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 24, marginBottom: 24, opacity: 0.45, animation: "fadeSlideUp 0.6s ease 0s both" }}>
+      <div style={{ position: "relative", zIndex: 1, textAlign: "center", padding: isMobile ? "40px 20px 32px" : "80px 48px 40px", maxWidth: 960, margin: "0 auto" }}>
+        {/* GA announcement badge — premium design */}
+        <div style={{ display: "inline-flex", alignItems: "center", gap: 10, padding: "8px 20px", borderRadius: 40, background: `linear-gradient(135deg, ${lp.accent}08, ${lp.purple}06)`, border: `1px solid ${lp.accent}20`, marginBottom: 28, animation: "fadeSlideUp 0.6s ease", position: "relative", overflow: "hidden" }}>
+          <div style={{ position: "absolute", inset: 0, background: `linear-gradient(90deg, transparent, ${lp.accent}05, transparent)`, animation: "shimmer 3s ease infinite" }} />
+          <span style={{ display: "inline-block", width: 8, height: 8, borderRadius: "50%", background: `linear-gradient(135deg, ${lp.green}, ${lp.accent})`, boxShadow: `0 0 12px ${lp.green}50`, animation: "pulse 2s infinite" }} />
+          <span style={{ fontSize: 11, fontWeight: 800, letterSpacing: "0.08em", background: `linear-gradient(135deg, ${lp.accent}, ${lp.purple})`, WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>AI-NATIVE FP&A</span>
+          <span style={{ width: 1, height: 14, background: `${lp.textFaint}30` }} />
+          <span style={{ fontSize: 11, fontWeight: 600, color: lp.textDim, letterSpacing: "0.02em" }}>Now in General Availability</span>
+          <span style={{ fontSize: 8, fontWeight: 800, padding: "2px 8px", borderRadius: 4, background: `${lp.green}12`, color: lp.green, letterSpacing: "0.06em" }}>NEW</span>
+        </div>
+
+        <h1 style={{ fontSize: isMobile ? 38 : 64, fontWeight: 800, lineHeight: 1.02, letterSpacing: "-0.04em", color: lp.text, marginBottom: 22, animation: "fadeSlideUp 0.6s ease 0.1s both" }}>
+          Financial planning<br />that <span style={{ background: `linear-gradient(135deg, ${lp.gradFrom}, ${lp.gradTo})`, WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", position: "relative" }}>thinks before</span><br />it answers
+        </h1>
+        <p style={{ fontSize: isMobile ? 16 : 19, color: lp.textDim, lineHeight: 1.65, maxWidth: 560, margin: "0 auto 36px", fontWeight: 400, animation: "fadeSlideUp 0.6s ease 0.2s both" }}>
+          Connect your ERP, CRM, and billing data into a unified model with AI-powered variance detection, natural language querying, and visible reasoning.
+        </p>
+
+        {/* CTA — sign-up focused, demo requires account */}
+        <div style={{ display: "flex", gap: 0, justifyContent: "center", maxWidth: 480, margin: "0 auto", flexDirection: isMobile ? "column" : "row", animation: "fadeSlideUp 0.6s ease 0.3s both" }}>
+          <input value={heroEmail} onChange={e => setHeroEmail(e.target.value)} onKeyDown={e => { if (e.key === "Enter") handleHeroSignup(); }}
+            placeholder="Work email" type="email"
+            style={{ flex: 1, fontSize: 15, padding: "16px 20px", borderRadius: isMobile ? 12 : "12px 0 0 12px", border: `1px solid ${lp.border}`, borderRight: isMobile ? `1px solid ${lp.border}` : "none", background: lp.inputBg, color: lp.text, fontFamily: "inherit", outline: "none", transition: "border-color 0.2s" }}
+            onFocus={e => e.target.style.borderColor = lp.accent}
+            onBlur={e => e.target.style.borderColor = lp.border}
+          />
+          <button onClick={handleHeroSignup} style={{ fontSize: 15, padding: "16px 28px", borderRadius: isMobile ? 12 : "0 12px 12px 0", border: "none", background: `linear-gradient(135deg, ${lp.gradFrom}, ${lp.gradTo})`, color: "#fff", cursor: "pointer", fontFamily: "inherit", fontWeight: 700, whiteSpace: "nowrap", boxShadow: `0 8px 30px ${lp.accent}33`, transition: "all 0.2s" }}
+            onMouseEnter={e => e.currentTarget.style.boxShadow = `0 12px 40px ${lp.accent}40`}
+            onMouseLeave={e => e.currentTarget.style.boxShadow = `0 8px 30px ${lp.accent}33`}
+          >Get Started Free</button>
+        </div>
+        <div style={{ fontSize: 11, color: lp.textFaint, marginTop: 10, textAlign: "center" }}>No credit card required · 14-day free trial · Interactive demo after signup</div>
+
+        <div style={{ display: "flex", gap: 12, justifyContent: "center", marginTop: 18 }}>
+          <button onClick={() => setDemoModal(true)} style={{ fontSize: 13, padding: "11px 22px", borderRadius: 10, border: `1px solid ${lp.accent}30`, background: `${lp.accent}06`, color: lp.accent, cursor: "pointer", fontFamily: "inherit", fontWeight: 600, transition: "all 0.15s", display: "flex", alignItems: "center", gap: 6 }}
+            onMouseEnter={e => { e.currentTarget.style.borderColor = `${lp.accent}60`; e.currentTarget.style.background = `${lp.accent}12`; }}
+            onMouseLeave={e => { e.currentTarget.style.borderColor = `${lp.accent}30`; e.currentTarget.style.background = `${lp.accent}06`; }}
+          ><Eye size={14} />Request a Guided Demo</button>
+          <button onClick={() => setAuthModal("signup")} style={{ fontSize: 13, padding: "11px 22px", borderRadius: 10, border: `1px solid ${lp.border}`, background: "transparent", color: lp.textSub, cursor: "pointer", fontFamily: "inherit", fontWeight: 600, transition: "all 0.15s" }}
+            onMouseEnter={e => { e.currentTarget.style.borderColor = lp.textFaint; e.currentTarget.style.color = lp.text; }}
+            onMouseLeave={e => { e.currentTarget.style.borderColor = lp.border; e.currentTarget.style.color = lp.textSub; }}
+          >Sign In to Explore</button>
+        </div>
+
+        {/* ROI Impact Stats — real metrics */}
+        <div style={{ display: "grid", gridTemplateColumns: isMobile ? "repeat(2, 1fr)" : "repeat(4, 1fr)", gap: 16, marginTop: 40, animation: "fadeSlideUp 0.6s ease 0.4s both" }}>
+          {[
+            { value: "80%", label: "Faster Planning Cycles", color: lp.accent, icon: Zap },
+            { value: "3 weeks", label: "Saved on Budgeting", color: lp.green, icon: CheckSquare },
+            { value: "95%", label: "Faster Financial Reporting", color: lp.purple, icon: TrendingUp },
+            { value: "12-day", label: "Decrease in Close Times", color: lp.gold || lp.amber || "#d97706", icon: Activity },
+          ].map(s => (
+            <div key={s.label} style={{ textAlign: "center", padding: "20px 14px", borderRadius: 16, background: `${s.color}05`, border: `1px solid ${s.color}12`, transition: "all 0.2s" }}
+              onMouseEnter={e => { e.currentTarget.style.borderColor = `${s.color}30`; e.currentTarget.style.transform = "translateY(-2px)"; e.currentTarget.style.boxShadow = `0 8px 24px ${s.color}10`; }}
+              onMouseLeave={e => { e.currentTarget.style.borderColor = `${s.color}12`; e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = "none"; }}
+            >
+              <div style={{ width: 32, height: 32, borderRadius: 9, background: `${s.color}10`, display: "inline-flex", alignItems: "center", justifyContent: "center", marginBottom: 10 }}>
+                <s.icon size={16} color={s.color} />
+              </div>
+              <div style={{ fontSize: 26, fontWeight: 800, color: lp.text, fontFamily: "'JetBrains Mono', monospace", lineHeight: 1 }}>{s.value}</div>
+              <div style={{ fontSize: 10, color: lp.textDim, fontWeight: 600, marginTop: 6, lineHeight: 1.3 }}>{s.label}</div>
+            </div>
+          ))}
+        </div>
+
+        {/* Trust logos — compact */}
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 28, marginTop: 32, opacity: 0.4 }}>
           {[
             { name: "Coca-Cola", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/ce/Coca-Cola_logo.svg/200px-Coca-Cola_logo.svg.png", h: 14 },
             { name: "JPMorgan", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/af/J.P._Morgan_Logo_2008_1.svg/200px-J.P._Morgan_Logo_2008_1.svg.png", h: 12 },
@@ -7914,53 +8043,12 @@ const LandingPage = ({ onLogin }) => {
             { name: "EY", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/34/EY_logo_2019.svg/120px-EY_logo_2019.svg.png", h: 16 },
           ].map(b => <img key={b.name} src={b.logo} alt={b.name} style={{ height: b.h, objectFit: "contain", filter: lpMode === "light" ? "grayscale(1) brightness(0.4)" : "grayscale(1) brightness(2)" }} loading="lazy" onError={e => e.target.style.display = "none"} />)}
         </div>
-        <div style={{ display: "inline-block", padding: "6px 16px", borderRadius: 20, background: `${lp.accent}0a`, border: `1px solid ${lp.accent}18`, fontSize: 11, fontWeight: 700, color: lp.accent, marginBottom: 28, letterSpacing: "0.04em", animation: "fadeSlideUp 0.6s ease" }}>
-          <span style={{ display: "inline-block", width: 6, height: 6, borderRadius: "50%", background: lp.green, marginRight: 8, animation: "pulse 2s infinite" }} />
-          AI-NATIVE FP&A — NOW IN GENERAL AVAILABILITY
-        </div>
-        <h1 style={{ fontSize: isMobile ? 38 : 62, fontWeight: 800, lineHeight: 1.04, letterSpacing: "-0.04em", color: lp.text, marginBottom: 22, animation: "fadeSlideUp 0.6s ease 0.1s both" }}>
-          Financial planning<br />that <span style={{ background: `linear-gradient(135deg, ${lp.gradFrom}, ${lp.gradTo})`, WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>thinks before</span><br />it answers
-        </h1>
-        <p style={{ fontSize: isMobile ? 16 : 18, color: lp.textDim, lineHeight: 1.65, maxWidth: 540, margin: "0 auto 40px", fontWeight: 400, animation: "fadeSlideUp 0.6s ease 0.2s both" }}>
-          Connect your ERP, CRM, and billing data into a unified model with AI-powered variance detection and natural language querying.
-        </p>
-        <div style={{ display: "flex", gap: 0, justifyContent: "center", maxWidth: 440, margin: "0 auto", flexDirection: isMobile ? "column" : "row" }}>
-          <input value={heroEmail} onChange={e => setHeroEmail(e.target.value)} onKeyDown={e => { if (e.key === "Enter") handleHeroSignup(); }}
-            placeholder="Work email" type="email"
-            style={{ flex: 1, fontSize: 14, padding: "14px 18px", borderRadius: isMobile ? 10 : "10px 0 0 10px", border: `1px solid ${lp.border}`, borderRight: isMobile ? `1px solid ${lp.border}` : "none", background: lp.inputBg, color: lp.text, fontFamily: "inherit", outline: "none", transition: "border-color 0.2s" }}
-            onFocus={e => e.target.style.borderColor = lp.accent}
-            onBlur={e => e.target.style.borderColor = lp.border}
-          />
-          <button onClick={handleHeroSignup} style={{ fontSize: 14, padding: "14px 24px", borderRadius: isMobile ? 10 : "0 10px 10px 0", border: "none", background: `linear-gradient(135deg, ${lp.gradFrom}, ${lp.gradTo})`, color: "#fff", cursor: "pointer", fontFamily: "inherit", fontWeight: 700, whiteSpace: "nowrap", boxShadow: `0 8px 30px ${lp.accent}33` }}>Subscribe Now</button>
-        </div>
-        <div style={{ fontSize: 11, color: lp.textFaint, marginTop: 8, textAlign: "center" }}>Using a work email helps find teammates · 30-day money-back guarantee</div>
-        <div style={{ display: "flex", gap: 12, justifyContent: "center", marginTop: 16 }}>
-          <button onClick={enterDemo} style={{ fontSize: 13, padding: "10px 20px", borderRadius: 8, border: `1px solid ${lp.border}`, background: "transparent", color: lp.textDim, cursor: "pointer", fontFamily: "inherit", fontWeight: 600, transition: "all 0.15s" }}
-            onMouseEnter={e => { e.currentTarget.style.borderColor = lp.textFaint; e.currentTarget.style.color = lp.text; }}
-            onMouseLeave={e => { e.currentTarget.style.borderColor = lp.border; e.currentTarget.style.color = lp.textDim; }}
-          >Try the Live Demo</button>
-          <button onClick={() => setDemoModal(true)} style={{ fontSize: 13, padding: "10px 20px", borderRadius: 8, border: `1px solid ${lp.accent}30`, background: `${lp.accent}0a`, color: lp.accent, cursor: "pointer", fontFamily: "inherit", fontWeight: 600, transition: "all 0.15s" }}
-            onMouseEnter={e => { e.currentTarget.style.borderColor = `${lp.accent}60`; e.currentTarget.style.background = `${lp.accent}14`; }}
-            onMouseLeave={e => { e.currentTarget.style.borderColor = `${lp.accent}30`; e.currentTarget.style.background = `${lp.accent}0a`; }}
-          >Request a Demo Call</button>
-        </div>
-        {/* Product value props */}
-        <div style={{ display: "flex", justifyContent: "center", gap: 28, marginTop: 32, flexWrap: "wrap" }}>
-          {[
-            { value: "< 48hr", label: "Go-live" },
-            { value: "15+", label: "Integrations" },
-            { value: "Sub-3%", label: "Forecast MAPE" },
-            { value: "SOC 2", label: "Compliant" },
-          ].map(m => (
-            <div key={m.label} style={{ textAlign: "center" }}>
-              <div style={{ fontSize: 18, fontWeight: 800, color: lp.text, fontFamily: "'JetBrains Mono', monospace" }}>{m.value}</div>
-              <div style={{ fontSize: 9, color: lp.textFaint, fontWeight: 600, marginTop: 2, textTransform: "uppercase", letterSpacing: "0.06em" }}>{m.label}</div>
-            </div>
-          ))}
-        </div>
       </div>
 
-      {/* ═══ Premium Dashboard Preview — floating card panels ═══ */}
+      {/* Shimmer keyframe for GA badge */}
+      <style>{`@keyframes shimmer{0%{transform:translateX(-100%)}50%{transform:translateX(100%)}100%{transform:translateX(100%)}}`}</style>
+
+      {/* ═══ Premium Dashboard Preview — gated behind signup ═══ */}
       <div style={{ position: "relative", zIndex: 1, maxWidth: 1100, margin: "0 auto", padding: isMobile ? "0 20px 40px" : "0 48px 60px" }}>
         <div style={{ position: "relative", background: lpMode === "dark" ? "rgba(16,19,26,0.8)" : "rgba(248,249,251,0.9)", border: `1px solid ${lp.border}`, borderRadius: 24, padding: 3, boxShadow: lpMode === "dark" ? "0 40px 100px rgba(0,0,0,0.6), 0 0 0 1px rgba(96,165,250,0.05)" : "0 40px 100px rgba(0,0,0,0.08), 0 0 0 1px rgba(0,0,0,0.03)", overflow: "hidden" }}>
           {/* Browser chrome bar */}
@@ -8040,12 +8128,12 @@ const LandingPage = ({ onLogin }) => {
                 <span style={{ fontSize: 6, fontWeight: 800, padding: "2px 5px", borderRadius: 3, background: `${lp.green}15`, color: lp.green, marginLeft: "auto" }}>LIVE</span>
               </div>
               {[
-                { text: "Revenue is tracking 12.3% above budget driven by Enterprise expansion", color: lp.green, icon: "▲" },
-                { text: "COGS increased 3.2% — AWS hosting costs up, recommend reserved instances", color: lp.amber || lp.gold, icon: "▸" },
-                { text: "Q2 forecast confidence: 94.2% — MAPE below 3% threshold", color: lp.accent, icon: "◎" },
+                { text: "Revenue is tracking 12.3% above budget driven by Enterprise expansion", color: lp.green, Icon: ArrowUpRight },
+                { text: "COGS increased 3.2% — AWS hosting costs up, recommend reserved instances", color: lp.amber || lp.gold, Icon: Activity },
+                { text: "Q2 forecast confidence: 94.2% — MAPE below 3% threshold", color: lp.accent, Icon: Target },
               ].map((insight, i) => (
                 <div key={i} style={{ padding: "10px 10px", marginBottom: 6, borderRadius: 8, background: `${insight.color}06`, border: `1px solid ${insight.color}12`, fontSize: 9, lineHeight: 1.5, color: lp.textSub || lp.textDim }}>
-                  <span style={{ fontWeight: 800, color: insight.color, marginRight: 4 }}>{insight.icon}</span>
+                  <insight.Icon size={10} color={insight.color} style={{ marginRight: 4, flexShrink: 0 }} />
                   {insight.text}
                 </div>
               ))}
@@ -8055,99 +8143,177 @@ const LandingPage = ({ onLogin }) => {
               </div>
             </div>}
           </div>
+
+          {/* Gated overlay — requires signup to access full demo */}
+          <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, height: "65%", background: `linear-gradient(to top, ${lpMode === "dark" ? "#0d0f14" : "#f7f8fa"} 10%, ${lpMode === "dark" ? "#0d0f14cc" : "#f7f8facc"} 40%, transparent 100%)`, display: "flex", alignItems: "flex-end", justifyContent: "center", paddingBottom: 32, zIndex: 10 }}>
+            <div style={{ textAlign: "center" }}>
+              <div style={{ fontSize: 16, fontWeight: 800, color: lp.text, marginBottom: 6 }}>See the full platform in action</div>
+              <div style={{ fontSize: 12, color: lp.textDim, marginBottom: 16, maxWidth: 320, margin: "0 auto 16px" }}>Sign up for a free account to explore the interactive demo with your own data.</div>
+              <div style={{ display: "flex", gap: 10, justifyContent: "center" }}>
+                <button onClick={() => setAuthModal("signup")} style={{ fontSize: 13, padding: "12px 24px", borderRadius: 10, border: "none", background: `linear-gradient(135deg, ${lp.gradFrom}, ${lp.gradTo})`, color: "#fff", cursor: "pointer", fontFamily: "inherit", fontWeight: 700, boxShadow: `0 6px 24px ${lp.accent}30` }}>Create Free Account</button>
+                <button onClick={() => setDemoModal(true)} style={{ fontSize: 13, padding: "12px 24px", borderRadius: 10, border: `1px solid ${lp.border}`, background: lpMode === "dark" ? "rgba(255,255,255,0.04)" : "rgba(0,0,0,0.03)", color: lp.textSub, cursor: "pointer", fontFamily: "inherit", fontWeight: 600 }}>Schedule a Call</button>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
-      {/* Connected Platforms — categorized integration cards */}
-      <div style={{ textAlign: "center", padding: isMobile ? "32px 20px 10px" : "56px 48px 10px", maxWidth: 1100, margin: "0 auto" }}>
-        <div style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.14em", color: lp.textFaint, marginBottom: 8 }}>Built on & Connected to</div>
-        <p style={{ fontSize: 14, color: lp.textDim, maxWidth: 480, margin: "0 auto 32px", lineHeight: 1.6 }}>21 enterprise connectors across payments, data, infrastructure, and collaboration.</p>
+      {/* ═══ Connected Platforms — Animated Logo Carousel ═══ */}
+      <div style={{ textAlign: "center", padding: isMobile ? "32px 20px 10px" : "60px 48px 10px", maxWidth: 1100, margin: "0 auto" }}>
+        <div style={{ display: "inline-block", padding: "6px 14px", borderRadius: 20, background: `${lp.purple}0a`, border: `1px solid ${lp.purple}18`, fontSize: 10, fontWeight: 700, color: lp.purple, marginBottom: 16, letterSpacing: "0.06em", textTransform: "uppercase" }}>Integrations</div>
+        <h2 style={{ fontSize: 32, fontWeight: 800, letterSpacing: "-0.03em", marginBottom: 8, color: lp.text }}>21 enterprise connectors</h2>
+        <p style={{ fontSize: 15, color: lp.textDim, maxWidth: 500, margin: "0 auto 36px", lineHeight: 1.6 }}>Payments, data infrastructure, collaboration, and AI — all connected with bi-directional sync.</p>
 
-        {/* Integration cards by category */}
-        {[
-          { cat: "Financial Data & Payments", color: lp.green, items: [
-            { name: "Stripe", tag: "Payments", icon: "◆" }, { name: "Square", tag: "Payments", icon: "◆" }, { name: "Plaid", tag: "Banking", icon: "◈" },
-            { name: "S&P Global", tag: "Market Data", icon: "◇" }, { name: "Morningstar", tag: "Research", icon: "◎" }, { name: "FactSet", tag: "Financial Data", icon: "▣" }, { name: "QuickBooks", tag: "ERP", icon: "■" },
-          ]},
-          { cat: "Infrastructure & AI", color: lp.purple, items: [
-            { name: "Anthropic", tag: "AI Partner", icon: "◎", featured: true }, { name: "Supabase", tag: "Database", icon: "▣" }, { name: "Vercel", tag: "Hosting", icon: "▲" },
-            { name: "Cloudflare", tag: "Security", icon: "◇" }, { name: "AWS", tag: "Cloud", icon: "■" }, { name: "Ramp", tag: "Expense Mgmt", icon: "◆" }, { name: "DocuSign", tag: "eSignature", icon: "◈" },
-          ]},
-          { cat: "Collaboration & Sales", color: lp.accent, items: [
-            { name: "Slack", tag: "Messaging", icon: "▸" }, { name: "Gmail", tag: "Email", icon: "◇" }, { name: "HubSpot", tag: "CRM", icon: "◆" },
-            { name: "Salesforce", tag: "CRM", icon: "◆" }, { name: "Intercom", tag: "Support", icon: "◎" }, { name: "Calendly", tag: "Scheduling", icon: "◈" }, { name: "Linear", tag: "Projects", icon: "▣" },
-          ]},
-        ].map((group, gi) => (
-          <div key={group.cat} style={{ marginBottom: 16 }}>
-            <div style={{ fontSize: 8, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: group.color, marginBottom: 10, opacity: 0.8 }}>{group.cat}</div>
-            <div style={{ display: "flex", justifyContent: "center", gap: 8, flexWrap: "wrap" }}>
-              {group.items.map((item, ii) => (
-                <div key={item.name} className="lp-connector" style={{
-                  display: "flex", alignItems: "center", gap: 8, padding: "8px 16px", borderRadius: 10,
-                  background: item.featured ? `${lp.purple}08` : lp.cardBg,
-                  border: `1px solid ${item.featured ? `${lp.purple}25` : lp.border}`,
-                  backdropFilter: "blur(8px)", transition: "all 0.25s cubic-bezier(0.22,1,0.36,1)",
-                  cursor: "default", animation: `fadeSlideUp 0.4s ease ${gi * 0.1 + ii * 0.03}s both`,
-                }}
-                  onMouseEnter={e => { e.currentTarget.style.borderColor = `${group.color}40`; e.currentTarget.style.transform = "translateY(-2px)"; e.currentTarget.style.boxShadow = `0 8px 24px ${group.color}10`; }}
-                  onMouseLeave={e => { e.currentTarget.style.borderColor = item.featured ? `${lp.purple}25` : lp.border; e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = "none"; }}
-                >
-                  <span style={{ fontSize: 12, opacity: 0.5 }}>{item.icon}</span>
-                  <div style={{ textAlign: "left" }}>
-                    <div style={{ fontSize: 12, fontWeight: 700, color: item.featured ? lp.purple : lp.text, letterSpacing: "-0.01em", lineHeight: 1.2 }}>{item.name}</div>
-                    <div style={{ fontSize: 7, fontWeight: 700, color: group.color, textTransform: "uppercase", letterSpacing: "0.06em", opacity: 0.7 }}>{item.tag}</div>
-                  </div>
+        {/* Infinite scrolling logo carousel — Row 1 */}
+        <div style={{ overflow: "hidden", position: "relative", marginBottom: 12 }}>
+          <div style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: 60, background: `linear-gradient(90deg, ${lp.bg}, transparent)`, zIndex: 2 }} />
+          <div style={{ position: "absolute", right: 0, top: 0, bottom: 0, width: 60, background: `linear-gradient(270deg, ${lp.bg}, transparent)`, zIndex: 2 }} />
+          <div className="fos-scroll-row1" style={{ display: "flex", gap: 16, animation: "fosScrollLeft 40s linear infinite", width: "max-content" }}>
+            {[...Array(2)].map((_, dup) => [
+              { name: "Stripe", logo: "https://cdn.brandfetch.io/id20mQyGeY/w/512/h/512/theme/dark/icon.jpeg", desc: "Payment processing & billing automation", color: "#635BFF" },
+              { name: "Salesforce", logo: "https://cdn.brandfetch.io/id7BZGENzY/w/512/h/512/theme/dark/icon.jpeg", desc: "CRM & revenue pipeline data", color: "#00A1E0" },
+              { name: "Plaid", logo: "https://cdn.brandfetch.io/idRpZN4YfF/w/512/h/512/theme/dark/icon.jpeg", desc: "Bank account & transaction data", color: "#000000" },
+              { name: "QuickBooks", logo: "https://cdn.brandfetch.io/idGbox7bYU/w/512/h/512/theme/dark/icon.jpeg", desc: "GL, AP/AR & journal entries", color: "#2CA01C" },
+              { name: "Slack", logo: "https://cdn.brandfetch.io/id3MpTOpY-/w/512/h/512/theme/dark/icon.jpeg", desc: "Alerts, approvals & team messaging", color: "#4A154B" },
+              { name: "AWS", logo: "https://cdn.brandfetch.io/idexQYsBMb/w/512/h/512/theme/dark/icon.jpeg", desc: "Cloud infrastructure & compute", color: "#FF9900" },
+              { name: "HubSpot", logo: "https://cdn.brandfetch.io/id7Xno7kbh/w/512/h/512/theme/dark/icon.jpeg", desc: "Marketing & sales pipeline data", color: "#FF7A59" },
+              { name: "Anthropic", logo: "https://cdn.brandfetch.io/idVr2bwXbr/w/512/h/512/theme/dark/icon.jpeg", desc: "AI reasoning & Copilot engine", color: "#D4A574", featured: true },
+              { name: "DocuSign", logo: "https://cdn.brandfetch.io/idFJP03YdT/w/512/h/512/theme/dark/icon.jpeg", desc: "Contract & eSignature workflows", color: "#4088FF" },
+              { name: "Ramp", logo: "https://cdn.brandfetch.io/id6MWlXqPb/w/512/h/512/theme/dark/icon.jpeg", desc: "Corporate card & expense data", color: "#3ECF8E" },
+              { name: "Intercom", logo: "https://cdn.brandfetch.io/idKAzczsaW/w/512/h/512/theme/dark/icon.jpeg", desc: "Customer support & engagement", color: "#1F8DED" },
+            ].map((item, i) => (
+              <div key={`${dup}-${item.name}`} className="fos-logo-card" style={{ display: "flex", alignItems: "center", gap: 12, padding: "12px 20px", borderRadius: 14, background: lp.cardBg, border: `1px solid ${item.featured ? `${lp.purple}30` : lp.border}`, backdropFilter: "blur(8px)", flexShrink: 0, minWidth: 200, cursor: "default", transition: "all 0.25s cubic-bezier(0.22,1,0.36,1)", position: "relative" }}
+                onMouseEnter={e => { e.currentTarget.style.borderColor = `${item.color}50`; e.currentTarget.style.transform = "translateY(-3px) scale(1.02)"; e.currentTarget.style.boxShadow = `0 12px 32px ${item.color}15`; e.currentTarget.querySelector(".fos-logo-desc").style.opacity = "1"; e.currentTarget.querySelector(".fos-logo-desc").style.transform = "translateY(0)"; }}
+                onMouseLeave={e => { e.currentTarget.style.borderColor = item.featured ? `${lp.purple}30` : lp.border; e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = "none"; e.currentTarget.querySelector(".fos-logo-desc").style.opacity = "0"; e.currentTarget.querySelector(".fos-logo-desc").style.transform = "translateY(4px)"; }}
+              >
+                <img src={item.logo} alt={item.name} style={{ width: 32, height: 32, borderRadius: 8, objectFit: "cover", flexShrink: 0 }} loading="lazy" onError={e => { e.target.style.display = "none"; }} />
+                <div style={{ textAlign: "left" }}>
+                  <div style={{ fontSize: 13, fontWeight: 700, color: lp.text, lineHeight: 1.2 }}>{item.name}</div>
+                  {item.featured && <span style={{ fontSize: 7, fontWeight: 800, padding: "1px 5px", borderRadius: 3, background: `${lp.purple}15`, color: lp.purple }}>AI PARTNER</span>}
                 </div>
-              ))}
-            </div>
+                {/* Hover tooltip description */}
+                <div className="fos-logo-desc" style={{ position: "absolute", bottom: -36, left: "50%", transform: "translateX(-50%) translateY(4px)", background: lpMode === "dark" ? "#1a1f2e" : "#1a1f2e", color: "#eef0f6", padding: "6px 12px", borderRadius: 8, fontSize: 10, fontWeight: 600, whiteSpace: "nowrap", boxShadow: "0 8px 24px rgba(0,0,0,0.3)", opacity: 0, transition: "all 0.2s ease", zIndex: 20, pointerEvents: "none" }}>
+                  {item.desc}
+                </div>
+              </div>
+            ))).flat()}
           </div>
-        ))}
+        </div>
+
+        {/* Row 2 — reverse direction */}
+        <div style={{ overflow: "hidden", position: "relative", marginBottom: 28 }}>
+          <div style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: 60, background: `linear-gradient(90deg, ${lp.bg}, transparent)`, zIndex: 2 }} />
+          <div style={{ position: "absolute", right: 0, top: 0, bottom: 0, width: 60, background: `linear-gradient(270deg, ${lp.bg}, transparent)`, zIndex: 2 }} />
+          <div className="fos-scroll-row2" style={{ display: "flex", gap: 16, animation: "fosScrollRight 35s linear infinite", width: "max-content" }}>
+            {[...Array(2)].map((_, dup) => [
+              { name: "Supabase", logo: "https://cdn.brandfetch.io/id4UDCjQ1K/w/512/h/512/theme/dark/icon.jpeg", desc: "Database, auth & real-time sync", color: "#3ECF8E" },
+              { name: "Vercel", logo: "https://cdn.brandfetch.io/idnMHSR0JC/w/512/h/512/theme/dark/icon.jpeg", desc: "Edge hosting & CI/CD", color: "#000000" },
+              { name: "Cloudflare", logo: "https://cdn.brandfetch.io/idnLPsmXME/w/512/h/512/theme/dark/icon.jpeg", desc: "Security, CDN & DDoS protection", color: "#F48120" },
+              { name: "Square", logo: "https://cdn.brandfetch.io/idMpz3PQzT/w/512/h/512/theme/dark/icon.jpeg", desc: "POS & payment data", color: "#3E4348" },
+              { name: "Gmail", logo: "https://cdn.brandfetch.io/idfJzomMB4/w/512/h/512/theme/dark/icon.jpeg", desc: "Email notifications & alerts", color: "#EA4335" },
+              { name: "Calendly", logo: "https://cdn.brandfetch.io/idhF37bGDf/w/512/h/512/theme/dark/icon.jpeg", desc: "Meeting scheduling & booking", color: "#006BFF" },
+              { name: "Linear", logo: "https://cdn.brandfetch.io/idYHMJchZG/w/512/h/512/theme/dark/icon.jpeg", desc: "Project tracking & sprint data", color: "#5E6AD2" },
+              { name: "S&P Global", logo: "https://cdn.brandfetch.io/idkiDKNT4W/w/512/h/512/theme/dark/icon.jpeg", desc: "Market data & benchmarks", color: "#0033A0" },
+              { name: "FactSet", logo: "https://cdn.brandfetch.io/id9nNqJr4d/w/512/h/512/theme/dark/icon.jpeg", desc: "Financial data & analytics", color: "#1679C4" },
+              { name: "Morningstar", logo: "https://cdn.brandfetch.io/id5E23WfPK/w/512/h/512/theme/dark/icon.jpeg", desc: "Investment research & ratings", color: "#FC5301" },
+            ].map((item, i) => (
+              <div key={`${dup}-${item.name}`} className="fos-logo-card" style={{ display: "flex", alignItems: "center", gap: 12, padding: "12px 20px", borderRadius: 14, background: lp.cardBg, border: `1px solid ${lp.border}`, backdropFilter: "blur(8px)", flexShrink: 0, minWidth: 200, cursor: "default", transition: "all 0.25s cubic-bezier(0.22,1,0.36,1)", position: "relative" }}
+                onMouseEnter={e => { e.currentTarget.style.borderColor = `${item.color}50`; e.currentTarget.style.transform = "translateY(-3px) scale(1.02)"; e.currentTarget.style.boxShadow = `0 12px 32px ${item.color}15`; e.currentTarget.querySelector(".fos-logo-desc").style.opacity = "1"; e.currentTarget.querySelector(".fos-logo-desc").style.transform = "translateY(0)"; }}
+                onMouseLeave={e => { e.currentTarget.style.borderColor = lp.border; e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = "none"; e.currentTarget.querySelector(".fos-logo-desc").style.opacity = "0"; e.currentTarget.querySelector(".fos-logo-desc").style.transform = "translateY(4px)"; }}
+              >
+                <img src={item.logo} alt={item.name} style={{ width: 32, height: 32, borderRadius: 8, objectFit: "cover", flexShrink: 0 }} loading="lazy" onError={e => { e.target.style.display = "none"; }} />
+                <div style={{ textAlign: "left" }}>
+                  <div style={{ fontSize: 13, fontWeight: 700, color: lp.text, lineHeight: 1.2 }}>{item.name}</div>
+                </div>
+                <div className="fos-logo-desc" style={{ position: "absolute", bottom: -36, left: "50%", transform: "translateX(-50%) translateY(4px)", background: "#1a1f2e", color: "#eef0f6", padding: "6px 12px", borderRadius: 8, fontSize: 10, fontWeight: 600, whiteSpace: "nowrap", boxShadow: "0 8px 24px rgba(0,0,0,0.3)", opacity: 0, transition: "all 0.2s ease", zIndex: 20, pointerEvents: "none" }}>
+                  {item.desc}
+                </div>
+              </div>
+            ))).flat()}
+          </div>
+        </div>
+
+        {/* Carousel animation keyframes */}
+        <style>{`
+          @keyframes fosScrollLeft{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+          @keyframes fosScrollRight{0%{transform:translateX(-50%)}100%{transform:translateX(0)}}
+          .fos-scroll-row1:hover,.fos-scroll-row2:hover{animation-play-state:paused}
+        `}</style>
 
         {/* Trust badges + ratings */}
-        <div style={{ display: "flex", justifyContent: "center", gap: 10, flexWrap: "wrap", alignItems: "center", marginTop: 20 }}>
+        <div style={{ display: "flex", justifyContent: "center", gap: 10, flexWrap: "wrap", alignItems: "center", marginTop: 8 }}>
           {[
             { label: "SOC 2 Type II", icon: Shield, color: lp.green },
             { label: "AES-256 Encryption", icon: Lock, color: lp.accent },
             { label: "99.9% Uptime SLA", icon: Zap, color: lp.purple },
             { label: "GDPR Ready", icon: Globe, color: lp.green },
           ].map(b => (
-            <div key={b.label} style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 10, fontWeight: 600, color: lp.textDim, padding: "6px 14px", borderRadius: 8, background: lp.cardBg, border: `1px solid ${lp.border}`, backdropFilter: "blur(6px)" }}>
-              <b.icon size={11} color={b.color} /> {b.label}
+            <div key={b.label} style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 10, fontWeight: 600, color: lp.textDim, padding: "8px 16px", borderRadius: 10, background: lp.cardBg, border: `1px solid ${lp.border}`, backdropFilter: "blur(6px)", transition: "all 0.15s" }}
+              onMouseEnter={e => e.currentTarget.style.borderColor = `${b.color}30`}
+              onMouseLeave={e => e.currentTarget.style.borderColor = lp.border}
+            >
+              <b.icon size={12} color={b.color} /> {b.label}
             </div>
           ))}
-          <div style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 10, fontWeight: 700, color: lp.gold, padding: "6px 14px", borderRadius: 8, background: `${lp.gold}08`, border: `1px solid ${lp.gold}18` }}>
-            <Star size={11} fill={lp.gold} color={lp.gold} /> 4.9 Rating
+          <div style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 10, fontWeight: 700, color: lp.gold, padding: "8px 16px", borderRadius: 10, background: `${lp.gold}08`, border: `1px solid ${lp.gold}18` }}>
+            <Star size={12} fill={lp.gold} color={lp.gold} /> 4.9 Rating
           </div>
         </div>
       </div>
 
-      {/* ═══ SOCIAL PROOF — Corporate team imagery ═══ */}
-      <div style={{ padding: isMobile ? "20px 20px 40px" : "40px 48px 60px", maxWidth: 1100, margin: "0 auto" }}>
-        <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1.2fr", gap: 0, borderRadius: 20, overflow: "hidden", border: `1px solid ${lp.border}`, background: lp.surface }}>
+      {/* ═══ SOCIAL PROOF — Premium testimonial section ═══ */}
+      <div style={{ padding: isMobile ? "20px 20px 40px" : "48px 48px 60px", maxWidth: 1100, margin: "0 auto" }}>
+        <div style={{ textAlign: "center", marginBottom: 32 }}>
+          <div style={{ display: "inline-block", padding: "6px 14px", borderRadius: 20, background: `${lp.accent}0a`, border: `1px solid ${lp.accent}18`, fontSize: 10, fontWeight: 700, color: lp.accent, marginBottom: 16, letterSpacing: "0.06em", textTransform: "uppercase" }}>Customer Stories</div>
+          <h2 style={{ fontSize: 32, fontWeight: 800, letterSpacing: "-0.03em", color: lp.text }}>Trusted by modern finance teams</h2>
+        </div>
+        <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1.2fr", gap: 0, borderRadius: 24, overflow: "hidden", border: `1px solid ${lp.border}`, background: lpMode === "dark" ? "linear-gradient(135deg, #10131a, #0d0f14)" : "linear-gradient(135deg, #f8f9fb, #ffffff)", boxShadow: lpMode === "dark" ? "0 24px 64px rgba(0,0,0,0.4), 0 0 0 1px rgba(96,165,250,0.04)" : "0 24px 64px rgba(0,0,0,0.06)", transition: "box-shadow 0.3s ease" }}
+          onMouseEnter={e => e.currentTarget.style.boxShadow = lpMode === "dark" ? `0 32px 80px rgba(0,0,0,0.5), 0 0 0 1px ${lp.accent}10` : `0 32px 80px rgba(0,0,0,0.08)`}
+          onMouseLeave={e => e.currentTarget.style.boxShadow = lpMode === "dark" ? "0 24px 64px rgba(0,0,0,0.4), 0 0 0 1px rgba(96,165,250,0.04)" : "0 24px 64px rgba(0,0,0,0.06)"}
+        >
           {/* Photo side */}
-          <div style={{ position: "relative", minHeight: 320, overflow: "hidden" }}>
+          <div style={{ position: "relative", minHeight: 360, overflow: "hidden" }}>
             <img src="https://images.unsplash.com/photo-1552664730-d307ca884978?w=700&q=80&fit=crop&crop=faces" alt="Finance team collaborating" style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center 30%", display: "block", transition: "transform 0.6s ease" }} loading="lazy"
-              onMouseEnter={e => e.currentTarget.style.transform = "scale(1.03)"}
+              onMouseEnter={e => e.currentTarget.style.transform = "scale(1.04)"}
               onMouseLeave={e => e.currentTarget.style.transform = "scale(1)"}
             />
-            <div style={{ position: "absolute", inset: 0, background: `linear-gradient(90deg, transparent 50%, ${lp.surface})` }} />
-            <div style={{ position: "absolute", bottom: 16, left: 16 }}>
-              <span style={{ fontSize: 8, fontWeight: 700, padding: "5px 12px", borderRadius: 6, background: "rgba(0,0,0,0.6)", backdropFilter: "blur(8px)", color: "#eef0f6", letterSpacing: "0.06em" }}>ENTERPRISE FINANCE TEAMS</span>
+            <div style={{ position: "absolute", inset: 0, background: `linear-gradient(135deg, transparent 40%, ${lpMode === "dark" ? "rgba(16,19,26,0.95)" : "rgba(248,249,251,0.92)"} 100%)` }} />
+            {/* Floating metric cards on image */}
+            <div style={{ position: "absolute", bottom: 20, left: 16, right: 16, display: "flex", gap: 8 }}>
+              {[
+                { val: "80%", label: "Faster Close", color: lp.accent },
+                { val: "3wk", label: "Saved/Qtr", color: lp.green },
+                { val: "4.9", label: "Rating", color: lp.gold },
+              ].map(m => (
+                <div key={m.label} style={{ flex: 1, padding: "10px 8px", borderRadius: 10, background: "rgba(0,0,0,0.55)", backdropFilter: "blur(16px)", WebkitBackdropFilter: "blur(16px)", textAlign: "center", border: "1px solid rgba(255,255,255,0.08)" }}>
+                  <div style={{ fontSize: 16, fontWeight: 800, color: "#fff", fontFamily: "'JetBrains Mono', monospace" }}>{m.val}</div>
+                  <div style={{ fontSize: 7, fontWeight: 700, color: m.color, textTransform: "uppercase", letterSpacing: "0.06em", marginTop: 2 }}>{m.label}</div>
+                </div>
+              ))}
             </div>
           </div>
           {/* Quote side */}
-          <div style={{ padding: "40px 36px", display: "flex", flexDirection: "column", justifyContent: "center" }}>
-            <div style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: lp.accent, marginBottom: 20 }}>Why teams switch to FinanceOS</div>
-            <div style={{ fontSize: 36, color: `${lp.accent}20`, fontWeight: 800, lineHeight: 1, marginBottom: -10 }}>"</div>
-            <p style={{ fontSize: 20, fontWeight: 600, color: lp.text, lineHeight: 1.6, marginBottom: 28, letterSpacing: "-0.01em" }}>
-              FinanceOS makes us feel like mini-CFOs within our departments. The AI Copilot doesn't just answer questions — it shows us the reasoning behind every insight.
+          <div style={{ padding: isMobile ? "28px 24px" : "44px 40px", display: "flex", flexDirection: "column", justifyContent: "center" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 20 }}>
+              <div style={{ display: "flex", gap: 2 }}>{[1,2,3,4,5].map(i => <Star key={i} size={14} fill={lp.gold} color={lp.gold} />)}</div>
+              <span style={{ fontSize: 10, fontWeight: 700, color: lp.textFaint }}>5.0</span>
+            </div>
+            <div style={{ fontSize: 48, color: `${lp.accent}15`, fontWeight: 800, lineHeight: 0.8, marginBottom: 4, fontFamily: "Georgia, serif" }}>"</div>
+            <p style={{ fontSize: 18, fontWeight: 500, color: lp.text, lineHeight: 1.7, marginBottom: 28, letterSpacing: "-0.01em" }}>
+              FinanceOS replaced three tools and cut our month-end close by 12 days. The AI Copilot doesn't just answer questions — it shows the reasoning behind every insight, so our team trusts the data.
             </p>
-            <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-              <div style={{ width: 44, height: 44, borderRadius: 12, background: `linear-gradient(135deg, ${lp.accent}20, ${lp.purple}15)`, border: `1px solid ${lp.border}`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 15, fontWeight: 800, color: lp.accent }}>VP</div>
+            <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+              <div style={{ width: 48, height: 48, borderRadius: 14, background: `linear-gradient(135deg, ${lp.accent}, ${lp.purple})`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16, fontWeight: 800, color: "#fff", boxShadow: `0 4px 12px ${lp.accent}30` }}>SC</div>
               <div>
-                <div style={{ fontSize: 13, fontWeight: 700, color: lp.text }}>VP of Finance</div>
-                <div style={{ fontSize: 11, color: lp.textFaint }}>Series C SaaS · $45M ARR · 12-person finance team</div>
+                <div style={{ fontSize: 14, fontWeight: 700, color: lp.text }}>Sarah Chen</div>
+                <div style={{ fontSize: 12, color: lp.textDim }}>VP of Finance</div>
+                <div style={{ fontSize: 10, color: lp.textFaint, marginTop: 2 }}>Series C SaaS · $45M ARR · 12-person finance team</div>
               </div>
+            </div>
+            <div style={{ display: "flex", gap: 6, marginTop: 20, paddingTop: 20, borderTop: `1px solid ${lp.border}40` }}>
+              {["Replaced 3 tools", "12-day close reduction", "95% faster reporting"].map(t => (
+                <span key={t} style={{ fontSize: 9, fontWeight: 600, padding: "4px 10px", borderRadius: 6, background: `${lp.green}08`, border: `1px solid ${lp.green}15`, color: lp.green }}>{t}</span>
+              ))}
             </div>
           </div>
         </div>
@@ -8156,12 +8322,17 @@ const LandingPage = ({ onLogin }) => {
       {/* AI Agent Showcase — Pigment-style split panels */}
       <div style={{ padding: isMobile ? "40px 20px" : "60px 48px", maxWidth: 1100, margin: "0 auto" }}>
         <div style={{ textAlign: "center", marginBottom: 48 }}>
-          <div style={{ display: "flex", justifyContent: "center", gap: 8, marginBottom: 16 }}>
-            {["◎", "◆", "◈"].map((icon, i) => (
-              <div key={i} style={{ width: 44, height: 44, borderRadius: 14, background: `${[lp.accent, lp.green, lp.purple][i]}0a`, border: `1px solid ${[lp.accent, lp.green, lp.purple][i]}18`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18, transition: "transform 0.3s", cursor: "default" }}
-                onMouseEnter={e => e.currentTarget.style.transform = "translateY(-3px) scale(1.08)"}
-                onMouseLeave={e => e.currentTarget.style.transform = "none"}
-              >{icon}</div>
+          <div style={{ display: "inline-block", padding: "6px 14px", borderRadius: 20, background: `${lp.accent}0a`, border: `1px solid ${lp.accent}18`, fontSize: 10, fontWeight: 700, color: lp.accent, marginBottom: 16, letterSpacing: "0.06em", textTransform: "uppercase" }}>AI Agents</div>
+          <div style={{ display: "flex", justifyContent: "center", gap: 10, marginBottom: 20 }}>
+            {[
+              { Icon: Brain, color: lp.accent },
+              { Icon: GitBranch, color: lp.green },
+              { Icon: Sparkles, color: lp.purple },
+            ].map(({ Icon, color }, i) => (
+              <div key={i} style={{ width: 44, height: 44, borderRadius: 14, background: `${color}08`, border: `1px solid ${color}18`, display: "flex", alignItems: "center", justifyContent: "center", transition: "all 0.3s cubic-bezier(0.22,1,0.36,1)", cursor: "default" }}
+                onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-3px) scale(1.08)"; e.currentTarget.style.boxShadow = `0 8px 20px ${color}15`; }}
+                onMouseLeave={e => { e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = "none"; }}
+              ><Icon size={20} color={color} /></div>
             ))}
           </div>
           <h2 style={{ fontSize: 36, fontWeight: 800, letterSpacing: "-0.03em", marginBottom: 10, color: lp.text }}>AI that plans with you</h2>
@@ -8189,7 +8360,7 @@ const LandingPage = ({ onLogin }) => {
             onMouseLeave={e => e.currentTarget.style.boxShadow = `0 16px 48px ${lpMode === "dark" ? "rgba(0,0,0,0.3)" : "rgba(0,0,0,0.06)"}`}
           >
             <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 14, padding: "8px 12px", background: lp.surfaceAlt, borderRadius: 10, border: `1px solid ${lp.borderLight}` }}>
-              <span style={{ fontSize: 13 }}>◎</span>
+              <Brain size={14} color={lp.purple} />
               <span style={{ fontSize: 11, fontWeight: 700, color: lp.text }}>AI Copilot</span>
               <span style={{ fontSize: 8, fontWeight: 700, padding: "3px 8px", borderRadius: 4, background: `${lp.purple}12`, color: lp.purple, marginLeft: "auto" }}>Claude</span>
             </div>
@@ -8262,64 +8433,143 @@ const LandingPage = ({ onLogin }) => {
         </div>
         <div style={{ display: "flex", justifyContent: "center", gap: 4, marginBottom: 24 }}>
           {[
-            { label: "Finance", icon: "◆", active: true },
-            { label: "Sales", icon: "◉", active: false },
-            { label: "HR", icon: "◇", active: false },
-            { label: "Supply", icon: "◧", active: false },
+            { label: "Finance", Icon: DollarSign, active: true },
+            { label: "Sales", Icon: Target, active: false },
+            { label: "HR", Icon: Users, active: false },
+            { label: "Supply", Icon: Layers, active: false },
           ].map(tab => (
             <button key={tab.label} onClick={() => {}} style={{
-              fontSize: 12, fontWeight: 700, padding: "8px 20px", borderRadius: 8, border: "none", cursor: "pointer", fontFamily: "inherit",
-              background: tab.active ? `${lp.accent}15` : "transparent", color: tab.active ? lp.accent : lp.textDim,
+              fontSize: 12, fontWeight: 700, padding: "8px 20px", borderRadius: 10, border: `1px solid ${tab.active ? `${lp.accent}25` : "transparent"}`, cursor: "pointer", fontFamily: "inherit",
+              background: tab.active ? `${lp.accent}10` : "transparent", color: tab.active ? lp.accent : lp.textDim,
               display: "flex", alignItems: "center", gap: 6, transition: "all 0.2s",
-            }}>{tab.icon} {tab.label}</button>
+            }}><tab.Icon size={14} /> {tab.label}</button>
           ))}
         </div>
-        {/* Active tab content */}
-        <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1.6fr", gap: 24, background: lp.surface, border: `1px solid ${lp.border}`, borderRadius: 20, overflow: "hidden" }}>
-          <div style={{ padding: "36px 32px" }}>
-            <div style={{ fontSize: 9, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: lp.textFaint, marginBottom: 8 }}>▸ Finance</div>
+        {/* Active tab content — corporate portfolio style */}
+        <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1.8fr", gap: 0, background: lpMode === "dark" ? "linear-gradient(135deg, #10131a, #0d0f14)" : "linear-gradient(135deg, #f8f9fb, #ffffff)", border: `1px solid ${lp.border}`, borderRadius: 20, overflow: "hidden", boxShadow: lpMode === "dark" ? "0 24px 64px rgba(0,0,0,0.3)" : "0 24px 64px rgba(0,0,0,0.06)" }}>
+          <div style={{ padding: "36px 32px", borderRight: `1px solid ${lp.border}40` }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
+              <div style={{ width: 28, height: 28, borderRadius: 8, background: `${lp.accent}10`, border: `1px solid ${lp.accent}18`, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                <DollarSign size={14} color={lp.accent} />
+              </div>
+              <span style={{ fontSize: 9, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.1em", color: lp.accent }}>Finance</span>
+            </div>
             <h3 style={{ fontSize: 24, fontWeight: 800, letterSpacing: "-0.02em", marginBottom: 12, color: lp.text }}>FP&A & consolidation</h3>
             <p style={{ fontSize: 14, color: lp.textDim, lineHeight: 1.7, marginBottom: 20 }}>Build, approve, and adapt integrated financial plans. Connect your ERP, CRM, and billing data into a unified model with AI-powered insights.</p>
-            <a href="/use-cases/finance" style={{ display: "inline-flex", alignItems: "center", gap: 6, fontSize: 13, fontWeight: 700, color: lp.accent, textDecoration: "none", padding: "10px 20px", borderRadius: 10, background: `${lp.accent}08`, border: `1px solid ${lp.accent}15`, transition: "all 0.2s" }}>Learn more →</a>
-            <div style={{ marginTop: 24, padding: "16px 18px", background: lp.surfaceAlt, borderRadius: 12, border: `1px solid ${lp.border}` }}>
-              <p style={{ fontSize: 13, color: lp.textSub, lineHeight: 1.7, fontStyle: "italic", marginBottom: 10 }}>"We replaced our entire Excel-based FP&A stack in one afternoon. The AI Copilot caught a $400K variance our team missed."</p>
-              <div style={{ fontSize: 11, fontWeight: 700, color: lp.text }}>VP Finance</div>
-              <div style={{ fontSize: 10, color: lp.textFaint }}>Series B SaaS · $18M ARR</div>
+            <a href="/use-cases/finance" style={{ display: "inline-flex", alignItems: "center", gap: 6, fontSize: 13, fontWeight: 700, color: lp.accent, textDecoration: "none", padding: "10px 20px", borderRadius: 10, background: `${lp.accent}08`, border: `1px solid ${lp.accent}15`, transition: "all 0.2s" }}
+              onMouseEnter={e => e.currentTarget.style.background = `${lp.accent}14`}
+              onMouseLeave={e => e.currentTarget.style.background = `${lp.accent}08`}
+            >Learn more <ChevronRight size={14} /></a>
+            <div style={{ marginTop: 24, padding: "16px 18px", background: `${lp.accent}04`, borderRadius: 12, border: `1px solid ${lp.accent}10`, position: "relative" }}>
+              <div style={{ fontSize: 24, color: `${lp.accent}15`, fontWeight: 800, lineHeight: 0.8, marginBottom: 4, fontFamily: "Georgia, serif" }}>"</div>
+              <p style={{ fontSize: 13, color: lp.textSub, lineHeight: 1.7, marginBottom: 10 }}>We replaced our entire Excel-based FP&A stack in one afternoon. The AI Copilot caught a $400K variance our team missed.</p>
+              <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                <div style={{ width: 28, height: 28, borderRadius: 7, background: `linear-gradient(135deg, ${lp.accent}, ${lp.purple})`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 9, fontWeight: 800, color: "#fff" }}>JR</div>
+                <div>
+                  <div style={{ fontSize: 11, fontWeight: 700, color: lp.text }}>James Rodriguez, VP Finance</div>
+                  <div style={{ fontSize: 9, color: lp.textFaint }}>Series B SaaS · $18M ARR</div>
+                </div>
+              </div>
             </div>
           </div>
-          {/* Dashboard mockup */}
-          <div style={{ padding: "20px 20px 0 0", display: "flex", alignItems: "flex-start", justifyContent: "flex-end" }}>
-            <div style={{ background: lp.surfaceAlt, borderRadius: "14px 0 0 0", border: `1px solid ${lp.border}`, borderRight: "none", borderBottom: "none", padding: "16px 20px", width: "100%" }}>
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 8, marginBottom: 14 }}>
-                {[{ l: "$51.2M", s: "Revenue YTD", c: lp.accent }, { l: "84.7%", s: "Gross Margin", c: lp.green }, { l: "$3.8M", s: "EBITDA", c: lp.purple }].map(k => (
-                  <div key={k.s} style={{ padding: "10px 12px", borderRadius: 10, background: lp.surface, border: `1px solid ${lp.border}` }}>
-                    <div style={{ fontSize: 16, fontWeight: 800, color: k.c, fontFamily: "'JetBrains Mono', monospace" }}>{k.l}</div>
-                    <div style={{ fontSize: 8, color: lp.textFaint, marginTop: 2 }}>{k.s}</div>
-                  </div>
+          {/* Corporate portfolio-style dashboard mockup */}
+          <div style={{ padding: 20 }}>
+            {/* Portfolio header */}
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16, paddingBottom: 12, borderBottom: `1px solid ${lp.border}40` }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                <div style={{ width: 8, height: 8, borderRadius: 2, background: lp.accent }} />
+                <span style={{ fontSize: 12, fontWeight: 800, color: lp.text }}>Acme Corp — FY2025 Portfolio</span>
+              </div>
+              <div style={{ display: "flex", gap: 4 }}>
+                {["YTD", "QoQ", "MoM"].map((p, i) => (
+                  <span key={p} style={{ fontSize: 8, fontWeight: 700, padding: "3px 8px", borderRadius: 4, background: i === 0 ? `${lp.accent}12` : "transparent", color: i === 0 ? lp.accent : lp.textFaint, border: `1px solid ${i === 0 ? `${lp.accent}20` : "transparent"}`, cursor: "pointer" }}>{p}</span>
                 ))}
               </div>
-              <svg viewBox="0 0 320 80" style={{ width: "100%", height: 80 }}>
-                <defs><linearGradient id="lpRev" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor={lp.accent} stopOpacity={0.2} /><stop offset="100%" stopColor={lp.accent} stopOpacity={0} /></linearGradient></defs>
-                {[16,32,48,64].map(y => <line key={y} x1="0" y1={y} x2="320" y2={y} stroke={lp.border} strokeWidth="0.5" strokeDasharray="1 6" strokeLinecap="round" />)}
-                <path d="M5,70 L40,62 L80,55 L120,46 L160,38 L200,32 L240,24 L280,18 L310,14" fill="url(#lpRev)" /><path d="M5,70 L40,62 L80,55 L120,46 L160,38 L200,32 L240,24 L280,18 L310,14" fill="none" stroke={lp.accent} strokeWidth="2" strokeLinecap="round" />
-                <circle cx="280" cy="18" r="3" fill={lp.accent} stroke={lp.surfaceAlt} strokeWidth="2"><animate attributeName="r" values="3;5;3" dur="2s" repeatCount="indefinite" /></circle>
+            </div>
+            {/* KPI row */}
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 10, marginBottom: 16 }}>
+              {[
+                { l: "$51.2M", s: "Revenue", d: "+12.3%", c: lp.accent, Icon: TrendingUp },
+                { l: "84.7%", s: "Gross Margin", d: "+2.1pp", c: lp.green, Icon: Activity },
+                { l: "$3.8M", s: "EBITDA", d: "+$420K", c: lp.purple, Icon: DollarSign },
+                { l: "118%", s: "Net Retention", d: "Best-in-class", c: lp.gold || lp.accent, Icon: Target },
+              ].map(k => (
+                <div key={k.s} style={{ padding: "12px 14px", borderRadius: 12, background: `${k.c}04`, border: `1px solid ${k.c}12`, position: "relative", overflow: "hidden" }}>
+                  <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 2, background: `linear-gradient(90deg, ${k.c}, ${k.c}40)` }} />
+                  <div style={{ display: "flex", alignItems: "center", gap: 4, marginBottom: 6 }}>
+                    <k.Icon size={10} color={k.c} />
+                    <span style={{ fontSize: 8, fontWeight: 700, color: lp.textFaint, textTransform: "uppercase", letterSpacing: "0.06em" }}>{k.s}</span>
+                  </div>
+                  <div style={{ fontSize: 18, fontWeight: 800, color: lp.text, fontFamily: "'JetBrains Mono', monospace" }}>{k.l}</div>
+                  <span style={{ fontSize: 9, fontWeight: 700, color: lp.green }}>{k.d}</span>
+                </div>
+              ))}
+            </div>
+            {/* Revenue chart */}
+            <div style={{ background: lp.surfaceAlt || lp.surface, borderRadius: 12, border: `1px solid ${lp.border}40`, padding: "14px 16px", marginBottom: 12 }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
+                <span style={{ fontSize: 10, fontWeight: 700, color: lp.text }}>Revenue vs Budget vs Forecast</span>
+                <div style={{ display: "flex", gap: 10, fontSize: 8, color: lp.textFaint }}>
+                  <span style={{ display: "flex", alignItems: "center", gap: 3 }}><span style={{ width: 10, height: 2, background: lp.accent, borderRadius: 1 }} />Actual</span>
+                  <span style={{ display: "flex", alignItems: "center", gap: 3 }}><span style={{ width: 10, height: 2, background: lp.textFaint, borderRadius: 1, opacity: 0.5 }} />Budget</span>
+                  <span style={{ display: "flex", alignItems: "center", gap: 3 }}><span style={{ width: 10, height: 2, background: lp.green, borderRadius: 1 }} />Forecast</span>
+                </div>
+              </div>
+              <svg viewBox="0 0 380 90" style={{ width: "100%", height: 90 }}>
+                <defs><linearGradient id="lpPortRev" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor={lp.accent} stopOpacity={0.15} /><stop offset="100%" stopColor={lp.accent} stopOpacity={0} /></linearGradient></defs>
+                {[18,36,54,72].map(y => <line key={y} x1="0" y1={y} x2="380" y2={y} stroke={lp.border} strokeWidth="0.5" strokeDasharray="2 6" />)}
+                {/* Budget line */}
+                <path d="M5,72 L50,68 L95,62 L140,58 L185,52 L230,48 L275,44 L320,40 L365,38" fill="none" stroke={lp.textFaint} strokeWidth="1" strokeDasharray="3 3" opacity="0.4" />
+                {/* Forecast line */}
+                <path d="M230,30 L275,24 L320,20 L365,16" fill="none" stroke={lp.green} strokeWidth="1.5" strokeDasharray="4 3" />
+                {/* Actual line + fill */}
+                <path d="M5,72 L50,65 L95,56 L140,48 L185,38 L230,30 L230,90 L185,90 L140,90 L95,90 L50,90 L5,90Z" fill="url(#lpPortRev)" />
+                <path d="M5,72 L50,65 L95,56 L140,48 L185,38 L230,30" fill="none" stroke={lp.accent} strokeWidth="2.5" strokeLinecap="round" />
+                <circle cx="230" cy="30" r="3.5" fill={lp.accent} style={{ filter: `drop-shadow(0 0 6px ${lp.accent})` }} />
               </svg>
+            </div>
+            {/* Mini entity table */}
+            <div style={{ borderRadius: 10, border: `1px solid ${lp.border}40`, overflow: "hidden", fontSize: 10 }}>
+              <div style={{ display: "grid", gridTemplateColumns: "1.4fr 1fr 1fr 0.8fr 0.6fr", padding: "8px 12px", background: lp.surfaceAlt || lp.surface, borderBottom: `1px solid ${lp.border}40`, fontWeight: 700, color: lp.textFaint, textTransform: "uppercase", letterSpacing: "0.06em", fontSize: 8 }}>
+                <span>Entity</span><span style={{ textAlign: "right" }}>Revenue</span><span style={{ textAlign: "right" }}>EBITDA</span><span style={{ textAlign: "right" }}>Margin</span><span style={{ textAlign: "right" }}>Status</span>
+              </div>
+              {[
+                { name: "Acme US", rev: "$38.9M", ebitda: "$3.1M", margin: "8.0%", status: "Closed", sc: lp.green },
+                { name: "Acme EU", rev: "$8.6M", ebitda: "$520K", margin: "6.0%", status: "In Review", sc: lp.accent },
+                { name: "Acme APAC", rev: "$3.6M", ebitda: "$140K", margin: "3.9%", status: "Pending", sc: lp.gold || lp.accent },
+              ].map((e, i) => (
+                <div key={e.name} style={{ display: "grid", gridTemplateColumns: "1.4fr 1fr 1fr 0.8fr 0.6fr", padding: "8px 12px", borderBottom: i < 2 ? `1px solid ${lp.border}20` : "none", color: lp.textDim, alignItems: "center" }}>
+                  <span style={{ fontWeight: 600, color: lp.text }}>{e.name}</span>
+                  <span style={{ textAlign: "right", fontFamily: "'JetBrains Mono', monospace", fontWeight: 600 }}>{e.rev}</span>
+                  <span style={{ textAlign: "right", fontFamily: "'JetBrains Mono', monospace" }}>{e.ebitda}</span>
+                  <span style={{ textAlign: "right", fontFamily: "'JetBrains Mono', monospace" }}>{e.margin}</span>
+                  <span style={{ textAlign: "right" }}><span style={{ fontSize: 8, fontWeight: 700, padding: "2px 6px", borderRadius: 3, background: `${e.sc}10`, color: e.sc }}>{e.status}</span></span>
+                </div>
+              ))}
             </div>
           </div>
         </div>
       </div>
 
-      {/* Target audience */}
-      <div style={{ textAlign: "center", padding: "20px 48px 20px", maxWidth: 900, margin: "0 auto" }}>
-        <div style={{ display: "flex", justifyContent: "center", gap: isMobile ? 16 : 32, alignItems: "center", flexWrap: "wrap" }}>
+      {/* Target audience — premium pills */}
+      <div style={{ textAlign: "center", padding: "28px 48px", maxWidth: 900, margin: "0 auto" }}>
+        <div style={{ display: "flex", justifyContent: "center", gap: 12, alignItems: "center", flexWrap: "wrap" }}>
           {[
-            { label: "SaaS companies", detail: "$5M–$200M ARR" },
-            { label: "Finance teams", detail: "3–25 people" },
-            { label: "Replaces", detail: "Legacy EPM, spreadsheets, point solutions" },
+            { label: "SaaS companies", detail: "$5M–$200M ARR", Icon: TrendingUp, color: lp.accent },
+            { label: "Finance teams", detail: "3–25 people", Icon: Users, color: lp.green },
+            { label: "Replaces", detail: "Legacy EPM, spreadsheets, point solutions", Icon: RefreshCw, color: lp.purple },
           ].map(item => (
-            <div key={item.detail} style={{ textAlign: "center" }}>
-              <div style={{ fontSize: 12, fontWeight: 700, color: lp.text }}>{item.label}</div>
-              <div style={{ fontSize: 10, color: lp.textFaint, marginTop: 2 }}>{item.detail}</div>
+            <div key={item.detail} style={{ display: "flex", alignItems: "center", gap: 10, padding: "12px 20px", borderRadius: 14, background: lp.cardBg, border: `1px solid ${lp.border}`, backdropFilter: "blur(8px)", transition: "all 0.2s" }}
+              onMouseEnter={e => e.currentTarget.style.borderColor = `${item.color}30`}
+              onMouseLeave={e => e.currentTarget.style.borderColor = lp.border}
+            >
+              <div style={{ width: 32, height: 32, borderRadius: 9, background: `${item.color}08`, border: `1px solid ${item.color}15`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                <item.Icon size={15} color={item.color} />
+              </div>
+              <div style={{ textAlign: "left" }}>
+                <div style={{ fontSize: 13, fontWeight: 700, color: lp.text }}>{item.label}</div>
+                <div style={{ fontSize: 10, color: lp.textFaint, marginTop: 1 }}>{item.detail}</div>
+              </div>
             </div>
           ))}
         </div>
@@ -8332,21 +8582,24 @@ const LandingPage = ({ onLogin }) => {
         </div>
         <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "repeat(3, 1fr)", gap: 20 }}>
           {[
-            { title: "Intelligent by design", desc: "AI agents embedded in your planning. Analyze performance, explain drivers, and simulate scenarios in real time.", icon: "◎", color: lp.purple, features: ["SHAP feature importance", "Confidence intervals", "Visible reasoning chain"] },
-            { title: "Collaborative by nature", desc: "Your finance team works as one. Assign tasks, send messages, track activity, and review changes — all inside the platform.", icon: "◇", color: lp.accent, features: ["Team profiles & presence", "Task assignment & tracking", "Channel-based messaging"] },
-            { title: "Flexible at scale", desc: "Add entities, scenarios, and team members without rebuilding models. Scale from startup to enterprise.", icon: "▸", color: lp.green, features: ["Unlimited scenarios", "Multi-entity consolidation", "No seat caps (Enterprise)"] },
+            { title: "Intelligent by design", desc: "AI agents embedded in your planning. Analyze performance, explain drivers, and simulate scenarios in real time.", Icon: Brain, color: lp.purple, features: ["SHAP feature importance", "Confidence intervals", "Visible reasoning chain"] },
+            { title: "Collaborative by nature", desc: "Your finance team works as one. Assign tasks, send messages, track activity, and review changes — all inside the platform.", Icon: Users, color: lp.accent, features: ["Team profiles & presence", "Task assignment & tracking", "Channel-based messaging"] },
+            { title: "Flexible at scale", desc: "Add entities, scenarios, and team members without rebuilding models. Scale from startup to enterprise.", Icon: Layers, color: lp.green, features: ["Unlimited scenarios", "Multi-entity consolidation", "No seat caps (Enterprise)"] },
           ].map(p => (
             <div key={p.title} style={{ background: lp.cardBg, backdropFilter: "blur(12px)", border: `1px solid ${lp.border}`, borderRadius: 18, padding: "32px 26px", transition: "all 0.25s cubic-bezier(0.4,0,0.2,1)", position: "relative", overflow: "hidden" }}
-              onMouseEnter={e => { e.currentTarget.style.borderColor = `${p.color}40`; e.currentTarget.style.transform = "translateY(-3px)"; }}
-              onMouseLeave={e => { e.currentTarget.style.borderColor = lp.border; e.currentTarget.style.transform = "none"; }}>
+              onMouseEnter={e => { e.currentTarget.style.borderColor = `${p.color}40`; e.currentTarget.style.transform = "translateY(-3px)"; e.currentTarget.style.boxShadow = `0 16px 40px ${p.color}08`; }}
+              onMouseLeave={e => { e.currentTarget.style.borderColor = lp.border; e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = "none"; }}>
               <div style={{ position: "absolute", top: 0, left: "15%", right: "15%", height: 1, background: `linear-gradient(90deg, transparent, ${p.color}30, transparent)` }} />
-              <div style={{ fontSize: 28, marginBottom: 16 }}>{p.icon}</div>
+              <div style={{ width: 48, height: 48, borderRadius: 14, background: `${p.color}08`, border: `1px solid ${p.color}18`, display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 16 }}><p.Icon size={22} color={p.color} /></div>
               <h3 style={{ fontSize: 20, fontWeight: 800, color: lp.text, marginBottom: 10, letterSpacing: "-0.02em" }}>{p.title}</h3>
               <p style={{ fontSize: 14, color: lp.textDim, lineHeight: 1.7, marginBottom: 18 }}>{p.desc}</p>
               <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
                 {p.features.map(f => (
-                  <div key={f} style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 11, color: lp.textDim }}>
-                    <span style={{ color: p.color, fontWeight: 700, fontSize: 12 }}>✓</span> {f}
+                  <div key={f} style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 11, color: lp.textDim }}>
+                    <div style={{ width: 18, height: 18, borderRadius: 5, background: `${p.color}10`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                      <Check size={10} color={p.color} strokeWidth={3} />
+                    </div>
+                    {f}
                   </div>
                 ))}
               </div>
@@ -8413,10 +8666,10 @@ const LandingPage = ({ onLogin }) => {
         {/* Industry selector tabs */}
         <div style={{ display: "flex", justifyContent: "center", gap: 6, marginBottom: 32, flexWrap: "wrap" }}>
           {[
-            { id: "saas", label: "SaaS / Software", icon: "▦" },
-            { id: "ecom", label: "E-Commerce", icon: "◉" },
-            { id: "services", label: "Professional Services", icon: "▣" },
-            { id: "mfg", label: "Manufacturing", icon: "◧" },
+            { id: "saas", label: "SaaS / Software", Icon: Cpu },
+            { id: "ecom", label: "E-Commerce", Icon: DollarSign },
+            { id: "services", label: "Professional Services", Icon: Users },
+            { id: "mfg", label: "Manufacturing", Icon: Layers },
           ].map(tab => (
             <button key={tab.id} onClick={() => setPreviewIndustry(tab.id)} style={{
               fontSize: 12, fontWeight: 700, padding: "10px 20px", borderRadius: 10, border: "none", cursor: "pointer", fontFamily: "inherit",
@@ -8425,7 +8678,7 @@ const LandingPage = ({ onLogin }) => {
               borderWidth: 1, borderStyle: "solid",
               borderColor: previewIndustry === tab.id ? `${lp.accent}40` : lp.border,
               display: "flex", alignItems: "center", gap: 8, transition: "all 0.25s cubic-bezier(0.4,0,0.2,1)",
-            }}>{tab.icon} {tab.label}</button>
+            }}><tab.Icon size={13} /> {tab.label}</button>
           ))}
         </div>
 
@@ -9235,20 +9488,23 @@ const LandingPage = ({ onLogin }) => {
           <span>© {new Date().getFullYear()} Financial Holding LLC · All rights reserved</span>
           <span style={{ fontSize: 9, color: lp.textFaint }}>Photos by <a href="https://unsplash.com/?utm_source=financeos&utm_medium=referral" target="_blank" rel="noopener" style={{ color: lp.textDim, textDecoration: "none" }}>Unsplash</a></span>
           <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-            {/* Locale picker — landing page */}
+            {/* Locale picker — premium dropdowns */}
             {[
-              { key: "fos_lang", options: [["en","EN"],["es","ES"],["fr","FR"],["de","DE"],["ja","JA"],["zh","ZH"],["pt","PT"],["ko","KO"],["it","IT"],["nl","NL"]] },
-              { key: "fos_currency", options: [["USD","USD"],["EUR","EUR"],["GBP","GBP"],["CAD","CAD"],["AUD","AUD"],["JPY","JPY"],["CHF","CHF"],["BRL","BRL"],["INR","INR"],["KRW","KRW"]] },
+              { key: "fos_lang", label: "Language", Icon: Globe, options: [["en","English"],["es","Espa\u00f1ol"],["fr","Fran\u00e7ais"],["de","Deutsch"],["ja","\u65e5\u672c\u8a9e"],["zh","\u4e2d\u6587"],["pt","Portugu\u00eas"],["ko","\ud55c\uad6d\uc5b4"],["it","Italiano"],["nl","Nederlands"]] },
+              { key: "fos_currency", label: "Currency", Icon: DollarSign, options: [["USD","USD ($)"],["EUR","EUR (\u20ac)"],["GBP","GBP (\u00a3)"],["CAD","CAD (C$)"],["AUD","AUD (A$)"],["JPY","JPY (\u00a5)"],["CHF","CHF"],["BRL","BRL (R$)"],["INR","INR (\u20b9)"],["KRW","KRW (\u20a9)"]] },
             ].map(sel => (
-              <select key={sel.key} defaultValue={(() => { try { return localStorage.getItem(sel.key) || sel.options[0][0]; } catch { return sel.options[0][0]; } })()} onChange={e => { try { localStorage.setItem(sel.key, e.target.value); } catch {} }} style={{
-                fontSize: 10, padding: "3px 20px 3px 6px", borderRadius: 4, border: `1px solid ${lp.border}`,
-                background: "transparent", color: lp.textDim, fontFamily: "'JetBrains Mono', monospace", fontWeight: 600,
-                cursor: "pointer", appearance: "none", WebkitAppearance: "none",
-                backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='5'%3E%3Cpath d='M0 0l4 5 4-5z' fill='%23636d84'/%3E%3C/svg%3E")`,
-                backgroundRepeat: "no-repeat", backgroundPosition: "right 5px center",
-              }}>
-                {sel.options.map(([v, l]) => <option key={v} value={v}>{l}</option>)}
-              </select>
+              <div key={sel.key} style={{ display: "flex", alignItems: "center", gap: 4, padding: "4px 6px 4px 8px", borderRadius: 8, border: `1px solid ${lp.border}`, background: lp.cardBg || "transparent", transition: "border-color 0.15s" }}>
+                <sel.Icon size={10} color={lp.textFaint} />
+                <select defaultValue={(() => { try { return localStorage.getItem(sel.key) || sel.options[0][0]; } catch { return sel.options[0][0]; } })()} onChange={e => { try { localStorage.setItem(sel.key, e.target.value); } catch {} }} style={{
+                  fontSize: 10, padding: "2px 14px 2px 2px", borderRadius: 4, border: "none",
+                  background: "transparent", color: lp.textDim, fontFamily: "'DM Sans', system-ui", fontWeight: 600,
+                  cursor: "pointer", appearance: "none", WebkitAppearance: "none",
+                  backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='5'%3E%3Cpath d='M0 0l4 5 4-5z' fill='%23636d84'/%3E%3C/svg%3E")`,
+                  backgroundRepeat: "no-repeat", backgroundPosition: "right 2px center", outline: "none",
+                }}>
+                  {sel.options.map(([v, l]) => <option key={v} value={v}>{l}</option>)}
+                </select>
+              </div>
             ))}
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
@@ -9257,10 +9513,10 @@ const LandingPage = ({ onLogin }) => {
               { label: "LinkedIn", url: "https://linkedin.com/company/finance-os" },
               { label: "X", url: "https://x.com/financeos_app" },
             ].map(s => (
-              <span key={s.label} onClick={() => window.open(s.url, "_blank")} style={{ cursor: "pointer", color: "#3d4558", transition: "color 0.15s" }}
-                onMouseEnter={e => e.currentTarget.style.color = "#9ea5b8"}
-                onMouseLeave={e => e.currentTarget.style.color = "#3d4558"}
-              >{s.label}</span>
+              <a key={s.label} href={s.url} target="_blank" rel="noopener noreferrer" style={{ cursor: "pointer", color: lp.textFaint, transition: "color 0.15s", textDecoration: "none", fontSize: 11, fontWeight: 600 }}
+                onMouseEnter={e => e.currentTarget.style.color = lp.accent}
+                onMouseLeave={e => e.currentTarget.style.color = lp.textFaint}
+              >{s.label}</a>
             ))}
           </div>
         </div>
@@ -10397,15 +10653,15 @@ function FinanceOSApp() {
           {view === "dashboard" && <SectionBoundary name="Dashboard" bg={c.surface} borderColor={c.border} textColor={c.textDim} accentColor={c.accent}><DashboardView c={c} onNav={navigate} toast={toast} onDrawer={setDrawerKpi} userName={user.name} period={period} closeTasks={closeTasks} activityLog={activityLog} glData={glData} glLoading={glLoading} /></SectionBoundary>}
           {view === "copilot" && <SectionBoundary name="AI Copilot" bg={c.surface} borderColor={c.border} textColor={c.textDim} accentColor={c.accent}><CopilotView c={c} toast={toast} logActivity={logActivity} /></SectionBoundary>}
           {view === "pnl" && <SectionBoundary name="P&L Statement" bg={c.surface} borderColor={c.border} textColor={c.textDim} accentColor={c.accent}><PnlView c={c} onNav={navigate} toast={toast} logActivity={logActivity} orgName={user.orgName} glData={glData} onDrawer={setDrawerKpi} /></SectionBoundary>}
-          {view === "forecast" && <SectionBoundary name="Forecast Optimizer" bg={c.surface} borderColor={c.border} textColor={c.textDim} accentColor={c.accent}><ForecastView c={c} toast={toast} onDrawer={setDrawerKpi} /></SectionBoundary>}
+          {view === "forecast" && <SectionBoundary name="Forecast Optimizer" bg={c.surface} borderColor={c.border} textColor={c.textDim} accentColor={c.accent}><ForecastView c={c} toast={toast} onDrawer={setDrawerKpi} onNav={navigate} closeTasks={closeTasks} /></SectionBoundary>}
           {view === "consolidation" && <SectionBoundary name="Consolidation" bg={c.surface} borderColor={c.border} textColor={c.textDim} accentColor={c.accent}><ConsolidationView c={c} onNav={navigate} toast={toast} onDrawer={setDrawerKpi} /></SectionBoundary>}
-          {view === "models" && <SectionBoundary name="Scenario Models" bg={c.surface} borderColor={c.border} textColor={c.textDim} accentColor={c.accent}><ScenariosView c={c} toast={toast} /></SectionBoundary>}
-          {view === "close" && <SectionBoundary name="Month-End Close" bg={c.surface} borderColor={c.border} textColor={c.textDim} accentColor={c.accent}><CloseView c={c} toast={toast} tasks={closeTasks} setTasks={setCloseTasks} logActivity={logActivity} /></SectionBoundary>}
+          {view === "models" && <SectionBoundary name="Scenario Models" bg={c.surface} borderColor={c.border} textColor={c.textDim} accentColor={c.accent}><ScenariosView c={c} toast={toast} onNav={navigate} /></SectionBoundary>}
+          {view === "close" && <SectionBoundary name="Month-End Close" bg={c.surface} borderColor={c.border} textColor={c.textDim} accentColor={c.accent}><CloseView c={c} toast={toast} tasks={closeTasks} setTasks={setCloseTasks} logActivity={logActivity} onNav={navigate} /></SectionBoundary>}
           {view === "team" && <SectionBoundary name="Team" bg={c.surface} borderColor={c.border} textColor={c.textDim} accentColor={c.accent}><TeamView c={c} toast={toast} onNav={navigate} userName={user.name} /></SectionBoundary>}
           {view === "integrations" && <SectionBoundary name="Integrations" bg={c.surface} borderColor={c.border} textColor={c.textDim} accentColor={c.accent}><IntegrationsView c={c} toast={toast} /></SectionBoundary>}
           {view === "admin" && <SectionBoundary name="Admin Panel" bg={c.surface} borderColor={c.border} textColor={c.textDim} accentColor={c.accent}><AdminView c={c} toast={toast} onNav={navigate} /></SectionBoundary>}
           {view === "investor" && <SectionBoundary name="Investor Relations" bg={c.surface} borderColor={c.border} textColor={c.textDim} accentColor={c.accent}><InvestorView c={c} toast={toast} onDrawer={setDrawerKpi} /></SectionBoundary>}
-          {view === "intelligence" && <SectionBoundary name="Intelligence Library" bg={c.surface} borderColor={c.border} textColor={c.textDim} accentColor={c.accent}><IntelligenceView c={c} toast={toast} /></SectionBoundary>}
+          {view === "intelligence" && <SectionBoundary name="Intelligence Library" bg={c.surface} borderColor={c.border} textColor={c.textDim} accentColor={c.accent}><IntelligenceView c={c} toast={toast} onNav={navigate} /></SectionBoundary>}
           {view === "settings" && <SectionBoundary name="Settings" bg={c.surface} borderColor={c.border} textColor={c.textDim} accentColor={c.accent}><SettingsView c={c} onLogout={handleLogout} toast={toast} mode={mode} user={user} onShowSuitePanel={() => { setSuitePanelOpen(true); try { localStorage.removeItem("financeos-suite-dismissed"); } catch {} }} suitePanelOpen={suitePanelOpen} /></SectionBoundary>}
           </>)}
         </div>
