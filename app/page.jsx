@@ -5856,7 +5856,7 @@ const PlanPicker = ({ c, userName, onSkip, onSelect, isDemo, isAuthenticated }) 
   const [verifyingPayment, setVerifyingPayment] = useState(false);
   const [verifyFailed, setVerifyFailed] = useState(false);
   const [checkoutLoading, setCheckoutLoading] = useState(null);
-  const canSkip = isDemo || !isAuthenticated;
+  const canSkip = !isAuthenticated; // Authenticated users MUST pick a plan — no skip allowed
   // Theme helper — uses dashboard theme if available, falls back to dark
   const t = { bg: c?.surface || "#111318", bg2: c?.bg2 || "#0b0c10", alt: c?.surfaceAlt || "#181b22", bdr: c?.border || "#1e2230", bdrSub: c?.borderSub || "#171b25", bdrBright: c?.borderBright || "#2a2f3d", tx: c?.text || "#eef0f6", txD: c?.textDim || "#636d84", txF: c?.textFaint || "#3d4558", txS: c?.textSec || "#9ea5b8", ac: c?.accent || "#5b9cf5", pu: c?.purple || "#a181f7", gn: c?.green || "#3dd9a0", rd: c?.red || "#f06b6b" };
 
@@ -5879,13 +5879,13 @@ const PlanPicker = ({ c, userName, onSkip, onSelect, isDemo, isAuthenticated }) 
   ];
 
   return (
-    <div onClick={onSkip} style={{ position: "fixed", inset: 0, zIndex: 10000, background: "rgba(0,0,0,0.6)", backdropFilter: "blur(12px)", display: "flex", alignItems: "center", justifyContent: "center", animation: "fadeIn 0.2s" }}>
+    <div onClick={canSkip ? onSkip : undefined} style={{ position: "fixed", inset: 0, zIndex: 10000, background: "rgba(0,0,0,0.6)", backdropFilter: "blur(12px)", display: "flex", alignItems: "center", justifyContent: "center", animation: "fadeIn 0.2s" }}>
       <div onClick={e => e.stopPropagation()} style={{ width: "95vw", maxWidth: 860, maxHeight: "94vh", overflow: "auto", background: t.bg, border: `1px solid ${t.bdr}`, borderRadius: 20, boxShadow: "0 24px 80px rgba(0,0,0,0.4)", animation: "cmdIn 0.25s ease" }}>
         {/* Header */}
         <div style={{ padding: "32px 40px 0", textAlign: "center", position: "relative" }}>
           {/* Accent edge */}
-          {/* Close button */}
-          {<button onClick={onSkip} aria-label="Go back" style={{
+          {/* Close button — only when skip is allowed */}
+          {canSkip && <button onClick={onSkip} aria-label="Go back" style={{
             position: "absolute", top: 20, left: 20, width: 36, height: 36, borderRadius: 10,
             border: `1px solid ${t.bdr}`, background: "transparent", color: t.txD, cursor: "pointer",
             display: "flex", alignItems: "center", justifyContent: "center", transition: "all 0.15s",
@@ -6100,9 +6100,13 @@ const PlanPicker = ({ c, userName, onSkip, onSelect, isDemo, isAuthenticated }) 
         {!checkoutPending && !verifyingPayment && !verifyFailed && (
         <div style={{ padding: "20px 40px 28px", textAlign: "center" }}>
           <div style={{ fontSize: 11, color: t.txF, marginBottom: 10 }}>All plans include: SOC 2 compliance · AES-256 encryption · 24/7 monitoring · 30-day MBG</div>
-          <button onClick={onSkip} style={{ fontSize: 11, color: t.txD, background: "none", border: "none", cursor: "pointer", fontFamily: "inherit", marginBottom: 8 }}>
+          {canSkip ? (
+            <button onClick={onSkip} style={{ fontSize: 11, color: t.txD, background: "none", border: "none", cursor: "pointer", fontFamily: "inherit", marginBottom: 8 }}>
               {isDemo ? "Continue with demo data →" : "Skip for now →"}
             </button>
+          ) : (
+            <div style={{ fontSize: 11, color: t.ac, fontWeight: 600, marginBottom: 8 }}>Select a plan to access your workspace</div>
+          )}
           <div style={{ display: "flex", justifyContent: "center", gap: 20 }}>
             {["12-view dashboard", "AI-powered insights", "30-day money-back guarantee"].map(s => (
               <div key={s} style={{ fontSize: 10, color: t.txF, fontWeight: 600 }}>{s}</div>
@@ -8221,7 +8225,7 @@ function FinanceOSApp() {
       <OfflineIndicator c={c} />
       <PWAInstallPrompt c={c} />
       {/* Plan Picker — shows after signup */}
-      {showPlanPicker && <PlanPicker c={c} userName={user.name} isDemo={user.plan === "demo"} isAuthenticated={!!user.email && user.plan !== "demo"} onSkip={() => setShowPlanPicker(false)} onSelect={(plan) => {
+      {showPlanPicker && <PlanPicker c={c} userName={user.name} isDemo={user.plan === "demo" || !user.plan} isAuthenticated={!!user.email} onSkip={() => setShowPlanPicker(false)} onSelect={(plan) => {
         // SECURITY: Plan is set to 'pending:<planName>' until payment is verified
         // The onboarding wizard only runs after verification succeeds
         setUser(prev => ({ ...prev, plan: `pending:${plan}` }));
