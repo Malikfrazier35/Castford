@@ -7652,6 +7652,20 @@ const PlanPicker = ({ c, userName, onSkip, onSelect, isDemo, isAuthenticated }) 
   );
 };
 
+// ── Scroll-triggered reveal hook (module scope for all components) ──
+const useScrollReveal = (threshold = 0.15) => {
+  const ref = useRef(null);
+  const [visible, setVisible] = useState(false);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(([entry]) => { if (entry.isIntersecting) { setVisible(true); obs.disconnect(); } }, { threshold });
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
+  return [ref, visible];
+};
+
 // ── PRODUCT DEMO (Jira-inspired tabbed showcase) ─────────────
 const DEMO_TABS = [
   { id: "planning", label: "FP&A Planning",
@@ -7830,19 +7844,7 @@ const LandingPage = ({ onLogin }) => {
     gradFrom: "#3b82f6", gradTo: "#8b5cf6",
   };
 
-  // ── Scroll-triggered animations via IntersectionObserver ──
-  const useScrollReveal = (threshold = 0.15) => {
-    const ref = useRef(null);
-    const [visible, setVisible] = useState(false);
-    useEffect(() => {
-      const el = ref.current;
-      if (!el) return;
-      const obs = new IntersectionObserver(([entry]) => { if (entry.isIntersecting) { setVisible(true); obs.disconnect(); } }, { threshold });
-      obs.observe(el);
-      return () => obs.disconnect();
-    }, []);
-    return [ref, visible];
-  };
+  // useScrollReveal is now defined at module scope (above ProductDemo)
 
   // ── Animated counter hook ──
   const useCountUp = (target, duration = 1800, visible = false) => {
