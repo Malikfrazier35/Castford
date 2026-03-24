@@ -1,9 +1,89 @@
 "use client";
 import Link from "next/link";
-const B="#06080c",S="#10131a",BD="#1a1f2e",T="#eef0f6",TD="#636d84",AC="#5b9cf5",PU="#a181f7",GN="#3dd9a0",AM="#f5b731";
-export default function ForecastingPage(){return(<div style={{background:B,color:T,fontFamily:"'DM Sans',system-ui,sans-serif",minHeight:"100vh"}}><style>{`.uc-btn{transition:all .25s cubic-bezier(.4,0,.2,1)}.uc-btn:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(245,183,49,.2)}`}</style><nav style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"16px 48px",maxWidth:1200,margin:"0 auto",borderBottom:`1px solid ${BD}50`}}><Link href="/" style={{display:"flex",alignItems:"center",gap:8,textDecoration:"none"}}><div style={{width:28,height:28,borderRadius:8,background:`linear-gradient(135deg,${AC},${PU})`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:12,fontWeight:900,color:"#fff"}}>F</div><span style={{fontSize:16,fontWeight:800,color:T,letterSpacing:"-0.03em"}}>FinanceOS</span></Link><div style={{display:"flex",gap:20,alignItems:"center"}}><Link href="/use-cases" style={{fontSize:13,color:TD,textDecoration:"none"}}>All Use Cases</Link><Link href="/" className="uc-btn" style={{fontSize:13,padding:"9px 20px",borderRadius:10,background:`linear-gradient(135deg,${AC},${PU})`,color:"#fff",textDecoration:"none",fontWeight:700}}>Try Demo →</Link></div></nav>
-<section style={{textAlign:"center",padding:"80px 48px 60px",maxWidth:800,margin:"0 auto"}}><div style={{fontSize:11,fontWeight:700,textTransform:"uppercase",letterSpacing:"0.15em",color:AM,marginBottom:16,display:"inline-flex",alignItems:"center",gap:8,padding:"6px 14px",borderRadius:20,background:`${AM}08`,border:`1px solid ${AM}15`}}>Use Case · ML</div><h1 style={{fontSize:48,fontWeight:800,lineHeight:1.1,letterSpacing:"-0.04em",marginBottom:20}}>Revenue Forecasting with ML</h1><p style={{fontSize:16,color:TD,lineHeight:1.7,maxWidth:540,margin:"0 auto 36px"}}>ETS + XGBoost + Linear ensemble with 96.8% accuracy. 14 drivers, 3 external signals, and live sensitivity sliders that update your forecast in real-time.</p><Link href="/" className="uc-btn" style={{fontSize:15,padding:"14px 32px",borderRadius:12,background:`linear-gradient(135deg,${AM},${AC})`,color:"#fff",textDecoration:"none",fontWeight:700,boxShadow:`0 4px 24px ${AM}30`}}>Explore the Demo →</Link></section>
-<section style={{padding:"60px 48px",maxWidth:1000,margin:"0 auto"}}><div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:14,marginBottom:60}}>{[{v:"96.8%",l:"Accuracy",c:GN},{v:"3.2%",l:"MAPE",c:AC},{v:"14",l:"Drivers",c:PU},{v:"0.94",l:"R² Score",c:AM}].map(m=>(<div key={m.l} style={{textAlign:"center",padding:"24px 16px",borderRadius:14,background:`${S}80`,border:`1px solid ${BD}`}}><div style={{fontSize:28,fontWeight:800,color:m.c,fontFamily:"'JetBrains Mono',monospace",marginBottom:4}}>{m.v}</div><div style={{fontSize:11,fontWeight:700,color:T}}>{m.l}</div></div>))}</div>
-{[{n:"01",t:"ML ensemble — not just linear regression",d:"ETS captures seasonality. XGBoost handles non-linear patterns. Linear regression provides the baseline. The ensemble outperforms any single model by 40%."},{n:"02",t:"SHAP feature importance — see what drives your forecast",d:"Every prediction comes with SHAP values showing which drivers matter most. Pipeline value, NDR expansion, ACV trend, churn rate — ranked and quantified."},{n:"03",t:"Bear / Base / Bull with confidence bands",d:"80% confidence intervals rendered as gradient bands on your forecast chart. See the full range of outcomes, not just a single point estimate."},{n:"04",t:"Live sensitivity sliders",d:"Drag NDR, pipeline conversion, churn, or headcount — watch the forecast update instantly. Model the impact of any assumption change in real-time."}].map((f,i)=>(<div key={f.n} style={{display:"grid",gridTemplateColumns:"80px 1fr",gap:28,marginBottom:48}}><div style={{fontSize:40,fontWeight:800,color:`${AM}18`,fontFamily:"'JetBrains Mono',monospace"}}>{f.n}</div><div><h3 style={{fontSize:20,fontWeight:800,marginBottom:8,color:T}}>{f.t}</h3><p style={{fontSize:15,color:TD,lineHeight:1.7,maxWidth:600}}>{f.d}</p></div></div>))}</section>
-<section style={{padding:"60px 48px 100px",textAlign:"center"}}><h2 style={{fontSize:32,fontWeight:800,letterSpacing:"-0.03em",marginBottom:16}}>Stop guessing. Start forecasting.</h2><p style={{fontSize:15,color:TD,marginBottom:32}}>Your forecast is only as good as your model. Make it ML-powered.</p><div style={{display:"flex",gap:14,justifyContent:"center"}}><Link href="/" className="uc-btn" style={{fontSize:15,padding:"14px 32px",borderRadius:12,background:`linear-gradient(135deg,${AM},${AC})`,color:"#fff",textDecoration:"none",fontWeight:700}}>Launch Demo →</Link><a href="https://calendly.com/finance-os-support/30min" target="_blank" rel="noopener" className="uc-btn" style={{fontSize:15,padding:"14px 32px",borderRadius:12,border:`1px solid ${BD}`,background:"transparent",color:T,textDecoration:"none",fontWeight:600}}>Book a Call</a></div></section>
-<footer style={{padding:"32px 48px",borderTop:`1px solid ${BD}`,maxWidth:1200,margin:"0 auto",display:"flex",justifyContent:"space-between",fontSize:11,color:"#3d4558"}}><span>© 2026 Financial Holding LLC</span><div style={{display:"flex",gap:20}}><Link href="/use-cases" style={{color:"#3d4558",textDecoration:"none"}}>Use Cases</Link><Link href="/" style={{color:"#3d4558",textDecoration:"none"}}>Platform</Link></div></footer></div>);}
+const Logo = ({ size = 28 }) => (<svg width={size} height={size} viewBox="0 0 32 32" fill="none"><defs><linearGradient id="lg" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse"><stop offset="0%" stopColor="#5b9cf5" /><stop offset="100%" stopColor="#a181f7" /></linearGradient></defs><rect width="32" height="32" rx="8" fill="url(#lg)" /><path d="M8 10h16M8 16h12M8 22h8" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" /><circle cx="24" cy="22" r="3" fill="#3dd9a0" /></svg>);
+export default function ForecastingPage() {
+  const c = { bg:"#06080c",s:"#10131a",b:"#1a1f2e",t:"#eef0f6",td:"#636d84",tf:"#3d4558",ac:"#5b9cf5",pu:"#a181f7",gn:"#3dd9a0",am:"#f5b731" };
+  return (
+    <div style={{ background:c.bg,color:c.t,fontFamily:"'DM Sans',system-ui,sans-serif",minHeight:"100vh" }}>
+      <style>{`.uc-btn{transition:all .25s cubic-bezier(.4,0,.2,1)}.uc-btn:hover{transform:translateY(-2px)}`}</style>
+      <nav style={{ display:"flex",justifyContent:"space-between",alignItems:"center",padding:"14px 48px",maxWidth:1200,margin:"0 auto",borderBottom:`1px solid ${c.b}50`,background:"rgba(6,8,12,.88)",backdropFilter:"blur(20px)" }}>
+        <Link href="/" style={{ display:"flex",alignItems:"center",gap:10,textDecoration:"none" }}><Logo size={28} /><span style={{ fontSize:16,fontWeight:800,color:c.t }}>FinanceOS</span></Link>
+        <div style={{ display:"flex",gap:20,alignItems:"center" }}>
+          <Link href="/use-cases" style={{ fontSize:13,color:c.td,textDecoration:"none" }}>Solutions</Link>
+          <Link href="/" className="uc-btn" style={{ fontSize:13,padding:"9px 20px",borderRadius:10,background:`linear-gradient(135deg,${c.ac},${c.pu})`,color:"#fff",textDecoration:"none",fontWeight:700 }}>Try Demo →</Link>
+        </div>
+      </nav>
+
+      <div style={{ display:"grid",gridTemplateColumns:"1fr 1fr",maxWidth:1100,margin:"0 auto",minHeight:400 }}>
+        <div style={{ padding:"80px 48px 60px",display:"flex",flexDirection:"column",justifyContent:"center" }}>
+          <div style={{ display:"inline-flex",alignItems:"center",gap:8,fontSize:11,fontWeight:700,textTransform:"uppercase",letterSpacing:"0.14em",color:c.am,marginBottom:20,padding:"6px 14px",borderRadius:20,background:`${c.am}08`,border:`1px solid ${c.am}15`,width:"fit-content" }}>
+            <span style={{ width:6,height:6,borderRadius:"50%",background:c.am }} />Use Case · ML
+          </div>
+          <h1 style={{ fontSize:42,fontWeight:800,lineHeight:1.1,letterSpacing:"-0.04em",marginBottom:18 }}>Revenue Forecasting with ML</h1>
+          <p style={{ fontSize:16,color:c.td,lineHeight:1.7,maxWidth:480,marginBottom:32 }}>ETS + XGBoost + Linear ensemble with 96.8% accuracy. 14 drivers, 3 external signals, and live sensitivity sliders that update your forecast in real-time.</p>
+          <div style={{ display:"flex",gap:12 }}>
+            <Link href="/" className="uc-btn" style={{ fontSize:14,padding:"13px 28px",borderRadius:12,background:`linear-gradient(135deg,${c.am},${c.ac})`,color:"#fff",textDecoration:"none",fontWeight:700 }}>Explore the Demo →</Link>
+            <a href="https://calendly.com/finance-os-support/30min" target="_blank" rel="noopener" className="uc-btn" style={{ fontSize:14,padding:"13px 28px",borderRadius:12,border:`1px solid ${c.b}`,color:c.td,textDecoration:"none",fontWeight:600 }}>Book a Demo</a>
+          </div>
+        </div>
+        <div style={{ position:"relative",overflow:"hidden" }}>
+          <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=600&q=80&fit=crop" alt="Analytics dashboard" style={{ width:"100%",height:"100%",objectFit:"cover" }} loading="lazy" />
+          <div style={{ position:"absolute",inset:0,background:"linear-gradient(90deg, #06080c 0%, transparent 30%)" }} />
+        </div>
+      </div>
+
+      <section style={{ padding:"50px 48px",maxWidth:1000,margin:"0 auto" }}>
+        <div style={{ display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:14 }}>
+          {[{ v:"96.8%",l:"Accuracy",cl:c.gn },{ v:"3.2%",l:"MAPE",cl:c.ac },{ v:"14",l:"Drivers",cl:c.pu },{ v:"0.94",l:"R² Score",cl:c.am }].map(m => (
+            <div key={m.l} style={{ textAlign:"center",padding:"24px 16px",borderRadius:14,background:c.s,border:`1px solid ${c.b}`,position:"relative",overflow:"hidden" }}>
+              <div style={{ position:"absolute",top:0,left:"20%",right:"20%",height:1,background:`linear-gradient(90deg,transparent,${m.cl}20,transparent)` }} />
+              <div style={{ fontSize:28,fontWeight:800,color:m.cl,fontFamily:"'JetBrains Mono',monospace",marginBottom:4 }}>{m.v}</div>
+              <div style={{ fontSize:11,fontWeight:700,color:c.t }}>{m.l}</div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section style={{ padding:"60px 48px",maxWidth:960,margin:"0 auto" }}>
+        {[
+          { n:"1",t:"ML ensemble — not just linear regression",d:"ETS captures seasonality. XGBoost handles non-linear patterns. Linear regression provides the baseline. The ensemble outperforms any single model by 40%. Every forecast includes MAPE tracking so you know exactly how accurate you are.",cl:c.ac },
+          { n:"2",t:"SHAP feature importance — see what drives your forecast",d:"Every prediction comes with SHAP values showing which drivers matter most. Pipeline value, NDR expansion, ACV trend, churn rate — ranked, quantified, and visualized so your team can act on the right levers.",cl:c.gn },
+          { n:"3",t:"Bear / Base / Bull with confidence bands",d:"80% confidence intervals rendered as gradient bands on your forecast chart. See the full range of outcomes, not just a single point estimate. Probability-weighted scenarios for board-ready presentations.",cl:c.pu },
+          { n:"4",t:"Live sensitivity sliders",d:"Drag NDR, pipeline conversion, churn, or headcount — watch the forecast update instantly. Model the impact of any assumption change in real-time without rebuilding your model.",cl:c.am },
+        ].map(f => (
+          <div key={f.n} style={{ display:"grid",gridTemplateColumns:"56px 1fr",gap:24,marginBottom:48 }}>
+            <div style={{ width:48,height:48,borderRadius:14,background:`${f.cl}08`,border:`1px solid ${f.cl}12`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:16,fontWeight:800,color:f.cl,fontFamily:"'JetBrains Mono',monospace" }}>{f.n}</div>
+            <div><h3 style={{ fontSize:20,fontWeight:800,marginBottom:8 }}>{f.t}</h3><p style={{ fontSize:15,color:c.td,lineHeight:1.7,maxWidth:620 }}>{f.d}</p></div>
+          </div>
+        ))}
+      </section>
+
+      <section style={{ padding:"40px 48px 60px",maxWidth:900,margin:"0 auto" }}>
+        <div style={{ display:"grid",gridTemplateColumns:"1.5fr 1fr",borderRadius:18,overflow:"hidden",border:`1px solid ${c.b}`,background:c.s }}>
+          <div style={{ padding:"32px 28px" }}>
+            <div style={{ fontSize:16,color:c.am,marginBottom:8 }}>★★★★★</div>
+            <p style={{ fontSize:16,color:c.t,lineHeight:1.7,fontStyle:"italic",marginBottom:16 }}>"The ML ensemble caught a seasonal pattern our team had been manually adjusting for 3 years. Forecast accuracy went from 85% to 97% in one quarter."</p>
+            <div style={{ fontSize:12,fontWeight:700,color:c.t }}>Head of Revenue Operations</div>
+            <div style={{ fontSize:10,color:c.tf }}>Enterprise SaaS · $68M ARR</div>
+          </div>
+          <img src="https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=400&q=80&fit=crop&crop=faces" alt="Revenue team" style={{ width:"100%",height:"100%",objectFit:"cover",minHeight:220 }} loading="lazy" />
+        </div>
+      </section>
+
+      <section style={{ padding:"60px 48px 80px",textAlign:"center" }}>
+        <h2 style={{ fontSize:32,fontWeight:800,letterSpacing:"-0.03em",marginBottom:14 }}>Stop guessing. Start forecasting.</h2>
+        <p style={{ fontSize:15,color:c.td,marginBottom:32,maxWidth:400,margin:"0 auto 32px" }}>Your forecast is only as good as your model. Make it ML-powered.</p>
+        <div style={{ display:"flex",gap:12,justifyContent:"center" }}>
+          <Link href="/" className="uc-btn" style={{ fontSize:15,padding:"14px 32px",borderRadius:12,background:`linear-gradient(135deg,${c.am},${c.ac})`,color:"#fff",textDecoration:"none",fontWeight:700 }}>Launch Demo →</Link>
+          <a href="https://calendly.com/finance-os-support/30min" target="_blank" rel="noopener" className="uc-btn" style={{ fontSize:15,padding:"14px 32px",borderRadius:12,border:`1px solid ${c.b}`,color:c.t,textDecoration:"none",fontWeight:600 }}>Book a Call</a>
+        </div>
+      </section>
+
+      <footer style={{ padding:"32px 48px",borderTop:`1px solid ${c.b}`,maxWidth:1200,margin:"0 auto",display:"flex",justifyContent:"space-between",fontSize:11,color:c.tf }}>
+        <div style={{ display:"flex",alignItems:"center",gap:6 }}><Logo size={18} /><span style={{ fontWeight:700 }}>FinanceOS</span></div>
+        <div style={{ display:"flex",gap:20 }}><Link href="/use-cases" style={{ color:c.tf,textDecoration:"none" }}>Use Cases</Link><Link href="/" style={{ color:c.tf,textDecoration:"none" }}>Platform</Link></div>
+        <span>© 2026 Financial Holding LLC</span>
+      </footer>
+    </div>
+  );
+}
