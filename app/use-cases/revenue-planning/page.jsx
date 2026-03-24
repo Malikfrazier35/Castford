@@ -4,7 +4,7 @@ const Logo = ({ size = 28 }) => (<svg width={size} height={size} viewBox="0 0 32
 export default function RevenuePlanningPage() {
   const c = { bg:"#06080c",s:"#10131a",b:"#1a1f2e",t:"#eef0f6",td:"#636d84",tf:"#3d4558",ac:"#5b9cf5",pu:"#a181f7",gn:"#3dd9a0",am:"#f5b731" };
   return (
-    <div style={{ background:c.bg,color:c.t,fontFamily:"'DM Sans',system-ui,sans-serif",minHeight:"100vh" }}>
+    <div style={{ background:c.bg,color:c.t,fontFamily:"'Manrope',system-ui,sans-serif",minHeight:"100vh" }}>
       <style>{`.uc-btn{transition:all .25s cubic-bezier(.4,0,.2,1)}.uc-btn:hover{transform:translateY(-2px)}`}</style>
       <nav style={{ display:"flex",justifyContent:"space-between",alignItems:"center",padding:"14px 48px",maxWidth:1200,margin:"0 auto",borderBottom:`1px solid ${c.b}50`,background:"rgba(6,8,12,.88)",backdropFilter:"blur(20px)" }}>
         <Link href="/" style={{ display:"flex",alignItems:"center",gap:10,textDecoration:"none" }}><Logo size={28} /><span style={{ fontSize:16,fontWeight:800,color:c.t }}>FinanceOS</span></Link>

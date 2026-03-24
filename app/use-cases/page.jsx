@@ -35,7 +35,7 @@ export default function UseCasesIndex() {
   ];
 
   return (
-    <div style={{ background:c.bg,color:c.t,fontFamily:"'DM Sans',system-ui,sans-serif",minHeight:"100vh" }}>
+    <div style={{ background:c.bg,color:c.t,fontFamily:"'Manrope',system-ui,sans-serif",minHeight:"100vh" }}>
       <style>{`@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}.uc-card{transition:all .25s cubic-bezier(.4,0,.2,1)}.uc-card:hover{transform:translateY(-4px);border-color:rgba(91,156,245,.2)!important}`}</style>
 
       <nav style={{ display:"flex",justifyContent:"space-between",alignItems:"center",padding:"14px 48px",maxWidth:1200,margin:"0 auto",borderBottom:`1px solid ${c.b}50` }}>

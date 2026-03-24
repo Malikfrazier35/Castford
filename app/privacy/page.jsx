@@ -10,7 +10,7 @@ export default function PrivacyPage() {
   const th = { padding: "10px 16px", fontSize: 11, fontWeight: 700, color: "#3d4558", textTransform: "uppercase", letterSpacing: "0.06em", borderBottom: "1px solid #1e2230", textAlign: "left" };
 
   return (
-    <div style={{ minHeight: "100vh", background: "#09090b", color: "#f0f2f5", fontFamily: "'DM Sans', system-ui, sans-serif", position: "relative" }}>
+    <div style={{ minHeight: "100vh", background: "#09090b", color: "#f0f2f5", fontFamily: "'Manrope', system-ui, sans-serif", position: "relative" }}>
       <div style={{ position: "fixed", inset: 0, backgroundImage: "radial-gradient(circle at 1px 1px, rgba(255,255,255,0.02) 0.5px, transparent 0.5px)", backgroundSize: "32px 32px", pointerEvents: "none", zIndex: 0 }} />
       <div style={{ maxWidth: 720, margin: "0 auto", padding: "60px 24px 100px" }}>
         {/* Header */}

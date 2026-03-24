@@ -49,7 +49,7 @@ export default function DemoLanding() {
   };
 
   return (
-    <div style={{ fontFamily: "'DM Sans', system-ui, sans-serif", background: "#0a0e1a", color: "#c8cdd8", minHeight: "100vh", display: "flex", flexDirection: "column", position: "relative" }}>
+    <div style={{ fontFamily: "'Manrope', system-ui, sans-serif", background: "#0a0e1a", color: "#c8cdd8", minHeight: "100vh", display: "flex", flexDirection: "column", position: "relative" }}>
       {/* Subtle dot grid */}
       <div style={{ position: "fixed", inset: 0, backgroundImage: "radial-gradient(circle at 1px 1px, rgba(255,255,255,0.025) 0.5px, transparent 0.5px)", backgroundSize: "32px 32px", pointerEvents: "none", zIndex: 0 }} />
       {/* Ambient glow */}

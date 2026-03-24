@@ -2,7 +2,7 @@ export default function NotFound() {
   return (
     <div style={{
       minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center",
-      background: "#09090b", color: "#f0f2f5", fontFamily: "'DM Sans', system-ui, -apple-system, sans-serif",
+      background: "#09090b", color: "#f0f2f5", fontFamily: "'Manrope', system-ui, -apple-system, sans-serif",
       flexDirection: "column", gap: 16, padding: 40,
     }}>
       <div style={{ width: 56, height: 56, borderRadius: 16, background: "linear-gradient(135deg, #60a5fa, #818cf8, #a78bfa)", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 4px 14px rgba(96,165,250,0.25), inset 0 1px 0 rgba(255,255,255,0.15)" }}>

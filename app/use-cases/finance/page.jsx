@@ -26,7 +26,7 @@ export default function FinanceUseCasePage() {
   const c = { bg:"#06080c",s:"#10131a",s2:"#161a24",b:"#1a1f2e",t:"#eef0f6",td:"#636d84",tf:"#3d4558",ac:"#5b9cf5",pu:"#a181f7",gn:"#3dd9a0",am:"#f5b731",rd:"#f06b6b",cy:"#2dd4d0" };
 
   return (
-    <div style={{background:c.bg,color:c.t,fontFamily:"'DM Sans',system-ui,sans-serif",minHeight:"100vh"}}>
+    <div style={{background:c.bg,color:c.t,fontFamily:"'Manrope',system-ui,sans-serif",minHeight:"100vh"}}>
       <style>{`@keyframes fadeUp{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:translateY(0)}}@keyframes gradShift{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}@keyframes logoScroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}.uc-f{animation:fadeUp .7s ease both}.uc-f1{animation:fadeUp .7s ease .1s both}.uc-f2{animation:fadeUp .7s ease .2s both}.uc-f3{animation:fadeUp .7s ease .3s both}.uc-btn{transition:all .25s cubic-bezier(.4,0,.2,1)}.uc-btn:hover{transform:translateY(-2px)}.uc-card{transition:all .3s cubic-bezier(.4,0,.2,1)}.uc-card:hover{transform:translateY(-4px);border-color:rgba(91,156,245,.25)!important;box-shadow:0 16px 48px rgba(0,0,0,.3),0 0 0 1px rgba(91,156,245,.1)!important}.uc-nav:hover{color:${c.t}!important}`}</style>
 
       <nav style={{position:"sticky",top:0,zIndex:50,borderBottom:`1px solid ${c.b}40`,background:"rgba(6,8,12,.88)",backdropFilter:"blur(24px) saturate(1.4)",WebkitBackdropFilter:"blur(24px) saturate(1.4)"}}>

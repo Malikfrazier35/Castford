@@ -179,7 +179,7 @@ class AppErrorBoundary extends Component {
   render() {
     if (this.state.hasError) {
       return (
-        <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: "#09090b", fontFamily: "'DM Sans', sans-serif" }}>
+        <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: "#09090b", fontFamily: "'Manrope', sans-serif" }}>
           <div style={{ textAlign: "center", maxWidth: 400, padding: 32 }}>
             <div style={{ width: 56, height: 56, borderRadius: 12, background: "linear-gradient(135deg, #f06b6b20, #f06b6b08)", border: "1px solid #f06b6b20", display: "inline-flex", alignItems: "center", justifyContent: "center", marginBottom: 16, fontSize: 24 }}>!</div>
             <div style={{ fontSize: 20, fontWeight: 800, color: "#eef0f6", marginBottom: 8 }}>Something went wrong</div>
@@ -5534,7 +5534,7 @@ const CookieConsent = ({ c }) => {
       position: "fixed", bottom: 20, left: 20, right: 20, maxWidth: 520, zIndex: 9999,
       background: `${c?.surface || "#111318"}f5`, border: `1px solid ${c?.border || "#1e2230"}`,
       borderRadius: 12, padding: "20px 24px", boxShadow: "0 12px 40px rgba(0,0,0,0.4)",
-      backdropFilter: "blur(16px)", fontFamily: "'DM Sans', system-ui, sans-serif",
+      backdropFilter: "blur(16px)", fontFamily: "'Manrope', system-ui, sans-serif",
       animation: "fadeSlideUp 0.4s ease",
     }}>
       <div style={{ fontSize: 14, fontWeight: 700, color: c?.text || "#f0f2f5", marginBottom: 8 }}>Privacy Preferences</div>
@@ -5666,7 +5666,7 @@ const AuthModal = ({ mode: initialMode, onClose, onAuth }) => {
   const inputStyle = {
     width: "100%", fontSize: 14, padding: "12px 14px", borderRadius: 10,
     border: "1px solid #1e2230", background: "#0b0c10", color: "#f0f2f5",
-    fontFamily: "'DM Sans', system-ui, sans-serif", outline: "none", transition: "border-color 0.2s, box-shadow 0.2s",
+    fontFamily: "'Manrope', system-ui, sans-serif", outline: "none", transition: "border-color 0.2s, box-shadow 0.2s",
   };
 
   return (
@@ -6595,7 +6595,7 @@ const LandingPage = ({ onLogin }) => {
   const plans = PRICING_PLANS;
 
   return (
-    <div style={{ minHeight: "100vh", background: "#09090b", color: "#f0f2f5", fontFamily: "'DM Sans', system-ui, sans-serif", overflow: "auto", position: "relative" }}>
+    <div style={{ minHeight: "100vh", background: "#09090b", color: "#f0f2f5", fontFamily: "'Manrope', system-ui, sans-serif", overflow: "auto", position: "relative" }}>
       {/* Ambient depth — dot grid + gradient orbs */}
       <div style={{ position: "fixed", inset: 0, pointerEvents: "none", zIndex: 0 }}>
         <div style={{ position: "absolute", inset: 0, backgroundImage: "radial-gradient(circle at 1px 1px, rgba(255,255,255,0.03) 0.5px, transparent 0.5px)", backgroundSize: "40px 40px" }} />
@@ -6705,7 +6705,7 @@ const LandingPage = ({ onLogin }) => {
             { name: "QuickBooks", tag: "ERP" },
           ].map(l => (
             <div key={l.name} style={{ textAlign: "center" }}>
-              <span style={{ fontSize: 15, fontWeight: 800, color: "#252a38", letterSpacing: "-0.02em", fontFamily: "'DM Sans', system-ui, sans-serif" }}>{l.name}</span>
+              <span style={{ fontSize: 15, fontWeight: 800, color: "#252a38", letterSpacing: "-0.02em", fontFamily: "'Manrope', system-ui, sans-serif" }}>{l.name}</span>
               <div style={{ fontSize: 7, fontWeight: 700, color: "#3dd9a0", marginTop: 2, textTransform: "uppercase", letterSpacing: "0.06em" }}>{l.tag}</div>
             </div>
           ))}
@@ -6722,7 +6722,7 @@ const LandingPage = ({ onLogin }) => {
             { name: "DocuSign", tag: "eSignature" },
           ].map(l => (
             <div key={l.name} style={{ textAlign: "center" }}>
-              <span style={{ fontSize: 15, fontWeight: 800, color: l.accent ? "#a78bfa" : "#252a38", letterSpacing: "-0.02em", fontFamily: "'DM Sans', system-ui, sans-serif" }}>{l.name}</span>
+              <span style={{ fontSize: 15, fontWeight: 800, color: l.accent ? "#a78bfa" : "#252a38", letterSpacing: "-0.02em", fontFamily: "'Manrope', system-ui, sans-serif" }}>{l.name}</span>
               <div style={{ fontSize: 7, fontWeight: 700, color: l.accent ? "#a78bfa" : "#3dd9a0", marginTop: 2, textTransform: "uppercase", letterSpacing: "0.06em" }}>{l.tag}</div>
             </div>
           ))}
@@ -6739,7 +6739,7 @@ const LandingPage = ({ onLogin }) => {
             { name: "Linear", tag: "Projects" },
           ].map(l => (
             <div key={l.name} style={{ textAlign: "center" }}>
-              <span style={{ fontSize: 15, fontWeight: 800, color: "#252a38", letterSpacing: "-0.02em", fontFamily: "'DM Sans', system-ui, sans-serif" }}>{l.name}</span>
+              <span style={{ fontSize: 15, fontWeight: 800, color: "#252a38", letterSpacing: "-0.02em", fontFamily: "'Manrope', system-ui, sans-serif" }}>{l.name}</span>
               <div style={{ fontSize: 7, fontWeight: 700, color: "#60a5fa", marginTop: 2, textTransform: "uppercase", letterSpacing: "0.06em" }}>{l.tag}</div>
             </div>
           ))}
@@ -7373,7 +7373,7 @@ const LandingPage = ({ onLogin }) => {
         <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: 0, borderRadius: 20, overflow: "hidden", border: "1px solid #1a1f2e" }}>
           {/* Quote side */}
           <div style={{ padding: "48px 40px", background: "linear-gradient(135deg, #10131a 0%, #161a24 100%)" }}>
-            <div style={{ fontSize: 18, fontWeight: 800, letterSpacing: "-0.01em", color: "#a78bfa", marginBottom: 20, fontFamily: "'DM Sans', system-ui, sans-serif" }}>Anthropic</div>
+            <div style={{ fontSize: 18, fontWeight: 800, letterSpacing: "-0.01em", color: "#a78bfa", marginBottom: 20, fontFamily: "'Manrope', system-ui, sans-serif" }}>Anthropic</div>
             <p style={{ fontSize: 18, fontWeight: 500, color: "#eef0f6", lineHeight: 1.65, fontStyle: "italic", marginBottom: 28 }}>
               "FinanceOS demonstrates what's possible when AI becomes a true partner in financial planning. By connecting planning data directly to Claude, finance teams focus on strategic decisions — not data wrangling."
             </p>
@@ -8366,7 +8366,7 @@ function FinanceOSApp() {
   let currentSection = "";
 
   return (
-    <div style={{ display: "flex", height: "100vh", width: "100%", background: c.bg, color: c.text, fontFamily: "'DM Sans', system-ui, sans-serif", fontSize: 14, overflow: "hidden", transition: "background 0.4s ease, color 0.3s ease" }}>
+    <div style={{ display: "flex", height: "100vh", width: "100%", background: c.bg, color: c.text, fontFamily: "'Manrope', system-ui, sans-serif", fontSize: 14, overflow: "hidden", transition: "background 0.4s ease, color 0.3s ease" }}>
       {/* Subtle dot grid background — works in both themes */}
       <div style={{ position: "fixed", inset: 0, backgroundImage: `radial-gradient(circle at 1px 1px, ${mode === "dark" ? "rgba(255,255,255,0.025)" : "rgba(0,0,0,0.035)"} 0.5px, transparent 0.5px)`, backgroundSize: "32px 32px", pointerEvents: "none", zIndex: 0 }} />
       {/* Subtle vignette gradient — adds depth to edges */}
@@ -8376,7 +8376,7 @@ function FinanceOSApp() {
         pointerEvents: "none", zIndex: 0 }} />
       <style>{`
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'DM Sans', system-ui, -apple-system, sans-serif; -webkit-font-smoothing: antialiased; }
+        body { font-family: 'Manrope', system-ui, -apple-system, sans-serif; -webkit-font-smoothing: antialiased; }
         button { font-family: inherit; font-size: inherit; color: inherit; cursor: pointer; }
         a { text-decoration: none; color: inherit; }
         ::-webkit-scrollbar { width: 6px; }
@@ -8510,7 +8510,7 @@ function FinanceOSApp() {
         table, [style*="JetBrains"], code, pre, kbd { font-variant-numeric: tabular-nums; font-feature-settings: "tnum"; }
         td, th { line-height: 1.4; }
         /* Button/input inherit DM Sans explicitly */
-        button, input, select, textarea { font-family: 'DM Sans', system-ui, -apple-system, sans-serif; -webkit-font-smoothing: antialiased; letter-spacing: -0.005em; }
+        button, input, select, textarea { font-family: 'Manrope', system-ui, -apple-system, sans-serif; -webkit-font-smoothing: antialiased; letter-spacing: -0.005em; }
         /* Large text tightening — applied via CSS since many inline styles omit it */
         [style*="fontSize: 24"], [style*="fontSize: 26"], [style*="fontSize: 28"],
         [style*="fontSize: 30"], [style*="fontSize: 36"], [style*="fontSize: 40"],

@@ -29,7 +29,7 @@ export default function ComparePigment() {
   ];
 
   return (
-    <div style={{ background: B, color: T, fontFamily: "'DM Sans', system-ui, sans-serif", minHeight: "100vh" }}>
+    <div style={{ background: B, color: T, fontFamily: "'Manrope', system-ui, sans-serif", minHeight: "100vh" }}>
       <nav style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "16px 48px", maxWidth: 1200, margin: "0 auto", borderBottom: `1px solid ${BD}50` }}>
         <Link href="/" style={{ display: "flex", alignItems: "center", gap: 8, textDecoration: "none" }}>
           <svg width="28" height="28" viewBox="0 0 32 32" fill="none"><defs><linearGradient id="lg" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse"><stop offset="0%" stopColor={AC} /><stop offset="100%" stopColor={PU} /></linearGradient></defs><rect width="32" height="32" rx="8" fill="url(#lg)" /><path d="M8 10h16M8 16h12M8 22h8" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" /><circle cx="24" cy="22" r="3" fill={GN} /></svg>

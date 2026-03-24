@@ -22,7 +22,7 @@ export default function CompareMosaic() {
   ];
 
   return (
-    <div style={{ fontFamily: "'DM Sans', system-ui, sans-serif", background: "#0a0e1a", color: "#c8cdd8", minHeight: "100vh", position: "relative" }}>
+    <div style={{ fontFamily: "'Manrope', system-ui, sans-serif", background: "#0a0e1a", color: "#c8cdd8", minHeight: "100vh", position: "relative" }}>
       <div style={{ position: "fixed", inset: 0, backgroundImage: "radial-gradient(circle at 1px 1px, rgba(255,255,255,0.025) 0.5px, transparent 0.5px)", backgroundSize: "32px 32px", pointerEvents: "none", zIndex: 0 }} />
       <div style={{ position: "fixed", top: "-20%", right: "-10%", width: "50%", height: "50%", borderRadius: "50%", background: "radial-gradient(circle, rgba(96,165,250,0.06) 0%, transparent 65%)", filter: "blur(100px)", pointerEvents: "none", zIndex: 0 }} />
       <div style={{ maxWidth: 900, margin: "0 auto", padding: "60px 24px" }}>

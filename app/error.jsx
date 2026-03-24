@@ -13,7 +13,7 @@ export default function Error({ error, reset }) {
   return (
     <div style={{
       minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center",
-      background: "#09090b", color: "#f0f2f5", fontFamily: "'DM Sans', system-ui, -apple-system, sans-serif",
+      background: "#09090b", color: "#f0f2f5", fontFamily: "'Manrope', system-ui, -apple-system, sans-serif",
       flexDirection: "column", gap: 20, padding: 40,
     }}>
       <div style={{ width: 56, height: 56, borderRadius: 16, background: "linear-gradient(135deg, #60a5fa, #a78bfa)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22, fontWeight: 900, color: "#fff" }}>F</div>

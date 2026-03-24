@@ -8,7 +8,7 @@ const Logo = ({ size = 28 }) => (
 export default function BudgetPlanningPage() {
   const c = { bg:"#06080c",s:"#10131a",b:"#1a1f2e",t:"#eef0f6",td:"#636d84",tf:"#3d4558",ac:"#5b9cf5",pu:"#a181f7",gn:"#3dd9a0",am:"#f5b731" };
   return (
-    <div style={{ background: c.bg, color: c.t, fontFamily: "'DM Sans', system-ui, sans-serif", minHeight: "100vh" }}>
+    <div style={{ background: c.bg, color: c.t, fontFamily: "'Manrope', system-ui, sans-serif", minHeight: "100vh" }}>
       <style>{`.uc-btn{transition:all .25s cubic-bezier(.4,0,.2,1)}.uc-btn:hover{transform:translateY(-2px)}.uc-card{transition:all .3s cubic-bezier(.4,0,.2,1)}.uc-card:hover{transform:translateY(-3px);border-color:rgba(91,156,245,.2)!important}`}</style>
 
       <nav style={{ display:"flex",justifyContent:"space-between",alignItems:"center",padding:"14px 48px",maxWidth:1200,margin:"0 auto",borderBottom:`1px solid ${c.b}50`,background:"rgba(6,8,12,.88)",backdropFilter:"blur(20px)" }}>

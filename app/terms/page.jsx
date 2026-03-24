@@ -8,7 +8,7 @@ export default function TermsPage() {
   const li = { fontSize: 14, color: "#8b92a5", lineHeight: 1.85, marginBottom: 6 };
 
   return (
-    <div style={{ minHeight: "100vh", background: "#09090b", color: "#f0f2f5", fontFamily: "'DM Sans', system-ui, sans-serif", position: "relative" }}>
+    <div style={{ minHeight: "100vh", background: "#09090b", color: "#f0f2f5", fontFamily: "'Manrope', system-ui, sans-serif", position: "relative" }}>
       <div style={{ position: "fixed", inset: 0, backgroundImage: "radial-gradient(circle at 1px 1px, rgba(255,255,255,0.02) 0.5px, transparent 0.5px)", backgroundSize: "32px 32px", pointerEvents: "none", zIndex: 0 }} />
       <div style={{ maxWidth: 720, margin: "0 auto", padding: "60px 24px 100px" }}>
         {/* Header */}

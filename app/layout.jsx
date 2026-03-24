@@ -58,7 +58,7 @@ export default function RootLayout({ children }) {
         <link rel="dns-prefetch" href="https://js.stripe.com" />
         <link rel="dns-prefetch" href="https://api.stripe.com" />
         <link rel="dns-prefetch" href="https://plausible.io" />
-        <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700;9..40,800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+        <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
         <script defer data-domain="finance-os.app" src="https://plausible.io/js/script.js"></script>
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
           "@context": "https://schema.org",
@@ -109,11 +109,11 @@ export default function RootLayout({ children }) {
           "contactPoint": { "@type": "ContactPoint", "email": "sales@finance-os.app", "contactType": "sales" }
         }) }} />
       </head>
-      <body style={{ margin: 0, padding: 0, fontFamily: "'DM Sans', system-ui, -apple-system, sans-serif", WebkitFontSmoothing: "antialiased", MozOsxFontSmoothing: "grayscale", textRendering: "optimizeLegibility", fontFeatureSettings: '"cv01", "ss01"' }}>
+      <body style={{ margin: 0, padding: 0, fontFamily: "'Manrope', system-ui, -apple-system, sans-serif", WebkitFontSmoothing: "antialiased", MozOsxFontSmoothing: "grayscale", textRendering: "optimizeLegibility", fontFeatureSettings: '"cv01", "ss01"' }}>
         {/* Loading splash — visible until React hydrates */}
         <div id="fos-splash" style={{ position: "fixed", inset: 0, zIndex: 99999, background: "#060A14", display: "flex", alignItems: "center", justifyContent: "center", flexDirection: "column", gap: 16, transition: "opacity 0.4s" }}>
           <div style={{ width: 48, height: 48, border: "3px solid rgba(91,156,245,0.15)", borderTopColor: "#5B9CF5", borderRadius: "50%", animation: "fos-spin 0.8s linear infinite" }} />
-          <div style={{ fontSize: 14, fontWeight: 700, color: "#5B9CF5", letterSpacing: "-0.02em", fontFamily: "'DM Sans', system-ui, sans-serif" }}>FinanceOS</div>
+          <div style={{ fontSize: 14, fontWeight: 700, color: "#5B9CF5", letterSpacing: "-0.02em", fontFamily: "'Manrope', system-ui, sans-serif" }}>FinanceOS</div>
           <div style={{ fontSize: 10, color: "#3d4558" }}>Loading your workspace...</div>
         </div>
         <style dangerouslySetInnerHTML={{ __html: `@keyframes fos-spin { to { transform: rotate(360deg); } }` }} />
