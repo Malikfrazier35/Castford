@@ -7804,51 +7804,76 @@ const LandingPage = ({ onLogin }) => {
             ].map(menu => (
               <div key={menu.label} style={{ position: "relative" }} className="nav-dd-wrap">
                 {menu.href && !menu.items ? (
-                  <a href={menu.href} style={{ fontSize: 13, color: "#8b92a5", textDecoration: "none", fontWeight: 600, padding: "8px 14px", borderRadius: 8, display: "inline-flex", alignItems: "center", gap: 4, transition: "all 0.15s" }}
-                    onMouseEnter={e => e.currentTarget.style.color = "#f0f2f5"}
-                    onMouseLeave={e => e.currentTarget.style.color = "#8b92a5"}
+                  <a href={menu.href} style={{ fontSize: 13, color: lp.textDim, textDecoration: "none", fontWeight: 600, padding: "8px 14px", borderRadius: 8, display: "inline-flex", alignItems: "center", gap: 4, transition: "all 0.15s" }}
+                    onMouseEnter={e => e.currentTarget.style.color = lp.text}
+                    onMouseLeave={e => e.currentTarget.style.color = lp.textDim}
                   >{menu.label}</a>
                 ) : (
-                  <button className="nav-dd-btn" style={{ fontSize: 13, color: "#8b92a5", background: "none", border: "none", fontWeight: 600, padding: "8px 14px", borderRadius: 8, display: "inline-flex", alignItems: "center", gap: 4, cursor: "pointer", fontFamily: "inherit", transition: "all 0.15s" }}>
+                  <button className="nav-dd-btn" style={{ fontSize: 13, color: lp.textDim, background: "none", border: "none", fontWeight: 600, padding: "8px 14px", borderRadius: 8, display: "inline-flex", alignItems: "center", gap: 4, cursor: "pointer", fontFamily: "inherit", transition: "all 0.15s" }}>
                     {menu.label}
                     <svg width="10" height="6" viewBox="0 0 10 6" fill="none" style={{ opacity: 0.5, transition: "transform 0.2s" }}><path d="M1 1L5 5L9 1" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
                   </button>
                 )}
                 {menu.items && (
-                  <div className="nav-dd-panel" style={{ position: "absolute", top: "100%", left: "50%", transform: "translateX(-50%)", paddingTop: 8, display: "none", zIndex: 100 }}>
-                    <div style={{ background: "#0f1118", border: "1px solid #1e2230", borderRadius: 16, padding: menu.label === "Integrations" ? "16px 20px" : "10px 8px", boxShadow: "0 16px 48px rgba(0,0,0,0.5)", minWidth: menu.label === "Integrations" ? 520 : 220, maxHeight: 420, overflowY: "auto" }}>
+                  <div className="nav-dd-panel" style={{ position: "absolute", top: "100%", left: "50%", transform: "translateX(-50%)", paddingTop: 10, display: "none", zIndex: 100 }}>
+                    <div style={{ background: lpMode === "dark" ? "#0f1118" : "#fff", border: `1px solid ${lpMode === "dark" ? "#1e2230" : "#e5e7ec"}`, borderRadius: 20, padding: menu.label === "Integrations" ? "20px 22px" : "14px 12px", boxShadow: lpMode === "dark" ? "0 20px 60px rgba(0,0,0,0.6), 0 0 0 1px rgba(96,165,250,0.04)" : "0 20px 60px rgba(0,0,0,0.12)", minWidth: menu.label === "Integrations" ? 560 : menu.label === "Solutions" ? 340 : 240, maxHeight: 440, overflowY: "auto" }}>
+                      {/* Panel title */}
+                      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12, paddingBottom: 10, borderBottom: `1px solid ${lpMode === "dark" ? "#1e2230" : "#eef0f4"}` }}>
+                        <span style={{ fontSize: 9, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.1em", color: lpMode === "dark" ? "#3d4558" : "#9ea5b8" }}>{menu.label}</span>
+                        {menu.label === "Integrations" && <span style={{ fontSize: 8, fontWeight: 700, padding: "2px 8px", borderRadius: 4, background: `${lp.accent}10`, color: lp.accent }}>21 CONNECTED</span>}
+                      </div>
                       {menu.label === "Integrations" ? (
-                        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 4 }}>
+                        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 3 }}>
                           {menu.items.map(item => (
-                            <div key={item.name} style={{ display: "flex", alignItems: "center", gap: 8, padding: "7px 10px", borderRadius: 8, transition: "background 0.15s", cursor: "default" }}
-                              onMouseEnter={e => e.currentTarget.style.background = "rgba(96,165,250,0.06)"}
-                              onMouseLeave={e => e.currentTarget.style.background = "transparent"}
+                            <div key={item.name} style={{ display: "flex", alignItems: "center", gap: 8, padding: "8px 10px", borderRadius: 10, transition: "all 0.15s", cursor: "default" }}
+                              onMouseEnter={e => { e.currentTarget.style.background = lpMode === "dark" ? "rgba(96,165,250,0.06)" : "rgba(59,130,246,0.04)"; e.currentTarget.style.transform = "translateX(2px)"; }}
+                              onMouseLeave={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.transform = "none"; }}
                             >
-                              <div style={{ width: 6, height: 6, borderRadius: 2, background: item.accent ? "#60a5fa" : "#3d4558", flexShrink: 0 }} />
+                              <div style={{ width: 24, height: 24, borderRadius: 6, background: item.accent ? `${lp.accent}15` : (lpMode === "dark" ? "rgba(255,255,255,0.04)" : "rgba(0,0,0,0.04)"), display: "flex", alignItems: "center", justifyContent: "center", fontSize: 10, flexShrink: 0 }}>
+                                <Plug size={10} color={item.accent ? lp.accent : lp.textFaint} />
+                              </div>
                               <div>
-                                <div style={{ fontSize: 11, fontWeight: 700, color: item.accent ? "#60a5fa" : "#eef0f6" }}>{item.name}</div>
-                                <div style={{ fontSize: 8, fontWeight: 700, color: "#3d4558", letterSpacing: "0.06em", textTransform: "uppercase" }}>{item.tag}</div>
+                                <div style={{ fontSize: 11, fontWeight: 700, color: item.accent ? lp.accent : lp.text, lineHeight: 1.2 }}>{item.name}</div>
+                                <div style={{ fontSize: 7, fontWeight: 700, color: lpMode === "dark" ? "#3d4558" : "#9ea5b8", letterSpacing: "0.06em", textTransform: "uppercase" }}>{item.tag}</div>
                               </div>
                             </div>
                           ))}
                         </div>
+                      ) : menu.label === "Solutions" ? (
+                        menu.items.map(item => (
+                          <a key={item.name} href={item.href || "#"} style={{ display: "flex", alignItems: "center", gap: 12, padding: "10px 12px", borderRadius: 10, textDecoration: "none", transition: "all 0.15s" }}
+                            onMouseEnter={e => { e.currentTarget.style.background = lpMode === "dark" ? "rgba(96,165,250,0.06)" : "rgba(59,130,246,0.04)"; e.currentTarget.style.transform = "translateX(3px)"; }}
+                            onMouseLeave={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.transform = "none"; }}
+                          >
+                            <div style={{ width: 28, height: 28, borderRadius: 8, background: item.accent ? `linear-gradient(135deg, ${lp.accent}20, ${lp.purple}15)` : (lpMode === "dark" ? "rgba(255,255,255,0.04)" : "rgba(0,0,0,0.03)"), border: `1px solid ${item.accent ? `${lp.accent}20` : (lpMode === "dark" ? "#1e2230" : "#eef0f4")}`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                              <TrendingUp size={12} color={item.accent ? lp.accent : lp.textDim} />
+                            </div>
+                            <div>
+                              <div style={{ fontSize: 12, fontWeight: item.accent ? 700 : 600, color: item.accent ? lp.accent : lp.text, lineHeight: 1.2 }}>{item.name}</div>
+                              <div style={{ fontSize: 9, color: lp.textDim, marginTop: 1 }}>{item.accent ? "See all use cases" : "AI-powered automation"}</div>
+                            </div>
+                            <ChevronRight size={12} color={lp.textFaint} style={{ marginLeft: "auto" }} />
+                          </a>
+                        ))
                       ) : (
                         menu.items.map(item => (
                           item.href ? (
-                            <a key={item.name} href={item.href} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "9px 14px", borderRadius: 8, textDecoration: "none", fontSize: 12, fontWeight: item.accent ? 700 : 600, color: item.accent ? "#60a5fa" : "#c8cdd8", transition: "all 0.15s" }}
-                              onMouseEnter={e => e.currentTarget.style.background = "rgba(96,165,250,0.06)"}
-                              onMouseLeave={e => e.currentTarget.style.background = "transparent"}
+                            <a key={item.name} href={item.href} style={{ display: "flex", alignItems: "center", gap: 10, padding: "9px 12px", borderRadius: 10, textDecoration: "none", fontSize: 12, fontWeight: item.accent ? 700 : 600, color: item.accent ? lp.accent : lp.text, transition: "all 0.15s" }}
+                              onMouseEnter={e => { e.currentTarget.style.background = lpMode === "dark" ? "rgba(96,165,250,0.06)" : "rgba(59,130,246,0.04)"; e.currentTarget.style.transform = "translateX(2px)"; }}
+                              onMouseLeave={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.transform = "none"; }}
                             >
+                              <div style={{ width: 6, height: 6, borderRadius: 2, background: item.accent ? lp.accent : lp.textFaint, flexShrink: 0 }} />
                               {item.name}
-                              {item.tag && <span style={{ fontSize: 8, fontWeight: 700, color: "#3d4558", letterSpacing: "0.06em" }}>{item.tag}</span>}
+                              {item.tag && <span style={{ fontSize: 8, fontWeight: 700, color: lpMode === "dark" ? "#3d4558" : "#9ea5b8", letterSpacing: "0.06em", marginLeft: "auto" }}>{item.tag}</span>}
                             </a>
                           ) : (
-                            <div key={item.name} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "9px 14px", borderRadius: 8, fontSize: 12, fontWeight: 600, color: "#c8cdd8" }}
-                              onMouseEnter={e => e.currentTarget.style.background = "rgba(96,165,250,0.06)"}
-                              onMouseLeave={e => e.currentTarget.style.background = "transparent"}
+                            <div key={item.name} style={{ display: "flex", alignItems: "center", gap: 10, padding: "9px 12px", borderRadius: 10, fontSize: 12, fontWeight: 600, color: lp.text, transition: "all 0.15s" }}
+                              onMouseEnter={e => { e.currentTarget.style.background = lpMode === "dark" ? "rgba(96,165,250,0.06)" : "rgba(59,130,246,0.04)"; e.currentTarget.style.transform = "translateX(2px)"; }}
+                              onMouseLeave={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.transform = "none"; }}
                             >
+                              <div style={{ width: 6, height: 6, borderRadius: 2, background: lp.textFaint, flexShrink: 0 }} />
                               {item.name}
-                              {item.tag && <span style={{ fontSize: 8, fontWeight: 700, color: "#3d4558", letterSpacing: "0.06em" }}>{item.tag}</span>}
+                              {item.tag && <span style={{ fontSize: 8, fontWeight: 700, color: lpMode === "dark" ? "#3d4558" : "#9ea5b8", letterSpacing: "0.06em", marginLeft: "auto" }}>{item.tag}</span>}
                             </div>
                           )
                         ))
@@ -7874,7 +7899,7 @@ const LandingPage = ({ onLogin }) => {
           </div>
           )}
         </div>
-        <style>{`.nav-dd-wrap:hover .nav-dd-panel{display:block!important}.nav-dd-wrap:hover .nav-dd-btn{color:#f0f2f5!important;background:rgba(96,165,250,0.06)}.nav-dd-wrap:hover .nav-dd-btn svg{transform:rotate(180deg)}`}</style>
+        <style>{`.nav-dd-wrap:hover .nav-dd-panel{display:block!important;animation:fadeSlideUp 0.2s ease}.nav-dd-wrap:hover .nav-dd-btn{color:${lpMode === "dark" ? "#f0f2f5" : "#0f1118"}!important;background:${lpMode === "dark" ? "rgba(96,165,250,0.06)" : "rgba(59,130,246,0.05)"}}.nav-dd-wrap:hover .nav-dd-btn svg{transform:rotate(180deg)}`}</style>
       </nav>
 
       {/* Hero */}
