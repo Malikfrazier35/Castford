@@ -9210,14 +9210,18 @@ const LandingPage = ({ onLogin }) => {
         </div>
       </div>
 
-      <div id="pricing" style={{ padding: isMobile ? "40px 20px 60px" : "80px 48px 80px", maxWidth: 1100, margin: "0 auto" }}>
-        <div style={{ textAlign: "center", marginBottom: 48 }}>
-          <div style={{ display: "inline-block", padding: "6px 14px", borderRadius: 20, background: `${lp.accent}0a`, border: `1px solid ${lp.accent}18`, fontSize: 10, fontWeight: 700, color: lp.accent, marginBottom: 16, letterSpacing: "0.06em", textTransform: "uppercase" }}>Pricing</div>
-          <h2 style={{ fontSize: 36, fontWeight: 800, letterSpacing: "-0.03em", marginBottom: 12, color: lp.text }}>Base + consumption pricing</h2>
-          <p style={{ fontSize: 15, color: lp.textDim, marginBottom: 24 }}>Predictable base fee. Pay-per-use overages only when you exceed included limits.</p>
-          <div style={{ display: "inline-flex", background: lp.cardBg, borderRadius: 10, padding: 3, border: `1px solid ${lp.border}` }}>
-            <button onClick={() => setBilling("monthly")} style={{ fontSize: 12, padding: "8px 18px", borderRadius: 8, border: "none", background: billing === "monthly" ? lp.surface : "transparent", color: billing === "monthly" ? lp.text : lp.textDim, cursor: "pointer", fontFamily: "inherit", fontWeight: 600, transition: "all 0.15s" }}>Monthly</button>
-            <button onClick={() => setBilling("annual")} style={{ fontSize: 12, padding: "8px 18px", borderRadius: 8, border: "none", background: billing === "annual" ? lp.surface : "transparent", color: billing === "annual" ? lp.text : lp.textDim, cursor: "pointer", fontFamily: "inherit", fontWeight: 600, transition: "all 0.15s" }}>Annual <span style={{ fontSize: 9, fontWeight: 800, padding: "2px 6px", borderRadius: 4, background: `${lp.green}10`, color: lp.green, marginLeft: 4 }}>-17%</span></button>
+      <div id="pricing" style={{ padding: isMobile ? "40px 20px 60px" : "80px 48px 80px", maxWidth: 1100, margin: "0 auto", position: "relative" }}>
+        {/* Ambient pricing glow */}
+        <div style={{ position: "absolute", top: "15%", left: "50%", transform: "translate(-50%, -50%)", width: 500, height: 300, borderRadius: "50%", background: `radial-gradient(ellipse, ${lp.accent}05 0%, transparent 70%)`, pointerEvents: "none" }} />
+        <div style={{ textAlign: "center", marginBottom: 52, position: "relative" }}>
+          <div style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "7px 16px", borderRadius: 24, background: `linear-gradient(135deg, ${lp.accent}0c, ${lp.green}06)`, border: `1px solid ${lp.accent}18`, fontSize: 10, fontWeight: 700, color: lp.accent, marginBottom: 20, letterSpacing: "0.08em", textTransform: "uppercase" }}>
+            <DollarSign size={12} color={lp.accent} strokeWidth={2.5} />Pricing
+          </div>
+          <h2 style={{ fontSize: isMobile ? 28 : 40, fontWeight: 800, letterSpacing: "-0.03em", marginBottom: 14, color: lp.text, lineHeight: 1.15 }}>Base + consumption pricing</h2>
+          <p style={{ fontSize: 16, color: lp.textDim, marginBottom: 28, maxWidth: 480, margin: "0 auto 28px", lineHeight: 1.7 }}>Predictable base fee. Pay-per-use overages only when you exceed included limits.</p>
+          <div style={{ display: "inline-flex", background: lpMode === "dark" ? "rgba(16,19,26,0.7)" : "rgba(248,249,251,0.9)", borderRadius: 12, padding: 4, border: `1px solid ${lp.border}`, backdropFilter: "blur(8px)" }}>
+            <button onClick={() => setBilling("monthly")} style={{ fontSize: 12, padding: "10px 22px", borderRadius: 9, border: "none", background: billing === "monthly" ? (lpMode === "dark" ? lp.surface : "#fff") : "transparent", color: billing === "monthly" ? lp.text : lp.textDim, cursor: "pointer", fontFamily: "inherit", fontWeight: 600, transition: "all 0.2s", boxShadow: billing === "monthly" ? `0 2px 8px ${lp.accent}10` : "none" }}>Monthly</button>
+            <button onClick={() => setBilling("annual")} style={{ fontSize: 12, padding: "10px 22px", borderRadius: 9, border: "none", background: billing === "annual" ? (lpMode === "dark" ? lp.surface : "#fff") : "transparent", color: billing === "annual" ? lp.text : lp.textDim, cursor: "pointer", fontFamily: "inherit", fontWeight: 600, transition: "all 0.2s", boxShadow: billing === "annual" ? `0 2px 8px ${lp.accent}10` : "none" }}>Annual <span style={{ fontSize: 9, fontWeight: 800, padding: "3px 8px", borderRadius: 5, background: `${lp.green}12`, color: lp.green, marginLeft: 4 }}>-17%</span></button>
           </div>
         </div>
         <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "repeat(4, 1fr)", gap: 16 }}>
