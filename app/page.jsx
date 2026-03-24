@@ -7422,7 +7422,7 @@ const LandingPage = ({ onLogin }) => {
         <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "repeat(3, 1fr)", gap: 16 }}>
           {[
             { tag: "GUIDE", title: "The Complete SaaS FP&A Playbook", desc: "From ARR to Rule of 40 — every metric, benchmark, and best practice modern SaaS finance teams need.", href: "/use-cases/saas-fpa", color: "#60a5fa" },
-            { tag: "USE CASE", title: "Budget Planning & Forecasting", desc: "Driver-based budgeting with ML-powered rolling forecasts and instant what-if scenario analysis.", href: "/use-cases/budget-planning", color: "#3dd9a0" },
+            { tag: "USE CASE", title: "Revenue Planning", desc: "Driver-based revenue models with pipeline-weighted forecasting, cohort retention analysis, and expansion tracking.", href: "/use-cases/revenue-planning", color: "#3dd9a0" },
             { tag: "COMPARISON", title: "FinanceOS vs. Legacy FP&A", desc: "See how FinanceOS compares to Anaplan, Pigment, Adaptive Planning, and Planful on 10 capabilities.", href: "/use-cases/finance", color: "#a78bfa" },
           ].map(r => (
             <a key={r.title} href={r.href} style={{ background: "rgba(16,19,26,0.7)", border: "1px solid rgba(26,31,46,0.7)", borderRadius: 16, padding: "24px 22px", textDecoration: "none", display: "block", transition: "all 0.25s cubic-bezier(0.4,0,0.2,1)", position: "relative", overflow: "hidden" }}
@@ -7744,6 +7744,7 @@ const LandingPage = ({ onLogin }) => {
               { link: "Budget Planning", url: "/use-cases/budget-planning" },
               { link: "Consolidation", url: "/use-cases/consolidation" },
               { link: "Forecasting", url: "/use-cases/forecasting" },
+              { link: "Revenue Planning", url: "/use-cases/revenue-planning" },
               { link: "SaaS FP&A Guide", url: "/use-cases/saas-fpa" },
             ]},
             { title: "Company", links: [
