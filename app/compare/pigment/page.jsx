@@ -1,74 +1,126 @@
 export const metadata = {
   title: "FinanceOS vs Pigment — FP&A Platform Comparison 2026",
-  description: "Compare FinanceOS and Pigment for financial planning. FinanceOS starts at $499/mo with AI copilot and 48-hour setup. Pigment starts at $65K+/year with longer implementation cycles.",
+  description: "Compare FinanceOS and Pigment for financial planning. FinanceOS starts at $499/mo with AI copilot and same-day setup. Pigment starts at $65K+/year with longer implementation cycles.",
   keywords: ["FinanceOS vs Pigment", "Pigment alternative", "FP&A software comparison", "Pigment pricing", "best FP&A platform 2026"],
   openGraph: { title: "FinanceOS vs Pigment — FP&A Comparison 2026", url: "https://finance-os.app/compare/pigment" },
   alternates: { canonical: "https://finance-os.app/compare/pigment" },
 };
 
+import Link from "next/link";
+
 export default function ComparePigment() {
+  const B="#06080c",S="#10131a",BD="#1a1f2e",T="#eef0f6",TD="#636d84",TF="#3d4558",AC="#5b9cf5",PU="#a181f7",GN="#3dd9a0",AM="#f5b731";
   const rows = [
-    { feature: "Starting Price", fos: "$499/month", competitor: "$65K+/year", winner: "fos" },
-    { feature: "Implementation Time", fos: "Under 48 hours", competitor: "4–12 weeks", winner: "fos" },
-    { feature: "AI Copilot", fos: "Built-in (Claude AI)", competitor: "Limited AI features", winner: "fos" },
-    { feature: "Scenario Modeling", fos: "4+ scenarios, sensitivity sliders", competitor: "Advanced, visual modeling", winner: "tie" },
-    { feature: "Multi-Entity Consolidation", fos: "Automatic IC elimination + FX", competitor: "Yes, strong", winner: "tie" },
-    { feature: "Collaboration", fos: "Role-based access, 5 roles", competitor: "Strong real-time collaboration", winner: "competitor" },
-    { feature: "Revenue Forecasting", fos: "ML ensemble (ETS + XGBoost)", competitor: "Formula + driver-based", winner: "fos" },
-    { feature: "Published Pricing", fos: "Yes — transparent tiers", competitor: "No — custom quotes", winner: "fos" },
-    { feature: "Headcount Planning", fos: "Roadmap (HRIS connectors)", competitor: "Yes, strong module", winner: "competitor" },
-    { feature: "Native Integrations", fos: "QuickBooks, Stripe, Salesforce, Snowflake", competitor: "50+ native connectors", winner: "competitor" },
-    { feature: "Money-Back Guarantee", fos: "30 days, full refund", competitor: "Annual contract", winner: "fos" },
+    { f: "Starting Price", us: "$499/mo flat", them: "$65K+/year", w: "us" },
+    { f: "Time to Value", us: "Same day", them: "4–12 weeks", w: "us" },
+    { f: "AI Copilot with Reasoning", us: "✓ Claude-powered, SHAP values", them: "✓ Analyst/Modeler agents", w: "tie" },
+    { f: "Self-Serve Onboarding", us: "✓ 15 minutes, no consultants", them: "✕ Requires SI partner", w: "us" },
+    { f: "Scenario Modeling", us: "✓ Unlimited, live sliders", them: "✓ Strong, native versions", w: "tie" },
+    { f: "Multi-Entity Consolidation", us: "✓ Auto IC & FX (20+ currencies)", them: "✓ Strong", w: "tie" },
+    { f: "Revenue Forecasting", us: "ML ensemble (ETS + XGBoost)", them: "Formula + driver-based", w: "us" },
+    { f: "Forecast Accuracy (MAPE)", us: "3.2%", them: "Not published", w: "us" },
+    { f: "Real-Time Planning", us: "✓ Single source of truth", them: "✓ Single platform", w: "tie" },
+    { f: "Model Maintenance", us: "✓ Business user-friendly", them: "✓ Natural syntax", w: "tie" },
+    { f: "Native Integrations", us: "15+ (QuickBooks, Stripe, Salesforce)", them: "50+ native connectors", w: "them" },
+    { f: "Headcount Planning", us: "Roadmap", them: "✓ Strong module", w: "them" },
+    { f: "Published Pricing", us: "✓ Transparent, online", them: "✕ Custom quotes only", w: "us" },
+    { f: "Scalable ML Forecasting", us: "✓ Thousands of series", them: "✓ State-of-art models", w: "tie" },
+    { f: "Enterprise / On-Prem", us: "✓ Custom plan", them: "✓ Enterprise tier", w: "tie" },
   ];
 
   return (
-    <div style={{ fontFamily: "'DM Sans', system-ui, sans-serif", background: "#0a0e1a", color: "#c8cdd8", minHeight: "100vh", position: "relative" }}>
-      <div style={{ position: "fixed", inset: 0, backgroundImage: "radial-gradient(circle at 1px 1px, rgba(255,255,255,0.025) 0.5px, transparent 0.5px)", backgroundSize: "32px 32px", pointerEvents: "none", zIndex: 0 }} />
-      <div style={{ position: "fixed", top: "-20%", right: "-10%", width: "50%", height: "50%", borderRadius: "50%", background: "radial-gradient(circle, rgba(96,165,250,0.06) 0%, transparent 65%)", filter: "blur(100px)", pointerEvents: "none", zIndex: 0 }} />
-      <div style={{ maxWidth: 900, margin: "0 auto", padding: "60px 24px" }}>
-        <nav style={{ fontSize: 12, color: "#5a6178", marginBottom: 32 }}>
-          <a href="/" style={{ color: "#60a5fa", textDecoration: "none" }}>FinanceOS</a>
+    <div style={{ background: B, color: T, fontFamily: "'DM Sans', system-ui, sans-serif", minHeight: "100vh" }}>
+      <nav style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "16px 48px", maxWidth: 1200, margin: "0 auto", borderBottom: `1px solid ${BD}50` }}>
+        <Link href="/" style={{ display: "flex", alignItems: "center", gap: 8, textDecoration: "none" }}>
+          <svg width="28" height="28" viewBox="0 0 32 32" fill="none"><defs><linearGradient id="lg" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse"><stop offset="0%" stopColor={AC} /><stop offset="100%" stopColor={PU} /></linearGradient></defs><rect width="32" height="32" rx="8" fill="url(#lg)" /><path d="M8 10h16M8 16h12M8 22h8" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" /><circle cx="24" cy="22" r="3" fill={GN} /></svg>
+          <span style={{ fontSize: 16, fontWeight: 800, color: T }}>FinanceOS</span>
+        </Link>
+        <div style={{ display: "flex", gap: 20, alignItems: "center" }}>
+          <Link href="/use-cases/finance" style={{ fontSize: 13, color: TD, textDecoration: "none" }}>Use Cases</Link>
+          <Link href="/" style={{ fontSize: 13, padding: "9px 20px", borderRadius: 10, background: `linear-gradient(135deg,${AC},${PU})`, color: "#fff", textDecoration: "none", fontWeight: 700 }}>Try Demo →</Link>
+        </div>
+      </nav>
+
+      <div style={{ maxWidth: 960, margin: "0 auto", padding: "60px 48px" }}>
+        <nav style={{ fontSize: 12, color: TF, marginBottom: 32 }}>
+          <Link href="/" style={{ color: AC, textDecoration: "none" }}>FinanceOS</Link>
           <span style={{ margin: "0 8px" }}>/</span><span>Compare</span>
-          <span style={{ margin: "0 8px" }}>/</span><span style={{ color: "#c8cdd8" }}>Pigment</span>
+          <span style={{ margin: "0 8px" }}>/</span><span style={{ color: T }}>Pigment</span>
         </nav>
 
-        <h1 style={{ fontSize: 36, fontWeight: 800, color: "#f0f2f7", lineHeight: 1.2, marginBottom: 16 }}>FinanceOS vs Pigment: FP&A Platform Comparison</h1>
-        <p style={{ fontSize: 16, lineHeight: 1.7, color: "#9ea5b8", marginBottom: 40, maxWidth: 700 }}>
-          FinanceOS is an AI-native FP&A platform starting at $499/month that deploys in under 48 hours. Pigment is a business planning platform starting at $65K+/year with typical 4–12 week implementations. Both offer strong scenario modeling and consolidation, but FinanceOS adds AI-powered natural language querying and ML-based forecasting at a fraction of the price.
+        <h1 style={{ fontSize: 42, fontWeight: 800, lineHeight: 1.1, letterSpacing: "-0.04em", marginBottom: 20 }}>FinanceOS vs Pigment</h1>
+        <p style={{ fontSize: 16, lineHeight: 1.7, color: TD, marginBottom: 40, maxWidth: 720 }}>
+          FinanceOS is an AI-native FP&A platform starting at $499/month that deploys the same day. Pigment is an enterprise business planning platform starting at $65K+/year with 4–12 week implementations. Both offer strong scenario modeling — FinanceOS adds ML-powered forecasting and visible AI reasoning at a fraction of the cost.
         </p>
 
-        <div style={{ borderRadius: 12, border: "1px solid #1e2230", overflow: "hidden", marginBottom: 48 }}>
-          <table style={{ width: "100%", borderCollapse: "collapse" }}>
-            <thead>
-              <tr style={{ background: "#111827" }}>
-                <th style={{ padding: "14px 20px", textAlign: "left", fontSize: 12, fontWeight: 700, color: "#5a6178", textTransform: "uppercase", letterSpacing: "0.08em", borderBottom: "2px solid #1e2230" }}>Feature</th>
-                <th style={{ padding: "14px 20px", textAlign: "left", fontSize: 12, fontWeight: 700, color: "#60a5fa", textTransform: "uppercase", letterSpacing: "0.08em", borderBottom: "2px solid #1e2230" }}>FinanceOS</th>
-                <th style={{ padding: "14px 20px", textAlign: "left", fontSize: 12, fontWeight: 700, color: "#5a6178", textTransform: "uppercase", letterSpacing: "0.08em", borderBottom: "2px solid #1e2230" }}>Pigment</th>
-              </tr>
-            </thead>
-            <tbody>
-              {rows.map((r, i) => (
-                <tr key={r.feature} style={{ borderBottom: "1px solid #1e2230", background: i % 2 === 0 ? "transparent" : "#0d1120" }}>
-                  <td style={{ padding: "12px 20px", fontSize: 13, fontWeight: 600, color: "#c8cdd8" }}>{r.feature}</td>
-                  <td style={{ padding: "12px 20px", fontSize: 13, color: r.winner === "fos" ? "#34d399" : "#9ea5b8", fontWeight: r.winner === "fos" ? 700 : 400 }}>{r.fos}</td>
-                  <td style={{ padding: "12px 20px", fontSize: 13, color: r.winner === "competitor" ? "#34d399" : "#9ea5b8", fontWeight: r.winner === "competitor" ? 700 : 400 }}>{r.competitor}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+        {/* Quick metrics */}
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 14, marginBottom: 48 }}>
+          {[
+            { us: "$499/mo", them: "$65K+/yr", l: "Starting price" },
+            { us: "Same day", them: "4-12 weeks", l: "Time to value" },
+            { us: "3.2%", them: "N/A", l: "MAPE score" },
+            { us: "Self-serve", them: "SI required", l: "Onboarding" },
+          ].map(m => (
+            <div key={m.l} style={{ padding: "20px 16px", borderRadius: 14, background: S, border: `1px solid ${BD}`, textAlign: "center" }}>
+              <div style={{ fontSize: 18, fontWeight: 800, color: AC, fontFamily: "'JetBrains Mono', monospace", marginBottom: 2 }}>{m.us}</div>
+              <div style={{ fontSize: 10, color: TF, marginBottom: 6 }}>vs {m.them}</div>
+              <div style={{ fontSize: 9, fontWeight: 700, color: TD, textTransform: "uppercase", letterSpacing: "0.06em" }}>{m.l}</div>
+            </div>
+          ))}
         </div>
 
-        <div style={{ textAlign: "center", padding: "48px 0", borderTop: "1px solid #1e2230" }}>
-          <h2 style={{ fontSize: 24, fontWeight: 800, color: "#f0f2f7", marginBottom: 12 }}>See why teams are switching from Pigment to FinanceOS</h2>
-          <p style={{ fontSize: 14, color: "#5a6178", marginBottom: 24 }}>Try the full platform free. No credit card, no sales call required.</p>
-          <a href="/?ref=compare-pigment" style={{ display: "inline-block", padding: "14px 32px", borderRadius: 10, background: "linear-gradient(135deg, #60a5fa, #a78bfa)", color: "#fff", fontWeight: 700, fontSize: 14, textDecoration: "none" }}>Try FinanceOS Free</a>
+        {/* Comparison table */}
+        <div style={{ borderRadius: 18, border: `1px solid ${BD}`, overflow: "hidden", background: S, marginBottom: 48 }}>
+          <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr 1fr", borderBottom: `1px solid ${BD}` }}>
+            <div style={{ padding: "16px 24px", fontSize: 10, fontWeight: 800, color: TF, textTransform: "uppercase", letterSpacing: ".1em" }}>Feature</div>
+            <div style={{ padding: "16px 24px", fontSize: 10, fontWeight: 800, color: AC, textTransform: "uppercase", letterSpacing: ".1em", textAlign: "center", background: `${AC}04`, borderLeft: `1px solid ${BD}`, borderRight: `1px solid ${BD}` }}>FinanceOS</div>
+            <div style={{ padding: "16px 24px", fontSize: 10, fontWeight: 800, color: TF, textTransform: "uppercase", letterSpacing: ".1em", textAlign: "center" }}>Pigment</div>
+          </div>
+          {rows.map((r, i) => (
+            <div key={r.f} style={{ display: "grid", gridTemplateColumns: "2fr 1fr 1fr", borderBottom: i < rows.length - 1 ? `1px solid ${BD}40` : "none" }}>
+              <div style={{ padding: "13px 24px", fontSize: 13, color: TD, fontWeight: 500 }}>{r.f}</div>
+              <div style={{ padding: "13px 24px", fontSize: 12, color: r.w === "us" || r.w === "tie" ? GN : TD, fontWeight: r.w === "us" ? 700 : 400, textAlign: "center", fontFamily: "'JetBrains Mono', monospace", background: `${AC}03`, borderLeft: `1px solid ${BD}40`, borderRight: `1px solid ${BD}40` }}>{r.us}</div>
+              <div style={{ padding: "13px 24px", fontSize: 12, color: r.w === "them" ? GN : TF, fontWeight: r.w === "them" ? 700 : 400, textAlign: "center" }}>{r.them}</div>
+            </div>
+          ))}
+        </div>
+
+        {/* When to choose */}
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 48 }}>
+          <div style={{ padding: "28px 24px", borderRadius: 16, background: `${AC}04`, border: `1px solid ${AC}15` }}>
+            <h3 style={{ fontSize: 16, fontWeight: 800, color: T, marginBottom: 12 }}>Choose FinanceOS when you need</h3>
+            {["Same-day deployment, no consultants", "ML-powered forecasting with 3.2% MAPE", "AI copilot with visible reasoning (SHAP)", "Transparent pricing starting at $499/mo", "Self-serve onboarding in 15 minutes"].map(p => (
+              <div key={p} style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13, color: TD, marginBottom: 6 }}>
+                <span style={{ color: GN, fontWeight: 700 }}>✓</span> {p}
+              </div>
+            ))}
+          </div>
+          <div style={{ padding: "28px 24px", borderRadius: 16, background: S, border: `1px solid ${BD}` }}>
+            <h3 style={{ fontSize: 16, fontWeight: 800, color: T, marginBottom: 12 }}>Consider Pigment when you need</h3>
+            {["50+ native connectors for large enterprise", "Strong headcount planning module", "Real-time multi-user collaboration at scale", "Established enterprise brand recognition", "Custom deployment with SI partners"].map(p => (
+              <div key={p} style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13, color: TF, marginBottom: 6 }}>
+                <span style={{ color: TF }}>•</span> {p}
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* CTA */}
+        <div style={{ textAlign: "center", padding: "48px 0", borderTop: `1px solid ${BD}` }}>
+          <h2 style={{ fontSize: 28, fontWeight: 800, marginBottom: 12 }}>See why teams are switching to FinanceOS</h2>
+          <p style={{ fontSize: 14, color: TD, marginBottom: 28 }}>Try the full platform. No credit card, no sales call required.</p>
+          <div style={{ display: "flex", gap: 14, justifyContent: "center" }}>
+            <Link href="/" style={{ padding: "14px 32px", borderRadius: 12, background: `linear-gradient(135deg,${AC},${PU})`, color: "#fff", fontWeight: 700, fontSize: 15, textDecoration: "none" }}>Try FinanceOS Free →</Link>
+            <a href="https://calendly.com/finance-os-support/30min" target="_blank" rel="noopener" style={{ padding: "14px 32px", borderRadius: 12, border: `1px solid ${BD}`, color: T, fontWeight: 600, fontSize: 15, textDecoration: "none" }}>Book a Demo</a>
+          </div>
         </div>
 
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
           "@context": "https://schema.org", "@type": "FAQPage",
           "mainEntity": [
-            { "@type": "Question", "name": "Is FinanceOS cheaper than Pigment?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. FinanceOS starts at $499 per month billed annually. Pigment typically starts at $65,000 or more per year, making FinanceOS roughly 90% less expensive for comparable FP&A functionality." }},
-            { "@type": "Question", "name": "Can FinanceOS do everything Pigment does?", "acceptedAnswer": { "@type": "Answer", "text": "FinanceOS covers the core FP&A workflow: P&L analysis, scenario modeling, multi-entity consolidation, revenue forecasting, and month-end close. Pigment has stronger headcount planning and real-time collaboration features. FinanceOS has a stronger AI copilot and ML-based forecasting." }},
+            { "@type": "Question", "name": "Is FinanceOS cheaper than Pigment?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. FinanceOS starts at $499 per month. Pigment typically starts at $65,000 or more per year, making FinanceOS roughly 90% less expensive." }},
+            { "@type": "Question", "name": "Can FinanceOS replace Pigment?", "acceptedAnswer": { "@type": "Answer", "text": "FinanceOS covers core FP&A: P&L analysis, scenario modeling, multi-entity consolidation, ML forecasting, and month-end close. Pigment has stronger headcount planning and more native integrations. FinanceOS has a stronger AI copilot with visible reasoning." }},
+            { "@type": "Question", "name": "Does FinanceOS have AI like Pigment?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. FinanceOS uses Claude AI for its copilot with visible reasoning, SHAP feature importance, and confidence intervals. Pigment offers Analyst and Modeler agents." }},
           ]
         }) }} />
       </div>
