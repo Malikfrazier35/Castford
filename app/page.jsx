@@ -8190,20 +8190,20 @@ const LandingPage = ({ onLogin }) => {
           <div style={{ position: "absolute", right: 0, top: 0, bottom: 0, width: 80, background: `linear-gradient(270deg, ${lp.bg}, transparent)`, zIndex: 2 }} />
           <div className="fos-scroll-row1" style={{ display: "flex", gap: 14, animation: "fosScrollLeft 50s linear infinite", width: "max-content" }}>
             {[...Array(2)].map((_, dup) => [
-              { name: "NetSuite", logo: "https://logo.clearbit.com/netsuite.com", desc: "ERP — GL, AP/AR, inventory, consolidation", color: "#1B3D6D", tag: "ERP" },
-              { name: "SAP", logo: "https://logo.clearbit.com/sap.com", desc: "Enterprise resource planning & financials", color: "#0FAAFF", tag: "ERP" },
-              { name: "Salesforce", logo: "https://logo.clearbit.com/salesforce.com", desc: "CRM & revenue pipeline data", color: "#00A1E0", tag: "CRM" },
-              { name: "Stripe", logo: "https://logo.clearbit.com/stripe.com", desc: "Payment processing & billing automation", color: "#635BFF", tag: "BILLING" },
-              { name: "Workday", logo: "https://logo.clearbit.com/workday.com", desc: "HRIS, payroll & workforce planning", color: "#F68D2E", tag: "HRIS" },
-              { name: "QuickBooks", logo: "https://logo.clearbit.com/quickbooks.intuit.com", desc: "GL, AP/AR & journal entries", color: "#2CA01C", tag: "ERP" },
-              { name: "Sage Intacct", logo: "https://logo.clearbit.com/sageintacct.com", desc: "Cloud accounting & multi-entity", color: "#00DC00", tag: "ERP" },
-              { name: "Zuora", logo: "https://logo.clearbit.com/zuora.com", desc: "Subscription billing & revenue recognition", color: "#2E2E38", tag: "BILLING" },
-              { name: "HubSpot", logo: "https://logo.clearbit.com/hubspot.com", desc: "Marketing & sales pipeline data", color: "#FF7A59", tag: "CRM" },
-              { name: "Xero", logo: "https://logo.clearbit.com/xero.com", desc: "Cloud accounting & invoicing", color: "#13B5EA", tag: "ERP" },
-              { name: "Plaid", logo: "https://logo.clearbit.com/plaid.com", desc: "Bank account & transaction data", color: "#000000", tag: "BANKING" },
-              { name: "Anthropic", logo: "https://logo.clearbit.com/anthropic.com", desc: "AI reasoning & Copilot engine", color: "#D4A574", featured: true, tag: "AI" },
-              { name: "Ramp", logo: "https://logo.clearbit.com/ramp.com", desc: "Corporate card & expense data", color: "#3ECF8E", tag: "EXPENSE" },
-              { name: "Dynamics 365", logo: "https://logo.clearbit.com/microsoft.com", desc: "Microsoft ERP & business central", color: "#002050", tag: "ERP" },
+              { name: "NetSuite", logo: "https://www.google.com/s2/favicons?domain=netsuite.com&sz=128", desc: "ERP — GL, AP/AR, inventory, consolidation", color: "#1B3D6D", tag: "ERP" },
+              { name: "SAP", logo: "https://www.google.com/s2/favicons?domain=sap.com&sz=128", desc: "Enterprise resource planning & financials", color: "#0FAAFF", tag: "ERP" },
+              { name: "Salesforce", logo: "https://www.google.com/s2/favicons?domain=salesforce.com&sz=128", desc: "CRM & revenue pipeline data", color: "#00A1E0", tag: "CRM" },
+              { name: "Stripe", logo: "https://www.google.com/s2/favicons?domain=stripe.com&sz=128", desc: "Payment processing & billing automation", color: "#635BFF", tag: "BILLING" },
+              { name: "Workday", logo: "https://www.google.com/s2/favicons?domain=workday.com&sz=128", desc: "HRIS, payroll & workforce planning", color: "#F68D2E", tag: "HRIS" },
+              { name: "QuickBooks", logo: "https://www.google.com/s2/favicons?domain=quickbooks.intuit.com&sz=128", desc: "GL, AP/AR & journal entries", color: "#2CA01C", tag: "ERP" },
+              { name: "Sage Intacct", logo: "https://www.google.com/s2/favicons?domain=sageintacct.com&sz=128", desc: "Cloud accounting & multi-entity", color: "#00DC00", tag: "ERP" },
+              { name: "Zuora", logo: "https://www.google.com/s2/favicons?domain=zuora.com&sz=128", desc: "Subscription billing & revenue recognition", color: "#2E2E38", tag: "BILLING" },
+              { name: "HubSpot", logo: "https://www.google.com/s2/favicons?domain=hubspot.com&sz=128", desc: "Marketing & sales pipeline data", color: "#FF7A59", tag: "CRM" },
+              { name: "Xero", logo: "https://www.google.com/s2/favicons?domain=xero.com&sz=128", desc: "Cloud accounting & invoicing", color: "#13B5EA", tag: "ERP" },
+              { name: "Plaid", logo: "https://www.google.com/s2/favicons?domain=plaid.com&sz=128", desc: "Bank account & transaction data", color: "#000000", tag: "BANKING" },
+              { name: "Anthropic", logo: "https://www.google.com/s2/favicons?domain=anthropic.com&sz=128", desc: "AI reasoning & Copilot engine", color: "#D4A574", featured: true, tag: "AI" },
+              { name: "Ramp", logo: "https://www.google.com/s2/favicons?domain=ramp.com&sz=128", desc: "Corporate card & expense data", color: "#3ECF8E", tag: "EXPENSE" },
+              { name: "Dynamics 365", logo: "https://www.google.com/s2/favicons?domain=microsoft.com&sz=128", desc: "Microsoft ERP & business central", color: "#002050", tag: "ERP" },
             ].map((item, i) => (
               <div key={`${dup}-${item.name}`} className="fos-logo-card" style={{ display: "flex", alignItems: "center", gap: 12, padding: "12px 18px", borderRadius: 14, background: lpMode === "dark" ? `linear-gradient(135deg, rgba(16,19,26,0.8), rgba(16,19,26,0.5))` : `linear-gradient(135deg, rgba(248,249,251,0.95), rgba(255,255,255,0.8))`, border: `1px solid ${item.featured ? `${lp.purple}30` : lp.border}`, backdropFilter: "blur(12px)", flexShrink: 0, minWidth: 195, cursor: "default", transition: "all 0.25s cubic-bezier(0.22,1,0.36,1)", position: "relative" }}
                 onMouseEnter={e => { e.currentTarget.style.borderColor = `${item.color}50`; e.currentTarget.style.transform = "translateY(-3px) scale(1.02)"; e.currentTarget.style.boxShadow = `0 12px 32px ${item.color}15`; e.currentTarget.querySelector(".fos-logo-desc").style.opacity = "1"; e.currentTarget.querySelector(".fos-logo-desc").style.transform = "translateY(0)"; }}
@@ -8228,19 +8228,19 @@ const LandingPage = ({ onLogin }) => {
           <div style={{ position: "absolute", right: 0, top: 0, bottom: 0, width: 80, background: `linear-gradient(270deg, ${lp.bg}, transparent)`, zIndex: 2 }} />
           <div className="fos-scroll-row2" style={{ display: "flex", gap: 14, animation: "fosScrollRight 45s linear infinite", width: "max-content" }}>
             {[...Array(2)].map((_, dup) => [
-              { name: "Snowflake", logo: "https://logo.clearbit.com/snowflake.com", desc: "Cloud data warehouse & analytics", color: "#29B5E8", tag: "DATA" },
-              { name: "Databricks", logo: "https://logo.clearbit.com/databricks.com", desc: "Data lakehouse & ML platform", color: "#FF3621", tag: "DATA" },
-              { name: "Rippling", logo: "https://logo.clearbit.com/rippling.com", desc: "HRIS, payroll & headcount data", color: "#FDE74B", tag: "HRIS" },
-              { name: "ADP", logo: "https://logo.clearbit.com/adp.com", desc: "Payroll & workforce management", color: "#D0271D", tag: "HRIS" },
-              { name: "BambooHR", logo: "https://logo.clearbit.com/bamboohr.com", desc: "HRIS & employee lifecycle data", color: "#73C41D", tag: "HRIS" },
-              { name: "Brex", logo: "https://logo.clearbit.com/brex.com", desc: "Corporate cards & cash management", color: "#F5A623", tag: "EXPENSE" },
-              { name: "Slack", logo: "https://logo.clearbit.com/slack.com", desc: "Alerts, approvals & team messaging", color: "#4A154B", tag: "COMMS" },
-              { name: "AWS", logo: "https://logo.clearbit.com/aws.amazon.com", desc: "Cloud infrastructure & compute", color: "#FF9900", tag: "CLOUD" },
-              { name: "DocuSign", logo: "https://logo.clearbit.com/docusign.com", desc: "Contract & eSignature workflows", color: "#4088FF", tag: "ESIGN" },
-              { name: "Gusto", logo: "https://logo.clearbit.com/gusto.com", desc: "Payroll, benefits & HR platform", color: "#F45D48", tag: "HRIS" },
-              { name: "Mercury", logo: "https://logo.clearbit.com/mercury.com", desc: "Business banking & treasury", color: "#5A2FBA", tag: "BANKING" },
-              { name: "BigQuery", logo: "https://logo.clearbit.com/cloud.google.com", desc: "Google Cloud data warehouse", color: "#669DF6", tag: "DATA" },
-              { name: "Intercom", logo: "https://logo.clearbit.com/intercom.com", desc: "Customer support & engagement", color: "#1F8DED", tag: "SUPPORT" },
+              { name: "Snowflake", logo: "https://www.google.com/s2/favicons?domain=snowflake.com&sz=128", desc: "Cloud data warehouse & analytics", color: "#29B5E8", tag: "DATA" },
+              { name: "Databricks", logo: "https://www.google.com/s2/favicons?domain=databricks.com&sz=128", desc: "Data lakehouse & ML platform", color: "#FF3621", tag: "DATA" },
+              { name: "Rippling", logo: "https://www.google.com/s2/favicons?domain=rippling.com&sz=128", desc: "HRIS, payroll & headcount data", color: "#FDE74B", tag: "HRIS" },
+              { name: "ADP", logo: "https://www.google.com/s2/favicons?domain=adp.com&sz=128", desc: "Payroll & workforce management", color: "#D0271D", tag: "HRIS" },
+              { name: "BambooHR", logo: "https://www.google.com/s2/favicons?domain=bamboohr.com&sz=128", desc: "HRIS & employee lifecycle data", color: "#73C41D", tag: "HRIS" },
+              { name: "Brex", logo: "https://www.google.com/s2/favicons?domain=brex.com&sz=128", desc: "Corporate cards & cash management", color: "#F5A623", tag: "EXPENSE" },
+              { name: "Slack", logo: "https://www.google.com/s2/favicons?domain=slack.com&sz=128", desc: "Alerts, approvals & team messaging", color: "#4A154B", tag: "COMMS" },
+              { name: "AWS", logo: "https://www.google.com/s2/favicons?domain=aws.amazon.com&sz=128", desc: "Cloud infrastructure & compute", color: "#FF9900", tag: "CLOUD" },
+              { name: "DocuSign", logo: "https://www.google.com/s2/favicons?domain=docusign.com&sz=128", desc: "Contract & eSignature workflows", color: "#4088FF", tag: "ESIGN" },
+              { name: "Gusto", logo: "https://www.google.com/s2/favicons?domain=gusto.com&sz=128", desc: "Payroll, benefits & HR platform", color: "#F45D48", tag: "HRIS" },
+              { name: "Mercury", logo: "https://www.google.com/s2/favicons?domain=mercury.com&sz=128", desc: "Business banking & treasury", color: "#5A2FBA", tag: "BANKING" },
+              { name: "BigQuery", logo: "https://www.google.com/s2/favicons?domain=cloud.google.com&sz=128", desc: "Google Cloud data warehouse", color: "#669DF6", tag: "DATA" },
+              { name: "Intercom", logo: "https://www.google.com/s2/favicons?domain=intercom.com&sz=128", desc: "Customer support & engagement", color: "#1F8DED", tag: "SUPPORT" },
             ].map((item, i) => (
               <div key={`${dup}-${item.name}`} className="fos-logo-card" style={{ display: "flex", alignItems: "center", gap: 12, padding: "12px 18px", borderRadius: 14, background: lpMode === "dark" ? `linear-gradient(135deg, rgba(16,19,26,0.8), rgba(16,19,26,0.5))` : `linear-gradient(135deg, rgba(248,249,251,0.95), rgba(255,255,255,0.8))`, border: `1px solid ${lp.border}`, backdropFilter: "blur(12px)", flexShrink: 0, minWidth: 195, cursor: "default", transition: "all 0.25s cubic-bezier(0.22,1,0.36,1)", position: "relative" }}
                 onMouseEnter={e => { e.currentTarget.style.borderColor = `${item.color}50`; e.currentTarget.style.transform = "translateY(-3px) scale(1.02)"; e.currentTarget.style.boxShadow = `0 12px 32px ${item.color}15`; e.currentTarget.querySelector(".fos-logo-desc").style.opacity = "1"; e.currentTarget.querySelector(".fos-logo-desc").style.transform = "translateY(0)"; }}
@@ -8265,18 +8265,18 @@ const LandingPage = ({ onLogin }) => {
           <div style={{ position: "absolute", right: 0, top: 0, bottom: 0, width: 80, background: `linear-gradient(270deg, ${lp.bg}, transparent)`, zIndex: 2 }} />
           <div className="fos-scroll-row3" style={{ display: "flex", gap: 14, animation: "fosScrollLeft 55s linear infinite", width: "max-content" }}>
             {[...Array(2)].map((_, dup) => [
-              { name: "Supabase", logo: "https://logo.clearbit.com/supabase.com", desc: "Database, auth & real-time sync", color: "#3ECF8E", tag: "DATABASE" },
-              { name: "Vercel", logo: "https://logo.clearbit.com/vercel.com", desc: "Edge hosting & CI/CD", color: "#000000", tag: "HOSTING" },
-              { name: "Cloudflare", logo: "https://logo.clearbit.com/cloudflare.com", desc: "Security, CDN & DDoS protection", color: "#F48120", tag: "SECURITY" },
-              { name: "Tableau", logo: "https://logo.clearbit.com/tableau.com", desc: "Business intelligence & dashboards", color: "#E97627", tag: "BI" },
-              { name: "Power BI", logo: "https://logo.clearbit.com/microsoft.com", desc: "Microsoft analytics & reporting", color: "#F2C811", tag: "BI" },
-              { name: "S&P Global", logo: "https://logo.clearbit.com/spglobal.com", desc: "Market data & benchmarks", color: "#0033A0", tag: "MARKET DATA" },
-              { name: "FactSet", logo: "https://logo.clearbit.com/factset.com", desc: "Financial data & analytics", color: "#1679C4", tag: "MARKET DATA" },
-              { name: "Morningstar", logo: "https://logo.clearbit.com/morningstar.com", desc: "Investment research & ratings", color: "#FC5301", tag: "RESEARCH" },
-              { name: "Square", logo: "https://logo.clearbit.com/squareup.com", desc: "POS & payment data", color: "#3E4348", tag: "PAYMENTS" },
-              { name: "Gmail", logo: "https://logo.clearbit.com/gmail.com", desc: "Email notifications & alerts", color: "#EA4335", tag: "EMAIL" },
-              { name: "Calendly", logo: "https://logo.clearbit.com/calendly.com", desc: "Meeting scheduling & booking", color: "#006BFF", tag: "SCHEDULING" },
-              { name: "Linear", logo: "https://logo.clearbit.com/linear.app", desc: "Project tracking & sprint data", color: "#5E6AD2", tag: "PROJECTS" },
+              { name: "Supabase", logo: "https://www.google.com/s2/favicons?domain=supabase.com&sz=128", desc: "Database, auth & real-time sync", color: "#3ECF8E", tag: "DATABASE" },
+              { name: "Vercel", logo: "https://www.google.com/s2/favicons?domain=vercel.com&sz=128", desc: "Edge hosting & CI/CD", color: "#000000", tag: "HOSTING" },
+              { name: "Cloudflare", logo: "https://www.google.com/s2/favicons?domain=cloudflare.com&sz=128", desc: "Security, CDN & DDoS protection", color: "#F48120", tag: "SECURITY" },
+              { name: "Tableau", logo: "https://www.google.com/s2/favicons?domain=tableau.com&sz=128", desc: "Business intelligence & dashboards", color: "#E97627", tag: "BI" },
+              { name: "Power BI", logo: "https://www.google.com/s2/favicons?domain=microsoft.com&sz=128", desc: "Microsoft analytics & reporting", color: "#F2C811", tag: "BI" },
+              { name: "S&P Global", logo: "https://www.google.com/s2/favicons?domain=spglobal.com&sz=128", desc: "Market data & benchmarks", color: "#0033A0", tag: "MARKET DATA" },
+              { name: "FactSet", logo: "https://www.google.com/s2/favicons?domain=factset.com&sz=128", desc: "Financial data & analytics", color: "#1679C4", tag: "MARKET DATA" },
+              { name: "Morningstar", logo: "https://www.google.com/s2/favicons?domain=morningstar.com&sz=128", desc: "Investment research & ratings", color: "#FC5301", tag: "RESEARCH" },
+              { name: "Square", logo: "https://www.google.com/s2/favicons?domain=squareup.com&sz=128", desc: "POS & payment data", color: "#3E4348", tag: "PAYMENTS" },
+              { name: "Gmail", logo: "https://www.google.com/s2/favicons?domain=gmail.com&sz=128", desc: "Email notifications & alerts", color: "#EA4335", tag: "EMAIL" },
+              { name: "Calendly", logo: "https://www.google.com/s2/favicons?domain=calendly.com&sz=128", desc: "Meeting scheduling & booking", color: "#006BFF", tag: "SCHEDULING" },
+              { name: "Linear", logo: "https://www.google.com/s2/favicons?domain=linear.app&sz=128", desc: "Project tracking & sprint data", color: "#5E6AD2", tag: "PROJECTS" },
             ].map((item, i) => (
               <div key={`${dup}-${item.name}`} className="fos-logo-card" style={{ display: "flex", alignItems: "center", gap: 12, padding: "12px 18px", borderRadius: 14, background: lpMode === "dark" ? `linear-gradient(135deg, rgba(16,19,26,0.8), rgba(16,19,26,0.5))` : `linear-gradient(135deg, rgba(248,249,251,0.95), rgba(255,255,255,0.8))`, border: `1px solid ${lp.border}`, backdropFilter: "blur(12px)", flexShrink: 0, minWidth: 195, cursor: "default", transition: "all 0.25s cubic-bezier(0.22,1,0.36,1)", position: "relative" }}
                 onMouseEnter={e => { e.currentTarget.style.borderColor = `${item.color}50`; e.currentTarget.style.transform = "translateY(-3px) scale(1.02)"; e.currentTarget.style.boxShadow = `0 12px 32px ${item.color}15`; e.currentTarget.querySelector(".fos-logo-desc").style.opacity = "1"; e.currentTarget.querySelector(".fos-logo-desc").style.transform = "translateY(0)"; }}
@@ -9114,7 +9114,7 @@ const LandingPage = ({ onLogin }) => {
             <div style={{ padding: isMobile ? "36px 28px" : "52px 44px", background: lpMode === "dark" ? `linear-gradient(135deg, #0f1118, #161a24)` : `linear-gradient(135deg, #f8f9fb, #ffffff)`, position: "relative" }}>
               {/* Anthropic logo */}
               <div style={{ display: "flex", alignItems: "center", gap: 14, marginBottom: 28 }}>
-                <img src="https://logo.clearbit.com/anthropic.com" alt="Anthropic" style={{ width: 44, height: 44, borderRadius: 12, objectFit: "cover", border: `1px solid ${lp.border}` }} />
+                <img src="https://www.google.com/s2/favicons?domain=anthropic.com&sz=128" alt="Anthropic" style={{ width: 44, height: 44, borderRadius: 12, objectFit: "cover", border: `1px solid ${lp.border}` }} />
                 <div>
                   <div style={{ fontSize: 20, fontWeight: 800, color: lp.text, letterSpacing: "-0.02em" }}>Anthropic</div>
                   <div style={{ fontSize: 11, fontWeight: 600, color: lp.purple }}>Strategic AI Partner</div>
@@ -9139,7 +9139,7 @@ const LandingPage = ({ onLogin }) => {
               <div style={{ textAlign: "center", position: "relative", width: "100%" }}>
                 {/* Claude logo large */}
                 <div style={{ width: 88, height: 88, borderRadius: 22, background: `linear-gradient(135deg, ${lp.purple}18, ${lp.accent}10)`, border: `2px solid ${lp.purple}20`, display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 24px", boxShadow: `0 12px 40px ${lp.purple}12` }}>
-                  <img src="https://logo.clearbit.com/anthropic.com" alt="Claude" style={{ width: 52, height: 52, borderRadius: 12, objectFit: "cover" }} />
+                  <img src="https://www.google.com/s2/favicons?domain=anthropic.com&sz=128" alt="Claude" style={{ width: 52, height: 52, borderRadius: 12, objectFit: "cover" }} />
                 </div>
                 <div style={{ fontSize: 24, fontWeight: 800, color: lp.text, marginBottom: 8, letterSpacing: "-0.02em" }}>Powered by Claude</div>
                 <p style={{ fontSize: 14, color: lp.textDim, lineHeight: 1.65, maxWidth: 300, margin: "0 auto 20px" }}>Enterprise-grade AI reasoning with visible thought process, SHAP explanations, and confidence intervals.</p>
