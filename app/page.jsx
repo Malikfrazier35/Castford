@@ -5287,6 +5287,26 @@ const AdminView = ({ c, toast, onNav }) => {
                 </div>
                 <div style={{ fontSize: 13, fontWeight: 800, color: c.text }}>Notifications & Alerts</div>
               </div>
+              {/* Mini notification pipeline animation */}
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 4, padding: "10px 0 14px", position: "relative" }}>
+                {[
+                  { icon: "⚡", label: "Event", color: c.amber },
+                  { icon: "⊕", label: "Route", color: c.accent },
+                  { icon: "✉", label: "Deliver", color: c.green },
+                ].map((step, si) => (
+                  <React.Fragment key={step.label}>
+                    <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 3 }}>
+                      <div style={{ width: 30, height: 30, borderRadius: 8, background: `${step.color}12`, border: `1px solid ${step.color}20`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12, animation: `fosNodePing 3s ease-in-out ${si * 0.4}s infinite` }}>{step.icon}</div>
+                      <span style={{ fontSize: 7, fontWeight: 700, color: c.textFaint, textTransform: "uppercase", letterSpacing: "0.05em" }}>{step.label}</span>
+                    </div>
+                    {si < 2 && (
+                      <div style={{ flex: 1, height: 2, background: `${c.border}`, borderRadius: 1, position: "relative", overflow: "hidden", margin: "0 2px", marginBottom: 14 }}>
+                        <div style={{ position: "absolute", top: 0, left: 0, width: "30%", height: "100%", background: `linear-gradient(90deg, transparent, ${step.color}60, transparent)`, borderRadius: 1, animation: `fosBeamSweep 2s ease-in-out ${si * 0.5}s infinite` }} />
+                      </div>
+                    )}
+                  </React.Fragment>
+                ))}
+              </div>
               {[
                 { label: "Variance Alerts", status: "Enabled", desc: "Trigger when actuals deviate >5% from budget", active: true },
                 { label: "Close Task Reminders", status: "Enabled", desc: "Daily reminder 3 days before close deadline", active: true },
@@ -5839,12 +5859,10 @@ const IntelligenceView = ({ c, toast, onNav }) => {
               </div>
             ) : (
               <div style={{ display: "flex", gap: 8, maxWidth: 420, margin: "0 auto" }}>
-                <input type="email" value={newsletterEmail} onChange={e => setNewsletterEmail(e.target.value)} placeholder="Enter your work email" style={{ flex: 1, padding: "11px 16px", borderRadius: 10, border: `1px solid ${c.border}`, background: c.surface, color: c.text, fontSize: 12, fontFamily: "inherit", outline: "none", transition: "all 0.2s" }}
+                <input className="fos-input-glow" type="email" value={newsletterEmail} onChange={e => setNewsletterEmail(e.target.value)} placeholder="Enter your work email" style={{ flex: 1, padding: "11px 16px", borderRadius: 10, border: `1px solid ${c.border}`, background: c.surface, color: c.text, fontSize: 12, fontFamily: "inherit", outline: "none", transition: "all 0.2s" }}
                   onFocus={e => { e.target.style.borderColor = `${c.accent}40`; e.target.style.boxShadow = `0 0 0 3px ${c.accent}10`; }}
                   onBlur={e => { e.target.style.borderColor = c.border; e.target.style.boxShadow = "none"; }} />
-                <button onClick={handleNewsletter} style={{ padding: "11px 24px", borderRadius: 10, border: "none", background: `linear-gradient(135deg, ${c.accent}, ${c.purple || c.accent})`, color: "#fff", fontSize: 12, fontWeight: 700, cursor: "pointer", fontFamily: "inherit", boxShadow: `0 4px 12px ${c.accent}25`, transition: "all 0.2s" }}
-                  onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-1px)"; }}
-                  onMouseLeave={e => { e.currentTarget.style.transform = "none"; }}>Subscribe</button>
+                <button className="fos-cta-primary" onClick={handleNewsletter} style={{ padding: "11px 24px", borderRadius: 10, border: "none", background: `linear-gradient(135deg, ${c.accent}, ${c.purple || c.accent})`, color: "#fff", fontSize: 12, fontWeight: 700, cursor: "pointer", fontFamily: "inherit", boxShadow: `0 4px 12px ${c.accent}25`, transition: "all 0.2s" }}>Subscribe</button>
               </div>
             )}
             <div style={{ fontSize: 9, color: c.textFaint, marginTop: 10 }}>No spam. Unsubscribe anytime. SOC 2 compliant data handling.</div>
@@ -6935,26 +6953,26 @@ const AuthModal = ({ mode: initialMode, onClose, onAuth }) => {
           <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
             {(authMode === "signup" || authMode === "demo") && (
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
-                <input value={name} onChange={e => setName(e.target.value)} placeholder="Full name" style={inputStyle}
-                  onFocus={e => { e.target.style.borderColor = "#60a5fa"; e.target.style.boxShadow = "0 0 0 3px rgba(96,165,250,0.1)"; }}
-                  onBlur={e => { e.target.style.borderColor = "#1e2230"; e.target.style.boxShadow = "none"; }}
+                <input className="fos-input-glow" value={name} onChange={e => setName(e.target.value)} placeholder="Full name" style={inputStyle}
+                  onFocus={e => { e.target.style.borderColor = "#60a5fa"; }}
+                  onBlur={e => { e.target.style.borderColor = "#1e2230"; }}
                 />
-                <input value={company} onChange={e => setCompany(e.target.value)} placeholder="Company" style={inputStyle}
-                  onFocus={e => { e.target.style.borderColor = "#60a5fa"; e.target.style.boxShadow = "0 0 0 3px rgba(96,165,250,0.1)"; }}
-                  onBlur={e => { e.target.style.borderColor = "#1e2230"; e.target.style.boxShadow = "none"; }}
+                <input className="fos-input-glow" value={company} onChange={e => setCompany(e.target.value)} placeholder="Company" style={inputStyle}
+                  onFocus={e => { e.target.style.borderColor = "#60a5fa"; }}
+                  onBlur={e => { e.target.style.borderColor = "#1e2230"; }}
                 />
               </div>
             )}
-            <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder={authMode === "demo" ? "Work email" : "Email address"} style={inputStyle}
-              onFocus={e => { e.target.style.borderColor = "#60a5fa"; e.target.style.boxShadow = "0 0 0 3px rgba(96,165,250,0.1)"; }}
-              onBlur={e => { e.target.style.borderColor = "#1e2230"; e.target.style.boxShadow = "none"; }}
+            <input className="fos-input-glow" type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder={authMode === "demo" ? "Work email" : "Email address"} style={inputStyle}
+              onFocus={e => { e.target.style.borderColor = "#60a5fa"; }}
+              onBlur={e => { e.target.style.borderColor = "#1e2230"; }}
               onKeyDown={e => e.key === "Enter" && (authMode === "demo" ? handleDemo() : handleEmail())}
             />
             {authMode !== "demo" && (
               <div style={{ position: "relative" }}>
-                <input type={showPw ? "text" : "password"} value={password} onChange={e => setPassword(e.target.value)} placeholder={authMode === "signup" ? "Create password (8+ chars)" : "Password"} style={{ ...inputStyle, paddingRight: 44 }}
-                  onFocus={e => { e.target.style.borderColor = "#60a5fa"; e.target.style.boxShadow = "0 0 0 3px rgba(96,165,250,0.1)"; }}
-                  onBlur={e => { e.target.style.borderColor = "#1e2230"; e.target.style.boxShadow = "none"; }}
+                <input className="fos-input-glow" type={showPw ? "text" : "password"} value={password} onChange={e => setPassword(e.target.value)} placeholder={authMode === "signup" ? "Create password (8+ chars)" : "Password"} style={{ ...inputStyle, paddingRight: 44 }}
+                  onFocus={e => { e.target.style.borderColor = "#60a5fa"; }}
+                  onBlur={e => { e.target.style.borderColor = "#1e2230"; }}
                   onKeyDown={e => e.key === "Enter" && handleEmail()}
                 />
                 <button onClick={() => setShowPw(!showPw)} style={{ position: "absolute", right: 12, top: "50%", transform: "translateY(-50%)", background: "none", border: "none", cursor: "pointer", padding: 2 }}><Eye size={14} color={showPw ? "#60a5fa" : "#3d4558"} /></button>
@@ -7692,9 +7710,7 @@ const ProductDemo = ({ enterDemo, lp, lpMode }) => {
               </div>
             ))}
           </div>
-          <button onClick={enterDemo} style={{ fontSize: 14, padding: "14px 28px", borderRadius: 12, border: "none", background: `linear-gradient(135deg, ${lp.gradFrom}, ${lp.gradTo})`, color: "#fff", cursor: "pointer", fontFamily: "inherit", fontWeight: 700, boxShadow: `0 6px 24px ${lp.accent}25`, transition: "all 0.2s" }}
-            onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-1px)"; e.currentTarget.style.boxShadow = `0 10px 32px ${lp.accent}35`; }}
-            onMouseLeave={e => { e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.boxShadow = `0 6px 24px ${lp.accent}25`; }}
+          <button className="fos-cta-primary" onClick={enterDemo} style={{ fontSize: 14, padding: "14px 28px", borderRadius: 12, border: "none", background: `linear-gradient(135deg, ${lp.gradFrom}, ${lp.gradTo})`, color: "#fff", cursor: "pointer", fontFamily: "inherit", fontWeight: 700, boxShadow: `0 6px 24px ${lp.accent}25`, transition: "all 0.2s" }}
           >Try This Feature</button>
         </div>
         {/* Browser mockup — theme aware */}
@@ -8010,12 +8026,12 @@ const LandingPage = ({ onLogin }) => {
               onMouseLeave={e => e.currentTarget.style.borderColor = lp.border}
             >{lpMode === "dark" ? <Sun size={15} color={lp.textDim} /> : <Moon size={15} color={lp.textDim} />}</button>
             <button onClick={() => setAuthModal("login")} style={{ fontSize: 12, padding: "8px 18px", borderRadius: 8, border: `1px solid ${lp.border}`, background: "transparent", color: lp.text, cursor: "pointer", fontFamily: "inherit", fontWeight: 600, transition: "all 0.15s" }}>Sign In</button>
-            <button onClick={() => setAuthModal("signup")} style={{ fontSize: 12, padding: "8px 18px", borderRadius: 8, border: "none", background: `linear-gradient(135deg, ${lp.gradFrom}, ${lp.gradTo})`, color: "#fff", cursor: "pointer", fontFamily: "inherit", fontWeight: 700, boxShadow: `0 4px 16px ${lp.accent}33` }}>Subscribe</button>
+            <button className="fos-cta-primary" onClick={() => setAuthModal("signup")} style={{ fontSize: 12, padding: "8px 18px", borderRadius: 8, border: "none", background: `linear-gradient(135deg, ${lp.gradFrom}, ${lp.gradTo})`, color: "#fff", cursor: "pointer", fontFamily: "inherit", fontWeight: 700, boxShadow: `0 4px 16px ${lp.accent}33` }}>Subscribe</button>
           </div>
           ) : (
           <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
-            <button onClick={() => setAuthModal("login")} style={{ fontSize: 12, padding: "8px 14px", borderRadius: 8, border: "1px solid #1e2230", background: "transparent", color: "#f0f2f5", cursor: "pointer", fontFamily: "inherit", fontWeight: 600 }}>Sign In</button>
-            <button onClick={() => setAuthModal("signup")} style={{ fontSize: 12, padding: "8px 14px", borderRadius: 8, border: "none", background: "linear-gradient(135deg, #60a5fa, #a78bfa)", color: "#fff", cursor: "pointer", fontFamily: "inherit", fontWeight: 700 }}>Subscribe</button>
+            <button className="fos-cta-secondary" onClick={() => setAuthModal("login")} style={{ fontSize: 12, padding: "8px 14px", borderRadius: 8, border: "1px solid #1e2230", background: "transparent", color: "#f0f2f5", cursor: "pointer", fontFamily: "inherit", fontWeight: 600 }}>Sign In</button>
+            <button className="fos-cta-primary" onClick={() => setAuthModal("signup")} style={{ fontSize: 12, padding: "8px 14px", borderRadius: 8, border: "none", background: "linear-gradient(135deg, #60a5fa, #a78bfa)", color: "#fff", cursor: "pointer", fontFamily: "inherit", fontWeight: 700 }}>Subscribe</button>
           </div>
           )}
         </div>
@@ -8043,15 +8059,11 @@ const LandingPage = ({ onLogin }) => {
 
         {/* CTA — sign-up focused, demo requires account */}
         <div style={{ display: "flex", gap: 0, justifyContent: "center", maxWidth: 480, margin: "0 auto", flexDirection: isMobile ? "column" : "row", animation: "fosFadeSlideUp 0.6s ease 0.3s both" }}>
-          <input value={heroEmail} onChange={e => setHeroEmail(e.target.value)} onKeyDown={e => { if (e.key === "Enter") handleHeroSignup(); }}
+          <input className="fos-input-glow" value={heroEmail} onChange={e => setHeroEmail(e.target.value)} onKeyDown={e => { if (e.key === "Enter") handleHeroSignup(); }}
             placeholder="Work email" type="email"
-            style={{ flex: 1, fontSize: 15, padding: "16px 20px", borderRadius: isMobile ? 12 : "12px 0 0 12px", border: `1px solid ${lp.border}`, borderRight: isMobile ? `1px solid ${lp.border}` : "none", background: lp.inputBg, color: lp.text, fontFamily: "inherit", outline: "none", transition: "border-color 0.2s" }}
-            onFocus={e => e.target.style.borderColor = lp.accent}
-            onBlur={e => e.target.style.borderColor = lp.border}
+            style={{ flex: 1, fontSize: 15, padding: "16px 20px", borderRadius: isMobile ? 12 : "12px 0 0 12px", border: `1px solid ${lp.border}`, borderRight: isMobile ? `1px solid ${lp.border}` : "none", background: lp.inputBg, color: lp.text, fontFamily: "inherit", outline: "none" }}
           />
-          <button onClick={handleHeroSignup} style={{ fontSize: 15, padding: "16px 28px", borderRadius: isMobile ? 12 : "0 12px 12px 0", border: "none", background: `linear-gradient(135deg, ${lp.gradFrom}, ${lp.gradTo})`, color: "#fff", cursor: "pointer", fontFamily: "inherit", fontWeight: 700, whiteSpace: "nowrap", boxShadow: `0 8px 30px ${lp.accent}33`, transition: "all 0.2s" }}
-            onMouseEnter={e => e.currentTarget.style.boxShadow = `0 12px 40px ${lp.accent}40`}
-            onMouseLeave={e => e.currentTarget.style.boxShadow = `0 8px 30px ${lp.accent}33`}
+          <button className="fos-cta-primary" onClick={handleHeroSignup} style={{ fontSize: 15, padding: "16px 28px", borderRadius: isMobile ? 12 : "0 12px 12px 0", border: "none", background: `linear-gradient(135deg, ${lp.gradFrom}, ${lp.gradTo})`, color: "#fff", cursor: "pointer", fontFamily: "inherit", fontWeight: 700, whiteSpace: "nowrap", boxShadow: `0 8px 30px ${lp.accent}33` }}
           >Get Started Free</button>
         </div>
         <div style={{ fontSize: 11, color: lp.textFaint, marginTop: 10, textAlign: "center" }}>No credit card required · 14-day free trial · Interactive demo after signup</div>
@@ -8067,11 +8079,9 @@ const LandingPage = ({ onLogin }) => {
         </div>
 
         <div style={{ display: "flex", gap: 12, justifyContent: "center", marginTop: 14 }}>
-          <button onClick={() => setDemoModal(true)} style={{ fontSize: 13, padding: "11px 22px", borderRadius: 10, border: `1px solid ${lp.accent}30`, background: `${lp.accent}06`, color: lp.accent, cursor: "pointer", fontFamily: "inherit", fontWeight: 600, transition: "all 0.15s", display: "flex", alignItems: "center", gap: 6 }}
-            onMouseEnter={e => { e.currentTarget.style.borderColor = `${lp.accent}60`; e.currentTarget.style.background = `${lp.accent}12`; }}
-            onMouseLeave={e => { e.currentTarget.style.borderColor = `${lp.accent}30`; e.currentTarget.style.background = `${lp.accent}06`; }}
+          <button className="fos-cta-secondary" onClick={() => setDemoModal(true)} style={{ fontSize: 13, padding: "11px 22px", borderRadius: 10, border: `1px solid ${lp.accent}30`, background: `${lp.accent}06`, color: lp.accent, cursor: "pointer", fontFamily: "inherit", fontWeight: 600, display: "flex", alignItems: "center", gap: 6 }}
           ><Eye size={14} />Request a Guided Demo</button>
-          <button onClick={() => setAuthModal("signup")} style={{ fontSize: 13, padding: "11px 22px", borderRadius: 10, border: `1px solid ${lp.border}`, background: "transparent", color: lp.textSub, cursor: "pointer", fontFamily: "inherit", fontWeight: 600, transition: "all 0.15s" }}
+          <button className="fos-cta-secondary" onClick={() => setAuthModal("signup")} style={{ fontSize: 13, padding: "11px 22px", borderRadius: 10, border: `1px solid ${lp.border}`, background: "transparent", color: lp.textSub, cursor: "pointer", fontFamily: "inherit", fontWeight: 600, transition: "all 0.15s" }}
             onMouseEnter={e => { e.currentTarget.style.borderColor = lp.textFaint; e.currentTarget.style.color = lp.text; }}
             onMouseLeave={e => { e.currentTarget.style.borderColor = lp.border; e.currentTarget.style.color = lp.textSub; }}
           >Sign In to Explore</button>
@@ -8157,6 +8167,15 @@ const LandingPage = ({ onLogin }) => {
         .fos-testimonial-card:hover .fos-testimonial-img{transform:scale(1.05);filter:brightness(1.05)}
       `}</style>
 
+      {/* Section Connector — animated flowing line */}
+      <div style={{ display: "flex", justifyContent: "center", padding: "8px 0" }}>
+        <div style={{ position: "relative", width: 2, height: 48 }}>
+          <div style={{ position: "absolute", inset: 0, background: `linear-gradient(180deg, transparent, ${lp.accent}20, transparent)`, borderRadius: 1 }} />
+          <div style={{ position: "absolute", width: 2, height: 12, background: `linear-gradient(180deg, ${lp.accent}60, ${lp.accent}00)`, borderRadius: 1, animation: "fosFlowDown 2s ease-in-out infinite" }} />
+          <style>{`@keyframes fosFlowDown{0%{top:-12px;opacity:0}20%{opacity:1}80%{opacity:1}100%{top:48px;opacity:0}}`}</style>
+        </div>
+      </div>
+
       {/* ═══ Premium Dashboard Preview — animated like a live video ═══ */}
       <style>{`
         @keyframes fosDrawLine{0%{stroke-dashoffset:800}100%{stroke-dashoffset:0}}
@@ -8200,6 +8219,26 @@ const LandingPage = ({ onLogin }) => {
         @keyframes fosAlertSlide{0%{opacity:0;transform:translateY(-100%) scale(0.95)}10%{opacity:1;transform:translateY(0) scale(1)}90%{opacity:1;transform:translateY(0) scale(1)}100%{opacity:0;transform:translateY(-20px) scale(0.98)}}
         .fos-notif-pulse{animation:fosNotifPulse 2s ease-in-out infinite}
         .fos-alert-slide{animation:fosAlertSlide 4s ease-in-out both}
+        @keyframes fosBeamSweepBtn{0%{left:-100%;opacity:0}20%{opacity:0.6}80%{opacity:0.6}100%{left:150%;opacity:0}}
+        @keyframes fosRippleOut{0%{transform:scale(0);opacity:0.5}100%{transform:scale(4);opacity:0}}
+        @keyframes fosGlowTrail{0%{box-shadow:0 0 20px rgba(96,165,250,0.3)}50%{box-shadow:0 0 40px rgba(96,165,250,0.15),0 4px 24px rgba(96,165,250,0.2)}100%{box-shadow:0 0 20px rgba(96,165,250,0.3)}}
+        @keyframes fosMagneticReturn{0%{transform:translate(var(--mx),var(--my)) scale(1.02)}100%{transform:translate(0,0) scale(1)}}
+        @keyframes fosShimmerLine{0%{transform:translateX(-100%)}100%{transform:translateX(200%)}}
+        @keyframes fosProgressFill{0%{width:0%}100%{width:100%}}
+        @keyframes fosBorderRotate{0%{background-position:0% 0%}100%{background-position:100% 100%}}
+        .fos-logo-card{position:relative;overflow:visible}
+        .fos-logo-card::before{content:'';position:absolute;top:-1px;left:-1px;right:-1px;bottom:-1px;border-radius:15px;background:linear-gradient(135deg,transparent 40%,rgba(96,165,250,0.15) 50%,transparent 60%);background-size:200% 200%;opacity:0;transition:opacity 0.3s ease;pointer-events:none}
+        .fos-logo-card:hover::before{opacity:1;animation:fosBorderRotate 3s linear infinite}
+        .fos-cta-primary{position:relative;overflow:hidden;transition:all 0.3s cubic-bezier(0.22,1,0.36,1)}
+        .fos-cta-primary::after{content:'';position:absolute;top:0;left:-100%;width:50%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.15),transparent);pointer-events:none}
+        .fos-cta-primary:hover::after{animation:fosShimmerLine 0.8s ease-out}
+        .fos-cta-primary:hover{transform:translateY(-2px) scale(1.02)}
+        .fos-cta-primary:active{transform:translateY(0) scale(0.98);transition-duration:0.1s}
+        .fos-cta-secondary{position:relative;overflow:hidden;transition:all 0.25s cubic-bezier(0.22,1,0.36,1)}
+        .fos-cta-secondary:hover{transform:translateY(-1px);border-color:rgba(96,165,250,0.4)!important}
+        .fos-cta-secondary:active{transform:translateY(0) scale(0.98);transition-duration:0.1s}
+        .fos-input-glow:focus{box-shadow:0 0 0 3px rgba(96,165,250,0.12),0 0 16px rgba(96,165,250,0.06)!important;border-color:#60a5fa!important}
+        .fos-input-glow{transition:all 0.25s cubic-bezier(0.22,1,0.36,1)}
         .fos-data-pulse{animation:fosDataPulse 3s ease-in-out infinite}
         .fos-sparkle{animation:fosSparkle 2s ease-in-out infinite}
         .fos-notif-slide{animation:fosNotifSlide 5s ease-in-out infinite}
@@ -8305,11 +8344,20 @@ const LandingPage = ({ onLogin }) => {
               <div style={{ fontSize: 16, fontWeight: 800, color: lp.text, marginBottom: 6 }}>See the full platform in action</div>
               <div style={{ fontSize: 12, color: lp.textDim, marginBottom: 16, maxWidth: 320, margin: "0 auto 16px" }}>Sign up for a free account to explore the interactive demo with your own data.</div>
               <div style={{ display: "flex", gap: 10, justifyContent: "center" }}>
-                <button onClick={() => setAuthModal("signup")} style={{ fontSize: 13, padding: "12px 24px", borderRadius: 10, border: "none", background: `linear-gradient(135deg, ${lp.gradFrom}, ${lp.gradTo})`, color: "#fff", cursor: "pointer", fontFamily: "inherit", fontWeight: 700, boxShadow: `0 6px 24px ${lp.accent}30` }}>Create Free Account</button>
-                <button onClick={() => setDemoModal(true)} style={{ fontSize: 13, padding: "12px 24px", borderRadius: 10, border: `1px solid ${lp.border}`, background: lpMode === "dark" ? "rgba(255,255,255,0.04)" : "rgba(0,0,0,0.03)", color: lp.textSub, cursor: "pointer", fontFamily: "inherit", fontWeight: 600 }}>Schedule a Call</button>
+                <button className="fos-cta-primary" onClick={() => setAuthModal("signup")} style={{ fontSize: 13, padding: "12px 24px", borderRadius: 10, border: "none", background: `linear-gradient(135deg, ${lp.gradFrom}, ${lp.gradTo})`, color: "#fff", cursor: "pointer", fontFamily: "inherit", fontWeight: 700, boxShadow: `0 6px 24px ${lp.accent}30` }}>Create Free Account</button>
+                <button className="fos-cta-secondary" onClick={() => setDemoModal(true)} style={{ fontSize: 13, padding: "12px 24px", borderRadius: 10, border: `1px solid ${lp.border}`, background: lpMode === "dark" ? "rgba(255,255,255,0.04)" : "rgba(0,0,0,0.03)", color: lp.textSub, cursor: "pointer", fontFamily: "inherit", fontWeight: 600 }}>Schedule a Call</button>
               </div>
             </div>
           </div>
+        </div>
+      </div>
+
+      {/* Section Connector — data flow pulse */}
+      <div style={{ display: "flex", justifyContent: "center", padding: "4px 0" }}>
+        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 6 }}>
+          <div style={{ width: 8, height: 8, borderRadius: "50%", background: `${lp.purple}25`, border: `2px solid ${lp.purple}40`, animation: "fosFlowPulse 2s ease-in-out infinite" }} />
+          <div style={{ width: 1.5, height: 32, background: `linear-gradient(180deg, ${lp.purple}25, ${lp.accent}15, transparent)` }} />
+          <div style={{ width: 8, height: 8, borderRadius: "50%", background: `${lp.accent}25`, border: `2px solid ${lp.accent}40`, animation: "fosFlowPulse 2s ease-in-out 1s infinite" }} />
         </div>
       </div>
 
@@ -8439,7 +8487,91 @@ const LandingPage = ({ onLogin }) => {
           @keyframes fosScrollLeft{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
           @keyframes fosScrollRight{0%{transform:translateX(-50%)}100%{transform:translateX(0)}}
           .fos-scroll-row1:hover,.fos-scroll-row2:hover,.fos-scroll-row3:hover{animation-play-state:paused}
+          @keyframes fosFlowDot{0%{transform:translateX(-100%);opacity:0}15%{opacity:1}85%{opacity:1}100%{transform:translateX(200%);opacity:0}}
+          @keyframes fosFlowPulse{0%,100%{opacity:0.4;transform:scale(1)}50%{opacity:1;transform:scale(1.15)}}
+          @keyframes fosOrbFloat{0%{transform:translate(0,0) scale(1)}33%{transform:translate(8px,-12px) scale(1.1)}66%{transform:translate(-6px,8px) scale(0.95)}100%{transform:translate(0,0) scale(1)}}
+          @keyframes fosDataStream{0%{stroke-dashoffset:20}100%{stroke-dashoffset:0}}
+          @keyframes fosNodePing{0%{box-shadow:0 0 0 0 rgba(96,165,250,0.4)}70%{box-shadow:0 0 0 10px rgba(96,165,250,0)}100%{box-shadow:0 0 0 0 rgba(96,165,250,0)}}
+          @keyframes fosBeamSweep{0%{transform:translateX(-100%)}100%{transform:translateX(200%)}}
+          .fos-flow-dot{animation:fosFlowDot 3s ease-in-out infinite}
+          .fos-node-ping{animation:fosNodePing 2s ease-in-out infinite}
         `}</style>
+
+        {/* ═══ Data Pipeline Visualization — animated flow from integrations to FinanceOS ═══ */}
+        {(() => { const [pipeRef, pipeVis] = useScrollReveal(0.15); return (
+        <div ref={pipeRef} style={{ padding: "32px 0 16px", maxWidth: 800, margin: "0 auto", position: "relative", opacity: pipeVis ? 1 : 0, transform: pipeVis ? "translateY(0)" : "translateY(16px)", transition: "all 0.7s cubic-bezier(0.22,1,0.36,1)" }}>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 0, position: "relative" }}>
+            {/* Left — Data Sources */}
+            <div style={{ display: "flex", flexDirection: "column", gap: 8, alignItems: "flex-end" }}>
+              {[
+                { label: "ERP · CRM", color: lp.accent, delay: "0s" },
+                { label: "HRIS · Payroll", color: lp.green, delay: "0.8s" },
+                { label: "Billing · Banking", color: lp.purple, delay: "1.6s" },
+              ].map((src, i) => (
+                <div key={src.label} style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                  <span style={{ fontSize: 9, fontWeight: 700, color: src.color, textTransform: "uppercase", letterSpacing: "0.06em", opacity: pipeVis ? 1 : 0, animation: pipeVis ? `fosStaggerLeft 0.4s ease-out ${0.2 + i * 0.1}s both` : "none" }}>{src.label}</span>
+                  <div style={{ width: 10, height: 10, borderRadius: "50%", background: `${src.color}30`, border: `2px solid ${src.color}60`, animation: pipeVis ? `fosFlowPulse 2s ease-in-out ${src.delay} infinite` : "none" }} />
+                </div>
+              ))}
+            </div>
+
+            {/* Left Pipeline Lines */}
+            <div style={{ width: 60, position: "relative", height: 80 }}>
+              <svg width="60" height="80" viewBox="0 0 60 80" style={{ position: "absolute", inset: 0 }}>
+                <path d="M0,12 Q30,12 55,40" stroke={`${lp.accent}30`} strokeWidth="1.5" fill="none" strokeDasharray="4 3" />
+                <path d="M0,40 L55,40" stroke={`${lp.green}30`} strokeWidth="1.5" fill="none" strokeDasharray="4 3" />
+                <path d="M0,68 Q30,68 55,40" stroke={`${lp.purple}30`} strokeWidth="1.5" fill="none" strokeDasharray="4 3" />
+              </svg>
+              {/* Animated flowing dots */}
+              {pipeVis && [lp.accent, lp.green, lp.purple].map((c, i) => (
+                <div key={i} style={{ position: "absolute", top: i === 0 ? 8 : i === 1 ? 36 : 64, left: 0, width: 6, height: 6, borderRadius: "50%", background: c, boxShadow: `0 0 8px ${c}60`, animation: `fosFlowDot 2.5s ease-in-out ${i * 0.6}s infinite` }} />
+              ))}
+            </div>
+
+            {/* Center — FinanceOS Hub */}
+            <div className="fos-node-ping" style={{ width: 72, height: 72, borderRadius: 20, background: `linear-gradient(135deg, ${lp.accent}15, ${lp.purple}10)`, border: `2px solid ${lp.accent}30`, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", position: "relative", zIndex: 3 }}>
+              <div style={{ width: 32, height: 32, borderRadius: 10, background: `linear-gradient(135deg, ${lp.accent}, ${lp.purple})`, display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 4 }}>
+                <span style={{ fontSize: 16, fontWeight: 900, color: "#fff" }}>F</span>
+              </div>
+              <span style={{ fontSize: 7, fontWeight: 800, color: lp.accent, letterSpacing: "0.04em" }}>ENGINE</span>
+              {/* Orbiting particles */}
+              {pipeVis && [0, 120, 240].map((deg, i) => (
+                <div key={i} style={{ position: "absolute", width: 5, height: 5, borderRadius: "50%", background: [lp.accent, lp.green, lp.purple][i], boxShadow: `0 0 6px ${[lp.accent, lp.green, lp.purple][i]}80`, animation: `fosOrbFloat ${3 + i * 0.5}s ease-in-out ${i * 0.4}s infinite`, top: i === 0 ? -6 : i === 1 ? "50%" : "auto", bottom: i === 2 ? -6 : "auto", left: i === 1 ? -6 : i === 0 ? "50%" : "auto", right: i === 2 ? "50%" : "auto" }} />
+              ))}
+            </div>
+
+            {/* Right Pipeline Lines */}
+            <div style={{ width: 60, position: "relative", height: 80 }}>
+              <svg width="60" height="80" viewBox="0 0 60 80" style={{ position: "absolute", inset: 0 }}>
+                <path d="M5,40 Q30,12 60,12" stroke={`${lp.green}30`} strokeWidth="1.5" fill="none" strokeDasharray="4 3" />
+                <path d="M5,40 L60,40" stroke={`${lp.accent}30`} strokeWidth="1.5" fill="none" strokeDasharray="4 3" />
+                <path d="M5,40 Q30,68 60,68" stroke={`${lp.purple}30`} strokeWidth="1.5" fill="none" strokeDasharray="4 3" />
+              </svg>
+              {pipeVis && [lp.green, lp.accent, lp.purple].map((c, i) => (
+                <div key={i} style={{ position: "absolute", top: i === 0 ? 8 : i === 1 ? 36 : 64, left: 0, width: 6, height: 6, borderRadius: "50%", background: c, boxShadow: `0 0 8px ${c}60`, animation: `fosFlowDot 2.5s ease-in-out ${1.2 + i * 0.6}s infinite` }} />
+              ))}
+            </div>
+
+            {/* Right — Outputs */}
+            <div style={{ display: "flex", flexDirection: "column", gap: 8, alignItems: "flex-start" }}>
+              {[
+                { label: "Forecasts · Plans", color: lp.green, delay: "0.4s" },
+                { label: "Alerts · Reports", color: lp.accent, delay: "1.2s" },
+                { label: "Scenarios · Models", color: lp.purple, delay: "2s" },
+              ].map((out, i) => (
+                <div key={out.label} style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                  <div style={{ width: 10, height: 10, borderRadius: "50%", background: `${out.color}30`, border: `2px solid ${out.color}60`, animation: pipeVis ? `fosFlowPulse 2s ease-in-out ${out.delay} infinite` : "none" }} />
+                  <span style={{ fontSize: 9, fontWeight: 700, color: out.color, textTransform: "uppercase", letterSpacing: "0.06em", opacity: pipeVis ? 1 : 0, animation: pipeVis ? `fosFadeSlideUp 0.4s ease-out ${0.3 + i * 0.1}s both` : "none" }}>{out.label}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+          {/* Pipeline label */}
+          <div style={{ textAlign: "center", marginTop: 16 }}>
+            <span style={{ fontSize: 9, fontWeight: 700, color: lp.textFaint, textTransform: "uppercase", letterSpacing: "0.1em" }}>Real-time bi-directional sync · {'<'} 5 minute latency</span>
+          </div>
+        </div>
+        ); })()}
 
         {/* Trust badges + ratings */}
         <div style={{ display: "flex", justifyContent: "center", gap: 10, flexWrap: "wrap", alignItems: "center", marginTop: 8 }}>
@@ -8459,6 +8591,14 @@ const LandingPage = ({ onLogin }) => {
           <div style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 10, fontWeight: 700, color: lp.gold, padding: "8px 16px", borderRadius: 10, background: `${lp.gold}08`, border: `1px solid ${lp.gold}18` }}>
             <Star size={12} fill={lp.gold} color={lp.gold} /> 4.9 Rating
           </div>
+        </div>
+      </div>
+
+      {/* Section Connector — integration to social proof */}
+      <div style={{ display: "flex", justifyContent: "center", padding: "4px 0" }}>
+        <div style={{ position: "relative", width: 2, height: 40 }}>
+          <div style={{ position: "absolute", inset: 0, background: `linear-gradient(180deg, transparent, ${lp.green}18, transparent)`, borderRadius: 1 }} />
+          <div style={{ position: "absolute", width: 2, height: 10, background: `linear-gradient(180deg, ${lp.green}60, ${lp.green}00)`, borderRadius: 1, animation: "fosFlowDown 2.5s ease-in-out 0.5s infinite" }} />
         </div>
       </div>
 
@@ -9114,7 +9254,7 @@ const LandingPage = ({ onLogin }) => {
           ))}
         </div>
         <div style={{ textAlign: "center", marginTop: 32 }}>
-          <button onClick={enterDemo} style={{ fontSize: 15, padding: "14px 32px", borderRadius: 10, border: "none", background: `linear-gradient(135deg, ${lp.gradFrom}, ${lp.gradTo})`, color: "#fff", cursor: "pointer", fontFamily: "inherit", fontWeight: 700, boxShadow: `0 8px 30px ${lp.accent}25` }}>Subscribe — 30-Day MBG</button>
+          <button className="fos-cta-primary" onClick={enterDemo} style={{ fontSize: 15, padding: "14px 32px", borderRadius: 10, border: "none", background: `linear-gradient(135deg, ${lp.gradFrom}, ${lp.gradTo})`, color: "#fff", cursor: "pointer", fontFamily: "inherit", fontWeight: 700, boxShadow: `0 8px 30px ${lp.accent}25` }}>Subscribe — 30-Day MBG</button>
           <div style={{ marginTop: 10, fontSize: 12, color: lp.textFaint }}>30-day money-back guarantee · Cancel anytime</div>
         </div>
       </div>
@@ -9443,23 +9583,19 @@ const LandingPage = ({ onLogin }) => {
                 </div>
               )}
               {p.enterprise ? (
-                <button onClick={() => { fetch("/api/notify", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ type: "sales_inquiry", inquiry_type: "Enterprise Pricing", source: "pricing_card_enterprise" }) }).catch(() => {}); window.open("mailto:sales@finance-os.app?subject=Enterprise%20Pricing%20Inquiry", "_blank"); }} style={{
+                <button className="fos-cta-secondary" onClick={() => { fetch("/api/notify", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ type: "sales_inquiry", inquiry_type: "Enterprise Pricing", source: "pricing_card_enterprise" }) }).catch(() => {}); window.open("mailto:sales@finance-os.app?subject=Enterprise%20Pricing%20Inquiry", "_blank"); }} style={{
                   width: "100%", fontSize: 12, padding: "12px 0", borderRadius: 10, border: `1px solid ${lp.border}`, cursor: "pointer", fontFamily: "inherit", fontWeight: 700,
                   background: "transparent", color: lp.textSub, transition: "all 0.15s",
                 }}
-                onMouseEnter={e => { e.currentTarget.style.borderColor = lp.textFaint; e.currentTarget.style.color = lp.text; }}
-                onMouseLeave={e => { e.currentTarget.style.borderColor = lp.border; e.currentTarget.style.color = lp.textSub; }}
                 >Contact Sales</button>
               ) : (
               <div style={{ display: "flex", gap: 8 }}>
-                <button onClick={enterDemo} style={{
+                <button className="fos-cta-secondary" onClick={enterDemo} style={{
                   flex: 1, fontSize: 12, padding: "12px 0", borderRadius: 10, border: `1px solid ${lp.border}`, cursor: "pointer", fontFamily: "inherit", fontWeight: 600,
                   background: "transparent", color: lp.textDim, transition: "all 0.15s",
                 }}
-                onMouseEnter={e => { e.currentTarget.style.borderColor = lp.textFaint; e.currentTarget.style.color = lp.text; }}
-                onMouseLeave={e => { e.currentTarget.style.borderColor = lp.border; e.currentTarget.style.color = lp.textDim; }}
                 >Try Demo</button>
-                <button onClick={async () => {
+                <button className="fos-cta-primary" onClick={async () => {
                   try { await supabase.from("waitlist").upsert({ email: "subscriber", interest_type: p.name.toLowerCase(), source: "landing_pricing" }, { onConflict: "email" }); } catch {}
                   fetch("/api/notify", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ type: "waitlist", interest_type: p.name.toLowerCase(), source: "landing_pricing", plan_interest: p.name }) }).catch(() => {});
                   enterDemo();
@@ -9552,8 +9688,8 @@ const LandingPage = ({ onLogin }) => {
           ))}
         </div>
         <div style={{ textAlign: "center", marginTop: 32, display: "flex", gap: 12, justifyContent: "center" }}>
-          <button onClick={() => setDemoModal(true)} style={{ fontSize: 14, padding: "14px 28px", borderRadius: 10, border: "none", background: `linear-gradient(135deg, ${lp.gradFrom}, ${lp.gradTo})`, color: "#fff", cursor: "pointer", fontFamily: "inherit", fontWeight: 700, boxShadow: `0 6px 24px ${lp.accent}25` }}>Schedule a Demo Call</button>
-          <button onClick={() => { fetch("/api/notify", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ type: "sales_inquiry", inquiry_type: "Enterprise", source: "why_teams_switch_cta" }) }).catch(() => {}); window.open("mailto:sales@finance-os.app?subject=Enterprise%20Inquiry", "_blank"); }} style={{ fontSize: 14, padding: "14px 28px", borderRadius: 10, border: `1px solid ${lp.border}`, background: "transparent", color: lp.textSub, cursor: "pointer", fontFamily: "inherit", fontWeight: 600 }}>Talk to Sales</button>
+          <button className="fos-cta-primary" onClick={() => setDemoModal(true)} style={{ fontSize: 14, padding: "14px 28px", borderRadius: 10, border: "none", background: `linear-gradient(135deg, ${lp.gradFrom}, ${lp.gradTo})`, color: "#fff", cursor: "pointer", fontFamily: "inherit", fontWeight: 700, boxShadow: `0 6px 24px ${lp.accent}25` }}>Schedule a Demo Call</button>
+          <button className="fos-cta-secondary" onClick={() => { fetch("/api/notify", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ type: "sales_inquiry", inquiry_type: "Enterprise", source: "why_teams_switch_cta" }) }).catch(() => {}); window.open("mailto:sales@finance-os.app?subject=Enterprise%20Inquiry", "_blank"); }} style={{ fontSize: 14, padding: "14px 28px", borderRadius: 10, border: `1px solid ${lp.border}`, background: "transparent", color: lp.textSub, cursor: "pointer", fontFamily: "inherit", fontWeight: 600 }}>Talk to Sales</button>
         </div>
       </div>
       ); })()}
@@ -9710,7 +9846,7 @@ const LandingPage = ({ onLogin }) => {
             <span style={{ fontSize: 36, fontWeight: 800, fontFamily: "'JetBrains Mono', monospace", color: lp.text }}>$2,799</span>
             <span style={{ fontSize: 14, color: lp.textDim }}>/mo · Save 15%</span>
           </div>
-          <button onClick={enterDemo} style={{ fontSize: 14, padding: "12px 28px", borderRadius: 10, border: "none", background: `linear-gradient(135deg, ${lp.gradFrom}, ${lp.gradTo})`, color: "#fff", cursor: "pointer", fontFamily: "inherit", fontWeight: 700, boxShadow: `0 6px 24px ${lp.accent}25` }}>Subscribe — Full Suite</button>
+          <button className="fos-cta-primary" onClick={enterDemo} style={{ fontSize: 14, padding: "12px 28px", borderRadius: 10, border: "none", background: `linear-gradient(135deg, ${lp.gradFrom}, ${lp.gradTo})`, color: "#fff", cursor: "pointer", fontFamily: "inherit", fontWeight: 700, boxShadow: `0 6px 24px ${lp.accent}25` }}>Subscribe — Full Suite</button>
         </div>
       </div>
       ); })()}
@@ -9736,13 +9872,9 @@ const LandingPage = ({ onLogin }) => {
               <h2 style={{ fontSize: isMobile ? 28 : 38, fontWeight: 800, letterSpacing: "-0.03em", marginBottom: 14, color: lpMode === "dark" ? "#fff" : lp.text, lineHeight: 1.15 }}>Building the operating<br />system for modern finance</h2>
               <p style={{ fontSize: 15, color: lpMode === "dark" ? "rgba(255,255,255,0.7)" : lp.textDim, maxWidth: 420, lineHeight: 1.75, marginBottom: 28 }}>FinanceOS is raising its seed round. Term sheet, traction data, and financial model are available under NDA for qualified investors.</p>
               <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginBottom: 20 }}>
-                <button onClick={() => { fetch("/api/notify", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ type: "investor_inquiry", source: "investor_deck_cta" }) }).catch(() => {}); window.open("mailto:investors@finance-os.app?subject=FinanceOS%20—%20Investor%20Deck%20Request&body=Name:%0AFirm:%0ACheck%20size%20range:%0A", "_blank"); }} style={{ fontSize: 14, padding: "14px 28px", borderRadius: 12, border: "none", background: `linear-gradient(135deg, ${lp.gradFrom}, ${lp.gradTo})`, color: "#fff", cursor: "pointer", fontFamily: "inherit", fontWeight: 700, boxShadow: `0 8px 32px ${lp.accent}30`, transition: "all 0.2s" }}
-                  onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-1px)"; e.currentTarget.style.boxShadow = `0 12px 40px ${lp.accent}40`; }}
-                  onMouseLeave={e => { e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.boxShadow = `0 8px 32px ${lp.accent}30`; }}
+                <button className="fos-cta-primary" onClick={() => { fetch("/api/notify", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ type: "investor_inquiry", source: "investor_deck_cta" }) }).catch(() => {}); window.open("mailto:investors@finance-os.app?subject=FinanceOS%20—%20Investor%20Deck%20Request&body=Name:%0AFirm:%0ACheck%20size%20range:%0A", "_blank"); }} style={{ fontSize: 14, padding: "14px 28px", borderRadius: 12, border: "none", background: `linear-gradient(135deg, ${lp.gradFrom}, ${lp.gradTo})`, color: "#fff", cursor: "pointer", fontFamily: "inherit", fontWeight: 700, boxShadow: `0 8px 32px ${lp.accent}30`, transition: "all 0.2s" }}
                 >Request Investor Deck</button>
-                <button onClick={() => { fetch("/api/notify", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ type: "investor_inquiry", inquiry_type: "Meeting Request", source: "investor_call_cta" }) }).catch(() => {}); window.open("mailto:investors@finance-os.app?subject=FinanceOS%20—%20Meeting%20Request", "_blank"); }} style={{ fontSize: 14, padding: "14px 28px", borderRadius: 12, border: `1px solid rgba(${lpMode === "dark" ? "255,255,255" : "0,0,0"},0.15)`, background: `rgba(${lpMode === "dark" ? "255,255,255" : "0,0,0"},0.06)`, backdropFilter: "blur(8px)", color: lpMode === "dark" ? "#fff" : lp.textSub, cursor: "pointer", fontFamily: "inherit", fontWeight: 600, transition: "all 0.2s" }}
-                  onMouseEnter={e => { e.currentTarget.style.background = `rgba(${lpMode === "dark" ? "255,255,255" : "0,0,0"},0.12)`; }}
-                  onMouseLeave={e => { e.currentTarget.style.background = `rgba(${lpMode === "dark" ? "255,255,255" : "0,0,0"},0.06)`; }}
+                <button className="fos-cta-secondary" onClick={() => { fetch("/api/notify", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ type: "investor_inquiry", inquiry_type: "Meeting Request", source: "investor_call_cta" }) }).catch(() => {}); window.open("mailto:investors@finance-os.app?subject=FinanceOS%20—%20Meeting%20Request", "_blank"); }} style={{ fontSize: 14, padding: "14px 28px", borderRadius: 12, border: `1px solid rgba(${lpMode === "dark" ? "255,255,255" : "0,0,0"},0.15)`, background: `rgba(${lpMode === "dark" ? "255,255,255" : "0,0,0"},0.06)`, backdropFilter: "blur(8px)", color: lpMode === "dark" ? "#fff" : lp.textSub, cursor: "pointer", fontFamily: "inherit", fontWeight: 600, transition: "all 0.2s" }}
                 >Schedule a Call</button>
               </div>
               <div style={{ display: "flex", gap: 20, fontSize: 11, color: lpMode === "dark" ? "rgba(255,255,255,0.45)" : lp.textFaint }}>
@@ -9908,9 +10040,8 @@ const LandingPage = ({ onLogin }) => {
             ].map((f, fi) => (
               <div key={f.key} style={{ marginBottom: 12, animation: `fosFadeSlideUp 0.4s ease-out ${0.05 + fi * 0.06}s both` }}>
                 <label style={{ fontSize: 10, fontWeight: 700, color: "#8b92a5", textTransform: "uppercase", letterSpacing: "0.06em", display: "block", marginBottom: 4 }}>{f.label}{f.required && <span style={{ color: "#ef4444" }}> *</span>}</label>
-                <input value={demoForm[f.key]} onChange={e => setDemoForm(prev => ({ ...prev, [f.key]: e.target.value }))} type={f.type} placeholder={f.placeholder}
+                <input className="fos-input-glow" value={demoForm[f.key]} onChange={e => setDemoForm(prev => ({ ...prev, [f.key]: e.target.value }))} type={f.type} placeholder={f.placeholder}
                   style={{ width: "100%", fontSize: 13, padding: "10px 14px", borderRadius: 8, border: "1px solid #1e2230", background: "#0b0c10", color: "#f0f2f5", fontFamily: "inherit", outline: "none" }}
-                  onFocus={e => e.target.style.borderColor = "#60a5fa"} onBlur={e => e.target.style.borderColor = "#1e2230"}
                 />
               </div>
             ))}
