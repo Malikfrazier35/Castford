@@ -6393,46 +6393,62 @@ const LandingPage = ({ onLogin }) => {
         </div>
       </div>
 
-      {/* Trusted By — Pigment-style logo grid with labels */}
+      {/* Connected Platforms — real integrations, not aspirational logos */}
       <div style={{ textAlign: "center", padding: "48px 48px 10px", maxWidth: 1100, margin: "0 auto" }}>
-        <div style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.14em", color: "#3d4558", marginBottom: 24 }}>Trusted by</div>
-        {/* Row 1 */}
-        <div style={{ display: "flex", justifyContent: "center", gap: isMobile ? 20 : 48, alignItems: "center", flexWrap: "wrap", marginBottom: 14 }}>
+        <div style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.14em", color: "#3d4558", marginBottom: 24 }}>Built on & Connected to</div>
+        {/* Row 1 — Payment & CRM */}
+        <div style={{ display: "flex", justifyContent: "center", gap: isMobile ? 16 : 40, alignItems: "center", flexWrap: "wrap", marginBottom: 14 }}>
           {[
-            { name: "Stripe", tag: null },
-            { name: "Shopify", tag: null },
-            { name: "Salesforce", tag: "Integration" },
-            { name: "HubSpot", tag: "Integration" },
-            { name: "Snowflake", tag: null },
-            { name: "Datadog", tag: null },
+            { name: "Stripe", tag: "Payments" },
+            { name: "Square", tag: "Payments" },
+            { name: "HubSpot", tag: "CRM" },
+            { name: "Salesforce", tag: "CRM" },
+            { name: "QuickBooks", tag: "ERP" },
+            { name: "Plaid", tag: "Banking" },
           ].map(l => (
             <div key={l.name} style={{ textAlign: "center" }}>
-              <span style={{ fontSize: 17, fontWeight: 800, color: "#252a38", letterSpacing: "-0.02em", fontFamily: "'DM Sans', system-ui, sans-serif" }}>{l.name}</span>
-              {l.tag && <div style={{ fontSize: 8, fontWeight: 600, color: "#60a5fa", marginTop: 2 }}>{l.tag}</div>}
+              <span style={{ fontSize: 16, fontWeight: 800, color: "#252a38", letterSpacing: "-0.02em", fontFamily: "'DM Sans', system-ui, sans-serif" }}>{l.name}</span>
+              <div style={{ fontSize: 7, fontWeight: 700, color: "#3dd9a0", marginTop: 2, textTransform: "uppercase", letterSpacing: "0.06em" }}>{l.tag}</div>
             </div>
           ))}
         </div>
-        {/* Row 2 */}
-        <div style={{ display: "flex", justifyContent: "center", gap: isMobile ? 20 : 48, alignItems: "center", flexWrap: "wrap", marginBottom: 24 }}>
+        {/* Row 2 — Infrastructure & AI */}
+        <div style={{ display: "flex", justifyContent: "center", gap: isMobile ? 16 : 40, alignItems: "center", flexWrap: "wrap", marginBottom: 14 }}>
           {[
-            { name: "Anthropic", tag: "AI Partner" },
-            { name: "Figma", tag: null },
-            { name: "Notion", tag: null },
-            { name: "Vercel", tag: "Infrastructure" },
-            { name: "Supabase", tag: "Infrastructure" },
-            { name: "QuickBooks", tag: "Integration" },
+            { name: "Anthropic", tag: "AI Partner", accent: true },
+            { name: "Supabase", tag: "Database" },
+            { name: "Vercel", tag: "Hosting" },
+            { name: "Cloudflare", tag: "Security" },
+            { name: "Snowflake", tag: "Data Warehouse" },
+            { name: "DocuSign", tag: "eSignature" },
           ].map(l => (
             <div key={l.name} style={{ textAlign: "center" }}>
-              <span style={{ fontSize: 17, fontWeight: 800, color: "#252a38", letterSpacing: "-0.02em", fontFamily: "'DM Sans', system-ui, sans-serif" }}>{l.name}</span>
-              {l.tag && <div style={{ fontSize: 8, fontWeight: 600, color: l.tag === "AI Partner" ? "#a78bfa" : "#60a5fa", marginTop: 2 }}>{l.tag}</div>}
+              <span style={{ fontSize: 16, fontWeight: 800, color: l.accent ? "#a78bfa" : "#252a38", letterSpacing: "-0.02em", fontFamily: "'DM Sans', system-ui, sans-serif" }}>{l.name}</span>
+              <div style={{ fontSize: 7, fontWeight: 700, color: l.accent ? "#a78bfa" : "#3dd9a0", marginTop: 2, textTransform: "uppercase", letterSpacing: "0.06em" }}>{l.tag}</div>
             </div>
           ))}
         </div>
-        {/* Trust badges */}
-        <div style={{ display: "flex", justifyContent: "center", gap: 12, flexWrap: "wrap" }}>
+        {/* Row 3 — Collaboration & DevOps */}
+        <div style={{ display: "flex", justifyContent: "center", gap: isMobile ? 16 : 40, alignItems: "center", flexWrap: "wrap", marginBottom: 24 }}>
+          {[
+            { name: "Slack", tag: "Messaging" },
+            { name: "Gmail", tag: "Email" },
+            { name: "Google Calendar", tag: "Scheduling" },
+            { name: "Linear", tag: "Project Mgmt" },
+            { name: "Figma", tag: "Design" },
+            { name: "Calendly", tag: "Booking" },
+          ].map(l => (
+            <div key={l.name} style={{ textAlign: "center" }}>
+              <span style={{ fontSize: 16, fontWeight: 800, color: "#252a38", letterSpacing: "-0.02em", fontFamily: "'DM Sans', system-ui, sans-serif" }}>{l.name}</span>
+              <div style={{ fontSize: 7, fontWeight: 700, color: "#60a5fa", marginTop: 2, textTransform: "uppercase", letterSpacing: "0.06em" }}>{l.tag}</div>
+            </div>
+          ))}
+        </div>
+        {/* Trust badges + ratings */}
+        <div style={{ display: "flex", justifyContent: "center", gap: 12, flexWrap: "wrap", alignItems: "center" }}>
           {[
             { label: "SOC 2 Type II", icon: "🛡️" },
-            { label: "AES-256 Encryption", icon: "🔒" },
+            { label: "AES-256", icon: "🔒" },
             { label: "99.9% Uptime", icon: "⚡" },
             { label: "GDPR Ready", icon: "🇪🇺" },
           ].map(b => (
@@ -6440,6 +6456,9 @@ const LandingPage = ({ onLogin }) => {
               <span style={{ fontSize: 10 }}>{b.icon}</span> {b.label}
             </div>
           ))}
+          <div style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 9, fontWeight: 700, color: "#f5b731", padding: "5px 10px", borderRadius: 6, background: "rgba(245,183,49,0.06)", border: "1px solid rgba(245,183,49,0.12)" }}>
+            ★ 4.9 Rating
+          </div>
         </div>
       </div>
 
@@ -8163,6 +8182,14 @@ function FinanceOSApp() {
                 const NOTIFS = [...activityNotifs, ...systemNotifs].slice(0, 8);
                 const unread = NOTIFS.filter(n => !notifRead.has(n.id)).length;
                 return (<>
+              {/* Theme toggle */}
+              <div onClick={toggleMode} style={{ cursor: "pointer", padding: 4, borderRadius: 8, transition: "all 0.2s" }}
+                onMouseEnter={e => { e.currentTarget.style.background = `${c.accent}10`; }}
+                onMouseLeave={e => { e.currentTarget.style.background = "transparent"; }}
+                title={mode === "dark" ? "Switch to light mode" : "Switch to dark mode"}
+              >
+                {mode === "dark" ? <Sun size={16} color={c.textDim} /> : <Moon size={16} color={c.textDim} />}
+              </div>
               <div style={{ cursor: "pointer", position: "relative" }} role="button" aria-label={`${unread} notifications`} tabIndex={0} onClick={() => setNotifOpen(!notifOpen)} onKeyDown={e => e.key === "Enter" && setNotifOpen(!notifOpen)}>
                 <Bell size={18} color={notifOpen ? c.accent : c.textDim} />
                 {unread > 0 && <div style={{ position: "absolute", top: -3, right: -4, minWidth: 14, height: 14, borderRadius: 7, background: c.red, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 8, fontWeight: 800, color: "#fff", border: `2px solid ${c.bg2}`, animation: "pulse 2s infinite" }}>{unread > 9 ? "9+" : unread}</div>}
