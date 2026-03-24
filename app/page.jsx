@@ -141,7 +141,7 @@ class ChartPanel extends Component {
     if (this.state.hasError) {
       return (
         <div style={{
-          background: this.props.glass || "rgba(255,255,255,0.02)", borderRadius: 12, padding: "28px 24px",
+          background: this.props.glass || "rgba(255,255,255,0.02)", borderRadius: 14, padding: "28px 24px",
           border: `1px dashed ${this.props.borderColor || "#1e2230"}`, minHeight: 200,
           display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", textAlign: "center",
         }}>
@@ -725,7 +725,7 @@ const LoadingSkeleton = memo(({ c }) => (
     {/* KPI grid skeleton */}
     <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 16, marginBottom: 24 }}>
       {[0,1,2,3,4,5].map(i => (
-        <div key={i} style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 12, padding: "22px 24px" }}>
+        <div key={i} style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, padding: "22px 24px" }}>
           <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 14 }}>
             <Skeleton c={c} width={80} height={10} />
             <Skeleton c={c} width={32} height={32} radius={10} />
@@ -2058,7 +2058,7 @@ const DashboardView = ({ c, onNav, toast, onDrawer, userName, period, closeTasks
         const prog = ct.filter(t => t.status === "progress").length;
         const pct = ct.length ? Math.round((done / ct.length) * 100) : 0;
         return (
-        <div onClick={() => onNav("close")} style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 12, padding: "20px 22px", boxShadow: "0 1px 3px rgba(0,0,0,0.04)", cursor: "pointer", transition: "all 0.2s" }}
+        <div onClick={() => onNav("close")} style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, padding: "20px 22px", boxShadow: "0 1px 3px rgba(0,0,0,0.04)", cursor: "pointer", transition: "all 0.2s" }}
           onMouseEnter={e => { e.currentTarget.style.borderColor = `${c.amber}40`; }}
           onMouseLeave={e => { e.currentTarget.style.borderColor = c.glassBorder; }}
         >
@@ -2082,7 +2082,7 @@ const DashboardView = ({ c, onNav, toast, onDrawer, userName, period, closeTasks
         );
       })()}
       {/* Recent Activity — live from app state */}
-      <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 12, padding: "20px 22px", boxShadow: "0 1px 3px rgba(0,0,0,0.04)" }}>
+      <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, padding: "20px 22px", boxShadow: "0 1px 3px rgba(0,0,0,0.04)" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
           <Activity size={15} color={c.purple} />
           <span style={{ fontSize: 12, fontWeight: 700, color: c.text }}>Recent Activity</span>
@@ -2172,7 +2172,7 @@ const DashboardView = ({ c, onNav, toast, onDrawer, userName, period, closeTasks
     {/* Cross-sell banner */}
     <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginTop: 24 }}>
       {/* Partner Program */}
-      <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 12, padding: "22px 24px", boxShadow: "0 1px 3px rgba(0,0,0,0.04)", display: "flex", alignItems: "center", gap: 16, transition: "all 0.2s", cursor: "pointer" }}
+      <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, padding: "22px 24px", boxShadow: "0 1px 3px rgba(0,0,0,0.04)", display: "flex", alignItems: "center", gap: 16, transition: "all 0.2s", cursor: "pointer" }}
         onClick={() => { try { navigator.clipboard.writeText("https://finance-os.app?ref=FOS-DEMO"); } catch {} toast("Referral link copied — earn 20% recurring commission", "success"); }}
         onMouseEnter={e => { e.currentTarget.style.borderColor = `${c.green}40`; }}
         onMouseLeave={e => { e.currentTarget.style.borderColor = c.border; }}
@@ -2188,7 +2188,7 @@ const DashboardView = ({ c, onNav, toast, onDrawer, userName, period, closeTasks
         <div style={{ fontSize: 10, padding: "7px 14px", borderRadius: 8, border: `1px solid ${c.green}20`, background: c.greenDim, color: c.green, fontWeight: 700, whiteSpace: "nowrap", fontFamily: "inherit" }}>Copy Link</div>
       </div>
       {/* Ecosystem */}
-      <div style={{ background: `linear-gradient(135deg, ${c.accent}06, ${c.purple}04)`, border: `1px solid ${c.accent}15`, borderRadius: 12, padding: "22px 24px", display: "flex", alignItems: "center", gap: 16, transition: "all 0.2s", cursor: "pointer" }}
+      <div style={{ background: `linear-gradient(135deg, ${c.accent}06, ${c.purple}04)`, border: `1px solid ${c.accent}15`, borderRadius: 14, padding: "22px 24px", display: "flex", alignItems: "center", gap: 16, transition: "all 0.2s", cursor: "pointer" }}
         onClick={() => window.open("https://vaultline.vercel.app", "_blank")}
         onMouseEnter={e => { e.currentTarget.style.borderColor = `${c.accent}40`; }}
         onMouseLeave={e => { e.currentTarget.style.borderColor = `${c.accent}15`; }}
@@ -2990,7 +2990,7 @@ const ConsolidationView = ({ c, onNav, toast, onDrawer }) => {
           const displayStatus = closing ? "Closing..." : st;
           const statusColor = statusColors[displayStatus] || c.textDim;
           return (
-            <div key={e.name} style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 12, padding: "22px 24px", boxShadow: "0 1px 3px rgba(0,0,0,0.04)", transition: "all 0.2s" }}
+            <div key={e.name} style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, padding: "22px 24px", boxShadow: "0 1px 3px rgba(0,0,0,0.04)", transition: "all 0.2s" }}
               onMouseEnter={e2 => { e2.currentTarget.style.borderColor = statusColor + "40"; }}
               onMouseLeave={e2 => { e2.currentTarget.style.borderColor = c.border; }}
             >
@@ -3335,7 +3335,7 @@ const CloseView = ({ c, toast, tasks, setTasks, logActivity }) => {
           const catPct = Math.round((catDone / catTasks.length) * 100);
           const catColor = { Accounting: c.accent, Consolidation: c.cyan, Compliance: c.purple, Reporting: c.green, Review: c.amber }[cat] || c.accent;
           return (
-            <div key={cat} style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 12, overflow: "hidden", boxShadow: "0 1px 3px rgba(0,0,0,0.04)", position: "relative" }}>
+            <div key={cat} style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, overflow: "hidden", boxShadow: "0 1px 3px rgba(0,0,0,0.04)", position: "relative" }}>
               {/* Category header */}
               <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "12px 18px", background: c.surfaceAlt, borderBottom: `1px solid ${c.borderSub}` }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
@@ -3687,7 +3687,7 @@ const IntegrationsView = ({ c, toast }) => {
       </div>
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: 16 }}>
         {filtered.map(co => (
-          <div key={co.name} style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 12, padding: "22px 20px", boxShadow: "0 1px 3px rgba(0,0,0,0.04)", transition: "all 0.15s ease" }}
+          <div key={co.name} style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, padding: "22px 20px", boxShadow: "0 1px 3px rgba(0,0,0,0.04)", transition: "all 0.15s ease" }}
             onMouseEnter={e => { e.currentTarget.style.borderColor = `${co.color}50`; }}
             onMouseLeave={e => { e.currentTarget.style.borderColor = c.border; e.currentTarget.style.boxShadow = c.cardGlow; }}
           >
@@ -4087,7 +4087,7 @@ const InvestorView = ({ c, toast, onDrawer }) => (
       Retention & Readiness
     </div>
     <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 24 }}>
-      <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 12, padding: "22px 24px", boxShadow: "0 1px 3px rgba(0,0,0,0.04)" }}>
+      <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, padding: "22px 24px", boxShadow: "0 1px 3px rgba(0,0,0,0.04)" }}>
         <div style={{ fontSize: 12, fontWeight: 800, color: c.text, marginBottom: 4 }}>Revenue Cohort Analysis</div>
         <div style={{ fontSize: 10, color: c.textDim, marginBottom: 12 }}>Net dollar retention by signup quarter</div>
         {/* Header row */}
@@ -4116,7 +4116,7 @@ const InvestorView = ({ c, toast, onDrawer }) => (
         ))}
       </div>
 
-      <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 12, padding: "22px 24px", boxShadow: "0 1px 3px rgba(0,0,0,0.04)" }}>
+      <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, padding: "22px 24px", boxShadow: "0 1px 3px rgba(0,0,0,0.04)" }}>
         <div style={{ fontSize: 12, fontWeight: 800, color: c.text, marginBottom: 4 }}>Competitive Positioning</div>
         <div style={{ fontSize: 10, color: c.textDim, marginBottom: 12 }}>vs SaaS median benchmarks</div>
         {/* Header */}
@@ -4145,7 +4145,7 @@ const InvestorView = ({ c, toast, onDrawer }) => (
     </div>
 
     {/* Fundraising Readiness */}
-    <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 12, padding: "22px 24px", boxShadow: "0 1px 3px rgba(0,0,0,0.04)" }}>
+    <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, padding: "22px 24px", boxShadow: "0 1px 3px rgba(0,0,0,0.04)" }}>
       <div style={{ fontSize: 12, fontWeight: 700, color: c.text, marginBottom: 14 }}>Series A Readiness Checklist</div>
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
         {[
@@ -4177,6 +4177,7 @@ const InvestorView = ({ c, toast, onDrawer }) => (
 // SUPER-ADMIN DASHBOARD
 // ══════════════════════════════════════════════════════════════
 const AdminView = ({ c, toast, onNav }) => {
+  const isMobile = useMediaQuery("(max-width: 768px)");
   const [tab, setTab] = useState("overview");
   const [inviteOpen, setInviteOpen] = useState(false);
   const [inviteEmail, setInviteEmail] = useState("");
@@ -4250,7 +4251,7 @@ const AdminView = ({ c, toast, onNav }) => {
         </div>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 14, marginBottom: 24 }}>
           {adminKpis.map(k => (
-            <div key={k.label} style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 12, padding: "20px 22px", boxShadow: "0 1px 3px rgba(0,0,0,0.04)", transition: "all 0.15s ease" }}
+            <div key={k.label} style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, padding: "20px 22px", boxShadow: "0 1px 3px rgba(0,0,0,0.04)", transition: "all 0.15s ease" }}
               onMouseEnter={e => { e.currentTarget.style.borderColor = `${k.color}30`; }}
               onMouseLeave={e => { e.currentTarget.style.borderColor = c.border; e.currentTarget.style.boxShadow = c.cardGlow; }}
             >
@@ -4273,7 +4274,7 @@ const AdminView = ({ c, toast, onNav }) => {
           Activity & Security
         </div>
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
-          <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 12, padding: "22px 24px", boxShadow: "0 1px 3px rgba(0,0,0,0.04)" }}>
+          <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, padding: "22px 24px", boxShadow: "0 1px 3px rgba(0,0,0,0.04)" }}>
             <div style={{ fontSize: 13, fontWeight: 800, color: c.text, marginBottom: 14, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
               <span>Activity Log</span>
               <span style={{ fontSize: 8, fontWeight: 800, padding: "3px 8px", borderRadius: 5, background: c.surfaceAlt, color: c.textFaint, letterSpacing: "0.04em" }}>{events.length} EVENTS</span>
@@ -4297,7 +4298,7 @@ const AdminView = ({ c, toast, onNav }) => {
             ))}
           </div>
           {/* Quick Admin Actions */}
-          <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 12, padding: "22px 24px", boxShadow: "0 1px 3px rgba(0,0,0,0.04)" }}>
+          <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, padding: "22px 24px", boxShadow: "0 1px 3px rgba(0,0,0,0.04)" }}>
             <div style={{ fontSize: 13, fontWeight: 800, color: c.text, marginBottom: 14 }}>Admin Actions</div>
             <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
               {[
@@ -4329,7 +4330,7 @@ const AdminView = ({ c, toast, onNav }) => {
       </>)}
 
       {tab === "users" && (
-        <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 12, overflow: "hidden", boxShadow: "0 1px 3px rgba(0,0,0,0.04)" }}>
+        <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, overflow: "hidden", boxShadow: "0 1px 3px rgba(0,0,0,0.04)" }}>
           <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12 }}>
             <thead>
               <tr style={{ borderBottom: `2px solid ${c.borderBright}` }}>
@@ -4385,7 +4386,7 @@ const AdminView = ({ c, toast, onNav }) => {
               </div>
             ))}
           </div>
-          <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 12, padding: "22px 24px", boxShadow: "0 1px 3px rgba(0,0,0,0.04)" }}>
+          <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, padding: "22px 24px", boxShadow: "0 1px 3px rgba(0,0,0,0.04)" }}>
             <div style={{ fontSize: 12, fontWeight: 700, color: c.text, marginBottom: 14 }}>Revenue by Plan</div>
             {[
               { plan: "Starter ($599/mo)", orgs: 32, mrr: "$19.2K", pct: 13 },
@@ -4411,7 +4412,7 @@ const AdminView = ({ c, toast, onNav }) => {
         <div>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
             {/* Service Status */}
-            <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 12, padding: "22px 24px", boxShadow: "0 1px 3px rgba(0,0,0,0.04)" }}>
+            <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, padding: "22px 24px", boxShadow: "0 1px 3px rgba(0,0,0,0.04)" }}>
               <div style={{ fontSize: 12, fontWeight: 700, color: c.text, marginBottom: 14 }}>Service Status</div>
               {[
                 { name: "API Gateway", status: "operational", latency: "42ms" },
@@ -4431,7 +4432,7 @@ const AdminView = ({ c, toast, onNav }) => {
               ))}
             </div>
             {/* Security Headers */}
-            <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 12, padding: "22px 24px", boxShadow: "0 1px 3px rgba(0,0,0,0.04)" }}>
+            <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, padding: "22px 24px", boxShadow: "0 1px 3px rgba(0,0,0,0.04)" }}>
               <div style={{ fontSize: 12, fontWeight: 700, color: c.text, marginBottom: 14 }}>Security Posture</div>
               {[
                 { name: "HSTS Preload", grade: "A+", status: "active" },
@@ -4623,7 +4624,7 @@ const ScenariosView = ({ c, toast }) => {
           const s1 = scenarios[compare[0]];
           const s2 = scenarios[compare[1]];
           const renderCard = (s) => (
-            <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 12, padding: "22px 24px", boxShadow: "0 1px 3px rgba(0,0,0,0.04)" }}>
+            <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, padding: "22px 24px", boxShadow: "0 1px 3px rgba(0,0,0,0.04)" }}>
               <div style={{ fontSize: 14, fontWeight: 800, color: c.text, marginBottom: 16 }}>{s.name}</div>
               {[{ l: "Revenue", v: `$${s.revenue}M`, color: c.text }, { l: "OpEx", v: `$${s.opex}M`, color: c.amber }, { l: "EBITDA Margin", v: `${s.ebitda}%`, color: s.ebitda > 5 ? c.green : c.red }, { l: "Status", v: s.status, color: s.status === "Active" ? c.green : c.textDim }].map(r => (
                 <div key={r.l} style={{ display: "flex", justifyContent: "space-between", padding: "10px 0", borderBottom: `1px solid ${c.borderSub}`, fontSize: 12 }}>
@@ -4692,7 +4693,7 @@ const ScenariosView = ({ c, toast }) => {
             <div style={{ fontSize: 9, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.12em", color: c.textFaint, marginBottom: 10, display: "flex", alignItems: "center", gap: 8 }}>
               Assumption Drivers
             </div>
-            <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 12, padding: "22px 24px", boxShadow: "0 1px 3px rgba(0,0,0,0.04)" }}>
+            <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, padding: "22px 24px", boxShadow: "0 1px 3px rgba(0,0,0,0.04)" }}>
               <div style={{ fontSize: 13, fontWeight: 800, color: c.text, marginBottom: 16 }}>Assumption Drivers</div>
               {[
                 { key: "ndr", label: "Net Dollar Retention", value: drivers.ndr, min: 80, max: 150, unit: "%", color: c.accent },
@@ -4792,7 +4793,7 @@ const SettingsView = ({ c, onLogout, toast, mode, onShowSuitePanel, suitePanelOp
 
       {activeTab === "org" && (<>
         {/* Company Info Card */}
-        <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 12, padding: "22px 24px", marginBottom: 16 }}>
+        <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, padding: "22px 24px", marginBottom: 16 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 16 }}>
             <div style={{ width: 26, height: 26, borderRadius: 7, background: `${c.accent}10`, display: "flex", alignItems: "center", justifyContent: "center" }}><LayoutDashboard size={13} color={c.accent} /></div>
             <div style={{ fontSize: 13, fontWeight: 700, color: c.text }}>Workspace</div>
@@ -4814,7 +4815,7 @@ const SettingsView = ({ c, onLogout, toast, mode, onShowSuitePanel, suitePanelOp
         </div>
 
         {/* Infrastructure Card */}
-        <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 12, padding: "22px 24px", marginBottom: 16 }}>
+        <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, padding: "22px 24px", marginBottom: 16 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 16 }}>
             <div style={{ width: 26, height: 26, borderRadius: 7, background: `${c.green}10`, display: "flex", alignItems: "center", justifyContent: "center" }}><Shield size={13} color={c.green} /></div>
             <div style={{ fontSize: 13, fontWeight: 700, color: c.text }}>Infrastructure</div>
@@ -4835,7 +4836,7 @@ const SettingsView = ({ c, onLogout, toast, mode, onShowSuitePanel, suitePanelOp
         </div>
 
         {/* Display Preferences Card */}
-        <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 12, padding: "22px 24px" }}>
+        <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, padding: "22px 24px" }}>
           <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 16 }}>
             <div style={{ width: 26, height: 26, borderRadius: 7, background: `${c.purple}10`, display: "flex", alignItems: "center", justifyContent: "center" }}><Eye size={13} color={c.purple} /></div>
             <div style={{ fontSize: 13, fontWeight: 700, color: c.text }}>Display</div>
@@ -4867,7 +4868,7 @@ const SettingsView = ({ c, onLogout, toast, mode, onShowSuitePanel, suitePanelOp
 
       {/* Regional tab — expanded locales */}
       {activeTab === "regional" && (
-        <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 12, padding: "22px 24px" }}>
+        <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, padding: "22px 24px" }}>
           <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4 }}>
             <div style={{ width: 26, height: 26, borderRadius: 7, background: `${c.cyan}10`, display: "flex", alignItems: "center", justifyContent: "center" }}><Globe size={13} color={c.cyan} /></div>
             <div style={{ fontSize: 13, fontWeight: 700, color: c.text }}>Regional & Currency</div>
@@ -4939,7 +4940,7 @@ const SettingsView = ({ c, onLogout, toast, mode, onShowSuitePanel, suitePanelOp
       )}
 
       {activeTab === "billing" && (
-        <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 12, padding: "22px 24px" }}>
+        <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, padding: "22px 24px" }}>
           <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 16 }}>
             <div style={{ width: 26, height: 26, borderRadius: 7, background: `${c.accent}10`, display: "flex", alignItems: "center", justifyContent: "center" }}><DollarSign size={13} color={c.accent} /></div>
             <div style={{ fontSize: 13, fontWeight: 700, color: c.text }}>Billing & Subscription</div>
@@ -4987,7 +4988,7 @@ const SettingsView = ({ c, onLogout, toast, mode, onShowSuitePanel, suitePanelOp
       )}
 
       {activeTab === "security" && (<>
-        <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 12, padding: "22px 24px" }}>
+        <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, padding: "22px 24px" }}>
           <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 16 }}>
             <div style={{ width: 26, height: 26, borderRadius: 7, background: `${c.green}10`, display: "flex", alignItems: "center", justifyContent: "center" }}><Shield size={13} color={c.green} /></div>
             <div style={{ fontSize: 13, fontWeight: 700, color: c.text }}>Security & Access</div>
@@ -5003,7 +5004,7 @@ const SettingsView = ({ c, onLogout, toast, mode, onShowSuitePanel, suitePanelOp
           ))}
         </div>
         {/* Password Change */}
-        <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 12, padding: "22px 24px", marginTop: 16 }}>
+        <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, padding: "22px 24px", marginTop: 16 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 14 }}>
             <div style={{ width: 26, height: 26, borderRadius: 7, background: `${c.amber}10`, display: "flex", alignItems: "center", justifyContent: "center" }}><Shield size={13} color={c.amber} /></div>
             <div style={{ fontSize: 13, fontWeight: 700, color: c.text }}>Change Password</div>
@@ -5032,7 +5033,7 @@ const SettingsView = ({ c, onLogout, toast, mode, onShowSuitePanel, suitePanelOp
 
       {activeTab === "session" && (<>
         {/* Active Session — with real device detection */}
-        <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 12, padding: "22px 24px", marginBottom: 16 }}>
+        <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, padding: "22px 24px", marginBottom: 16 }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 16 }}>
             <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
               <div style={{ width: 26, height: 26, borderRadius: 7, background: `${c.green}10`, display: "flex", alignItems: "center", justifyContent: "center" }}><Activity size={13} color={c.green} /></div>
@@ -5115,7 +5116,7 @@ const SettingsView = ({ c, onLogout, toast, mode, onShowSuitePanel, suitePanelOp
           </button>
         </div>
         {/* Data Privacy & Rights — GDPR/CCPA */}
-        <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 12, padding: "22px 24px", marginBottom: 16 }}>
+        <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, padding: "22px 24px", marginBottom: 16 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}>
             <div style={{ width: 26, height: 26, borderRadius: 7, background: `${c.purple}10`, display: "flex", alignItems: "center", justifyContent: "center" }}><Shield size={13} color={c.purple} /></div>
             <div style={{ fontSize: 13, fontWeight: 700, color: c.text }}>Data Privacy & Rights</div>
@@ -5166,7 +5167,7 @@ const SettingsView = ({ c, onLogout, toast, mode, onShowSuitePanel, suitePanelOp
         </div>
 
         {/* Delete Account — Danger Zone */}
-        <div style={{ background: c.surface, border: `1px solid ${c.red}20`, borderRadius: 12, padding: "22px 24px" }}>
+        <div style={{ background: c.surface, border: `1px solid ${c.red}20`, borderRadius: 14, padding: "22px 24px" }}>
           <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}>
             <div style={{ width: 26, height: 26, borderRadius: 7, background: `${c.red}10`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12 }}>⚠</div>
             <div>
@@ -5374,7 +5375,7 @@ const AuthModal = ({ mode: initialMode, onClose, onAuth }) => {
 
   return (
     <div onClick={onClose} style={{ position: "fixed", inset: 0, zIndex: 10000, background: "rgba(0,0,0,0.6)", backdropFilter: "blur(8px)", display: "flex", alignItems: "center", justifyContent: "center", animation: "fadeIn 0.2s" }}>
-      <div onClick={e => e.stopPropagation()} style={{ width: 420, maxHeight: "90vh", overflow: "auto", background: "#111318", border: "1px solid #1e2230", borderRadius: 20, boxShadow: "0 24px 80px rgba(0,0,0,0.5)", animation: "cmdIn 0.25s ease" }}>
+      <div onClick={e => e.stopPropagation()} style={{ width: 420, maxHeight: "90vh", overflow: "auto", background: "rgba(16,19,26,0.7)", border: "1px solid #1e2230", borderRadius: 20, boxShadow: "0 24px 80px rgba(0,0,0,0.5)", animation: "cmdIn 0.25s ease" }}>
         {/* Header */}
         <div style={{ padding: "28px 32px 0", textAlign: "center", position: "relative" }}>
           <button onClick={onClose} style={{ position: "absolute", top: 16, right: 16, width: 28, height: 28, borderRadius: 8, border: "1px solid #1e2230", background: "transparent", color: "#8b92a5", cursor: "pointer", fontFamily: "inherit", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 14 }}>
@@ -6089,7 +6090,7 @@ const PlanPicker = ({ c, userName, onSkip, onSelect, isDemo, isAuthenticated }) 
         {!checkoutPending && !verifyingPayment && !verifyFailed && (
         <div style={{ padding: "24px 40px 0" }}>
           <div style={{ fontSize: 11, fontWeight: 700, color: t.txF, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 10 }}>Feature Comparison</div>
-          <div style={{ background: t.bg2, border: `1px solid ${t.bdrSub}`, borderRadius: 12, overflow: "hidden" }}>
+          <div style={{ background: t.bg2, border: `1px solid ${t.bdrSub}`, borderRadius: 14, overflow: "hidden" }}>
             {features.map((f, i) => (
               <div key={f.name} style={{ display: "grid", gridTemplateColumns: "1.2fr 1fr 1fr 1fr", borderBottom: i < features.length - 1 ? `1px solid ${t.bdrSub}` : "none", fontSize: 11 }}>
                 <div style={{ padding: "8px 14px", color: t.txS, fontWeight: 500 }}>{f.name}</div>
@@ -6171,7 +6172,7 @@ const ProductDemo = ({ enterDemo }) => {
           <p style={{ fontSize: 15, color: "#8b92a5", lineHeight: 1.7, marginBottom: 24 }}>{active.sub}</p>
           <div style={{ display: "flex", gap: 16, marginBottom: 24 }}>
             {active.kpis.map(k => (
-              <div key={k.l} style={{ padding: "10px 16px", borderRadius: 10, background: "#111318", border: "1px solid #1e2230" }}>
+              <div key={k.l} style={{ padding: "10px 16px", borderRadius: 10, background: "rgba(16,19,26,0.7)", border: "1px solid #1e2230" }}>
                 <div style={{ fontSize: 18, fontWeight: 800, fontFamily: "'JetBrains Mono', monospace", marginBottom: 2 }}>{k.v}</div>
                 <div style={{ fontSize: 10, color: "#3d4558", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.06em" }}>{k.l}</div>
               </div>
@@ -6181,7 +6182,7 @@ const ProductDemo = ({ enterDemo }) => {
         </div>
         {/* Browser mockup */}
         <div style={{ background: "#0b0c10", border: "1px solid #1e2230", borderRadius: 12, padding: 4, boxShadow: "0 20px 60px rgba(0,0,0,0.4)" }}>
-          <div style={{ background: "#111318", borderRadius: 13, overflow: "hidden" }}>
+          <div style={{ background: "rgba(16,19,26,0.7)", borderRadius: 13, overflow: "hidden" }}>
             <div style={{ display: "flex", alignItems: "center", gap: 6, padding: "10px 14px", background: "#0b0c10", borderBottom: "1px solid rgba(26,31,46,0.5)" }}>
               <div style={{ display: "flex", gap: 5 }}>{["#ef4444","#fbbf24","#22c55e"].map(cl => <div key={cl} style={{ width: 8, height: 8, borderRadius: "50%", background: cl }} />)}</div>
               <div style={{ flex: 1, marginLeft: 8, padding: "4px 12px", borderRadius: 6, background: "#0a0a0d", border: "1px solid #1e2230", fontSize: 10, color: "#3d4558" }}>app.finance-os.app/{active.id}</div>
@@ -6193,7 +6194,7 @@ const ProductDemo = ({ enterDemo }) => {
                   <div style={{ fontSize: 13, fontWeight: 700, marginBottom: 10, color: "#f0f2f5" }}>{active.title}</div>
                   <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8, marginBottom: 16 }}>
                     {active.kpis.map((k, i) => (
-                      <div key={k.l} style={{ background: "#111318", border: "1px solid #1e2230", borderRadius: 8, padding: "10px 12px" }}>
+                      <div key={k.l} style={{ background: "rgba(16,19,26,0.7)", border: "1px solid #1e2230", borderRadius: 8, padding: "10px 12px" }}>
                         <div style={{ fontSize: 14, fontWeight: 800, color: ["#60a5fa","#34d399","#a78bfa"][i], fontFamily: "'JetBrains Mono', monospace" }}>{k.v}</div>
                         <div style={{ fontSize: 8, color: "#3d4558", marginTop: 2 }}>{k.l}</div>
                       </div>
@@ -6246,7 +6247,7 @@ const ProductDemo = ({ enterDemo }) => {
                           { name: "QuickBooks", color: "#2CA01C", status: "●" },
                           { name: "Xero", color: "#13B5EA", status: "○" },
                         ].map(c => (
-                          <div key={c.name} style={{ background: "#111318", border: "1px solid #1e2230", borderRadius: 6, padding: "6px 8px", textAlign: "center" }}>
+                          <div key={c.name} style={{ background: "rgba(16,19,26,0.7)", border: "1px solid #1e2230", borderRadius: 6, padding: "6px 8px", textAlign: "center" }}>
                             <div style={{ fontSize: 8, color: c.color, marginBottom: 2 }}>{c.status}</div>
                             <div style={{ fontSize: 7, color: "#8b92a5", fontWeight: 600 }}>{c.name}</div>
                           </div>
@@ -6795,19 +6796,44 @@ const LandingPage = ({ onLogin }) => {
       </div>
 
       {/* Pricing */}
+      {/* Resources — like Pigment's Further Reading */}
+      <div style={{ padding: isMobile ? "40px 20px" : "60px 48px", maxWidth: 1100, margin: "0 auto" }}>
+        <div style={{ textAlign: "center", marginBottom: 32 }}>
+          <div style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.12em", color: "#3dd9a0", marginBottom: 10 }}>Resources</div>
+          <h2 style={{ fontSize: 30, fontWeight: 800, letterSpacing: "-0.03em" }}>Further reading</h2>
+        </div>
+        <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "repeat(3, 1fr)", gap: 16 }}>
+          {[
+            { tag: "GUIDE", title: "The Complete SaaS FP&A Playbook", desc: "From ARR to Rule of 40 — every metric, benchmark, and best practice modern SaaS finance teams need.", href: "/use-cases/saas-fpa", color: "#60a5fa" },
+            { tag: "USE CASE", title: "Budget Planning & Forecasting", desc: "Driver-based budgeting with ML-powered rolling forecasts and instant what-if scenario analysis.", href: "/use-cases/budget-planning", color: "#3dd9a0" },
+            { tag: "COMPARISON", title: "FinanceOS vs. Legacy FP&A", desc: "See how FinanceOS compares to Anaplan, Pigment, Adaptive Planning, and Planful on 10 capabilities.", href: "/use-cases/finance", color: "#a78bfa" },
+          ].map(r => (
+            <a key={r.title} href={r.href} style={{ background: "rgba(16,19,26,0.7)", border: "1px solid rgba(26,31,46,0.7)", borderRadius: 16, padding: "24px 22px", textDecoration: "none", display: "block", transition: "all 0.25s cubic-bezier(0.4,0,0.2,1)", position: "relative", overflow: "hidden" }}
+              onMouseEnter={e => { e.currentTarget.style.borderColor = `${r.color}30`; e.currentTarget.style.transform = "translateY(-3px)"; e.currentTarget.style.boxShadow = `0 12px 36px ${r.color}08`; }}
+              onMouseLeave={e => { e.currentTarget.style.borderColor = "rgba(26,31,46,0.7)"; e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = "none"; }}>
+              <div style={{ position: "absolute", top: 0, left: "15%", right: "15%", height: 1, background: `linear-gradient(90deg, transparent, ${r.color}15, transparent)` }} />
+              <span style={{ fontSize: 8, fontWeight: 800, padding: "3px 8px", borderRadius: 4, background: `${r.color}10`, color: r.color, letterSpacing: "0.08em" }}>{r.tag}</span>
+              <h3 style={{ fontSize: 16, fontWeight: 800, color: "#eef0f6", marginTop: 12, marginBottom: 8, letterSpacing: "-0.01em" }}>{r.title}</h3>
+              <p style={{ fontSize: 13, color: "#636d84", lineHeight: 1.65, marginBottom: 12 }}>{r.desc}</p>
+              <span style={{ fontSize: 12, fontWeight: 700, color: r.color }}>Read now →</span>
+            </a>
+          ))}
+        </div>
+      </div>
+
       <div id="pricing" style={{ padding: isMobile ? "40px 20px 60px" : "80px 48px 80px", maxWidth: 1100, margin: "0 auto" }}>
         <div style={{ textAlign: "center", marginBottom: 48 }}>
           <div style={{ display: "inline-block", padding: "6px 14px", borderRadius: 20, background: "rgba(96,165,250,0.06)", border: "1px solid rgba(96,165,250,0.12)", fontSize: 10, fontWeight: 700, color: "#60a5fa", marginBottom: 16, letterSpacing: "0.06em", textTransform: "uppercase" }}>Pricing</div>
           <h2 style={{ fontSize: 36, fontWeight: 800, letterSpacing: "-0.03em", marginBottom: 12 }}>Base + consumption pricing</h2>
           <p style={{ fontSize: 15, color: "#8b92a5", marginBottom: 24 }}>Predictable base fee. Pay-per-use overages only when you exceed included limits.</p>
-          <div style={{ display: "inline-flex", background: "#111318", borderRadius: 10, padding: 3, border: "1px solid #1e2230" }}>
+          <div style={{ display: "inline-flex", background: "rgba(16,19,26,0.7)", borderRadius: 10, padding: 3, border: "1px solid #1e2230" }}>
             <button onClick={() => setBilling("monthly")} style={{ fontSize: 12, padding: "8px 18px", borderRadius: 8, border: "none", background: billing === "monthly" ? "#1e2230" : "transparent", color: billing === "monthly" ? "#f0f2f5" : "#8b92a5", cursor: "pointer", fontFamily: "inherit", fontWeight: 600, transition: "all 0.15s" }}>Monthly</button>
             <button onClick={() => setBilling("annual")} style={{ fontSize: 12, padding: "8px 18px", borderRadius: 8, border: "none", background: billing === "annual" ? "#1e2230" : "transparent", color: billing === "annual" ? "#f0f2f5" : "#8b92a5", cursor: "pointer", fontFamily: "inherit", fontWeight: 600, transition: "all 0.15s" }}>Annual <span style={{ fontSize: 9, fontWeight: 800, padding: "2px 6px", borderRadius: 4, background: "rgba(52,211,153,0.10)", color: "#34d399", marginLeft: 4 }}>-17%</span></button>
           </div>
         </div>
         <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "repeat(4, 1fr)", gap: 16 }}>
           {plans.map(p => (
-            <div key={p.name} style={{ background: p.popular ? "linear-gradient(180deg, rgba(96,165,250,0.04) 0%, #111318 100%)" : "#111318", border: `1px solid ${p.popular ? "#60a5fa50" : "#1e2230"}`, borderRadius: 12, padding: "28px 24px", boxShadow: p.popular ? "0 0 0 1px rgba(96,165,250,0.12), 0 12px 40px rgba(96,165,250,0.08)" : "none", transition: "all 0.15s ease" }}
+            <div key={p.name} style={{ background: p.popular ? "linear-gradient(180deg, rgba(96,165,250,0.04) 0%, #111318 100%)" : "#111318", border: `1px solid ${p.popular ? "#60a5fa50" : "#1e2230"}`, borderRadius: 14, padding: "28px 24px", boxShadow: p.popular ? "0 0 0 1px rgba(96,165,250,0.12), 0 12px 40px rgba(96,165,250,0.08)" : "none", transition: "all 0.15s ease" }}
               onMouseEnter={e => { e.currentTarget.style.boxShadow = p.popular ? "0 0 0 1px rgba(96,165,250,0.25), 0 20px 60px rgba(96,165,250,0.12)" : "0 12px 40px rgba(0,0,0,0.25)"; e.currentTarget.style.borderColor = p.popular ? "#60a5fa" : "#3d4558"; }}
               onMouseLeave={e => { e.currentTarget.style.boxShadow = p.popular ? "0 0 0 1px rgba(96,165,250,0.12), 0 12px 40px rgba(96,165,250,0.08)" : "none"; e.currentTarget.style.borderColor = p.popular ? "#60a5fa50" : "#1e2230"; }}
             >
@@ -6930,7 +6956,7 @@ const LandingPage = ({ onLogin }) => {
             { Icon: Shield, title: "Security that survives the review", detail: "SOC 2 architecture, AES-256 encryption, row-level security, HSTS + CSP headers, immutable audit logs. Your security team signs off faster because we built it in, not bolted it on.", tag: "Security" },
             { Icon: TrendingUp, title: "Usage-based pricing aligns cost to value", detail: "Base subscription + pay-per-use for AI queries, syncs, and exports. You pay for what you use. Enterprise agreements include committed spend discounts with no caps.", tag: "Pricing" },
           ].map(s => (
-            <div key={s.title} style={{ background: "#111318", border: "1px solid #1e2230", borderRadius: 12, padding: "24px 22px", transition: "all 0.15s ease" }}
+            <div key={s.title} style={{ background: "rgba(16,19,26,0.7)", border: "1px solid #1e2230", borderRadius: 12, padding: "24px 22px", transition: "all 0.15s ease" }}
               onMouseEnter={e => { e.currentTarget.style.borderColor = "#3d4558"; }}
               onMouseLeave={e => { e.currentTarget.style.borderColor = "rgba(26,31,46,0.7)"; }}
             >
@@ -6993,7 +7019,7 @@ const LandingPage = ({ onLogin }) => {
             { title: "Row-Level Security", sub: "Every database query is scoped to your organization. Zero cross-tenant data leakage.", badge: "SUPABASE RLS", icon: Layers, color: "#a78bfa" },
             { title: "HSTS + CSP Headers", sub: "Strict Transport Security, Content Security Policy, and 5 additional security headers.", badge: "VERCEL", icon: Globe, color: "#22d3ee" },
           ].map(s => (
-            <div key={s.title} style={{ background: "#111318", border: "1px solid #1e2230", borderRadius: 12, padding: "24px 20px", textAlign: "center", transition: "all 0.15s ease" }}
+            <div key={s.title} style={{ background: "rgba(16,19,26,0.7)", border: "1px solid #1e2230", borderRadius: 12, padding: "24px 20px", textAlign: "center", transition: "all 0.15s ease" }}
               onMouseEnter={e => { e.currentTarget.style.borderColor = `${s.color}40`; }}
               onMouseLeave={e => { e.currentTarget.style.borderColor = "rgba(26,31,46,0.7)"; }}
             >
@@ -7020,7 +7046,7 @@ const LandingPage = ({ onLogin }) => {
             { name: "FinanceOS", desc: "AI-powered FP&A platform. Variance detection, scenario modeling, consolidation, and natural language querying.", color: "#60a5fa", market: "FP&A / Planning", price: "$599-$4,799/mo", current: true },
             { name: "Parallax", desc: "Aerospace supplier compliance OS. ITAR/EAR tracking, audit trails, supplier risk scoring, and regulatory mapping.", color: "#fbbf24", market: "Aerospace Compliance", price: "$799-$3,999/mo" },
           ].map(p => (
-            <div key={p.name} style={{ background: "#111318", border: `1px solid ${p.current ? p.color + "40" : "#1e2230"}`, borderRadius: 12, padding: 24, position: "relative" }}>
+            <div key={p.name} style={{ background: "rgba(16,19,26,0.7)", border: `1px solid ${p.current ? p.color + "40" : "#1e2230"}`, borderRadius: 12, padding: 24, position: "relative" }}>
               {p.current && <div style={{ position: "absolute", top: -8, right: 16, padding: "3px 10px", borderRadius: 4, background: p.color, fontSize: 9, fontWeight: 700, color: "#000" }}>CURRENT PRODUCT</div>}
               <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
                 <div style={{ width: 10, height: 10, borderRadius: 3, background: p.color }} />
@@ -7165,7 +7191,7 @@ const LandingPage = ({ onLogin }) => {
       {/* Demo Request Modal */}
       {demoModal && (
         <div onClick={() => !demoSubmitting && setDemoModal(false)} style={{ position: "fixed", inset: 0, zIndex: 2000, background: "rgba(0,0,0,0.6)", backdropFilter: "blur(8px)", display: "flex", alignItems: "center", justifyContent: "center", animation: "fadeIn 0.15s" }}>
-          <div onClick={e => e.stopPropagation()} style={{ width: 480, maxHeight: "90vh", overflow: "auto", background: "#111318", border: "1px solid #1e2230", borderRadius: 20, padding: "36px 32px", boxShadow: "0 24px 80px rgba(0,0,0,0.5)", animation: "cmdIn 0.2s ease", position: "relative" }}>
+          <div onClick={e => e.stopPropagation()} style={{ width: 480, maxHeight: "90vh", overflow: "auto", background: "rgba(16,19,26,0.7)", border: "1px solid #1e2230", borderRadius: 20, padding: "36px 32px", boxShadow: "0 24px 80px rgba(0,0,0,0.5)", animation: "cmdIn 0.2s ease", position: "relative" }}>
             {!demoSuccess ? (<>
             <div style={{ textAlign: "center", marginBottom: 24 }}>
               <div style={{ width: 48, height: 48, borderRadius: 14, background: "linear-gradient(135deg, #60a5fa15, #a78bfa08)", border: "1px solid #60a5fa12", display: "inline-flex", alignItems: "center", justifyContent: "center", marginBottom: 12 }}><MessageSquare size={22} color="#60a5fa" strokeWidth={1.8} /></div>
