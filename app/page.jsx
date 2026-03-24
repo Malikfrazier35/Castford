@@ -8228,7 +8228,7 @@ function FinanceOSApp() {
     return "dark";
   }, []);
 
-  const [mode, setMode] = useState("dark");
+  const [mode, setMode] = useState("light");
   const [autoTheme, setAutoTheme] = useState(true);
   // Restore saved theme on mount
   useEffect(() => {
