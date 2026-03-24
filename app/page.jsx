@@ -6746,6 +6746,53 @@ const LandingPage = ({ onLogin }) => {
         </div>
       </div>
 
+      {/* Powered by Claude — partnership highlight (like Pigment's Anthropic section) */}
+      <div style={{ padding: isMobile ? "40px 20px" : "60px 48px", maxWidth: 1100, margin: "0 auto" }}>
+        <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: 0, borderRadius: 20, overflow: "hidden", border: "1px solid #1a1f2e" }}>
+          {/* Quote side */}
+          <div style={{ padding: "48px 40px", background: "linear-gradient(135deg, #10131a 0%, #161a24 100%)" }}>
+            <div style={{ fontSize: 18, fontWeight: 800, letterSpacing: "-0.01em", color: "#a78bfa", marginBottom: 20, fontFamily: "'DM Sans', system-ui, sans-serif" }}>Anthropic</div>
+            <p style={{ fontSize: 18, fontWeight: 500, color: "#eef0f6", lineHeight: 1.65, fontStyle: "italic", marginBottom: 28 }}>
+              "FinanceOS demonstrates what's possible when AI becomes a true partner in financial planning. By connecting planning data directly to Claude, finance teams focus on strategic decisions — not data wrangling."
+            </p>
+            <div style={{ fontSize: 13, fontWeight: 700, color: "#eef0f6" }}>Claude AI Platform</div>
+            <div style={{ fontSize: 11, color: "#3d4558" }}>Powering FinanceOS AI Copilot</div>
+          </div>
+          {/* Visual side */}
+          <div style={{ padding: "48px 40px", background: "linear-gradient(135deg, #0b0c10, #10131a)", display: "flex", alignItems: "center", justifyContent: "center", position: "relative" }}>
+            <div style={{ position: "absolute", inset: 0, background: "radial-gradient(circle at 60% 40%, rgba(161,129,247,0.06), transparent 60%)", pointerEvents: "none" }} />
+            <div style={{ textAlign: "center", position: "relative" }}>
+              <div style={{ width: 80, height: 80, borderRadius: 20, background: "linear-gradient(135deg, #a78bfa20, #60a5fa10)", border: "1px solid #a78bfa15", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 20px", fontSize: 36 }}>🧠</div>
+              <div style={{ fontSize: 22, fontWeight: 800, color: "#eef0f6", marginBottom: 6 }}>Powered by Claude</div>
+              <p style={{ fontSize: 13, color: "#636d84", lineHeight: 1.6, maxWidth: 280 }}>Enterprise-grade AI reasoning with visible thought process, SHAP explanations, and confidence intervals.</p>
+              <div style={{ display: "flex", gap: 8, justifyContent: "center", marginTop: 16 }}>
+                {["Visible Reasoning", "SHAP Values", "Confidence Bands"].map(t => (
+                  <span key={t} style={{ fontSize: 9, fontWeight: 600, padding: "4px 10px", borderRadius: 6, background: "#a78bfa08", border: "1px solid #a78bfa12", color: "#a78bfa" }}>{t}</span>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Quick comparison strip */}
+      <div style={{ padding: "20px 48px 40px", maxWidth: 900, margin: "0 auto" }}>
+        <div style={{ display: "flex", justifyContent: "center", gap: isMobile ? 16 : 40, flexWrap: "wrap" }}>
+          {[
+            { us: "$499/mo", them: "vs $65K+/yr", label: "Starting price" },
+            { us: "Same day", them: "vs 3-6 months", label: "Time to value" },
+            { us: "3.2% MAPE", them: "vs 8-15%", label: "Forecast accuracy" },
+            { us: "15 min", them: "vs SI required", label: "Onboarding" },
+          ].map(c => (
+            <div key={c.label} style={{ textAlign: "center" }}>
+              <div style={{ fontSize: 18, fontWeight: 800, color: "#60a5fa", fontFamily: "'JetBrains Mono', monospace" }}>{c.us}</div>
+              <div style={{ fontSize: 10, color: "#3d4558", marginTop: 2 }}>{c.them}</div>
+              <div style={{ fontSize: 9, color: "#636d84", marginTop: 4, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.06em" }}>{c.label}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+
       {/* Pricing */}
       <div id="pricing" style={{ padding: isMobile ? "40px 20px 60px" : "80px 48px 80px", maxWidth: 1100, margin: "0 auto" }}>
         <div style={{ textAlign: "center", marginBottom: 48 }}>
@@ -8451,7 +8498,7 @@ function FinanceOSApp() {
         setShowPlanPicker(false);
         setShowOnboarding(true);
       }} />}
-      {showOnboarding && <OnboardingWizard c={c} userName={user.name} planStatus={user.plan} onComplete={async (org) => {
+      {showOnboarding && <SectionBoundary name="Onboarding" bg={c.surface} borderColor={c.border} textColor={c.textDim} accentColor={c.accent}><OnboardingWizard c={c} userName={user.name} planStatus={user.plan} onComplete={async (org) => {
         const planName = user.plan?.startsWith("pending:") ? user.plan.replace("pending:", "") : user.plan;
         // Server-side org creation via Edge Function (org data never touches client Supabase)
         try {
@@ -8476,7 +8523,7 @@ function FinanceOSApp() {
         setUser(prev => ({ ...prev, plan: planName }));
         setShowOnboarding(false);
         toast(`Welcome to FinanceOS${org.name ? ` — ${org.name}` : ""}`, "success");
-      }} />}
+      }} /></SectionBoundary>}
     </div>
   );
 }
