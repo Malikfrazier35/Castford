@@ -2,10 +2,11 @@ node_modules/
 .next/
 .vercel/
 
-# Environment — block ALL env files
+# Environment — block ALL env files except production (publishable keys only)
 .env
 .env.*
 !.env.example
+!.env.production
 
 # Secrets
 *.pem

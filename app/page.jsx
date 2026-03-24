@@ -1306,18 +1306,18 @@ const ChartTooltip = memo(({ active, payload, label, c }) => {
 
 // ── SPARKLINE ────────────────────────────────────────────────
 // ── SKELETON LOADING ─────────────────────────────────────────
-const Skeleton = ({ width = "100%", height = 16, borderRadius = 6, style = {} }) => (
+const SkeletonBlock = ({ width = "100%", height = 16, borderRadius = 6, style = {} }) => (
   <div className="fos-skeleton" style={{ width, height, borderRadius, background: "currentColor", opacity: 0.06, ...style }} />
 );
 
-const SkeletonKpi = ({ c }) => (
+const SkeletonKpiCard = ({ c }) => (
   <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, padding: "18px 20px" }}>
     <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 12 }}>
-      <Skeleton width={80} height={10} />
-      <Skeleton width={26} height={26} borderRadius={8} />
+      <SkeletonBlock width={80} height={10} />
+      <SkeletonBlock width={26} height={26} borderRadius={8} />
     </div>
-    <Skeleton width={100} height={28} borderRadius={4} style={{ marginBottom: 8 }} />
-    <Skeleton width={60} height={14} borderRadius={4} />
+    <SkeletonBlock width={100} height={28} borderRadius={4} style={{ marginBottom: 8 }} />
+    <SkeletonBlock width={60} height={14} borderRadius={4} />
   </div>
 );
 
@@ -1325,16 +1325,16 @@ const SkeletonChart = ({ c, height = 200 }) => (
   <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, padding: "24px 24px 18px" }}>
     <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 18 }}>
       <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-        <Skeleton width={30} height={30} borderRadius={9} />
-        <div><Skeleton width={140} height={14} style={{ marginBottom: 4 }} /><Skeleton width={200} height={10} /></div>
+        <SkeletonBlock width={30} height={30} borderRadius={9} />
+        <div><SkeletonBlock width={140} height={14} style={{ marginBottom: 4 }} /><SkeletonBlock width={200} height={10} /></div>
       </div>
-      <Skeleton width={100} height={28} borderRadius={8} />
+      <SkeletonBlock width={100} height={28} borderRadius={8} />
     </div>
-    <Skeleton width="100%" height={height} borderRadius={8} />
+    <SkeletonBlock width="100%" height={height} borderRadius={8} />
     <div style={{ display: "flex", gap: 12, marginTop: 12, paddingTop: 10, borderTop: `1px solid ${c.borderSub}` }}>
-      <Skeleton width={60} height={12} borderRadius={4} />
-      <Skeleton width={60} height={12} borderRadius={4} />
-      <Skeleton width={60} height={12} borderRadius={4} />
+      <SkeletonBlock width={60} height={12} borderRadius={4} />
+      <SkeletonBlock width={60} height={12} borderRadius={4} />
+      <SkeletonBlock width={60} height={12} borderRadius={4} />
     </div>
   </div>
 );
@@ -1342,11 +1342,11 @@ const SkeletonChart = ({ c, height = 200 }) => (
 const SkeletonTable = ({ c, rows = 5 }) => (
   <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 14, overflow: "hidden" }}>
     <div style={{ display: "flex", gap: 20, padding: "14px 18px", background: c.surfaceAlt, borderBottom: `1px solid ${c.borderSub}` }}>
-      {[120, 80, 80, 80, 60, 100].map((w, i) => <Skeleton key={i} width={w} height={10} />)}
+      {[120, 80, 80, 80, 60, 100].map((w, i) => <SkeletonBlock key={i} width={w} height={10} />)}
     </div>
     {Array.from({ length: rows }).map((_, i) => (
       <div key={i} style={{ display: "flex", gap: 20, padding: "12px 18px", borderBottom: `1px solid ${c.borderSub}` }}>
-        {[120, 80, 80, 80, 60, 100].map((w, j) => <Skeleton key={j} width={w * (0.7 + Math.random() * 0.3)} height={10} />)}
+        {[120, 80, 80, 80, 60, 100].map((w, j) => <SkeletonBlock key={j} width={w * (0.7 + Math.random() * 0.3)} height={10} />)}
       </div>
     ))}
   </div>
@@ -1592,7 +1592,7 @@ const DashboardView = ({ c, onNav, toast, onDrawer, userName, period, closeTasks
       <div style={{ flex: 1, height: 1, background: `linear-gradient(90deg, ${c.borderSub}, transparent)` }} />
     </div>
     <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr 1fr" : "repeat(3, 1fr)", gap: isMobile ? 10 : 14, marginBottom: 28 }}>
-      {glLoading ? Array.from({ length: 6 }).map((_, i) => <SkeletonKpi key={i} c={c} />) :
+      {glLoading ? Array.from({ length: 6 }).map((_, i) => <SkeletonKpiCard key={i} c={c} />) :
       kpis.map((k, i) => <KpiCard key={k.label} kpi={k} c={c} onClick={() => onDrawer(k.label)} />)}
     </div>
 
@@ -5160,7 +5160,7 @@ const SettingsView = ({ c, onLogout, toast, mode, onShowSuitePanel, suitePanelOp
             </div>
           ))}
         </div>
-      )}
+      </>)}
 
       {/* Regional tab — expanded locales */}
       {activeTab === "regional" && (
@@ -6908,7 +6908,7 @@ const LandingPage = ({ onLogin }) => {
             <div style={{ fontSize: 9, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "#3d4558", marginBottom: 8 }}>⚡ Finance</div>
             <h3 style={{ fontSize: 24, fontWeight: 800, letterSpacing: "-0.02em", marginBottom: 12, color: "#f0f2f5" }}>FP&A & consolidation</h3>
             <p style={{ fontSize: 14, color: "#8b92a5", lineHeight: 1.7, marginBottom: 20 }}>Build, approve, and adapt integrated financial plans. Connect your ERP, CRM, and billing data into a unified model with AI-powered insights.</p>
-            <Link href="/use-cases/finance" style={{ display: "inline-flex", alignItems: "center", gap: 6, fontSize: 13, fontWeight: 700, color: "#60a5fa", textDecoration: "none", padding: "10px 20px", borderRadius: 10, background: "#60a5fa08", border: "1px solid #60a5fa15", transition: "all 0.2s" }}>Learn more →</Link>
+            <a href="/use-cases/finance" style={{ display: "inline-flex", alignItems: "center", gap: 6, fontSize: 13, fontWeight: 700, color: "#60a5fa", textDecoration: "none", padding: "10px 20px", borderRadius: 10, background: "#60a5fa08", border: "1px solid #60a5fa15", transition: "all 0.2s" }}>Learn more →</a>
             <div style={{ marginTop: 24, padding: "16px 18px", background: "#0b0c10", borderRadius: 12, border: "1px solid #1a1f2e" }}>
               <p style={{ fontSize: 13, color: "#9ea5b8", lineHeight: 1.7, fontStyle: "italic", marginBottom: 10 }}>"We replaced our entire Excel-based FP&A stack in one afternoon. The AI Copilot caught a $400K variance our team missed."</p>
               <div style={{ fontSize: 11, fontWeight: 700, color: "#f0f2f5" }}>VP Finance</div>
