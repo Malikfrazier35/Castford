@@ -8064,7 +8064,20 @@ const LandingPage = ({ onLogin }) => {
       {/* Shimmer keyframe for GA badge */}
       <style>{`@keyframes shimmer{0%{transform:translateX(-100%)}50%{transform:translateX(100%)}100%{transform:translateX(100%)}}`}</style>
 
-      {/* ═══ Premium Dashboard Preview — gated behind signup ═══ */}
+      {/* ═══ Premium Dashboard Preview — animated like a live video ═══ */}
+      <style>{`
+        @keyframes fosDrawLine{0%{stroke-dashoffset:800}100%{stroke-dashoffset:0}}
+        @keyframes fosCountUp{0%{opacity:0;transform:translateY(6px)}40%{opacity:1;transform:translateY(0)}100%{opacity:1}}
+        @keyframes fosSlideIn{0%{opacity:0;transform:translateX(12px)}100%{opacity:1;transform:translateX(0)}}
+        @keyframes fosPulseGlow{0%,100%{box-shadow:0 0 4px rgba(52,211,153,0.3)}50%{box-shadow:0 0 12px rgba(52,211,153,0.6)}}
+        @keyframes fosChartDot{0%,50%{r:3.5}75%{r:5}100%{r:3.5}}
+        @keyframes fosBarGrow{0%{transform:scaleX(0)}100%{transform:scaleX(1)}}
+        .fos-preview-line{stroke-dasharray:800;animation:fosDrawLine 3s ease-out forwards}
+        .fos-preview-kpi{animation:fosCountUp 0.6s ease-out both}
+        .fos-preview-insight{animation:fosSlideIn 0.5s ease-out both}
+        .fos-preview-dot{animation:fosChartDot 2s ease-in-out infinite}
+        .fos-preview-live{animation:fosPulseGlow 2s ease-in-out infinite}
+      `}</style>
       <div style={{ position: "relative", zIndex: 1, maxWidth: 1100, margin: "0 auto", padding: isMobile ? "0 20px 40px" : "0 48px 60px" }}>
         <div style={{ position: "relative", background: lpMode === "dark" ? "rgba(16,19,26,0.8)" : "rgba(248,249,251,0.9)", border: `1px solid ${lp.border}`, borderRadius: 24, padding: 3, boxShadow: lpMode === "dark" ? "0 40px 100px rgba(0,0,0,0.6), 0 0 0 1px rgba(96,165,250,0.05)" : "0 40px 100px rgba(0,0,0,0.08), 0 0 0 1px rgba(0,0,0,0.03)", overflow: "hidden" }}>
           {/* Browser chrome bar */}
@@ -8108,9 +8121,9 @@ const LandingPage = ({ onLogin }) => {
                   { label: "Revenue", value: "$12.4M", delta: "+12.3%", color: lp.accent },
                   { label: "Gross Margin", value: "78.2%", delta: "+2.1%", color: lp.green },
                   { label: "Net Income", value: "$1.8M", delta: "+8.7%", color: lp.purple },
-                ].map(k => (
-                  <div key={k.label} style={{ background: lpMode === "dark" ? "rgba(255,255,255,0.03)" : "#fff", border: `1px solid ${lp.border}40`, borderRadius: 10, padding: "10px 12px", position: "relative", overflow: "hidden" }}>
-                    <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 2, background: `linear-gradient(90deg, ${k.color}, ${k.color}40)` }} />
+                ].map((k, i) => (
+                  <div key={k.label} className="fos-preview-kpi" style={{ background: lpMode === "dark" ? "rgba(255,255,255,0.03)" : "#fff", border: `1px solid ${lp.border}40`, borderRadius: 10, padding: "10px 12px", position: "relative", overflow: "hidden", animationDelay: `${i * 0.2}s` }}>
+                    <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 2, background: `linear-gradient(90deg, ${k.color}, ${k.color}40)`, transformOrigin: "left", animation: "fosBarGrow 1s ease-out both", animationDelay: `${0.5 + i * 0.2}s` }} />
                     <div style={{ fontSize: 8, fontWeight: 700, color: lp.textFaint, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 4 }}>{k.label}</div>
                     <div style={{ fontSize: 16, fontWeight: 800, color: lp.text, fontFamily: "'JetBrains Mono', monospace" }}>{k.value}</div>
                     <span style={{ fontSize: 8, fontWeight: 700, color: lp.green }}>{k.delta}</span>
@@ -8127,10 +8140,10 @@ const LandingPage = ({ onLogin }) => {
                       <stop offset="100%" stopColor={lp.accent} stopOpacity="0" />
                     </linearGradient>
                   </defs>
-                  <path d="M0 65 L40 58 L80 50 L120 52 L160 40 L200 35 L240 30 L280 22 L320 18 L360 12 L400 8 L400 80 L0 80Z" fill="url(#lpChartFill)" />
-                  <path d="M0 65 L40 58 L80 50 L120 52 L160 40 L200 35 L240 30 L280 22 L320 18 L360 12 L400 8" fill="none" stroke={lp.accent} strokeWidth="2.5" strokeLinecap="round" />
+                  <path d="M0 65 L40 58 L80 50 L120 52 L160 40 L200 35 L240 30 L280 22 L320 18 L360 12 L400 8 L400 80 L0 80Z" fill="url(#lpChartFill)" style={{ opacity: 0.7 }} />
+                  <path className="fos-preview-line" d="M0 65 L40 58 L80 50 L120 52 L160 40 L200 35 L240 30 L280 22 L320 18 L360 12 L400 8" fill="none" stroke={lp.accent} strokeWidth="2.5" strokeLinecap="round" />
                   <path d="M0 70 L40 68 L80 64 L120 62 L160 58 L200 56 L240 52 L280 48 L320 46 L360 42 L400 40" fill="none" stroke={lp.textFaint} strokeWidth="1" strokeDasharray="4 4" opacity="0.4" />
-                  <circle cx="400" cy="8" r="3.5" fill={lp.accent} style={{ filter: `drop-shadow(0 0 6px ${lp.accent})` }} />
+                  <circle className="fos-preview-dot" cx="400" cy="8" r="3.5" fill={lp.accent} style={{ filter: `drop-shadow(0 0 8px ${lp.accent})` }} />
                 </svg>
               </div>
             </div>
@@ -8141,14 +8154,14 @@ const LandingPage = ({ onLogin }) => {
                   <Sparkles size={10} color={lp.purple} />
                 </div>
                 <span style={{ fontSize: 10, fontWeight: 800, color: lp.text }}>AI Copilot</span>
-                <span style={{ fontSize: 6, fontWeight: 800, padding: "2px 5px", borderRadius: 3, background: `${lp.green}15`, color: lp.green, marginLeft: "auto" }}>LIVE</span>
+                <span className="fos-preview-live" style={{ fontSize: 6, fontWeight: 800, padding: "2px 5px", borderRadius: 3, background: `${lp.green}15`, color: lp.green, marginLeft: "auto" }}>LIVE</span>
               </div>
               {[
                 { text: "Revenue is tracking 12.3% above budget driven by Enterprise expansion", color: lp.green, Icon: ArrowUpRight },
                 { text: "COGS increased 3.2% — AWS hosting costs up, recommend reserved instances", color: lp.amber || lp.gold, Icon: Activity },
                 { text: "Q2 forecast confidence: 94.2% — MAPE below 3% threshold", color: lp.accent, Icon: Target },
               ].map((insight, i) => (
-                <div key={i} style={{ padding: "10px 10px", marginBottom: 6, borderRadius: 8, background: `${insight.color}06`, border: `1px solid ${insight.color}12`, fontSize: 9, lineHeight: 1.5, color: lp.textSub || lp.textDim }}>
+                <div key={i} className="fos-preview-insight" style={{ padding: "10px 10px", marginBottom: 6, borderRadius: 8, background: `${insight.color}06`, border: `1px solid ${insight.color}12`, fontSize: 9, lineHeight: 1.5, color: lp.textSub || lp.textDim, animationDelay: `${1.2 + i * 0.4}s` }}>
                   <insight.Icon size={10} color={insight.color} style={{ marginRight: 4, flexShrink: 0 }} />
                   {insight.text}
                 </div>
