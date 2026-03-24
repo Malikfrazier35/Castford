@@ -29,7 +29,7 @@ export default function HeadcountPlanningPage() {
       </div>
       <section style={{ padding:"50px 48px",maxWidth:1000,margin:"0 auto" }}>
         <div style={{ display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:16 }}>
-          {[{ v:"Real-time",l:"Budget vs Actual HC",s:"Auto-sync HRIS",cl:c.pu },{ v:"$→",l:"Comp Cost Impact",s:"Salary + benefits + tax",cl:c.ac },{ v:"📊",l:"Hiring Pipeline",s:"Plan-to-hire tracking",cl:c.gn }].map(m => (
+          {[{ v:"Real-time",l:"Budget vs Actual HC",s:"Auto-sync HRIS",cl:c.pu },{ v:"$→",l:"Comp Cost Impact",s:"Salary + benefits + tax",cl:c.ac },{ v:"◆",l:"Hiring Pipeline",s:"Plan-to-hire tracking",cl:c.gn }].map(m => (
             <div key={m.l} style={{ textAlign:"center",padding:"28px 20px",borderRadius:16,background:c.s,border:`1px solid ${c.b}`,position:"relative",overflow:"hidden" }}>
               <div style={{ position:"absolute",top:0,left:"20%",right:"20%",height:1,background:`linear-gradient(90deg,transparent,${m.cl}20,transparent)` }} />
               <div style={{ fontSize:28,fontWeight:800,color:m.cl,marginBottom:6 }}>{m.v}</div>

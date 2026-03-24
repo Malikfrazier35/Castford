@@ -78,7 +78,7 @@ export default function FinanceUseCasePage() {
           </div>
         </div>
         <div style={{display:"flex",justifyContent:"center",gap:14,marginTop:20}}>
-          {[{l:"SOC 2 Type II",i:"🛡️"},{l:"AES-256",i:"🔒"},{l:"99.9% SLA",i:"⚡"},{l:"GDPR",i:"🇪🇺"}].map(b=>(
+          {[{l:"SOC 2 Type II",i:"■️"},{l:"AES-256",i:"🔒"},{l:"99.9% SLA",i:"▸"},{l:"GDPR",i:"🇪🇺"}].map(b=>(
             <div key={b.l} style={{display:"flex",alignItems:"center",gap:5,fontSize:9,fontWeight:600,color:c.tf,padding:"4px 10px",borderRadius:6,background:`${c.s}80`,border:`1px solid ${c.b}`}}><span style={{fontSize:10}}>{b.i}</span>{b.l}</div>
           ))}
         </div>
@@ -139,7 +139,7 @@ export default function FinanceUseCasePage() {
                   </svg>
                 </div>
                 <div style={{padding:"16px 18px",borderRadius:12,background:`${c.s}70`,border:`1px solid ${c.b}50`}}>
-                  <div style={{display:"flex",alignItems:"center",gap:6,marginBottom:10}}><span style={{fontSize:14}}>🧠</span><span style={{fontSize:11,fontWeight:800,color:c.t}}>AI Copilot</span><span style={{fontSize:7,fontWeight:700,padding:"2px 5px",borderRadius:3,background:`${c.pu}12`,color:c.pu,marginLeft:"auto"}}>Claude</span></div>
+                  <div style={{display:"flex",alignItems:"center",gap:6,marginBottom:10}}><span style={{fontSize:14}}>◎</span><span style={{fontSize:11,fontWeight:800,color:c.t}}>AI Copilot</span><span style={{fontSize:7,fontWeight:700,padding:"2px 5px",borderRadius:3,background:`${c.pu}12`,color:c.pu,marginLeft:"auto"}}>Claude</span></div>
                   <div style={{padding:"8px 10px",borderRadius:8,background:`${c.ac}08`,border:`1px solid ${c.ac}10`,fontSize:10,color:c.td,marginBottom:6}}>"What drove the $2.1M revenue beat?"</div>
                   <div style={{padding:"8px 10px",borderRadius:8,background:c.s2,border:`1px solid ${c.b}`,fontSize:10,color:c.t,lineHeight:1.5}}>
                     Enterprise expansion drove <span style={{color:c.ac,fontWeight:700}}>68%</span> of the beat. NDR hit <span style={{color:c.gn,fontWeight:700}}>126%</span> in Enterprise.
@@ -192,7 +192,7 @@ export default function FinanceUseCasePage() {
         <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:16}}>
           {[{q:"We replaced our entire Excel-based FP&A stack in one afternoon. The AI Copilot caught a $400K variance our team missed.",t:"VP Finance",co:"Series B SaaS · $18M ARR"},{q:"The scenario modeling alone is worth the subscription. We ran 14 what-if scenarios for our board meeting — used to take a full week.",t:"Director FP&A",co:"Growth Stage · $45M ARR"},{q:"Finally, an FP&A tool that doesn't require a 6-month implementation and a team of consultants. Live with real data in under an hour.",t:"CFO",co:"Mid-Market · $12M ARR"}].map((q,i)=>(
             <div key={i} className="uc-card" style={{padding:"28px 24px",borderRadius:16,background:c.s,border:`1px solid ${c.b}`,position:"relative",opacity:show("quotes")?1:0,transform:show("quotes")?"none":"translateY(16px)",transition:`all .5s ease ${i*.1}s`}}>
-              <div style={{fontSize:18,color:c.am,marginBottom:10}}>★★★★★</div>
+              <div style={{fontSize:18,color:c.am,marginBottom:10}}>■ ■ ■ ■ ■</div>
               <p style={{fontSize:14,color:c.t,lineHeight:1.7,marginBottom:18,fontStyle:"italic"}}>"{q.q}"</p>
               <div style={{fontSize:12,fontWeight:700,color:c.t}}>{q.t}</div><div style={{fontSize:11,color:c.tf}}>{q.co}</div>
             </div>

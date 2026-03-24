@@ -2535,7 +2535,7 @@ const PnlView = ({ c, onNav, toast, orgName, glData, onDrawer }) => {
                 <div key={collab.init} title={`${collab.name} — viewing`} style={{ width: 22, height: 22, borderRadius: 7, background: collab.color, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 7, fontWeight: 800, color: "#fff", marginLeft: i > 0 ? -6 : 0, border: `2px solid ${c.bg2}`, cursor: "pointer" }}>{collab.init}</div>
               ))}
               <span style={{ fontSize: 9, color: c.textFaint, marginLeft: 4 }}>3 viewing · </span>
-              <span onClick={() => toast("Thread opened for P&L discussion", "success")} style={{ fontSize: 9, color: c.accent, fontWeight: 600, cursor: "pointer" }}>💬 4 comments</span>
+              <span onClick={() => toast("Thread opened for P&L discussion", "success")} style={{ fontSize: 9, color: c.accent, fontWeight: 600, cursor: "pointer" }}>▹ 4 comments</span>
             </div>
           </div>
         </div>
@@ -3096,7 +3096,7 @@ const ConsolidationView = ({ c, onNav, toast, onDrawer }) => {
                     <span style={{ fontSize: 9, color: c.textFaint }}>Reviewer: </span>
                     <span style={{ fontSize: 10, fontWeight: 600, color: c.text }}>{e.reviewer}</span>
                   </div>
-                  <button onClick={(ev) => { ev.stopPropagation(); toast(`Comment sent to ${e.reviewer}`, "success"); }} style={{ fontSize: 8, padding: "3px 8px", borderRadius: 4, border: `1px solid ${c.border}`, background: "transparent", color: c.textDim, cursor: "pointer", fontFamily: "inherit", fontWeight: 600 }}>💬</button>
+                  <button onClick={(ev) => { ev.stopPropagation(); toast(`Comment sent to ${e.reviewer}`, "success"); }} style={{ fontSize: 8, padding: "3px 8px", borderRadius: 4, border: `1px solid ${c.border}`, background: "transparent", color: c.textDim, cursor: "pointer", fontFamily: "inherit", fontWeight: 600 }}>▹</button>
                 </div>
               )}
             </div>
@@ -3947,7 +3947,7 @@ const IntegrationsView = ({ c, toast }) => {
                 onMouseLeave={e => { e.currentTarget.style.borderColor = c.border; }}>
                 {uploadFile ? (
                   <div>
-                    <div style={{ fontSize: 28, marginBottom: 8 }}>📊</div>
+                    <div style={{ fontSize: 28, marginBottom: 8 }}>◆</div>
                     <div style={{ fontSize: 14, fontWeight: 700, color: c.text, marginBottom: 4 }}>{uploadFile.name}</div>
                     <div style={{ fontSize: 11, color: c.textDim }}>{uploadFile.size} · Parsing...</div>
                   </div>
@@ -4364,21 +4364,21 @@ const TeamView = ({ c, toast, onNav, userName }) => {
                 <button onClick={() => toast(`Message sent to ${m.name}`, "success")} style={{ flex: 1, fontSize: 10, padding: "6px 0", borderRadius: 6, border: `1px solid ${c.border}`, background: "transparent", color: c.textDim, cursor: "pointer", fontFamily: "inherit", fontWeight: 600, transition: "all 0.15s" }}
                   onMouseEnter={e => { e.currentTarget.style.borderColor = c.accent; e.currentTarget.style.color = c.accent; }}
                   onMouseLeave={e => { e.currentTarget.style.borderColor = c.border; e.currentTarget.style.color = c.textDim; }}
-                >💬 Message</button>
+                >▹ Message</button>
                 <button onClick={() => toast(`Task assigned to ${m.name}`, "success")} style={{ flex: 1, fontSize: 10, padding: "6px 0", borderRadius: 6, border: `1px solid ${c.border}`, background: "transparent", color: c.textDim, cursor: "pointer", fontFamily: "inherit", fontWeight: 600, transition: "all 0.15s" }}
                   onMouseEnter={e => { e.currentTarget.style.borderColor = c.purple; e.currentTarget.style.color = c.purple; }}
                   onMouseLeave={e => { e.currentTarget.style.borderColor = c.border; e.currentTarget.style.color = c.textDim; }}
-                >📋 Assign Task</button>
+                >▣ Assign Task</button>
               </div>
               <div style={{ display: "flex", gap: 6, marginTop: 6 }}>
                 <button onClick={() => window.open("https://calendly.com/finance-os-support/30min", "_blank")} style={{ flex: 1, fontSize: 10, padding: "6px 0", borderRadius: 6, border: `1px solid ${c.border}`, background: "transparent", color: c.textDim, cursor: "pointer", fontFamily: "inherit", fontWeight: 600, transition: "all 0.15s" }}
                   onMouseEnter={e => { e.currentTarget.style.borderColor = c.green; e.currentTarget.style.color = c.green; }}
                   onMouseLeave={e => { e.currentTarget.style.borderColor = c.border; e.currentTarget.style.color = c.textDim; }}
-                >📅 Schedule</button>
+                >▫ Schedule</button>
                 <button onClick={() => toast(`Viewing ${m.name}'s profile`, "success")} style={{ flex: 1, fontSize: 10, padding: "6px 0", borderRadius: 6, border: `1px solid ${c.border}`, background: "transparent", color: c.textDim, cursor: "pointer", fontFamily: "inherit", fontWeight: 600, transition: "all 0.15s" }}
                   onMouseEnter={e => { e.currentTarget.style.borderColor = c.amber; e.currentTarget.style.color = c.amber; }}
                   onMouseLeave={e => { e.currentTarget.style.borderColor = c.border; e.currentTarget.style.color = c.textDim; }}
-                >👤 Profile</button>
+                >▾ Profile</button>
               </div>
             </div>
           ))}
@@ -4455,10 +4455,10 @@ const TeamView = ({ c, toast, onNav, userName }) => {
             { actor: userName || "Malik Frazier", init: (userName || "MF").split(" ").map(w => w[0]).join("").slice(0,2), action: "exported investor metrics PDF", detail: "Rule of 40: 52.1, Burn Multiple: 0.8x", time: "12:15 PM", color: c.purple },
             { actor: "James Rodriguez", init: "JR", action: "completed IC elimination", detail: "APAC entity, FX adjustment: -$42K", time: "11:30 AM", color: c.amber },
             { actor: "David Kim", init: "DK", action: "synced Stripe integration", detail: "23 new transactions imported", time: "10:45 AM", color: c.cyan },
-            { actor: "AI Copilot", init: "🧠", action: "flagged revenue variance", detail: "+$2.1M beat vs budget, Enterprise segment", time: "10:00 AM", color: c.purple },
+            { actor: "AI Copilot", init: "◎", action: "flagged revenue variance", detail: "+$2.1M beat vs budget, Enterprise segment", time: "10:00 AM", color: c.purple },
           ].map((e, i) => (
             <div key={i} style={{ display: "flex", gap: 12, padding: "10px 0", borderBottom: i < 5 ? `1px solid ${c.borderSub}` : "none" }}>
-              <div style={{ width: 28, height: 28, borderRadius: 8, background: typeof e.init === "string" && e.init.length <= 2 ? avatarGradients[i % 5] : `${c.purple}15`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: e.init === "🧠" ? 14 : 9, fontWeight: 800, color: "#fff", flexShrink: 0 }}>{e.init}</div>
+              <div style={{ width: 28, height: 28, borderRadius: 8, background: typeof e.init === "string" && e.init.length <= 2 ? avatarGradients[i % 5] : `${c.purple}15`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: e.init === "◎" ? 14 : 9, fontWeight: 800, color: "#fff", flexShrink: 0 }}>{e.init}</div>
               <div style={{ flex: 1 }}>
                 <div style={{ fontSize: 12, color: c.text }}><span style={{ fontWeight: 700 }}>{e.actor}</span> {e.action}</div>
                 <div style={{ fontSize: 10, color: c.textFaint, marginTop: 2 }}>{e.detail}</div>
@@ -5095,7 +5095,7 @@ const SettingsView = ({ c, onLogout, toast, mode, onShowSuitePanel, suitePanelOp
             <div style={{ fontSize: 13, fontWeight: 700, color: c.text }}>Workspace</div>
           </div>
           {[
-            { label: "Company", value: user?.orgName || "My Organization", icon: "🏢" },
+            { label: "Company", value: user?.orgName || "My Organization", icon: "◈" },
             { label: "Plan", value: user?.plan ? user.plan.charAt(0).toUpperCase() + user.plan.slice(1) : "Demo", color: user?.plan === "enterprise" ? c.purple : user?.plan === "business" ? c.green : c.accent },
             { label: "Seats", value: "12 of 25 used" },
             { label: "Fiscal Year End", value: "December 31" },
@@ -5372,8 +5372,8 @@ const SettingsView = ({ c, onLogout, toast, mode, onShowSuitePanel, suitePanelOp
               const locale = typeof navigator !== "undefined" ? (navigator.language || "en-US") : "en-US";
               const screenRes = typeof window !== "undefined" ? `${window.screen?.width || "?"}×${window.screen?.height || "?"}` : "—";
               return [
-                { label: "Device", value: device, icon: isiPhone || isiPad || isAndroid ? "📱" : "💻", color: c.accent },
-                { label: "Browser", value: `${browser} ${browserVer}`, icon: isSafari ? "🧭" : isFirefox ? "🦊" : "🌐", color: c.purple },
+                { label: "Device", value: device, icon: isiPhone || isiPad || isAndroid ? "📱" : "▦", color: c.accent },
+                { label: "Browser", value: `${browser} ${browserVer}`, icon: isSafari ? "◆" : isFirefox ? "◇" : "🌐", color: c.purple },
                 { label: "Timezone", value: tz.split("/").pop()?.replace(/_/g, " ") || tz, icon: "🕐", color: c.cyan },
                 { label: "Screen", value: screenRes, icon: "🖥", color: c.green },
               ];
@@ -5710,7 +5710,7 @@ const AuthModal = ({ mode: initialMode, onClose, onAuth }) => {
             {resetSent && <div style={{ padding: "8px 12px", borderRadius: 8, background: "rgba(52,211,153,0.08)", border: "1px solid rgba(52,211,153,0.2)", fontSize: 12, color: "#34d399", marginBottom: 8, textAlign: "center" }}>Password reset link sent to {email}</div>}
             {emailSent && (
               <div style={{ padding: "20px 16px", borderRadius: 12, background: "linear-gradient(135deg, rgba(96,165,250,0.06), rgba(167,139,250,0.03))", border: "1px solid rgba(96,165,250,0.15)", marginBottom: 12, textAlign: "center" }}>
-                <div style={{ width: 40, height: 40, borderRadius: 12, background: "linear-gradient(135deg, #60a5fa, #a78bfa)", display: "inline-flex", alignItems: "center", justifyContent: "center", marginBottom: 10, fontSize: 18 }}>✉</div>
+                <div style={{ width: 40, height: 40, borderRadius: 12, background: "linear-gradient(135deg, #60a5fa, #a78bfa)", display: "inline-flex", alignItems: "center", justifyContent: "center", marginBottom: 10, fontSize: 18 }}>▹</div>
                 <div style={{ fontSize: 14, fontWeight: 700, color: "#f0f2f5", marginBottom: 4 }}>Check your email</div>
                 <div style={{ fontSize: 12, color: "#8b92a5", lineHeight: 1.5, marginBottom: 10 }}>
                   We sent a confirmation link to <strong style={{ color: "#f0f2f5" }}>{email}</strong>. Click the link to activate your account.
@@ -6747,9 +6747,9 @@ const LandingPage = ({ onLogin }) => {
         {/* Trust badges + ratings */}
         <div style={{ display: "flex", justifyContent: "center", gap: 12, flexWrap: "wrap", alignItems: "center" }}>
           {[
-            { label: "SOC 2 Type II", icon: "🛡️" },
+            { label: "SOC 2 Type II", icon: "■️" },
             { label: "AES-256", icon: "🔒" },
-            { label: "99.9% Uptime", icon: "⚡" },
+            { label: "99.9% Uptime", icon: "▸" },
             { label: "GDPR Ready", icon: "🇪🇺" },
           ].map(b => (
             <div key={b.label} style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 9, fontWeight: 600, color: "#3d4558", padding: "5px 10px", borderRadius: 6, background: "rgba(16,19,26,0.5)", border: "1px solid #1a1f2e" }}>
@@ -6794,7 +6794,7 @@ const LandingPage = ({ onLogin }) => {
       <div style={{ padding: isMobile ? "40px 20px" : "60px 48px", maxWidth: 1100, margin: "0 auto" }}>
         <div style={{ textAlign: "center", marginBottom: 48 }}>
           <div style={{ display: "flex", justifyContent: "center", gap: 8, marginBottom: 16 }}>
-            {["🧠", "📊", "🔍"].map((icon, i) => (
+            {["◎", "◆", "🔍"].map((icon, i) => (
               <div key={i} style={{ width: 40, height: 40, borderRadius: 12, background: ["#60a5fa12", "#3dd9a012", "#a78bfa12"][i], border: `1px solid ${["#60a5fa", "#3dd9a0", "#a78bfa"][i]}15`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18 }}>{icon}</div>
             ))}
           </div>
@@ -6820,7 +6820,7 @@ const LandingPage = ({ onLogin }) => {
           {/* Interactive mockup */}
           <div style={{ background: "#10131a", border: "1px solid #1a1f2e", borderRadius: 16, padding: "20px 22px", boxShadow: "0 16px 48px rgba(0,0,0,0.3)" }}>
             <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 14, padding: "8px 12px", background: "#161a24", borderRadius: 10 }}>
-              <span style={{ fontSize: 13 }}>🧠</span>
+              <span style={{ fontSize: 13 }}>◎</span>
               <span style={{ fontSize: 11, fontWeight: 700, color: "#f0f2f5" }}>AI Copilot</span>
               <span style={{ fontSize: 8, fontWeight: 700, padding: "2px 6px", borderRadius: 3, background: "#a78bfa12", color: "#a78bfa", marginLeft: "auto" }}>Claude</span>
             </div>
@@ -6890,10 +6890,10 @@ const LandingPage = ({ onLogin }) => {
         </div>
         <div style={{ display: "flex", justifyContent: "center", gap: 4, marginBottom: 24 }}>
           {[
-            { label: "Finance", icon: "📊", active: true },
-            { label: "Sales", icon: "💰", active: false },
-            { label: "HR", icon: "👥", active: false },
-            { label: "Supply", icon: "🏭", active: false },
+            { label: "Finance", icon: "◆", active: true },
+            { label: "Sales", icon: "◉", active: false },
+            { label: "HR", icon: "◇", active: false },
+            { label: "Supply", icon: "◧", active: false },
           ].map(tab => (
             <button key={tab.label} onClick={() => {}} style={{
               fontSize: 12, fontWeight: 700, padding: "8px 20px", borderRadius: 8, border: "none", cursor: "pointer", fontFamily: "inherit",
@@ -6905,7 +6905,7 @@ const LandingPage = ({ onLogin }) => {
         {/* Active tab content */}
         <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1.6fr", gap: 24, background: "#10131a", border: "1px solid #1a1f2e", borderRadius: 20, overflow: "hidden" }}>
           <div style={{ padding: "36px 32px" }}>
-            <div style={{ fontSize: 9, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "#3d4558", marginBottom: 8 }}>⚡ Finance</div>
+            <div style={{ fontSize: 9, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "#3d4558", marginBottom: 8 }}>▸ Finance</div>
             <h3 style={{ fontSize: 24, fontWeight: 800, letterSpacing: "-0.02em", marginBottom: 12, color: "#f0f2f5" }}>FP&A & consolidation</h3>
             <p style={{ fontSize: 14, color: "#8b92a5", lineHeight: 1.7, marginBottom: 20 }}>Build, approve, and adapt integrated financial plans. Connect your ERP, CRM, and billing data into a unified model with AI-powered insights.</p>
             <a href="/use-cases/finance" style={{ display: "inline-flex", alignItems: "center", gap: 6, fontSize: 13, fontWeight: 700, color: "#60a5fa", textDecoration: "none", padding: "10px 20px", borderRadius: 10, background: "#60a5fa08", border: "1px solid #60a5fa15", transition: "all 0.2s" }}>Learn more →</a>
@@ -6960,9 +6960,9 @@ const LandingPage = ({ onLogin }) => {
         </div>
         <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "repeat(3, 1fr)", gap: 20 }}>
           {[
-            { title: "Intelligent by design", desc: "AI agents embedded in your planning. Analyze performance, explain drivers, and simulate scenarios in real time. Surface decision-ready insights grounded in your live data.", icon: "🧠", color: "#a78bfa", features: ["SHAP feature importance", "Confidence intervals", "Visible reasoning chain"] },
-            { title: "Collaborative by nature", desc: "Your finance team works as one. Assign tasks, send messages, track activity, and review changes — all inside the platform where your data lives.", icon: "👥", color: "#60a5fa", features: ["Team profiles & presence", "Task assignment & tracking", "Channel-based messaging"] },
-            { title: "Flexible at scale", desc: "Add entities, scenarios, and team members without rebuilding models. Scale from startup to enterprise without ever hitting a wall.", icon: "⚡", color: "#3dd9a0", features: ["Unlimited scenarios", "Multi-entity consolidation", "No seat caps (Enterprise)"] },
+            { title: "Intelligent by design", desc: "AI agents embedded in your planning. Analyze performance, explain drivers, and simulate scenarios in real time. Surface decision-ready insights grounded in your live data.", icon: "◎", color: "#a78bfa", features: ["SHAP feature importance", "Confidence intervals", "Visible reasoning chain"] },
+            { title: "Collaborative by nature", desc: "Your finance team works as one. Assign tasks, send messages, track activity, and review changes — all inside the platform where your data lives.", icon: "◇", color: "#60a5fa", features: ["Team profiles & presence", "Task assignment & tracking", "Channel-based messaging"] },
+            { title: "Flexible at scale", desc: "Add entities, scenarios, and team members without rebuilding models. Scale from startup to enterprise without ever hitting a wall.", icon: "▸", color: "#3dd9a0", features: ["Unlimited scenarios", "Multi-entity consolidation", "No seat caps (Enterprise)"] },
           ].map(p => (
             <div key={p.title} style={{ background: "rgba(16,19,26,0.7)", backdropFilter: "blur(12px)", border: "1px solid rgba(26,31,46,0.7)", borderRadius: 18, padding: "32px 26px", transition: "all 0.25s cubic-bezier(0.4,0,0.2,1)", position: "relative", overflow: "hidden" }}
               onMouseEnter={e => { e.currentTarget.style.borderColor = `${p.color}25`; e.currentTarget.style.transform = "translateY(-3px)"; }}
@@ -6994,10 +6994,10 @@ const LandingPage = ({ onLogin }) => {
         {/* Industry selector tabs */}
         <div style={{ display: "flex", justifyContent: "center", gap: 6, marginBottom: 32, flexWrap: "wrap" }}>
           {[
-            { id: "saas", label: "SaaS / Software", icon: "💻" },
-            { id: "ecom", label: "E-Commerce", icon: "🛒" },
-            { id: "services", label: "Professional Services", icon: "📋" },
-            { id: "mfg", label: "Manufacturing", icon: "🏭" },
+            { id: "saas", label: "SaaS / Software", icon: "▦" },
+            { id: "ecom", label: "E-Commerce", icon: "◉" },
+            { id: "services", label: "Professional Services", icon: "▣" },
+            { id: "mfg", label: "Manufacturing", icon: "◧" },
           ].map(tab => (
             <button key={tab.id} onClick={() => setPreviewIndustry(tab.id)} style={{
               fontSize: 12, fontWeight: 700, padding: "10px 20px", borderRadius: 10, border: "none", cursor: "pointer", fontFamily: "inherit",
@@ -7139,7 +7139,7 @@ const LandingPage = ({ onLogin }) => {
                   {/* AI Copilot */}
                   <div style={{ padding: "16px 18px", borderRadius: 14, background: "rgba(16,19,26,0.6)", border: "1px solid rgba(26,31,46,0.5)", display: "flex", flexDirection: "column" }}>
                     <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 12 }}>
-                      <span style={{ fontSize: 12 }}>🧠</span>
+                      <span style={{ fontSize: 12 }}>◎</span>
                       <span style={{ fontSize: 10, fontWeight: 800, color: "#eef0f6" }}>AI Copilot</span>
                       <span style={{ fontSize: 7, fontWeight: 700, padding: "2px 5px", borderRadius: 3, background: "#a78bfa12", color: "#a78bfa", marginLeft: "auto" }}>Claude</span>
                     </div>
@@ -7274,7 +7274,7 @@ const LandingPage = ({ onLogin }) => {
           <div style={{ borderRadius: 18, overflow: "hidden", border: "1px solid #1a1f2e", background: "#10131a" }}>
             <img src="https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=600&q=80&fit=crop&crop=faces&h=220" alt="Professional presenting data" style={{ width: "100%", height: 180, objectFit: "cover", display: "block" }} loading="lazy" />
             <div style={{ padding: "24px 24px" }}>
-              <div style={{ fontSize: 18, color: "#f5b731", marginBottom: 8 }}>★★★★★</div>
+              <div style={{ fontSize: 18, color: "#f5b731", marginBottom: 8 }}>■ ■ ■ ■ ■</div>
               <p style={{ fontSize: 14, color: "#eef0f6", lineHeight: 1.7, fontStyle: "italic", marginBottom: 16 }}>"We replaced our entire Excel-based FP&A stack in one afternoon. The AI Copilot caught a $400K variance our team missed for two months straight."</p>
               <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
                 <div style={{ width: 36, height: 36, borderRadius: 10, background: "linear-gradient(135deg, #60a5fa20, #a78bfa10)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12, fontWeight: 800, color: "#60a5fa" }}>JK</div>
@@ -7289,7 +7289,7 @@ const LandingPage = ({ onLogin }) => {
           <div style={{ borderRadius: 18, overflow: "hidden", border: "1px solid #1a1f2e", background: "#10131a" }}>
             <img src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=600&q=80&fit=crop&crop=faces&h=220" alt="Team reviewing financials" style={{ width: "100%", height: 180, objectFit: "cover", display: "block" }} loading="lazy" />
             <div style={{ padding: "24px 24px" }}>
-              <div style={{ fontSize: 18, color: "#f5b731", marginBottom: 8 }}>★★★★★</div>
+              <div style={{ fontSize: 18, color: "#f5b731", marginBottom: 8 }}>■ ■ ■ ■ ■</div>
               <p style={{ fontSize: 14, color: "#eef0f6", lineHeight: 1.7, fontStyle: "italic", marginBottom: 16 }}>"The scenario modeling alone is worth the subscription. We ran 14 what-if scenarios for our board meeting — something that used to take our team a full week."</p>
               <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
                 <div style={{ width: 36, height: 36, borderRadius: 10, background: "linear-gradient(135deg, #3dd9a020, #60a5fa10)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12, fontWeight: 800, color: "#3dd9a0" }}>SR</div>
@@ -7304,7 +7304,7 @@ const LandingPage = ({ onLogin }) => {
         {/* Full-width featured story */}
         <div style={{ marginTop: 16, borderRadius: 18, overflow: "hidden", border: "1px solid #1a1f2e", background: "#10131a", display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1.3fr 1fr" }}>
           <div style={{ padding: "36px 32px", display: "flex", flexDirection: "column", justifyContent: "center" }}>
-            <div style={{ fontSize: 18, color: "#f5b731", marginBottom: 8 }}>★★★★★</div>
+            <div style={{ fontSize: 18, color: "#f5b731", marginBottom: 8 }}>■ ■ ■ ■ ■</div>
             <p style={{ fontSize: 18, fontWeight: 500, color: "#eef0f6", lineHeight: 1.65, fontStyle: "italic", marginBottom: 20 }}>"Finally, an FP&A tool that doesn't require a 6-month implementation and a team of consultants. We were live with real data in under an hour. The AI reasoning is what sold us — our CFO can actually trust the numbers because she can see exactly how they were derived."</p>
             <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
               <div style={{ width: 40, height: 40, borderRadius: 12, background: "linear-gradient(135deg, #a78bfa20, #60a5fa10)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 14, fontWeight: 800, color: "#a78bfa" }}>ML</div>
@@ -7384,7 +7384,7 @@ const LandingPage = ({ onLogin }) => {
           <div style={{ padding: "48px 40px", background: "linear-gradient(135deg, #0b0c10, #10131a)", display: "flex", alignItems: "center", justifyContent: "center", position: "relative" }}>
             <div style={{ position: "absolute", inset: 0, background: "radial-gradient(circle at 60% 40%, rgba(161,129,247,0.06), transparent 60%)", pointerEvents: "none" }} />
             <div style={{ textAlign: "center", position: "relative" }}>
-              <div style={{ width: 80, height: 80, borderRadius: 20, background: "linear-gradient(135deg, #a78bfa20, #60a5fa10)", border: "1px solid #a78bfa15", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 20px", fontSize: 36 }}>🧠</div>
+              <div style={{ width: 80, height: 80, borderRadius: 20, background: "linear-gradient(135deg, #a78bfa20, #60a5fa10)", border: "1px solid #a78bfa15", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 20px", fontSize: 36 }}>◎</div>
               <div style={{ fontSize: 22, fontWeight: 800, color: "#eef0f6", marginBottom: 6 }}>Powered by Claude</div>
               <p style={{ fontSize: 13, color: "#636d84", lineHeight: 1.6, maxWidth: 280 }}>Enterprise-grade AI reasoning with visible thought process, SHAP explanations, and confidence intervals.</p>
               <div style={{ display: "flex", gap: 8, justifyContent: "center", marginTop: 16 }}>

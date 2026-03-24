@@ -79,7 +79,7 @@ export default function BudgetPlanningPage() {
         <div style={{ display:"grid",gridTemplateColumns:"1fr 1.5fr",borderRadius:18,overflow:"hidden",border:`1px solid ${c.b}`,background:c.s }}>
           <img src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=400&q=80&fit=crop&crop=faces" alt="Finance team" style={{ width:"100%",height:"100%",objectFit:"cover",minHeight:220 }} loading="lazy" />
           <div style={{ padding:"32px 28px",display:"flex",flexDirection:"column",justifyContent:"center" }}>
-            <div style={{ fontSize:16,color:c.am,marginBottom:8 }}>★★★★★</div>
+            <div style={{ fontSize:16,color:c.am,marginBottom:8 }}>■ ■ ■ ■ ■</div>
             <p style={{ fontSize:16,color:c.t,lineHeight:1.7,fontStyle:"italic",marginBottom:16 }}>"We went from a 6-week budget cycle to 3 days. The AI caught assumptions our team had been copy-pasting from last year's plan without questioning."</p>
             <div style={{ fontSize:12,fontWeight:700,color:c.t }}>Director of FP&A</div>
             <div style={{ fontSize:10,color:c.tf }}>Growth Stage SaaS · $32M ARR</div>

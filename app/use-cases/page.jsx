@@ -9,23 +9,23 @@ export default function UseCasesIndex() {
   const c = { bg:"#06080c",s:"#10131a",b:"#1a1f2e",t:"#eef0f6",td:"#636d84",tf:"#3d4558",ac:"#5b9cf5",pu:"#a181f7",gn:"#3dd9a0",am:"#f5b731",cy:"#2dd4d0" };
 
   const functions = [
-    { title:"For Finance Teams", desc:"AI-native FP&A with variance detection, scenario modeling, and natural language querying. Replace 6 tools with one platform.", href:"/use-cases/finance", color:c.ac, badge:"Flagship", icon:"📊" },
-    { title:"Budget Planning & Forecasting", desc:"Driver-based budgeting with rolling forecasts, what-if scenarios, and ML-powered accuracy tracking.", href:"/use-cases/budget-planning", color:c.gn, icon:"📋" },
-    { title:"Financial Consolidation", desc:"Multi-entity consolidation with automatic intercompany elimination, real-time FX rates, and one-click period close.", href:"/use-cases/consolidation", color:c.pu, icon:"🏢" },
-    { title:"Revenue Forecasting", desc:"ML ensemble models with 96.8% accuracy, SHAP feature importance, live sensitivity sliders, and bear/base/bull scenarios.", href:"/use-cases/forecasting", color:c.am, badge:"ML", icon:"🤖" },
-    { title:"Revenue Planning", desc:"Driver-based revenue plans across any granularity. Pipeline, bookings, expansion, and churn in one unified model.", href:"/use-cases/revenue-planning", color:c.ac, badge:"New", icon:"💰" },
-    { title:"Headcount Planning", desc:"Align with HR on budgeted vs actual headcount. See the P&L impact of every hire and model org design scenarios.", href:"/use-cases/headcount-planning", color:c.pu, badge:"Roadmap", icon:"👥" },
-    { title:"Month-End Close", desc:"Checklist-driven close workflow with task assignment, owner tracking, category grouping, and burndown analytics.", href:"/", color:c.gn, icon:"✅" },
-    { title:"Investor Metrics & Reporting", desc:"Board-ready SaaS metrics, cohort analysis, fundraising readiness scorecards, and one-click PDF export.", href:"/", color:c.cy, icon:"📈" },
-    { title:"P&L, Cash Flow & Balance Sheet", desc:"Automated three-statement model with real-time variance detection, budget-to-actual comparison, and drill-down detail.", href:"/", color:c.am, icon:"📑" },
-    { title:"SaaS FP&A Guide", desc:"From ARR to Rule of 40 — every metric, benchmark, and best practice modern SaaS finance teams need.", href:"/use-cases/saas-fpa", color:c.ac, badge:"Guide", icon:"📖" },
+    { title:"For Finance Teams", desc:"AI-native FP&A with variance detection, scenario modeling, and natural language querying. Replace 6 tools with one platform.", href:"/use-cases/finance", color:c.ac, badge:"Flagship", icon:"◆" },
+    { title:"Budget Planning & Forecasting", desc:"Driver-based budgeting with rolling forecasts, what-if scenarios, and ML-powered accuracy tracking.", href:"/use-cases/budget-planning", color:c.gn, icon:"▣" },
+    { title:"Financial Consolidation", desc:"Multi-entity consolidation with automatic intercompany elimination, real-time FX rates, and one-click period close.", href:"/use-cases/consolidation", color:c.pu, icon:"◈" },
+    { title:"Revenue Forecasting", desc:"ML ensemble models with 96.8% accuracy, SHAP feature importance, live sensitivity sliders, and bear/base/bull scenarios.", href:"/use-cases/forecasting", color:c.am, badge:"ML", icon:"◎" },
+    { title:"Revenue Planning", desc:"Driver-based revenue plans across any granularity. Pipeline, bookings, expansion, and churn in one unified model.", href:"/use-cases/revenue-planning", color:c.ac, badge:"New", icon:"◉" },
+    { title:"Headcount Planning", desc:"Align with HR on budgeted vs actual headcount. See the P&L impact of every hire and model org design scenarios.", href:"/use-cases/headcount-planning", color:c.pu, badge:"Roadmap", icon:"◇" },
+    { title:"Month-End Close", desc:"Checklist-driven close workflow with task assignment, owner tracking, category grouping, and burndown analytics.", href:"/", color:c.gn, icon:"■" },
+    { title:"Investor Metrics & Reporting", desc:"Board-ready SaaS metrics, cohort analysis, fundraising readiness scorecards, and one-click PDF export.", href:"/", color:c.cy, icon:"▲" },
+    { title:"P&L, Cash Flow & Balance Sheet", desc:"Automated three-statement model with real-time variance detection, budget-to-actual comparison, and drill-down detail.", href:"/", color:c.am, icon:"▧" },
+    { title:"SaaS FP&A Guide", desc:"From ARR to Rule of 40 — every metric, benchmark, and best practice modern SaaS finance teams need.", href:"/use-cases/saas-fpa", color:c.ac, badge:"Guide", icon:"◻" },
   ];
 
   const industries = [
-    { title:"SaaS & Software", desc:"ARR modeling, cohort retention, NDR tracking, pipeline-weighted forecasts, and Rule of 40 dashboards. Built for subscription businesses.", metrics:"$48.6M ARR tracked · 118% NDR · 3.2% MAPE", color:c.ac, icon:"💻" },
-    { title:"E-Commerce & DTC", desc:"Revenue per channel, COGS by SKU, inventory cost modeling, seasonal demand planning, and promotional impact analysis.", metrics:"Multi-channel P&L · SKU-level margins · Seasonal forecasting", color:c.gn, icon:"🛍️" },
-    { title:"Professional Services", desc:"Utilization rate tracking, project profitability, resource capacity planning, and backlog-to-revenue conversion.", metrics:"Revenue per billable hour · Utilization targets · Project margins", color:c.pu, icon:"💼" },
-    { title:"Manufacturing", desc:"BOM cost analysis, production volume planning, supply chain cost modeling, and capacity-constrained forecasting.", metrics:"BOM margins · Capacity planning · Volume scenarios", color:c.am, icon:"🏭" },
+    { title:"SaaS & Software", desc:"ARR modeling, cohort retention, NDR tracking, pipeline-weighted forecasts, and Rule of 40 dashboards. Built for subscription businesses.", metrics:"$48.6M ARR tracked · 118% NDR · 3.2% MAPE", color:c.ac, icon:"▦" },
+    { title:"E-Commerce & DTC", desc:"Revenue per channel, COGS by SKU, inventory cost modeling, seasonal demand planning, and promotional impact analysis.", metrics:"Multi-channel P&L · SKU-level margins · Seasonal forecasting", color:c.gn, icon:"◆" },
+    { title:"Professional Services", desc:"Utilization rate tracking, project profitability, resource capacity planning, and backlog-to-revenue conversion.", metrics:"Revenue per billable hour · Utilization targets · Project margins", color:c.pu, icon:"▪" },
+    { title:"Manufacturing", desc:"BOM cost analysis, production volume planning, supply chain cost modeling, and capacity-constrained forecasting.", metrics:"BOM margins · Capacity planning · Volume scenarios", color:c.am, icon:"◧" },
   ];
 
   const testimonials = [
@@ -125,7 +125,7 @@ export default function UseCasesIndex() {
               <div key={i} className="uc-card" style={{ display:"grid",gridTemplateColumns:"80px 1fr",gap:24,alignItems:"center",background:c.s,border:`1px solid ${c.b}`,borderRadius:18,padding:"32px 30px",animation:`fadeUp 0.4s ease ${i*0.1}s both` }}>
                 <img src={t.photo} alt="" style={{ width:72,height:72,borderRadius:18,objectFit:"cover",border:`2px solid ${c.b}` }} loading="lazy" />
                 <div>
-                  <div style={{ fontSize:16,color:c.am,marginBottom:10 }}>★★★★★</div>
+                  <div style={{ fontSize:16,color:c.am,marginBottom:10 }}>■ ■ ■ ■ ■</div>
                   <p style={{ fontSize:15,color:c.t,lineHeight:1.7,fontStyle:"italic",marginBottom:12 }}>{`"${t.quote}"`}</p>
                   <div style={{ fontSize:12,fontWeight:700,color:c.t }}>{t.role}</div>
                   <div style={{ fontSize:10,color:c.tf }}>{t.company}</div>

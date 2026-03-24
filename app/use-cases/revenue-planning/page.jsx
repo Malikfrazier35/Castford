@@ -53,7 +53,7 @@ export default function RevenuePlanningPage() {
       <section style={{ padding:"40px 48px 60px",maxWidth:900,margin:"0 auto" }}>
         <div style={{ display:"grid",gridTemplateColumns:"1.5fr 1fr",borderRadius:18,overflow:"hidden",border:`1px solid ${c.b}`,background:c.s }}>
           <div style={{ padding:"32px 28px" }}>
-            <div style={{ fontSize:16,color:c.am,marginBottom:8 }}>★★★★★</div>
+            <div style={{ fontSize:16,color:c.am,marginBottom:8 }}>■ ■ ■ ■ ■</div>
             <p style={{ fontSize:16,color:c.t,lineHeight:1.7,fontStyle:"italic",marginBottom:16 }}>"We finally see true revenue composition — not just top-line. The cohort retention view alone changed how we think about growth."</p>
             <div style={{ fontSize:12,fontWeight:700,color:c.t }}>Head of Revenue Operations</div>
             <div style={{ fontSize:10,color:c.tf }}>SaaS · $42M ARR</div>
