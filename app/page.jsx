@@ -7643,95 +7643,107 @@ const DEMO_TABS = [
     kpis: [{ l: "Connectors", v: "15+" }, { l: "Sync", v: "Real-time" }, { l: "Setup", v: "< 5 min" }] },
 ];
 
-const ProductDemo = ({ enterDemo }) => {
+const ProductDemo = ({ enterDemo, lp, lpMode }) => {
   const [tab, setTab] = useState("planning");
   const isMobile = useMediaQuery("(max-width: 768px)");
   const active = DEMO_TABS.find(d => d.id === tab) || DEMO_TABS[0];
+  const t = lpMode === "dark" ? { bg: "#0b0c10", surface: "rgba(16,19,26,0.7)", border: "#1e2230", text: "#f0f2f5", dim: "#8b92a5", faint: "#3d4558", accent: "#60a5fa", green: "#34d399", purple: "#a78bfa" } : { bg: "#f0f2f5", surface: "rgba(255,255,255,0.8)", border: "#e0e3ea", text: "#0f1118", dim: "#636d84", faint: "#9ea5b8", accent: "#3b82f6", green: "#10b981", purple: "#8b5cf6" };
   return (
-    <div style={{ padding: "80px 48px", maxWidth: 1100, margin: "0 auto" }}>
-      <div style={{ textAlign: "center", marginBottom: 40 }}>
-        <div style={{ display: "inline-block", padding: "6px 14px", borderRadius: 20, background: "rgba(96,165,250,0.08)", border: "1px solid rgba(96,165,250,0.12)", fontSize: 10, fontWeight: 700, color: "#60a5fa", marginBottom: 16, letterSpacing: "0.08em", textTransform: "uppercase" }}>Product Tour</div>
-        <h2 style={{ fontSize: 36, fontWeight: 800, letterSpacing: "-0.03em", marginBottom: 12 }}>See it in action</h2>
-        <p style={{ fontSize: 15, color: "#8b92a5", maxWidth: 480, margin: "0 auto" }}>Explore the platform by use case. Click a tab to see how each module works.</p>
+    <div style={{ padding: isMobile ? "40px 20px" : "80px 48px", maxWidth: 1100, margin: "0 auto", position: "relative" }}>
+      {/* Ambient glow */}
+      <div style={{ position: "absolute", top: "20%", left: "50%", transform: "translate(-50%, -50%)", width: 500, height: 300, borderRadius: "50%", background: `radial-gradient(ellipse, ${lp.accent}05 0%, transparent 70%)`, pointerEvents: "none" }} />
+      <div style={{ textAlign: "center", marginBottom: 48, position: "relative" }}>
+        <div style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "7px 16px", borderRadius: 24, background: `${lp.accent}0a`, border: `1px solid ${lp.accent}14`, fontSize: 10, fontWeight: 700, color: lp.accent, marginBottom: 20, letterSpacing: "0.08em", textTransform: "uppercase" }}>
+          <Eye size={12} color={lp.accent} strokeWidth={2.5} />Product Tour
+        </div>
+        <h2 style={{ fontSize: isMobile ? 28 : 38, fontWeight: 800, letterSpacing: "-0.03em", marginBottom: 12, color: lp.text }}>See it in action</h2>
+        <p style={{ fontSize: 16, color: lp.textDim, maxWidth: 500, margin: "0 auto", lineHeight: 1.7 }}>Explore the platform by use case. Click a tab to see how each module works.</p>
       </div>
       {/* Tabs */}
-      <div style={{ display: "flex", justifyContent: "center", gap: 6, marginBottom: 32 }}>
+      <div style={{ display: "flex", justifyContent: "center", gap: 6, marginBottom: 36 }}>
         {DEMO_TABS.map(d => (
           <button key={d.id} onClick={() => setTab(d.id)} style={{
-            fontSize: 13, padding: "10px 20px", borderRadius: 10, border: tab === d.id ? "1px solid #60a5fa" : "1px solid #1e2230",
-            background: tab === d.id ? "rgba(96,165,250,0.08)" : "transparent",
-            color: tab === d.id ? "#60a5fa" : "#8b92a5", cursor: "pointer", fontFamily: "inherit", fontWeight: 600, transition: "all 0.2s",
+            fontSize: 13, padding: "10px 22px", borderRadius: 12, border: tab === d.id ? `1px solid ${lp.accent}` : `1px solid ${lp.border}`,
+            background: tab === d.id ? `${lp.accent}0c` : "transparent",
+            color: tab === d.id ? lp.accent : lp.textDim, cursor: "pointer", fontFamily: "inherit", fontWeight: 600, transition: "all 0.2s",
+            boxShadow: tab === d.id ? `0 4px 16px ${lp.accent}10` : "none",
           }}>{d.label}</button>
         ))}
       </div>
       {/* Content + Mockup */}
-      <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: isMobile ? 20 : 32, alignItems: "center" }}>
+      <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: isMobile ? 20 : 36, alignItems: "center" }}>
         <div>
-          <h3 style={{ fontSize: 28, fontWeight: 800, letterSpacing: "-0.02em", marginBottom: 12 }}>{active.title}</h3>
-          <p style={{ fontSize: 15, color: "#8b92a5", lineHeight: 1.7, marginBottom: 24 }}>{active.sub}</p>
-          <div style={{ display: "flex", gap: 16, marginBottom: 24 }}>
-            {active.kpis.map(k => (
-              <div key={k.l} style={{ padding: "10px 16px", borderRadius: 10, background: "rgba(16,19,26,0.7)", border: "1px solid #1e2230" }}>
-                <div style={{ fontSize: 18, fontWeight: 800, fontFamily: "'JetBrains Mono', monospace", marginBottom: 2 }}>{k.v}</div>
-                <div style={{ fontSize: 10, color: "#3d4558", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.06em" }}>{k.l}</div>
+          <h3 style={{ fontSize: 28, fontWeight: 800, letterSpacing: "-0.02em", marginBottom: 14, color: lp.text }}>{active.title}</h3>
+          <p style={{ fontSize: 15, color: lp.textDim, lineHeight: 1.75, marginBottom: 24 }}>{active.sub}</p>
+          <div style={{ display: "flex", gap: 14, marginBottom: 28 }}>
+            {active.kpis.map((k, i) => (
+              <div key={k.l} style={{ padding: "12px 18px", borderRadius: 12, background: lpMode === "dark" ? "rgba(16,19,26,0.7)" : "rgba(255,255,255,0.8)", border: `1px solid ${lp.border}`, backdropFilter: "blur(8px)", transition: "all 0.15s" }}
+                onMouseEnter={e => e.currentTarget.style.borderColor = `${[lp.accent, lp.green, lp.purple][i]}30`}
+                onMouseLeave={e => e.currentTarget.style.borderColor = lp.border}
+              >
+                <div style={{ fontSize: 20, fontWeight: 800, fontFamily: "'JetBrains Mono', monospace", marginBottom: 3, color: [lp.accent, lp.green, lp.purple][i] }}>{k.v}</div>
+                <div style={{ fontSize: 9, color: lp.textFaint, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.06em" }}>{k.l}</div>
               </div>
             ))}
           </div>
-          <button onClick={enterDemo} style={{ fontSize: 14, padding: "12px 24px", borderRadius: 10, border: "none", background: "linear-gradient(135deg, #60a5fa, #a78bfa)", color: "#fff", cursor: "pointer", fontFamily: "inherit", fontWeight: 700, boxShadow: "0 4px 16px rgba(96,165,250,0.25)" }}>Try This Feature</button>
+          <button onClick={enterDemo} style={{ fontSize: 14, padding: "14px 28px", borderRadius: 12, border: "none", background: `linear-gradient(135deg, ${lp.gradFrom}, ${lp.gradTo})`, color: "#fff", cursor: "pointer", fontFamily: "inherit", fontWeight: 700, boxShadow: `0 6px 24px ${lp.accent}25`, transition: "all 0.2s" }}
+            onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-1px)"; e.currentTarget.style.boxShadow = `0 10px 32px ${lp.accent}35`; }}
+            onMouseLeave={e => { e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.boxShadow = `0 6px 24px ${lp.accent}25`; }}
+          >Try This Feature</button>
         </div>
-        {/* Browser mockup */}
-        <div style={{ background: "#0b0c10", border: "1px solid #1e2230", borderRadius: 12, padding: 4, boxShadow: "0 20px 60px rgba(0,0,0,0.4)" }}>
-          <div style={{ background: "rgba(16,19,26,0.7)", borderRadius: 13, overflow: "hidden" }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 6, padding: "10px 14px", background: "#0b0c10", borderBottom: "1px solid rgba(26,31,46,0.5)" }}>
+        {/* Browser mockup — theme aware */}
+        <div style={{ background: t.bg, border: `1px solid ${t.border}`, borderRadius: 16, padding: 4, boxShadow: lpMode === "dark" ? "0 20px 60px rgba(0,0,0,0.4)" : "0 20px 60px rgba(0,0,0,0.08)" }}>
+          <div style={{ background: t.surface, borderRadius: 13, overflow: "hidden", backdropFilter: "blur(12px)" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 6, padding: "10px 14px", background: t.bg, borderBottom: `1px solid ${t.border}60` }}>
               <div style={{ display: "flex", gap: 5 }}>{["#ef4444","#fbbf24","#22c55e"].map(cl => <div key={cl} style={{ width: 8, height: 8, borderRadius: "50%", background: cl }} />)}</div>
-              <div style={{ flex: 1, marginLeft: 8, padding: "4px 12px", borderRadius: 6, background: "#0a0a0d", border: "1px solid #1e2230", fontSize: 10, color: "#3d4558" }}>app.finance-os.app/{active.id}</div>
+              <div style={{ flex: 1, marginLeft: 8, padding: "4px 12px", borderRadius: 6, background: lpMode === "dark" ? "#0a0a0d" : "#f5f6f8", border: `1px solid ${t.border}`, fontSize: 10, color: t.faint }}>app.finance-os.app/{active.id}</div>
             </div>
             <div style={{ padding: 20, minHeight: 280 }}>
               <div style={{ display: "flex", gap: 12 }}>
-                <div style={{ width: 40, background: "#1e2230", borderRadius: 8, minHeight: 240 }} />
+                <div style={{ width: 40, background: lpMode === "dark" ? "#1e2230" : "#e5e7ec", borderRadius: 8, minHeight: 240 }} />
                 <div style={{ flex: 1 }}>
-                  <div style={{ fontSize: 13, fontWeight: 700, marginBottom: 10, color: "#f0f2f5" }}>{active.title}</div>
+                  <div style={{ fontSize: 13, fontWeight: 700, marginBottom: 10, color: t.text }}>{active.title}</div>
                   <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8, marginBottom: 16 }}>
                     {active.kpis.map((k, i) => (
-                      <div key={k.l} style={{ background: "rgba(16,19,26,0.7)", border: "1px solid #1e2230", borderRadius: 8, padding: "10px 12px" }}>
-                        <div style={{ fontSize: 14, fontWeight: 800, color: ["#60a5fa","#34d399","#a78bfa"][i], fontFamily: "'JetBrains Mono', monospace" }}>{k.v}</div>
-                        <div style={{ fontSize: 8, color: "#3d4558", marginTop: 2 }}>{k.l}</div>
+                      <div key={k.l} style={{ background: t.surface, border: `1px solid ${t.border}`, borderRadius: 10, padding: "10px 12px" }}>
+                        <div style={{ fontSize: 14, fontWeight: 800, color: [t.accent, t.green, t.purple][i], fontFamily: "'JetBrains Mono', monospace" }}>{k.v}</div>
+                        <div style={{ fontSize: 8, color: t.faint, marginTop: 2 }}>{k.l}</div>
                       </div>
                     ))}
                   </div>
                   {/* Tab-specific mockup visual */}
-                  <div style={{ height: 120, background: "linear-gradient(180deg, rgba(96,165,250,0.05), transparent)", borderRadius: 8, border: "1px solid #1e2230", overflow: "hidden", position: "relative" }}>
+                  <div style={{ height: 120, background: `linear-gradient(180deg, ${t.accent}08, transparent)`, borderRadius: 10, border: `1px solid ${t.border}`, overflow: "hidden", position: "relative" }}>
                     {active.id === "planning" && (
                       <svg width="100%" height="100%" viewBox="0 0 400 120" preserveAspectRatio="none">
-                        <defs><linearGradient id="dg-plan" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor="#60a5fa" stopOpacity="0.15"/><stop offset="100%" stopColor="#60a5fa" stopOpacity="0"/></linearGradient></defs>
+                        <defs><linearGradient id="dg-plan" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor={t.accent} stopOpacity="0.15"/><stop offset="100%" stopColor={t.accent} stopOpacity="0"/></linearGradient></defs>
                         <path d="M0,90 C40,85 80,70 120,60 C160,50 200,55 240,40 C280,25 320,30 360,20 L400,15 L400,120 L0,120 Z" fill="url(#dg-plan)"/>
-                        <path d="M0,90 C40,85 80,70 120,60 C160,50 200,55 240,40 C280,25 320,30 360,20 L400,15" fill="none" stroke="#60a5fa" strokeWidth="2"/>
-                        <path d="M0,95 C60,88 130,82 200,75 C270,68 340,55 400,50" fill="none" stroke="#3d4558" strokeWidth="1" strokeDasharray="4 3"/>
-                        <text x="360" y="12" fill="#34d399" fontSize="9" fontWeight="700">+4.3%</text>
+                        <path d="M0,90 C40,85 80,70 120,60 C160,50 200,55 240,40 C280,25 320,30 360,20 L400,15" fill="none" stroke={t.accent} strokeWidth="2"/>
+                        <path d="M0,95 C60,88 130,82 200,75 C270,68 340,55 400,50" fill="none" stroke={t.faint} strokeWidth="1" strokeDasharray="4 3"/>
+                        <text x="360" y="12" fill={t.green} fontSize="9" fontWeight="700">+4.3%</text>
                       </svg>
                     )}
                     {active.id === "copilot" && (
                       <div style={{ padding: "12px 16px", display: "flex", flexDirection: "column", gap: 6, height: "100%" }}>
-                        <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 9, color: "#a78bfa" }}><div style={{ width: 14, height: 14, borderRadius: 5, background: "#a78bfa15", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 8 }}>✦</div>FinanceOS Copilot</div>
-                        <div style={{ fontSize: 10, color: "#8b92a5", lineHeight: 1.5 }}>Revenue beat of +$2.09M is driven by enterprise outperformance. ACV expansion up 28%.</div>
+                        <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 9, color: t.purple }}><Sparkles size={12} color={t.purple} />FinanceOS Copilot</div>
+                        <div style={{ fontSize: 10, color: t.dim, lineHeight: 1.5 }}>Revenue beat of +$2.09M is driven by enterprise outperformance. ACV expansion up 28%.</div>
                         <div style={{ display: "flex", gap: 4, marginTop: "auto" }}>
-                          {["Enterprise +16.9%", "NDR 118%", "AI attach 34%"].map(t => <span key={t} style={{ fontSize: 7, padding: "2px 6px", borderRadius: 3, background: "#34d39910", color: "#34d399", fontWeight: 700 }}>{t}</span>)}
+                          {["Enterprise +16.9%", "NDR 118%", "AI attach 34%"].map(tag => <span key={tag} style={{ fontSize: 7, padding: "2px 6px", borderRadius: 3, background: `${t.green}10`, color: t.green, fontWeight: 700 }}>{tag}</span>)}
                         </div>
                       </div>
                     )}
                     {active.id === "consolidation" && (
                       <div style={{ padding: "12px 16px", display: "flex", flexDirection: "column", gap: 4 }}>
                         {[
-                          { entity: "Acme Corp (USD)", status: "Approved", color: "#34d399" },
+                          { entity: "Acme Corp (USD)", status: "Approved", color: t.green },
                           { entity: "Acme EU (EUR)", status: "In Review", color: "#fbbf24" },
-                          { entity: "Acme APAC (JPY)", status: "Pending", color: "#60a5fa" },
+                          { entity: "Acme APAC (JPY)", status: "Pending", color: t.accent },
                         ].map(e => (
-                          <div key={e.entity} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "6px 0", borderBottom: "1px solid rgba(26,31,46,0.5)" }}>
-                            <span style={{ fontSize: 10, color: "#9ea5b8" }}>{e.entity}</span>
+                          <div key={e.entity} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "6px 0", borderBottom: `1px solid ${t.border}60` }}>
+                            <span style={{ fontSize: 10, color: t.dim }}>{e.entity}</span>
                             <span style={{ fontSize: 8, fontWeight: 700, padding: "2px 6px", borderRadius: 3, background: `${e.color}10`, color: e.color }}>{e.status}</span>
                           </div>
                         ))}
-                        <div style={{ fontSize: 8, color: "#3d4558", marginTop: 4 }}>IC eliminations: 3 auto-reconciled · FX gain: +$42K</div>
+                        <div style={{ fontSize: 8, color: t.faint, marginTop: 4 }}>IC eliminations: 3 auto-reconciled · FX gain: +$42K</div>
                       </div>
                     )}
                     {active.id === "integrations" && (
@@ -7741,14 +7753,14 @@ const ProductDemo = ({ enterDemo }) => {
                           { name: "Salesforce", color: "#00A1E0", status: "●" },
                           { name: "Stripe", color: "#635BFF", status: "●" },
                           { name: "Snowflake", color: "#29B5E8", status: "●" },
-                          { name: "Plaid", color: "#fff", status: "●" },
-                          { name: "Rippling", color: "#34d399", status: "●" },
+                          { name: "Plaid", color: t.text, status: "●" },
+                          { name: "Rippling", color: t.green, status: "●" },
                           { name: "QuickBooks", color: "#2CA01C", status: "●" },
                           { name: "Xero", color: "#13B5EA", status: "○" },
-                        ].map(c => (
-                          <div key={c.name} style={{ background: "rgba(16,19,26,0.7)", border: "1px solid #1e2230", borderRadius: 6, padding: "6px 8px", textAlign: "center" }}>
-                            <div style={{ fontSize: 8, color: c.color, marginBottom: 2 }}>{c.status}</div>
-                            <div style={{ fontSize: 7, color: "#8b92a5", fontWeight: 600 }}>{c.name}</div>
+                        ].map(cc => (
+                          <div key={cc.name} style={{ background: t.surface, border: `1px solid ${t.border}`, borderRadius: 6, padding: "6px 8px", textAlign: "center" }}>
+                            <div style={{ fontSize: 8, color: cc.color, marginBottom: 2 }}>{cc.status}</div>
+                            <div style={{ fontSize: 7, color: t.dim, fontWeight: 600 }}>{cc.name}</div>
                           </div>
                         ))}
                       </div>
@@ -7889,7 +7901,7 @@ const LandingPage = ({ onLogin }) => {
                       {/* Panel title */}
                       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12, paddingBottom: 10, borderBottom: `1px solid ${lpMode === "dark" ? "#1e2230" : "#eef0f4"}` }}>
                         <span style={{ fontSize: 9, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.1em", color: lpMode === "dark" ? "#3d4558" : "#9ea5b8" }}>{menu.label}</span>
-                        {menu.label === "Integrations" && <span style={{ fontSize: 8, fontWeight: 700, padding: "2px 8px", borderRadius: 4, background: `${lp.accent}10`, color: lp.accent }}>21 CONNECTED</span>}
+                        {menu.label === "Integrations" && <span style={{ fontSize: 8, fontWeight: 700, padding: "2px 8px", borderRadius: 4, background: `${lp.accent}10`, color: lp.accent }}>40+ CONNECTED</span>}
                       </div>
                       {menu.label === "Integrations" ? (
                         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 3 }}>
@@ -8163,39 +8175,45 @@ const LandingPage = ({ onLogin }) => {
       </div>
 
       {/* ═══ Connected Platforms — Animated Logo Carousel ═══ */}
-      <div style={{ textAlign: "center", padding: isMobile ? "32px 20px 10px" : "60px 48px 10px", maxWidth: 1100, margin: "0 auto" }}>
-        <div style={{ display: "inline-block", padding: "6px 14px", borderRadius: 20, background: `${lp.purple}0a`, border: `1px solid ${lp.purple}18`, fontSize: 10, fontWeight: 700, color: lp.purple, marginBottom: 16, letterSpacing: "0.06em", textTransform: "uppercase" }}>Integrations</div>
-        <h2 style={{ fontSize: 32, fontWeight: 800, letterSpacing: "-0.03em", marginBottom: 8, color: lp.text }}>21 enterprise connectors</h2>
-        <p style={{ fontSize: 15, color: lp.textDim, maxWidth: 500, margin: "0 auto 36px", lineHeight: 1.6 }}>Payments, data infrastructure, collaboration, and AI — all connected with bi-directional sync.</p>
+      <div style={{ textAlign: "center", padding: isMobile ? "32px 20px 10px" : "60px 48px 10px", maxWidth: 1100, margin: "0 auto", position: "relative" }}>
+        {/* Ambient glow behind carousel */}
+        <div style={{ position: "absolute", top: "30%", left: "50%", transform: "translate(-50%, -50%)", width: 600, height: 300, borderRadius: "50%", background: `radial-gradient(ellipse, ${lp.purple}06 0%, transparent 70%)`, pointerEvents: "none" }} />
+        <div style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "7px 16px", borderRadius: 24, background: `linear-gradient(135deg, ${lp.purple}0c, ${lp.accent}06)`, border: `1px solid ${lp.purple}18`, fontSize: 10, fontWeight: 700, color: lp.purple, marginBottom: 20, letterSpacing: "0.08em", textTransform: "uppercase" }}>
+          <Plug size={12} color={lp.purple} strokeWidth={2.5} />Integrations
+        </div>
+        <h2 style={{ fontSize: isMobile ? 28 : 36, fontWeight: 800, letterSpacing: "-0.03em", marginBottom: 10, color: lp.text }}>40+ enterprise connectors</h2>
+        <p style={{ fontSize: 16, color: lp.textDim, maxWidth: 540, margin: "0 auto 40px", lineHeight: 1.7 }}>ERP, CRM, HRIS, billing, data warehouses, and AI — all connected with bi-directional sync.</p>
 
-        {/* Infinite scrolling logo carousel — Row 1 */}
+        {/* Infinite scrolling logo carousel — Row 1: ERP, CRM, Billing */}
         <div style={{ overflow: "hidden", position: "relative", marginBottom: 12 }}>
-          <div style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: 60, background: `linear-gradient(90deg, ${lp.bg}, transparent)`, zIndex: 2 }} />
-          <div style={{ position: "absolute", right: 0, top: 0, bottom: 0, width: 60, background: `linear-gradient(270deg, ${lp.bg}, transparent)`, zIndex: 2 }} />
-          <div className="fos-scroll-row1" style={{ display: "flex", gap: 16, animation: "fosScrollLeft 40s linear infinite", width: "max-content" }}>
+          <div style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: 80, background: `linear-gradient(90deg, ${lp.bg}, transparent)`, zIndex: 2 }} />
+          <div style={{ position: "absolute", right: 0, top: 0, bottom: 0, width: 80, background: `linear-gradient(270deg, ${lp.bg}, transparent)`, zIndex: 2 }} />
+          <div className="fos-scroll-row1" style={{ display: "flex", gap: 14, animation: "fosScrollLeft 50s linear infinite", width: "max-content" }}>
             {[...Array(2)].map((_, dup) => [
-              { name: "Stripe", logo: "https://cdn.brandfetch.io/id20mQyGeY/w/512/h/512/theme/dark/icon.jpeg", desc: "Payment processing & billing automation", color: "#635BFF" },
-              { name: "Salesforce", logo: "https://cdn.brandfetch.io/id7BZGENzY/w/512/h/512/theme/dark/icon.jpeg", desc: "CRM & revenue pipeline data", color: "#00A1E0" },
-              { name: "Plaid", logo: "https://cdn.brandfetch.io/idRpZN4YfF/w/512/h/512/theme/dark/icon.jpeg", desc: "Bank account & transaction data", color: "#000000" },
-              { name: "QuickBooks", logo: "https://cdn.brandfetch.io/idGbox7bYU/w/512/h/512/theme/dark/icon.jpeg", desc: "GL, AP/AR & journal entries", color: "#2CA01C" },
-              { name: "Slack", logo: "https://cdn.brandfetch.io/id3MpTOpY-/w/512/h/512/theme/dark/icon.jpeg", desc: "Alerts, approvals & team messaging", color: "#4A154B" },
-              { name: "AWS", logo: "https://cdn.brandfetch.io/idexQYsBMb/w/512/h/512/theme/dark/icon.jpeg", desc: "Cloud infrastructure & compute", color: "#FF9900" },
-              { name: "HubSpot", logo: "https://cdn.brandfetch.io/id7Xno7kbh/w/512/h/512/theme/dark/icon.jpeg", desc: "Marketing & sales pipeline data", color: "#FF7A59" },
-              { name: "Anthropic", logo: "https://cdn.brandfetch.io/idVr2bwXbr/w/512/h/512/theme/dark/icon.jpeg", desc: "AI reasoning & Copilot engine", color: "#D4A574", featured: true },
-              { name: "DocuSign", logo: "https://cdn.brandfetch.io/idFJP03YdT/w/512/h/512/theme/dark/icon.jpeg", desc: "Contract & eSignature workflows", color: "#4088FF" },
-              { name: "Ramp", logo: "https://cdn.brandfetch.io/id6MWlXqPb/w/512/h/512/theme/dark/icon.jpeg", desc: "Corporate card & expense data", color: "#3ECF8E" },
-              { name: "Intercom", logo: "https://cdn.brandfetch.io/idKAzczsaW/w/512/h/512/theme/dark/icon.jpeg", desc: "Customer support & engagement", color: "#1F8DED" },
+              { name: "NetSuite", logo: "https://cdn.brandfetch.io/idTwkfAqSW/w/512/h/512/theme/dark/icon.jpeg", desc: "ERP — GL, AP/AR, inventory, consolidation", color: "#1B3D6D", tag: "ERP" },
+              { name: "SAP", logo: "https://cdn.brandfetch.io/idZoDPk1Yi/w/512/h/512/theme/dark/icon.jpeg", desc: "Enterprise resource planning & financials", color: "#0FAAFF", tag: "ERP" },
+              { name: "Salesforce", logo: "https://cdn.brandfetch.io/id7BZGENzY/w/512/h/512/theme/dark/icon.jpeg", desc: "CRM & revenue pipeline data", color: "#00A1E0", tag: "CRM" },
+              { name: "Stripe", logo: "https://cdn.brandfetch.io/id20mQyGeY/w/512/h/512/theme/dark/icon.jpeg", desc: "Payment processing & billing automation", color: "#635BFF", tag: "BILLING" },
+              { name: "Workday", logo: "https://cdn.brandfetch.io/id-sVJ3JYq/w/512/h/512/theme/dark/icon.jpeg", desc: "HRIS, payroll & workforce planning", color: "#F68D2E", tag: "HRIS" },
+              { name: "QuickBooks", logo: "https://cdn.brandfetch.io/idGbox7bYU/w/512/h/512/theme/dark/icon.jpeg", desc: "GL, AP/AR & journal entries", color: "#2CA01C", tag: "ERP" },
+              { name: "Sage Intacct", logo: "https://cdn.brandfetch.io/idwpq29FHE/w/512/h/512/theme/dark/icon.jpeg", desc: "Cloud accounting & multi-entity", color: "#00DC00", tag: "ERP" },
+              { name: "Zuora", logo: "https://cdn.brandfetch.io/idhS0WIrQ7/w/512/h/512/theme/dark/icon.jpeg", desc: "Subscription billing & revenue recognition", color: "#2E2E38", tag: "BILLING" },
+              { name: "HubSpot", logo: "https://cdn.brandfetch.io/id7Xno7kbh/w/512/h/512/theme/dark/icon.jpeg", desc: "Marketing & sales pipeline data", color: "#FF7A59", tag: "CRM" },
+              { name: "Xero", logo: "https://cdn.brandfetch.io/idLSqp03Dv/w/512/h/512/theme/dark/icon.jpeg", desc: "Cloud accounting & invoicing", color: "#13B5EA", tag: "ERP" },
+              { name: "Plaid", logo: "https://cdn.brandfetch.io/idRpZN4YfF/w/512/h/512/theme/dark/icon.jpeg", desc: "Bank account & transaction data", color: "#000000", tag: "BANKING" },
+              { name: "Anthropic", logo: "https://cdn.brandfetch.io/idVr2bwXbr/w/512/h/512/theme/dark/icon.jpeg", desc: "AI reasoning & Copilot engine", color: "#D4A574", featured: true, tag: "AI" },
+              { name: "Ramp", logo: "https://cdn.brandfetch.io/id6MWlXqPb/w/512/h/512/theme/dark/icon.jpeg", desc: "Corporate card & expense data", color: "#3ECF8E", tag: "EXPENSE" },
+              { name: "Dynamics 365", logo: "https://cdn.brandfetch.io/idchmboHEZ/w/512/h/512/theme/dark/icon.jpeg", desc: "Microsoft ERP & business central", color: "#002050", tag: "ERP" },
             ].map((item, i) => (
-              <div key={`${dup}-${item.name}`} className="fos-logo-card" style={{ display: "flex", alignItems: "center", gap: 12, padding: "12px 20px", borderRadius: 14, background: lp.cardBg, border: `1px solid ${item.featured ? `${lp.purple}30` : lp.border}`, backdropFilter: "blur(8px)", flexShrink: 0, minWidth: 200, cursor: "default", transition: "all 0.25s cubic-bezier(0.22,1,0.36,1)", position: "relative" }}
+              <div key={`${dup}-${item.name}`} className="fos-logo-card" style={{ display: "flex", alignItems: "center", gap: 12, padding: "12px 18px", borderRadius: 14, background: lpMode === "dark" ? `linear-gradient(135deg, rgba(16,19,26,0.8), rgba(16,19,26,0.5))` : `linear-gradient(135deg, rgba(248,249,251,0.95), rgba(255,255,255,0.8))`, border: `1px solid ${item.featured ? `${lp.purple}30` : lp.border}`, backdropFilter: "blur(12px)", flexShrink: 0, minWidth: 195, cursor: "default", transition: "all 0.25s cubic-bezier(0.22,1,0.36,1)", position: "relative" }}
                 onMouseEnter={e => { e.currentTarget.style.borderColor = `${item.color}50`; e.currentTarget.style.transform = "translateY(-3px) scale(1.02)"; e.currentTarget.style.boxShadow = `0 12px 32px ${item.color}15`; e.currentTarget.querySelector(".fos-logo-desc").style.opacity = "1"; e.currentTarget.querySelector(".fos-logo-desc").style.transform = "translateY(0)"; }}
                 onMouseLeave={e => { e.currentTarget.style.borderColor = item.featured ? `${lp.purple}30` : lp.border; e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = "none"; e.currentTarget.querySelector(".fos-logo-desc").style.opacity = "0"; e.currentTarget.querySelector(".fos-logo-desc").style.transform = "translateY(4px)"; }}
               >
                 <img src={item.logo} alt={item.name} style={{ width: 32, height: 32, borderRadius: 8, objectFit: "cover", flexShrink: 0 }} loading="lazy" onError={e => { e.target.style.display = "none"; }} />
                 <div style={{ textAlign: "left" }}>
                   <div style={{ fontSize: 13, fontWeight: 700, color: lp.text, lineHeight: 1.2 }}>{item.name}</div>
-                  {item.featured && <span style={{ fontSize: 7, fontWeight: 800, padding: "1px 5px", borderRadius: 3, background: `${lp.purple}15`, color: lp.purple }}>AI PARTNER</span>}
+                  <div style={{ fontSize: 8, fontWeight: 700, color: item.featured ? lp.purple : lp.textFaint, letterSpacing: "0.05em", marginTop: 1 }}>{item.featured ? "AI PARTNER" : item.tag}</div>
                 </div>
-                {/* Hover tooltip description */}
                 <div className="fos-logo-desc" style={{ position: "absolute", bottom: -36, left: "50%", transform: "translateX(-50%) translateY(4px)", background: lpMode === "dark" ? "#1a1f2e" : "#1a1f2e", color: "#eef0f6", padding: "6px 12px", borderRadius: 8, fontSize: 10, fontWeight: 600, whiteSpace: "nowrap", boxShadow: "0 8px 24px rgba(0,0,0,0.3)", opacity: 0, transition: "all 0.2s ease", zIndex: 20, pointerEvents: "none" }}>
                   {item.desc}
                 </div>
@@ -8204,30 +8222,70 @@ const LandingPage = ({ onLogin }) => {
           </div>
         </div>
 
-        {/* Row 2 — reverse direction */}
-        <div style={{ overflow: "hidden", position: "relative", marginBottom: 28 }}>
-          <div style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: 60, background: `linear-gradient(90deg, ${lp.bg}, transparent)`, zIndex: 2 }} />
-          <div style={{ position: "absolute", right: 0, top: 0, bottom: 0, width: 60, background: `linear-gradient(270deg, ${lp.bg}, transparent)`, zIndex: 2 }} />
-          <div className="fos-scroll-row2" style={{ display: "flex", gap: 16, animation: "fosScrollRight 35s linear infinite", width: "max-content" }}>
+        {/* Row 2 — Data, HRIS, Ops (reverse direction) */}
+        <div style={{ overflow: "hidden", position: "relative", marginBottom: 12 }}>
+          <div style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: 80, background: `linear-gradient(90deg, ${lp.bg}, transparent)`, zIndex: 2 }} />
+          <div style={{ position: "absolute", right: 0, top: 0, bottom: 0, width: 80, background: `linear-gradient(270deg, ${lp.bg}, transparent)`, zIndex: 2 }} />
+          <div className="fos-scroll-row2" style={{ display: "flex", gap: 14, animation: "fosScrollRight 45s linear infinite", width: "max-content" }}>
             {[...Array(2)].map((_, dup) => [
-              { name: "Supabase", logo: "https://cdn.brandfetch.io/id4UDCjQ1K/w/512/h/512/theme/dark/icon.jpeg", desc: "Database, auth & real-time sync", color: "#3ECF8E" },
-              { name: "Vercel", logo: "https://cdn.brandfetch.io/idnMHSR0JC/w/512/h/512/theme/dark/icon.jpeg", desc: "Edge hosting & CI/CD", color: "#000000" },
-              { name: "Cloudflare", logo: "https://cdn.brandfetch.io/idnLPsmXME/w/512/h/512/theme/dark/icon.jpeg", desc: "Security, CDN & DDoS protection", color: "#F48120" },
-              { name: "Square", logo: "https://cdn.brandfetch.io/idMpz3PQzT/w/512/h/512/theme/dark/icon.jpeg", desc: "POS & payment data", color: "#3E4348" },
-              { name: "Gmail", logo: "https://cdn.brandfetch.io/idfJzomMB4/w/512/h/512/theme/dark/icon.jpeg", desc: "Email notifications & alerts", color: "#EA4335" },
-              { name: "Calendly", logo: "https://cdn.brandfetch.io/idhF37bGDf/w/512/h/512/theme/dark/icon.jpeg", desc: "Meeting scheduling & booking", color: "#006BFF" },
-              { name: "Linear", logo: "https://cdn.brandfetch.io/idYHMJchZG/w/512/h/512/theme/dark/icon.jpeg", desc: "Project tracking & sprint data", color: "#5E6AD2" },
-              { name: "S&P Global", logo: "https://cdn.brandfetch.io/idkiDKNT4W/w/512/h/512/theme/dark/icon.jpeg", desc: "Market data & benchmarks", color: "#0033A0" },
-              { name: "FactSet", logo: "https://cdn.brandfetch.io/id9nNqJr4d/w/512/h/512/theme/dark/icon.jpeg", desc: "Financial data & analytics", color: "#1679C4" },
-              { name: "Morningstar", logo: "https://cdn.brandfetch.io/id5E23WfPK/w/512/h/512/theme/dark/icon.jpeg", desc: "Investment research & ratings", color: "#FC5301" },
+              { name: "Snowflake", logo: "https://cdn.brandfetch.io/idU0VYFfaF/w/512/h/512/theme/dark/icon.jpeg", desc: "Cloud data warehouse & analytics", color: "#29B5E8", tag: "DATA" },
+              { name: "Databricks", logo: "https://cdn.brandfetch.io/idr4816dxq/w/512/h/512/theme/dark/icon.jpeg", desc: "Data lakehouse & ML platform", color: "#FF3621", tag: "DATA" },
+              { name: "Rippling", logo: "https://cdn.brandfetch.io/idcF_zn9sQ/w/512/h/512/theme/dark/icon.jpeg", desc: "HRIS, payroll & headcount data", color: "#FDE74B", tag: "HRIS" },
+              { name: "ADP", logo: "https://cdn.brandfetch.io/idmmQhOJnT/w/512/h/512/theme/dark/icon.jpeg", desc: "Payroll & workforce management", color: "#D0271D", tag: "HRIS" },
+              { name: "BambooHR", logo: "https://cdn.brandfetch.io/idrYgjdxGR/w/512/h/512/theme/dark/icon.jpeg", desc: "HRIS & employee lifecycle data", color: "#73C41D", tag: "HRIS" },
+              { name: "Brex", logo: "https://cdn.brandfetch.io/idJM4RtWVR/w/512/h/512/theme/dark/icon.jpeg", desc: "Corporate cards & cash management", color: "#F5A623", tag: "EXPENSE" },
+              { name: "Slack", logo: "https://cdn.brandfetch.io/id3MpTOpY-/w/512/h/512/theme/dark/icon.jpeg", desc: "Alerts, approvals & team messaging", color: "#4A154B", tag: "COMMS" },
+              { name: "AWS", logo: "https://cdn.brandfetch.io/idexQYsBMb/w/512/h/512/theme/dark/icon.jpeg", desc: "Cloud infrastructure & compute", color: "#FF9900", tag: "CLOUD" },
+              { name: "DocuSign", logo: "https://cdn.brandfetch.io/idFJP03YdT/w/512/h/512/theme/dark/icon.jpeg", desc: "Contract & eSignature workflows", color: "#4088FF", tag: "ESIGN" },
+              { name: "Gusto", logo: "https://cdn.brandfetch.io/ideSg-2L_t/w/512/h/512/theme/dark/icon.jpeg", desc: "Payroll, benefits & HR platform", color: "#F45D48", tag: "HRIS" },
+              { name: "Mercury", logo: "https://cdn.brandfetch.io/idpOhB-8fN/w/512/h/512/theme/dark/icon.jpeg", desc: "Business banking & treasury", color: "#5A2FBA", tag: "BANKING" },
+              { name: "BigQuery", logo: "https://cdn.brandfetch.io/id_KsyK7J9/w/512/h/512/theme/dark/icon.jpeg", desc: "Google Cloud data warehouse", color: "#669DF6", tag: "DATA" },
+              { name: "Intercom", logo: "https://cdn.brandfetch.io/idKAzczsaW/w/512/h/512/theme/dark/icon.jpeg", desc: "Customer support & engagement", color: "#1F8DED", tag: "SUPPORT" },
             ].map((item, i) => (
-              <div key={`${dup}-${item.name}`} className="fos-logo-card" style={{ display: "flex", alignItems: "center", gap: 12, padding: "12px 20px", borderRadius: 14, background: lp.cardBg, border: `1px solid ${lp.border}`, backdropFilter: "blur(8px)", flexShrink: 0, minWidth: 200, cursor: "default", transition: "all 0.25s cubic-bezier(0.22,1,0.36,1)", position: "relative" }}
+              <div key={`${dup}-${item.name}`} className="fos-logo-card" style={{ display: "flex", alignItems: "center", gap: 12, padding: "12px 18px", borderRadius: 14, background: lpMode === "dark" ? `linear-gradient(135deg, rgba(16,19,26,0.8), rgba(16,19,26,0.5))` : `linear-gradient(135deg, rgba(248,249,251,0.95), rgba(255,255,255,0.8))`, border: `1px solid ${lp.border}`, backdropFilter: "blur(12px)", flexShrink: 0, minWidth: 195, cursor: "default", transition: "all 0.25s cubic-bezier(0.22,1,0.36,1)", position: "relative" }}
                 onMouseEnter={e => { e.currentTarget.style.borderColor = `${item.color}50`; e.currentTarget.style.transform = "translateY(-3px) scale(1.02)"; e.currentTarget.style.boxShadow = `0 12px 32px ${item.color}15`; e.currentTarget.querySelector(".fos-logo-desc").style.opacity = "1"; e.currentTarget.querySelector(".fos-logo-desc").style.transform = "translateY(0)"; }}
                 onMouseLeave={e => { e.currentTarget.style.borderColor = lp.border; e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = "none"; e.currentTarget.querySelector(".fos-logo-desc").style.opacity = "0"; e.currentTarget.querySelector(".fos-logo-desc").style.transform = "translateY(4px)"; }}
               >
                 <img src={item.logo} alt={item.name} style={{ width: 32, height: 32, borderRadius: 8, objectFit: "cover", flexShrink: 0 }} loading="lazy" onError={e => { e.target.style.display = "none"; }} />
                 <div style={{ textAlign: "left" }}>
                   <div style={{ fontSize: 13, fontWeight: 700, color: lp.text, lineHeight: 1.2 }}>{item.name}</div>
+                  <div style={{ fontSize: 8, fontWeight: 700, color: lp.textFaint, letterSpacing: "0.05em", marginTop: 1 }}>{item.tag}</div>
+                </div>
+                <div className="fos-logo-desc" style={{ position: "absolute", bottom: -36, left: "50%", transform: "translateX(-50%) translateY(4px)", background: "#1a1f2e", color: "#eef0f6", padding: "6px 12px", borderRadius: 8, fontSize: 10, fontWeight: 600, whiteSpace: "nowrap", boxShadow: "0 8px 24px rgba(0,0,0,0.3)", opacity: 0, transition: "all 0.2s ease", zIndex: 20, pointerEvents: "none" }}>
+                  {item.desc}
+                </div>
+              </div>
+            ))).flat()}
+          </div>
+        </div>
+
+        {/* Row 3 — Infrastructure, BI, Market Data */}
+        <div style={{ overflow: "hidden", position: "relative", marginBottom: 28 }}>
+          <div style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: 80, background: `linear-gradient(90deg, ${lp.bg}, transparent)`, zIndex: 2 }} />
+          <div style={{ position: "absolute", right: 0, top: 0, bottom: 0, width: 80, background: `linear-gradient(270deg, ${lp.bg}, transparent)`, zIndex: 2 }} />
+          <div className="fos-scroll-row3" style={{ display: "flex", gap: 14, animation: "fosScrollLeft 55s linear infinite", width: "max-content" }}>
+            {[...Array(2)].map((_, dup) => [
+              { name: "Supabase", logo: "https://cdn.brandfetch.io/id4UDCjQ1K/w/512/h/512/theme/dark/icon.jpeg", desc: "Database, auth & real-time sync", color: "#3ECF8E", tag: "DATABASE" },
+              { name: "Vercel", logo: "https://cdn.brandfetch.io/idnMHSR0JC/w/512/h/512/theme/dark/icon.jpeg", desc: "Edge hosting & CI/CD", color: "#000000", tag: "HOSTING" },
+              { name: "Cloudflare", logo: "https://cdn.brandfetch.io/idnLPsmXME/w/512/h/512/theme/dark/icon.jpeg", desc: "Security, CDN & DDoS protection", color: "#F48120", tag: "SECURITY" },
+              { name: "Tableau", logo: "https://cdn.brandfetch.io/id_iJXJxz7/w/512/h/512/theme/dark/icon.jpeg", desc: "Business intelligence & dashboards", color: "#E97627", tag: "BI" },
+              { name: "Power BI", logo: "https://cdn.brandfetch.io/idchmboHEZ/w/512/h/512/theme/dark/icon.jpeg", desc: "Microsoft analytics & reporting", color: "#F2C811", tag: "BI" },
+              { name: "S&P Global", logo: "https://cdn.brandfetch.io/idkiDKNT4W/w/512/h/512/theme/dark/icon.jpeg", desc: "Market data & benchmarks", color: "#0033A0", tag: "MARKET DATA" },
+              { name: "FactSet", logo: "https://cdn.brandfetch.io/id9nNqJr4d/w/512/h/512/theme/dark/icon.jpeg", desc: "Financial data & analytics", color: "#1679C4", tag: "MARKET DATA" },
+              { name: "Morningstar", logo: "https://cdn.brandfetch.io/id5E23WfPK/w/512/h/512/theme/dark/icon.jpeg", desc: "Investment research & ratings", color: "#FC5301", tag: "RESEARCH" },
+              { name: "Square", logo: "https://cdn.brandfetch.io/idMpz3PQzT/w/512/h/512/theme/dark/icon.jpeg", desc: "POS & payment data", color: "#3E4348", tag: "PAYMENTS" },
+              { name: "Gmail", logo: "https://cdn.brandfetch.io/idfJzomMB4/w/512/h/512/theme/dark/icon.jpeg", desc: "Email notifications & alerts", color: "#EA4335", tag: "EMAIL" },
+              { name: "Calendly", logo: "https://cdn.brandfetch.io/idhF37bGDf/w/512/h/512/theme/dark/icon.jpeg", desc: "Meeting scheduling & booking", color: "#006BFF", tag: "SCHEDULING" },
+              { name: "Linear", logo: "https://cdn.brandfetch.io/idYHMJchZG/w/512/h/512/theme/dark/icon.jpeg", desc: "Project tracking & sprint data", color: "#5E6AD2", tag: "PROJECTS" },
+            ].map((item, i) => (
+              <div key={`${dup}-${item.name}`} className="fos-logo-card" style={{ display: "flex", alignItems: "center", gap: 12, padding: "12px 18px", borderRadius: 14, background: lpMode === "dark" ? `linear-gradient(135deg, rgba(16,19,26,0.8), rgba(16,19,26,0.5))` : `linear-gradient(135deg, rgba(248,249,251,0.95), rgba(255,255,255,0.8))`, border: `1px solid ${lp.border}`, backdropFilter: "blur(12px)", flexShrink: 0, minWidth: 195, cursor: "default", transition: "all 0.25s cubic-bezier(0.22,1,0.36,1)", position: "relative" }}
+                onMouseEnter={e => { e.currentTarget.style.borderColor = `${item.color}50`; e.currentTarget.style.transform = "translateY(-3px) scale(1.02)"; e.currentTarget.style.boxShadow = `0 12px 32px ${item.color}15`; e.currentTarget.querySelector(".fos-logo-desc").style.opacity = "1"; e.currentTarget.querySelector(".fos-logo-desc").style.transform = "translateY(0)"; }}
+                onMouseLeave={e => { e.currentTarget.style.borderColor = lp.border; e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = "none"; e.currentTarget.querySelector(".fos-logo-desc").style.opacity = "0"; e.currentTarget.querySelector(".fos-logo-desc").style.transform = "translateY(4px)"; }}
+              >
+                <img src={item.logo} alt={item.name} style={{ width: 32, height: 32, borderRadius: 8, objectFit: "cover", flexShrink: 0 }} loading="lazy" onError={e => { e.target.style.display = "none"; }} />
+                <div style={{ textAlign: "left" }}>
+                  <div style={{ fontSize: 13, fontWeight: 700, color: lp.text, lineHeight: 1.2 }}>{item.name}</div>
+                  <div style={{ fontSize: 8, fontWeight: 700, color: lp.textFaint, letterSpacing: "0.05em", marginTop: 1 }}>{item.tag}</div>
                 </div>
                 <div className="fos-logo-desc" style={{ position: "absolute", bottom: -36, left: "50%", transform: "translateX(-50%) translateY(4px)", background: "#1a1f2e", color: "#eef0f6", padding: "6px 12px", borderRadius: 8, fontSize: 10, fontWeight: 600, whiteSpace: "nowrap", boxShadow: "0 8px 24px rgba(0,0,0,0.3)", opacity: 0, transition: "all 0.2s ease", zIndex: 20, pointerEvents: "none" }}>
                   {item.desc}
@@ -8241,7 +8299,7 @@ const LandingPage = ({ onLogin }) => {
         <style>{`
           @keyframes fosScrollLeft{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
           @keyframes fosScrollRight{0%{transform:translateX(-50%)}100%{transform:translateX(0)}}
-          .fos-scroll-row1:hover,.fos-scroll-row2:hover{animation-play-state:paused}
+          .fos-scroll-row1:hover,.fos-scroll-row2:hover,.fos-scroll-row3:hover{animation-play-state:paused}
         `}</style>
 
         {/* Trust badges + ratings */}
@@ -8249,10 +8307,10 @@ const LandingPage = ({ onLogin }) => {
           {[
             { label: "SOC 2 Type II", icon: Shield, color: lp.green },
             { label: "AES-256 Encryption", icon: Lock, color: lp.accent },
-            { label: "99.9% Uptime SLA", icon: Zap, color: lp.purple },
+            { label: "99.99% Uptime SLA", icon: Zap, color: lp.purple },
             { label: "GDPR Ready", icon: Globe, color: lp.green },
           ].map(b => (
-            <div key={b.label} style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 10, fontWeight: 600, color: lp.textDim, padding: "8px 16px", borderRadius: 10, background: lp.cardBg, border: `1px solid ${lp.border}`, backdropFilter: "blur(6px)", transition: "all 0.15s" }}
+            <div key={b.label} style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 10, fontWeight: 600, color: lp.textDim, padding: "8px 16px", borderRadius: 10, background: lpMode === "dark" ? "rgba(16,19,26,0.7)" : "rgba(248,249,251,0.9)", border: `1px solid ${lp.border}`, backdropFilter: "blur(8px)", transition: "all 0.15s" }}
               onMouseEnter={e => e.currentTarget.style.borderColor = `${b.color}30`}
               onMouseLeave={e => e.currentTarget.style.borderColor = lp.border}
             >
@@ -8637,22 +8695,30 @@ const LandingPage = ({ onLogin }) => {
         </div>
         <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "repeat(4, 1fr)", gap: 16 }}>
           {[
-            { role: "CFO", focus: "Revenue, margins, cash flow, ROIC, EPS, dividend yield, board deck export", photo: "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=400&q=80&fit=crop&crop=face", color: lp.accent },
-            { role: "CEO", focus: "Strategic KPIs, segment growth, market position, Rule of 40, fundraising readiness", photo: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&q=80&fit=crop&crop=face", color: lp.purple },
-            { role: "Controller", focus: "Close progress, reconciliation status, GL summary, AP/AR aging, compliance", photo: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&q=80&fit=crop&crop=face", color: lp.green },
-            { role: "FP&A Manager", focus: "Variance analysis, budget vs actual, forecast accuracy, scenario comparison", photo: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=400&q=80&fit=crop&crop=face", color: lp.gold },
+            { role: "CFO", focus: "Revenue, margins, cash flow, ROIC, EPS, dividend yield, board deck export", photo: "https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=400&q=80&fit=crop&h=280", color: lp.accent, Icon: BarChart3 },
+            { role: "CEO", focus: "Strategic KPIs, segment growth, market position, Rule of 40, fundraising readiness", photo: "https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=400&q=80&fit=crop&h=280", color: lp.purple, Icon: TrendingUp },
+            { role: "Controller", focus: "Close progress, reconciliation status, GL summary, AP/AR aging, compliance", photo: "https://images.unsplash.com/photo-1554224155-8f4e-4111-9b47-033e6e1c22d0?w=400&q=80&fit=crop&h=280", color: lp.green, Icon: CheckSquare },
+            { role: "FP&A Manager", focus: "Variance analysis, budget vs actual, forecast accuracy, scenario comparison", photo: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400&q=80&fit=crop&h=280", color: lp.gold, Icon: Target },
           ].map(p => (
-            <div key={p.role} style={{ background: lp.surface, border: `1px solid ${lp.border}`, borderRadius: 18, overflow: "hidden", transition: "all 0.25s cubic-bezier(0.4,0,0.2,1)" }}
-              onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-4px)"; e.currentTarget.style.boxShadow = `0 12px 36px ${p.color}15`; }}
-              onMouseLeave={e => { e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = "none"; }}>
-              <div style={{ position: "relative", height: 160, overflow: "hidden" }}>
-                <img src={p.photo} alt={p.role} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block", transition: "transform 0.4s" }} loading="lazy" />
-                <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, height: "60%", background: `linear-gradient(transparent, ${lp.surface})` }} />
-                <div style={{ position: "absolute", bottom: 10, left: 14, fontSize: 16, fontWeight: 800, color: lp.text, letterSpacing: "-0.02em" }}>{p.role}</div>
+            <div key={p.role} style={{ background: lpMode === "dark" ? `linear-gradient(165deg, ${lp.surface}, ${p.color}04)` : lp.surface, border: `1px solid ${lp.border}`, borderRadius: 18, overflow: "hidden", transition: "all 0.25s cubic-bezier(0.4,0,0.2,1)", position: "relative" }}
+              onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-4px)"; e.currentTarget.style.boxShadow = `0 16px 48px ${p.color}15`; e.currentTarget.style.borderColor = `${p.color}30`; }}
+              onMouseLeave={e => { e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = "none"; e.currentTarget.style.borderColor = lp.border; }}>
+              <div style={{ position: "relative", height: 150, overflow: "hidden" }}>
+                <img src={p.photo} alt={p.role} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block", transition: "transform 0.4s", filter: lpMode === "dark" ? "brightness(0.6) saturate(1.2)" : "brightness(0.85) saturate(1.1)" }} loading="lazy" />
+                <div style={{ position: "absolute", inset: 0, background: `linear-gradient(160deg, ${p.color}15, transparent 50%)` }} />
+                <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, height: "70%", background: `linear-gradient(transparent, ${lpMode === "dark" ? lp.surface : lp.surface})` }} />
+                {/* Role icon badge */}
+                <div style={{ position: "absolute", top: 12, right: 12, width: 32, height: 32, borderRadius: 9, background: `${p.color}20`, backdropFilter: "blur(8px)", display: "flex", alignItems: "center", justifyContent: "center", border: `1px solid ${p.color}25` }}>
+                  <p.Icon size={15} color={p.color} />
+                </div>
+                <div style={{ position: "absolute", bottom: 10, left: 16, fontSize: 17, fontWeight: 800, color: lpMode === "dark" ? "#fff" : lp.text, letterSpacing: "-0.02em" }}>{p.role}</div>
               </div>
-              <div style={{ padding: "12px 16px 16px" }}>
-                <p style={{ fontSize: 11, color: lp.textDim, lineHeight: 1.6, marginBottom: 10 }}>{p.focus}</p>
-                <button onClick={enterDemo} style={{ fontSize: 10, fontWeight: 700, color: p.color, background: "none", border: "none", cursor: "pointer", fontFamily: "inherit", padding: 0 }}>See {p.role} dashboard ▸</button>
+              <div style={{ padding: "14px 16px 18px" }}>
+                <p style={{ fontSize: 11, color: lp.textDim, lineHeight: 1.65, marginBottom: 12 }}>{p.focus}</p>
+                <button onClick={enterDemo} style={{ fontSize: 10, fontWeight: 700, color: p.color, background: `${p.color}08`, border: `1px solid ${p.color}15`, cursor: "pointer", fontFamily: "inherit", padding: "6px 14px", borderRadius: 7, transition: "all 0.15s", display: "flex", alignItems: "center", gap: 4 }}
+                  onMouseEnter={e => { e.currentTarget.style.background = `${p.color}14`; }}
+                  onMouseLeave={e => { e.currentTarget.style.background = `${p.color}08`; }}
+                >See {p.role} dashboard <ChevronRight size={12} /></button>
               </div>
             </div>
           ))}
@@ -8878,7 +8944,7 @@ const LandingPage = ({ onLogin }) => {
       </div>
 
       {/* ═══ PRODUCT DEMO — Jira-inspired tabbed showcase ═══ */}
-      <ProductDemo enterDemo={enterDemo} />
+      <ProductDemo enterDemo={enterDemo} lp={lp} lpMode={lpMode} />
 
       {/* ═══ HOW IT WORKS — Numbered step flow (Jira pattern) ═══ */}
       <div style={{ padding: "80px 48px", maxWidth: 1100, margin: "0 auto" }}>
@@ -9037,27 +9103,63 @@ const LandingPage = ({ onLogin }) => {
         </div>
       </div>
 
-      {/* Powered by Claude — partnership highlight */}
+      {/* Powered by Claude — premium partnership highlight */}
       <div style={{ padding: isMobile ? "40px 20px" : "60px 48px", maxWidth: 1100, margin: "0 auto" }}>
-        <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: 0, borderRadius: 20, overflow: "hidden", border: `1px solid ${lp.border}` }}>
-          <div style={{ padding: "48px 40px", background: `linear-gradient(135deg, ${lp.surface}, ${lpMode === "dark" ? "#161a24" : lp.surfaceAlt})` }}>
-            <div style={{ fontSize: 18, fontWeight: 800, letterSpacing: "-0.01em", color: lp.purple, marginBottom: 20, fontFamily: "'Manrope', system-ui, sans-serif" }}>Anthropic</div>
-            <p style={{ fontSize: 18, fontWeight: 500, color: lp.text, lineHeight: 1.65, fontStyle: "italic", marginBottom: 28 }}>
-              "FinanceOS demonstrates what's possible when AI becomes a true partner in financial planning. By connecting planning data directly to Claude, finance teams focus on strategic decisions — not data wrangling."
-            </p>
-            <div style={{ fontSize: 13, fontWeight: 700, color: lp.text }}>Claude AI Platform</div>
-            <div style={{ fontSize: 11, color: lp.textFaint }}>Powering FinanceOS AI Copilot</div>
-          </div>
-          <div style={{ padding: "48px 40px", background: `linear-gradient(135deg, ${lp.surfaceAlt}, ${lp.surface})`, display: "flex", alignItems: "center", justifyContent: "center", position: "relative" }}>
-            <div style={{ position: "absolute", inset: 0, background: `radial-gradient(circle at 60% 40%, ${lp.purple}0a, transparent 60%)`, pointerEvents: "none" }} />
-            <div style={{ textAlign: "center", position: "relative" }}>
-              <div style={{ width: 80, height: 80, borderRadius: 20, background: `linear-gradient(135deg, ${lp.purple}20, ${lp.accent}10)`, border: `1px solid ${lp.purple}15`, display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 20px", fontSize: 36 }}>◎</div>
-              <div style={{ fontSize: 22, fontWeight: 800, color: lp.text, marginBottom: 6 }}>Powered by Claude</div>
-              <p style={{ fontSize: 13, color: lp.textDim, lineHeight: 1.6, maxWidth: 280 }}>Enterprise-grade AI reasoning with visible thought process, SHAP explanations, and confidence intervals.</p>
-              <div style={{ display: "flex", gap: 8, justifyContent: "center", marginTop: 16 }}>
-                {["Visible Reasoning", "SHAP Values", "Confidence Bands"].map(t => (
-                  <span key={t} style={{ fontSize: 9, fontWeight: 600, padding: "4px 10px", borderRadius: 6, background: `${lp.purple}08`, border: `1px solid ${lp.purple}12`, color: lp.purple }}>{t}</span>
-                ))}
+        <div style={{ borderRadius: 24, overflow: "hidden", border: `1px solid ${lp.border}`, position: "relative" }}>
+          {/* Ambient glow */}
+          <div style={{ position: "absolute", top: -60, right: -60, width: 300, height: 300, borderRadius: "50%", background: `radial-gradient(circle, ${lp.purple}10 0%, transparent 70%)`, pointerEvents: "none" }} />
+          <div style={{ position: "absolute", bottom: -40, left: -40, width: 250, height: 250, borderRadius: "50%", background: `radial-gradient(circle, ${lp.accent}08 0%, transparent 70%)`, pointerEvents: "none" }} />
+          <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1.1fr 0.9fr", gap: 0 }}>
+            {/* Left — Quote + Anthropic branding */}
+            <div style={{ padding: isMobile ? "36px 28px" : "52px 44px", background: lpMode === "dark" ? `linear-gradient(135deg, #0f1118, #161a24)` : `linear-gradient(135deg, #f8f9fb, #ffffff)`, position: "relative" }}>
+              {/* Anthropic logo */}
+              <div style={{ display: "flex", alignItems: "center", gap: 14, marginBottom: 28 }}>
+                <img src="https://cdn.brandfetch.io/idVr2bwXbr/w/512/h/512/theme/dark/icon.jpeg" alt="Anthropic" style={{ width: 44, height: 44, borderRadius: 12, objectFit: "cover", border: `1px solid ${lp.border}` }} />
+                <div>
+                  <div style={{ fontSize: 20, fontWeight: 800, color: lp.text, letterSpacing: "-0.02em" }}>Anthropic</div>
+                  <div style={{ fontSize: 11, fontWeight: 600, color: lp.purple }}>Strategic AI Partner</div>
+                </div>
+              </div>
+              <p style={{ fontSize: 18, fontWeight: 500, color: lp.text, lineHeight: 1.7, fontStyle: "italic", marginBottom: 28, position: "relative", paddingLeft: 20, borderLeft: `3px solid ${lp.purple}40` }}>
+                "FinanceOS demonstrates what's possible when AI becomes a true partner in financial planning. By connecting planning data directly to Claude, finance teams focus on strategic decisions — not data wrangling."
+              </p>
+              <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                <div style={{ width: 40, height: 40, borderRadius: 10, background: `linear-gradient(135deg, ${lp.purple}20, ${lp.accent}15)`, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                  <Brain size={20} color={lp.purple} />
+                </div>
+                <div>
+                  <div style={{ fontSize: 13, fontWeight: 700, color: lp.text }}>Claude AI Platform</div>
+                  <div style={{ fontSize: 11, color: lp.textFaint }}>Powering FinanceOS AI Copilot</div>
+                </div>
+              </div>
+            </div>
+            {/* Right — Claude feature showcase */}
+            <div style={{ padding: isMobile ? "36px 28px" : "52px 44px", background: lpMode === "dark" ? `linear-gradient(135deg, #161a24, #1a1f2e)` : `linear-gradient(135deg, #ffffff, #f0f2f8)`, display: "flex", alignItems: "center", justifyContent: "center", position: "relative" }}>
+              <div style={{ position: "absolute", inset: 0, background: `radial-gradient(circle at 60% 40%, ${lp.purple}08, transparent 60%)`, pointerEvents: "none" }} />
+              <div style={{ textAlign: "center", position: "relative", width: "100%" }}>
+                {/* Claude logo large */}
+                <div style={{ width: 88, height: 88, borderRadius: 22, background: `linear-gradient(135deg, ${lp.purple}18, ${lp.accent}10)`, border: `2px solid ${lp.purple}20`, display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 24px", boxShadow: `0 12px 40px ${lp.purple}12` }}>
+                  <img src="https://cdn.brandfetch.io/idVr2bwXbr/w/512/h/512/theme/dark/icon.jpeg" alt="Claude" style={{ width: 52, height: 52, borderRadius: 12, objectFit: "cover" }} />
+                </div>
+                <div style={{ fontSize: 24, fontWeight: 800, color: lp.text, marginBottom: 8, letterSpacing: "-0.02em" }}>Powered by Claude</div>
+                <p style={{ fontSize: 14, color: lp.textDim, lineHeight: 1.65, maxWidth: 300, margin: "0 auto 20px" }}>Enterprise-grade AI reasoning with visible thought process, SHAP explanations, and confidence intervals.</p>
+                {/* Feature pills */}
+                <div style={{ display: "flex", gap: 8, justifyContent: "center", flexWrap: "wrap" }}>
+                  {[
+                    { label: "Visible Reasoning", Icon: Eye },
+                    { label: "SHAP Values", Icon: BarChart3 },
+                    { label: "Confidence Bands", Icon: Activity },
+                  ].map(t => (
+                    <span key={t.label} style={{ fontSize: 10, fontWeight: 600, padding: "6px 14px", borderRadius: 8, background: lpMode === "dark" ? `linear-gradient(135deg, ${lp.purple}10, ${lp.purple}05)` : `linear-gradient(135deg, ${lp.purple}08, ${lp.purple}03)`, border: `1px solid ${lp.purple}15`, color: lp.purple, display: "inline-flex", alignItems: "center", gap: 5, transition: "all 0.15s" }}>
+                      <t.Icon size={11} />{t.label}
+                    </span>
+                  ))}
+                </div>
+                {/* Partnership badge */}
+                <div style={{ marginTop: 20, display: "inline-flex", alignItems: "center", gap: 8, padding: "8px 16px", borderRadius: 10, background: `${lp.purple}06`, border: `1px solid ${lp.purple}12` }}>
+                  <Sparkles size={12} color={lp.purple} />
+                  <span style={{ fontSize: 10, fontWeight: 700, color: lp.purple, letterSpacing: "0.04em" }}>OFFICIAL AI PARTNER</span>
+                </div>
               </div>
             </div>
           </div>
@@ -9257,12 +9359,12 @@ const LandingPage = ({ onLogin }) => {
         </div>
         <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "repeat(2, 1fr)", gap: 16 }}>
           {[
-            { Icon: DollarSign, title: "TCO drops 60-80%", detail: "$499-$3,999/mo vs $65K-$200K+/yr at legacy vendors. No implementation consultants, no 6-month timelines.", tag: "Cost", img: "https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=400&q=80&fit=crop&h=200" },
+            { Icon: DollarSign, title: "TCO drops 60-80%", detail: "$499-$3,999/mo vs $65K-$200K+/yr at legacy vendors. No implementation consultants, no 6-month timelines.", tag: "Cost", img: "https://images.unsplash.com/photo-1554224155-8f4e-4111-9b47-033e6e1c22d0?w=400&q=80&fit=crop&h=200" },
             { Icon: Zap, title: "Live in 48 hours, not 6 months", detail: "Connect your ERP, map your chart of accounts, and run your first report the same day. No consultants required.", tag: "Speed", img: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400&q=80&fit=crop&h=200" },
             { Icon: Eye, title: "AI reasoning you can audit", detail: "Our copilot shows every data source, assumption, and calculation chain. Your auditors can verify every insight.", tag: "Transparency", img: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400&q=80&fit=crop&h=200" },
-            { Icon: Layers, title: "One platform, not five tools", detail: "FP&A + Treasury + Compliance + ESG in a single suite. One login, one vendor, one contract.", tag: "Consolidation", img: "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=400&q=80&fit=crop&h=200" },
-            { Icon: Shield, title: "Security that survives the review", detail: "SOC 2 architecture, AES-256 encryption, row-level security, HSTS + CSP headers, immutable audit logs.", tag: "Security", img: "https://images.unsplash.com/photo-1563986768609-322da13575f2?w=400&q=80&fit=crop&h=200" },
-            { Icon: TrendingUp, title: "Usage-based pricing aligns cost to value", detail: "Base subscription + pay-per-use for AI queries, syncs, and exports. Enterprise agreements include committed spend discounts.", tag: "Pricing", img: "https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?w=400&q=80&fit=crop&h=200" },
+            { Icon: Layers, title: "One platform, not five tools", detail: "FP&A + Treasury + Compliance + ESG in a single suite. One login, one vendor, one contract.", tag: "Consolidation", img: "https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=400&q=80&fit=crop&h=200" },
+            { Icon: Shield, title: "Security that survives the review", detail: "SOC 2 architecture, AES-256 encryption, row-level security, HSTS + CSP headers, immutable audit logs.", tag: "Security", img: "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=400&q=80&fit=crop&h=200" },
+            { Icon: TrendingUp, title: "Usage-based pricing aligns cost to value", detail: "Base subscription + pay-per-use for AI queries, syncs, and exports. Enterprise agreements include committed spend discounts.", tag: "Pricing", img: "https://images.unsplash.com/photo-1543286386-2e659306cd6c?w=400&q=80&fit=crop&h=200" },
           ].map(s => (
             <div key={s.title} style={{ background: lp.surface, border: `1px solid ${lp.border}`, borderRadius: 14, overflow: "hidden", transition: "all 0.2s ease" }}
               onMouseEnter={e => { e.currentTarget.style.borderColor = `${lp.accent}40`; e.currentTarget.style.transform = "translateY(-2px)"; e.currentTarget.style.boxShadow = `0 8px 28px ${lp.accent}08`; }}
