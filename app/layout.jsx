@@ -111,10 +111,10 @@ export default function RootLayout({ children }) {
       </head>
       <body style={{ margin: 0, padding: 0, fontFamily: "'Manrope', system-ui, -apple-system, sans-serif", WebkitFontSmoothing: "antialiased", MozOsxFontSmoothing: "grayscale", textRendering: "optimizeLegibility", fontFeatureSettings: '"cv01", "ss01"' }}>
         {/* Loading splash — visible until React hydrates */}
-        <div id="fos-splash" style={{ position: "fixed", inset: 0, zIndex: 99999, background: "#060A14", display: "flex", alignItems: "center", justifyContent: "center", flexDirection: "column", gap: 16, transition: "opacity 0.4s" }}>
-          <div style={{ width: 48, height: 48, border: "3px solid rgba(91,156,245,0.15)", borderTopColor: "#5B9CF5", borderRadius: "50%", animation: "fos-spin 0.8s linear infinite" }} />
-          <div style={{ fontSize: 14, fontWeight: 700, color: "#5B9CF5", letterSpacing: "-0.02em", fontFamily: "'Manrope', system-ui, sans-serif" }}>FinanceOS</div>
-          <div style={{ fontSize: 10, color: "#3d4558" }}>Loading your workspace...</div>
+        <div id="fos-splash" style={{ position: "fixed", inset: 0, zIndex: 99999, background: "#ffffff", display: "flex", alignItems: "center", justifyContent: "center", flexDirection: "column", gap: 16, transition: "opacity 0.4s" }}>
+          <div style={{ width: 48, height: 48, border: "3px solid rgba(59,130,246,0.12)", borderTopColor: "#3B82F6", borderRadius: "50%", animation: "fos-spin 0.8s linear infinite" }} />
+          <div style={{ fontSize: 14, fontWeight: 700, color: "#3B82F6", letterSpacing: "-0.02em", fontFamily: "'Manrope', system-ui, sans-serif" }}>FinanceOS</div>
+          <div style={{ fontSize: 10, color: "#9ea5b8" }}>Loading...</div>
         </div>
         <style dangerouslySetInnerHTML={{ __html: `@keyframes fos-spin { to { transform: rotate(360deg); } }` }} />
         <script dangerouslySetInnerHTML={{ __html: `

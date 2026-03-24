@@ -6851,6 +6851,8 @@ const AuthModal = ({ mode: initialMode, onClose, onAuth }) => {
         // Also add to waitlist + smart notification
         try { await supabase.from("waitlist").upsert({ email: email.trim(), full_name: name, company, role, interest_type: "trial", source: "signup_modal", ...(() => { try { const u = getUtmData(); return Object.keys(u).length ? { metadata: JSON.stringify(u) } : {}; } catch { return {}; } })() }, { onConflict: "email" }); } catch {}
         fetch("/api/notify", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ type: "waitlist", email: email.trim(), full_name: name, company, role, interest_type: "trial", source: "signup_modal" }) }).catch(() => {});
+        // Enroll in drip onboarding pipeline
+        fetch("/api/drip", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ action: "start", email: email.trim(), lead_data: { full_name: name, company, role, source: "signup_modal", interest_type: "trial" } }) }).catch(() => {});
         // If auto-confirmed, trigger login immediately
         if (data?.session) { onAuth({ method: "email" }); return; }
         // Email confirmation required — show interstitial
@@ -6875,6 +6877,8 @@ const AuthModal = ({ mode: initialMode, onClose, onAuth }) => {
     setError(null);
     try { await supabase.from("waitlist").upsert({ email: email.trim(), full_name: name, company, role, interest_type: "demo", source: "demo_modal", ...(() => { try { const u = getUtmData(); return Object.keys(u).length ? { metadata: JSON.stringify(u) } : {}; } catch { return {}; } })() }, { onConflict: "email" }); } catch {}
     fetch("/api/notify", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ type: "demo_request", email: email.trim(), full_name: name, company, role, source: "demo_modal" }) }).catch(() => {});
+    // Enroll in drip onboarding pipeline
+    fetch("/api/drip", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ action: "start", email: email.trim(), lead_data: { full_name: name, company, role, source: "demo_modal", interest_type: "demo" } }) }).catch(() => {});
     setLoading(null);
     onAuth({ method: "demo" });
   };
@@ -7857,17 +7861,26 @@ const LandingPage = ({ onLogin }) => {
     return val;
   };
 
-  // Demo entry — enters dashboard with sample data, plan picker has skip option
-  const enterDemo = () => { onLogin({ name: heroEmail?.split("@")[0] || "Guest", email: heroEmail || "", plan: "demo" }); };
+  // Demo entry — gated behind email capture for lead tracking
+  const enterDemo = () => {
+    if (!heroEmail || !heroEmail.trim() || !heroEmail.includes("@")) {
+      // No email — prompt signup instead of allowing free access
+      setAuthModal("signup");
+      return;
+    }
+    onLogin({ name: heroEmail.split("@")[0], email: heroEmail.trim(), plan: "demo" });
+  };
 
-  // Inline email signup → Supabase waitlist → enter demo
+  // Inline email signup → Supabase waitlist → drip pipeline → enter demo
   const handleHeroSignup = async () => {
-    if (!heroEmail.trim() || !heroEmail.includes("@")) { enterDemo(); return; }
+    if (!heroEmail.trim() || !heroEmail.includes("@")) { setAuthModal("signup"); return; }
     setEmailStatus("saving");
     try {
       await supabase.from("waitlist").upsert({ email: heroEmail.trim(), interest_type: "trial", source: getUtmData().utm_source || "hero" }, { onConflict: "email" });
-      // Smart notification — email alert
+      // Smart notification — email alert to sales team
       fetch("/api/notify", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ type: "waitlist", email: heroEmail.trim(), interest_type: "trial", source: "hero_signup" }) }).catch(() => {});
+      // Enroll in drip onboarding pipeline
+      fetch("/api/drip", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ action: "start", email: heroEmail.trim(), lead_data: { source: "hero_signup", interest_type: "trial" } }) }).catch(() => {});
       setEmailStatus("saved");
     } catch { setEmailStatus("error"); }
     onLogin({ name: heroEmail.split("@")[0], email: heroEmail, plan: "demo" });
@@ -8242,6 +8255,12 @@ const LandingPage = ({ onLogin }) => {
         .fos-data-pulse{animation:fosDataPulse 3s ease-in-out infinite}
         .fos-sparkle{animation:fosSparkle 2s ease-in-out infinite}
         .fos-notif-slide{animation:fosNotifSlide 5s ease-in-out infinite}
+        .fos-auth-overlay{position:fixed;inset:0;z-index:2000;background:rgba(0,0,0,0.7);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);display:flex;align-items:center;justify-content:center;animation:fadeIn 0.2s ease}
+        .fos-auth-card{background:#10131a;border:1px solid #1e2230;border-radius:20px;box-shadow:0 40px 100px rgba(0,0,0,0.6),0 0 0 1px rgba(96,165,250,0.05);position:relative;overflow:hidden}
+        .fos-auth-card::before{content:'';position:absolute;top:-1px;left:-1px;right:-1px;bottom:-1px;border-radius:21px;background:linear-gradient(135deg,rgba(96,165,250,0.1),transparent 40%,transparent 60%,rgba(167,139,250,0.08));pointer-events:none}
+        .fos-gate-lock{display:inline-flex;align-items:center;gap:6px;padding:5px 12px;border-radius:8px;background:rgba(52,211,153,0.06);border:1px solid rgba(52,211,153,0.12);font-size:9px;font-weight:700;color:#34d399;letter-spacing:0.06em;text-transform:uppercase}
+        .fos-paywall-blur{filter:blur(6px);pointer-events:none;user-select:none;-webkit-user-select:none}
+        .fos-paywall-gate{position:absolute;inset:0;z-index:10;display:flex;align-items:center;justify-content:center;background:rgba(6,8,12,0.6);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);border-radius:inherit}
       `}</style>
       <div className="fos-preview-float" style={{ position: "relative", zIndex: 1, maxWidth: 1100, margin: "0 auto", padding: isMobile ? "0 20px 40px" : "0 48px 60px" }}>
         <div style={{ position: "relative", background: lpMode === "dark" ? "rgba(16,19,26,0.8)" : "rgba(248,249,251,0.9)", border: `1px solid ${lp.border}`, borderRadius: 24, padding: 3, boxShadow: lpMode === "dark" ? "0 40px 100px rgba(0,0,0,0.6), 0 0 0 1px rgba(96,165,250,0.05)" : "0 40px 100px rgba(0,0,0,0.08), 0 0 0 1px rgba(0,0,0,0.03)", overflow: "hidden" }}>
@@ -8341,8 +8360,11 @@ const LandingPage = ({ onLogin }) => {
           {/* Gated overlay — requires signup to access full demo */}
           <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, height: "65%", background: `linear-gradient(to top, ${lpMode === "dark" ? "#0d0f14" : "#f7f8fa"} 10%, ${lpMode === "dark" ? "#0d0f14cc" : "#f7f8facc"} 40%, transparent 100%)`, display: "flex", alignItems: "flex-end", justifyContent: "center", paddingBottom: 32, zIndex: 10 }}>
             <div style={{ textAlign: "center" }}>
+              <div className="fos-gate-lock" style={{ margin: "0 auto 12px", justifyContent: "center" }}>
+                <Lock size={10} />Secure Access Required
+              </div>
               <div style={{ fontSize: 16, fontWeight: 800, color: lp.text, marginBottom: 6 }}>See the full platform in action</div>
-              <div style={{ fontSize: 12, color: lp.textDim, marginBottom: 16, maxWidth: 320, margin: "0 auto 16px" }}>Sign up for a free account to explore the interactive demo with your own data.</div>
+              <div style={{ fontSize: 12, color: lp.textDim, marginBottom: 16, maxWidth: 340, margin: "0 auto 16px" }}>Create an account with your work email to access the interactive demo. Your data is protected by SOC 2 compliant infrastructure.</div>
               <div style={{ display: "flex", gap: 10, justifyContent: "center" }}>
                 <button className="fos-cta-primary" onClick={() => setAuthModal("signup")} style={{ fontSize: 13, padding: "12px 24px", borderRadius: 10, border: "none", background: `linear-gradient(135deg, ${lp.gradFrom}, ${lp.gradTo})`, color: "#fff", cursor: "pointer", fontFamily: "inherit", fontWeight: 700, boxShadow: `0 6px 24px ${lp.accent}30` }}>Create Free Account</button>
                 <button className="fos-cta-secondary" onClick={() => setDemoModal(true)} style={{ fontSize: 13, padding: "12px 24px", borderRadius: 10, border: `1px solid ${lp.border}`, background: lpMode === "dark" ? "rgba(255,255,255,0.04)" : "rgba(0,0,0,0.03)", color: lp.textSub, cursor: "pointer", fontFamily: "inherit", fontWeight: 600 }}>Schedule a Call</button>
@@ -10086,6 +10108,14 @@ const LandingPage = ({ onLogin }) => {
                   method: "POST",
                   headers: { "Content-Type": "application/json", "apikey": SUPABASE_KEY },
                   body: JSON.stringify(demoForm),
+                });
+              } catch {}
+              // Enroll in drip onboarding pipeline
+              try {
+                await fetch("/api/drip", {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({ action: "start", email: demoForm.email, lead_data: { ...demoForm, source: "homepage_modal", interest_type: "demo" } }),
                 });
               } catch {}
               // Fire conversion events
