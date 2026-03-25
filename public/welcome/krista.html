@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Krista — Your FinanceOS Trial is Ready</title>
+<meta name="description" content="A personalized FinanceOS trial experience built for Krista Lumpkin — pharma-grade financial intelligence.">
+<meta property="og:title" content="Krista — Your FinanceOS Trial is Ready">
+<meta property="og:description" content="Personalized pharma finance command center. 14-day guided evaluation with dedicated onboarding.">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect x='10' y='10' width='80' height='80' rx='20' fill='%235b9cf5'/><text x='50' y='68' font-size='50' font-weight='bold' text-anchor='middle' fill='white'>F</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+:root{
+--bg:#060810;--surface:#0c1018;--card:#111620;--card2:#161d2c;
+--border:#1a2035;--border2:#242e48;--text:#e2e8f0;--dim:#7b859c;--muted:#4e5670;
+--accent:#5b9cf5;--green:#34d399;--red:#f87171;--amber:#fbbf24;--purple:#a78bfa;--pink:#f472b6;--cyan:#22d3ee;
+--radius:12px;--ease:cubic-bezier(.4,0,.2,1);
+}
+body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);line-height:1.6;overflow-x:hidden}
+::selection{background:rgba(91,156,245,.25)}
+::-webkit-scrollbar{width:5px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:var(--border2)}
+
+/* ═══ HERO ═══ */
+.hero{min-height:100vh;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+.hero-bg{position:absolute;inset:0;pointer-events:none}
+.hero-bg .orb{position:absolute;border-radius:50%;filter:blur(120px);opacity:.06;animation:orbFloat 20s ease-in-out infinite}
+.hero-bg .orb:nth-child(1){width:600px;height:600px;background:var(--accent);top:-15%;left:-10%;animation-delay:0s}
+.hero-bg .orb:nth-child(2){width:500px;height:500px;background:var(--purple);bottom:-10%;right:-10%;animation-delay:-7s}
+.hero-bg .orb:nth-child(3){width:350px;height:350px;background:var(--green);top:50%;left:50%;animation-delay:-14s}
+@keyframes orbFloat{0%,100%{transform:translate(0,0)}25%{transform:translate(40px,-30px)}50%{transform:translate(-30px,40px)}75%{transform:translate(30px,20px)}}
+
+/* Floating particles */
+.particles{position:absolute;inset:0;pointer-events:none}
+.particle{position:absolute;width:3px;height:3px;background:var(--accent);border-radius:50%;opacity:.15;animation:particleDrift linear infinite}
+@keyframes particleDrift{0%{transform:translateY(100vh) scale(0);opacity:0}10%{opacity:.15}90%{opacity:.15}100%{transform:translateY(-10vh) scale(1);opacity:0}}
+
+.hero-content{position:relative;z-index:1;text-align:center;max-width:720px;padding:0 32px}
+
+/* Logo animation */
+.hero-logo{display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:48px;opacity:0;animation:fadeDown .8s var(--ease) .2s forwards}
+.hero-logo svg{width:40px;height:40px}
+.hero-logo span{font-size:24px;font-weight:800;background:linear-gradient(135deg,var(--accent),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+@keyframes fadeDown{from{opacity:0;transform:translateY(-16px)}to{opacity:1;transform:translateY(0)}}
+
+/* Personal greeting */
+.hero-personal{opacity:0;animation:fadeUp .8s var(--ease) .5s forwards}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:8px;padding:6px 16px;border-radius:20px;background:rgba(52,211,153,.06);border:1px solid rgba(52,211,153,.12);font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--green);margin-bottom:20px}
+.hero-eyebrow .pulse{width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(52,211,153,.3)}50%{box-shadow:0 0 0 8px rgba(52,211,153,0)}}
+
+.hero-title{font-size:52px;font-weight:800;letter-spacing:-1.5px;line-height:1.1;margin-bottom:16px}
+.hero-title .name{background:linear-gradient(135deg,var(--accent),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hero-sub{font-size:18px;color:var(--dim);line-height:1.7;max-width:560px;margin:0 auto 36px}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+
+/* CTA buttons */
+.hero-ctas{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;opacity:0;animation:fadeUp .8s var(--ease) .8s forwards}
+.cta-primary{display:inline-flex;align-items:center;gap:10px;padding:16px 36px;border-radius:var(--radius);background:linear-gradient(135deg,var(--accent),var(--purple));color:#fff;font-size:16px;font-weight:700;text-decoration:none;border:none;cursor:pointer;transition:all .25s var(--ease)}
+.cta-primary:hover{transform:translateY(-2px);box-shadow:0 12px 32px rgba(91,156,245,.3)}
+.cta-primary:active{transform:translateY(0);box-shadow:0 4px 12px rgba(91,156,245,.2)}
+.cta-primary svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:2}
+.cta-ghost{display:inline-flex;align-items:center;gap:10px;padding:16px 36px;border-radius:var(--radius);background:transparent;border:1px solid var(--border);color:var(--dim);font-size:16px;font-weight:600;text-decoration:none;cursor:pointer;transition:all .25s var(--ease)}
+.cta-ghost:hover{border-color:var(--accent);color:var(--accent)}
+.cta-ghost svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:2}
+
+/* Scroll indicator */
+.scroll-hint{position:absolute;bottom:32px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:8px;opacity:0;animation:fadeUp .8s var(--ease) 1.2s forwards}
+.scroll-hint span{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted)}
+.scroll-arrow{width:20px;height:20px;border-right:2px solid var(--muted);border-bottom:2px solid var(--muted);transform:rotate(45deg);animation:scrollBounce 2s infinite}
+@keyframes scrollBounce{0%,100%{transform:rotate(45deg) translate(0,0)}50%{transform:rotate(45deg) translate(4px,4px)}}
+
+/* ═══ SECTION BASE ═══ */
+section{padding:100px 32px;max-width:900px;margin:0 auto}
+.section-eyebrow{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--accent);margin-bottom:10px}
+.section-title{font-size:32px;font-weight:800;letter-spacing:-.5px;margin-bottom:8px}
+.section-sub{font-size:15px;color:var(--dim);line-height:1.7;margin-bottom:36px;max-width:600px}
+
+/* ═══ USE CASE CARDS ═══ */
+.usecase-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.uc-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:28px;transition:all .4s var(--ease);position:relative;overflow:hidden;cursor:default;opacity:0;transform:translateY(20px)}
+.uc-card.visible{opacity:1;transform:translateY(0);transition:all .6s var(--ease)}
+.uc-card:nth-child(1).visible{transition-delay:0s}
+.uc-card:nth-child(2).visible{transition-delay:.1s}
+.uc-card:nth-child(3).visible{transition-delay:.2s}
+.uc-card:nth-child(4).visible{transition-delay:.3s}
+.uc-card:hover{border-color:var(--border2);transform:translateY(-3px);box-shadow:0 12px 32px rgba(0,0,0,.3)}
+.uc-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--accent),var(--purple));transform:scaleX(0);transition:transform .4s var(--ease);transform-origin:left}
+.uc-card:hover::before{transform:scaleX(1)}
+.uc-icon{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:14px}
+.uc-icon svg{width:22px;height:22px;stroke-width:1.5;fill:none}
+.uc-icon.i1{background:rgba(91,156,245,.08);border:1px solid rgba(91,156,245,.12)}.uc-icon.i1 svg{stroke:var(--accent)}
+.uc-icon.i2{background:rgba(52,211,153,.08);border:1px solid rgba(52,211,153,.12)}.uc-icon.i2 svg{stroke:var(--green)}
+.uc-icon.i3{background:rgba(167,139,250,.08);border:1px solid rgba(167,139,250,.12)}.uc-icon.i3 svg{stroke:var(--purple)}
+.uc-icon.i4{background:rgba(34,211,238,.08);border:1px solid rgba(34,211,238,.12)}.uc-icon.i4 svg{stroke:var(--cyan)}
+.uc-title{font-size:16px;font-weight:700;margin-bottom:6px}
+.uc-desc{font-size:13px;color:var(--dim);line-height:1.7}
+.uc-metric{display:inline-flex;align-items:center;gap:6px;margin-top:12px;padding:4px 10px;border-radius:6px;background:rgba(52,211,153,.06);border:1px solid rgba(52,211,153,.1);font-size:11px;font-weight:600;color:var(--green)}
+
+/* ═══ LIVE DASHBOARD PREVIEW ═══ */
+.preview-section{padding:80px 32px;max-width:900px;margin:0 auto}
+.preview-window{background:var(--card);border:1px solid var(--border);border-radius:16px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.4);opacity:0;transform:translateY(30px)}
+.preview-window.visible{opacity:1;transform:translateY(0);transition:all .8s var(--ease)}
+.preview-titlebar{display:flex;align-items:center;gap:8px;padding:12px 16px;background:var(--surface);border-bottom:1px solid var(--border)}
+.preview-dot{width:10px;height:10px;border-radius:50%}
+.preview-dot.r{background:#ff5f57}.preview-dot.y{background:#febc2e}.preview-dot.g{background:#28c840}
+.preview-titlebar span{flex:1;text-align:center;font-size:11px;color:var(--muted);font-weight:600;letter-spacing:.5px}
+.preview-dash{padding:20px;display:grid;grid-template-columns:repeat(4,1fr);grid-template-rows:auto 1fr;gap:12px;min-height:320px}
+
+/* KPI tiles */
+.kpi{background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:16px;display:flex;flex-direction:column;justify-content:center;transition:all .3s var(--ease)}
+.kpi:hover{border-color:var(--border2);transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.2)}
+.kpi-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;font-weight:600;margin-bottom:6px}
+.kpi-value{font-size:24px;font-weight:800;font-family:'SF Mono','Fira Code',monospace}
+.kpi-delta{font-size:11px;margin-top:4px;display:flex;align-items:center;gap:4px}
+.kpi-delta.up{color:var(--green)}.kpi-delta.down{color:var(--red)}
+.kpi-delta svg{width:12px;height:12px;fill:none;stroke:currentColor;stroke-width:2}
+.kpi-bar{height:4px;border-radius:2px;background:var(--border);margin-top:8px;overflow:hidden}
+.kpi-bar-fill{height:100%;border-radius:2px;animation:barGrow 2s var(--ease) forwards}
+@keyframes barGrow{from{width:0}to{width:var(--w)}}
+
+/* Chart area */
+.chart-area{grid-column:1/3;background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:16px;position:relative;overflow:hidden;min-height:200px;transition:border-color .3s var(--ease)}
+.chart-area:hover{border-color:var(--border2)}
+.chart-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.chart-area .chart-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;font-weight:600}
+.chart-legend{display:flex;gap:14px}
+.chart-legend-item{display:flex;align-items:center;gap:5px;font-size:9px;color:var(--dim);font-weight:600;text-transform:uppercase;letter-spacing:.5px}
+.chart-legend-dot{width:8px;height:8px;border-radius:50%}
+.chart-legend-dot.actual{background:var(--accent);box-shadow:0 0 6px rgba(91,156,245,.4)}
+.chart-legend-dot.budget{background:var(--purple);opacity:.5}
+.chart-svg{width:100%;height:150px}
+.chart-line{fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+.chart-line.l1{stroke:var(--accent);stroke-dasharray:600;stroke-dashoffset:600;animation:drawLine 2.5s var(--ease) .5s forwards;filter:drop-shadow(0 0 6px rgba(91,156,245,.3))}
+.chart-line.l2{stroke:var(--purple);opacity:.35;stroke-dasharray:600;stroke-dashoffset:600;animation:drawLine 2.5s var(--ease) .9s forwards}
+@keyframes drawLine{to{stroke-dashoffset:0}}
+.chart-fill{fill:url(#chartGrad);opacity:0;animation:chartFillIn 1.8s var(--ease) 2s forwards}
+@keyframes chartFillIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.chart-grid-line{stroke:var(--border);stroke-width:1;stroke-dasharray:4 4}
+/* Data points */
+.chart-dot{fill:var(--bg);stroke:var(--accent);stroke-width:2;opacity:0;animation:dotPop .4s var(--ease) forwards}
+.chart-dot:nth-child(1){animation-delay:1.2s}
+.chart-dot:nth-child(2){animation-delay:1.5s}
+.chart-dot:nth-child(3){animation-delay:1.8s}
+.chart-dot:nth-child(4){animation-delay:2.1s}
+.chart-dot:nth-child(5){animation-delay:2.4s}
+@keyframes dotPop{from{opacity:0;r:0}to{opacity:1;r:4}}
+/* Glowing endpoint */
+.chart-endpoint{fill:var(--accent);opacity:0;animation:endpointGlow .6s var(--ease) 2.6s forwards}
+@keyframes endpointGlow{from{opacity:0;r:0}to{opacity:1;r:5}}
+.chart-endpoint-ring{fill:none;stroke:var(--accent);stroke-width:1.5;opacity:0;animation:ringPulse 2s ease-in-out 3s infinite}
+@keyframes ringPulse{0%{opacity:.4;r:6;stroke-width:1.5}100%{opacity:0;r:16;stroke-width:.5}}
+/* Axis labels */
+.chart-axis-label{font-size:8px;fill:var(--muted);font-family:'Inter',sans-serif;font-weight:600}
+.chart-value-label{font-size:9px;fill:var(--dim);font-family:'SF Mono','Fira Code',monospace;font-weight:700;opacity:0;animation:fadeIn .5s var(--ease) 2.8s forwards}
+@keyframes fadeIn{to{opacity:1}}
+
+/* Table area */
+.table-area{grid-column:3/5;background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:16px;overflow:hidden;transition:border-color .3s var(--ease)}
+.table-area:hover{border-color:var(--border2)}
+.mini-table tr{transition:background .2s var(--ease)}
+.mini-table tr:hover{background:rgba(91,156,245,.03)}
+.table-area .table-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;font-weight:600;margin-bottom:12px}
+.mini-table{width:100%}
+.mini-table tr{border-bottom:1px solid var(--border)}
+.mini-table tr:last-child{border:none}
+.mini-table td{padding:8px 4px;font-size:11px;color:var(--dim)}
+.mini-table td:first-child{font-weight:600;color:var(--text)}
+.mini-table td:last-child{text-align:right;font-family:monospace;font-weight:700}
+.mini-table .g{color:var(--green)}.mini-table .r{color:var(--red)}.mini-table .b{color:var(--accent)}
+
+/* ═══ TRIAL SECTION ═══ */
+.trial-section{padding:80px 32px;max-width:900px;margin:0 auto;text-align:center}
+.trial-box{background:linear-gradient(135deg,rgba(91,156,245,.04),rgba(167,139,250,.02));border:1px solid rgba(91,156,245,.1);border-radius:20px;padding:48px 40px;position:relative;overflow:hidden}
+.trial-box::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(circle at 30% 40%,rgba(91,156,245,.03),transparent 50%);pointer-events:none}
+.trial-badge{display:inline-flex;align-items:center;gap:6px;padding:5px 14px;border-radius:20px;background:rgba(91,156,245,.08);border:1px solid rgba(91,156,245,.12);font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--accent);margin-bottom:16px}
+.trial-badge .dot{width:6px;height:6px;border-radius:50%;background:var(--accent);animation:pulse 2s infinite}
+.trial-h2{font-size:28px;font-weight:800;letter-spacing:-.5px;margin-bottom:8px}
+.trial-p{font-size:15px;color:var(--dim);line-height:1.7;max-width:520px;margin:0 auto 32px}
+
+.trial-features{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:32px}
+.trial-feat{text-align:center;padding:16px 8px}
+.trial-feat-num{font-size:28px;font-weight:800;color:var(--accent);font-family:'SF Mono','Fira Code',monospace}
+.trial-feat-label{font-size:11px;color:var(--muted);margin-top:4px;text-transform:uppercase;letter-spacing:.5px}
+
+/* Slots */
+.slots{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:28px}
+.slot{padding:12px 20px;border-radius:10px;background:var(--card);border:1px solid var(--border);cursor:pointer;transition:all .25s var(--ease);text-align:center}
+.slot:hover{border-color:var(--accent);background:rgba(91,156,245,.04);transform:translateY(-2px)}
+.slot.selected{border-color:var(--green);background:rgba(52,211,153,.06);box-shadow:0 0 20px rgba(52,211,153,.1)}
+.slot.selected .slot-day::after{content:' ✓';color:var(--green);font-weight:800}
+.slot-day{font-size:10px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:4px;transition:color .25s var(--ease)}
+.slot-time{font-size:14px;font-weight:700;transition:color .25s var(--ease)}
+.slot.selected .slot-time{color:var(--green)}
+
+.trial-cta-wrap{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+
+/* ═══ PERSONAL NOTE ═══ */
+.note-section{padding:60px 32px 100px;max-width:680px;margin:0 auto}
+.note-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:32px;position:relative}
+.note-card::before{content:'"';position:absolute;top:12px;left:20px;font-size:60px;font-family:Georgia,serif;color:rgba(91,156,245,.1);line-height:1;transition:color .4s var(--ease)}
+.note-card:hover::before{color:rgba(91,156,245,.2)}
+.note-card{transition:border-color .3s var(--ease)}
+.note-card:hover{border-color:var(--border2)}
+.note-text{font-size:15px;color:var(--dim);line-height:1.85;padding-left:8px}
+.note-sig{display:flex;align-items:center;gap:14px;margin-top:20px;padding-top:16px;border-top:1px solid var(--border)}
+.note-avatar{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--purple));display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:800;color:#fff}
+.note-name{font-size:14px;font-weight:700}
+.note-title{font-size:12px;color:var(--muted)}
+
+/* ═══ FOOTER ═══ */
+footer{padding:32px;text-align:center;border-top:1px solid var(--border)}
+footer .f-logo{display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:12px}
+footer .f-logo svg{width:20px;height:20px}
+footer .f-logo span{font-size:14px;font-weight:800;background:linear-gradient(135deg,var(--accent),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.f-badges{display:flex;gap:16px;justify-content:center;margin-bottom:12px}
+.f-badge{display:flex;align-items:center;gap:5px;font-size:10px;color:var(--muted)}
+.f-badge svg{width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:2}
+.f-copy{font-size:10px;color:var(--muted)}
+
+/* ═══ RESPONSIVE ═══ */
+@media(max-width:768px){
+  .hero-title{font-size:32px;letter-spacing:-1px}
+  .hero-sub{font-size:15px}
+  .hero-ctas{flex-direction:column;align-items:center}
+  .cta-primary,.cta-ghost{width:100%;max-width:320px;justify-content:center}
+  .usecase-grid{grid-template-columns:1fr}
+  .preview-dash{grid-template-columns:repeat(2,1fr)}
+  .chart-area,.table-area{grid-column:1/3}
+  .trial-features{grid-template-columns:repeat(2,1fr)}
+  .trial-h2{font-size:22px}
+  .slots{flex-direction:column;align-items:center}
+  .slot{width:100%;max-width:280px}
+  .section-title{font-size:24px}
+  section{padding:60px 20px}
+  .preview-section,.trial-section,.note-section{padding:40px 20px}
+}
+@media(max-width:480px){
+  .hero-title{font-size:26px}
+  .hero-logo span{font-size:20px}
+  .trial-features{grid-template-columns:1fr 1fr;gap:8px}
+  .f-badges{flex-wrap:wrap}
+}
+</style>
+</head>
+<body>
+
+<!-- ═══ HERO ═══ -->
+<div class="hero">
+  <div class="hero-bg"><div class="orb"></div><div class="orb"></div><div class="orb"></div></div>
+  <div class="particles" id="particles"></div>
+  <div class="hero-content">
+    <div class="hero-logo">
+      <svg viewBox="0 0 40 40" fill="none"><rect x="3" y="3" width="34" height="34" rx="9" stroke="url(#hl)" stroke-width="2.5"/><path d="M12 28V20M18 28V16M24 28V22M30 28V12" stroke="url(#hl)" stroke-width="2.5" stroke-linecap="round"/><defs><linearGradient id="hl" x1="0" y1="0" x2="40" y2="40"><stop stop-color="#5b9cf5"/><stop offset="1" stop-color="#a78bfa"/></linearGradient></defs></svg>
+      <span>FinanceOS</span>
+    </div>
+    <div class="hero-personal">
+      <div class="hero-eyebrow"><span class="pulse"></span> Personal Invitation</div>
+      <h1 class="hero-title">Hey <span class="name">Krista</span>, your trial is ready.</h1>
+      <p class="hero-sub">I saw your signup and built this page just for you. FinanceOS gives pharma finance teams a real-time operating layer — consolidation, treasury, scenario modeling, and AI reporting in one view.</p>
+      <div class="hero-ctas">
+        <a href="#trial" class="cta-primary">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          Book Your 15-Min Intro
+        </a>
+        <a href="#preview" class="cta-ghost">
+          <svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+          See a Live Preview
+        </a>
+      </div>
+    </div>
+  </div>
+  <div class="scroll-hint">
+    <span>Scroll to explore</span>
+    <div class="scroll-arrow"></div>
+  </div>
+</div>
+
+<!-- ═══ PHARMA USE CASES ═══ -->
+<section id="usecases">
+  <div class="section-eyebrow">Built for Pharma Finance</div>
+  <div class="section-title">The complexity your team deals with daily — solved.</div>
+  <div class="section-sub">Whether you're tracking burn through Phase II or consolidating across 50 entities, FinanceOS maps to how pharma finance actually works.</div>
+
+  <div class="usecase-grid">
+    <div class="uc-card" data-anim>
+      <div class="uc-icon i1"><svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></div>
+      <div class="uc-title">Multi-Entity Clinical Budgets</div>
+      <div class="uc-desc">Track R&D spend across entities, trials, and therapeutic areas with real-time consolidation and intercompany elimination. One view for your entire trial portfolio.</div>
+      <div class="uc-metric">↓ 72% faster close cycle</div>
+    </div>
+    <div class="uc-card" data-anim>
+      <div class="uc-icon i2"><svg viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></div>
+      <div class="uc-title">Cash Burn & Runway Modeling</div>
+      <div class="uc-desc">13-week rolling cash forecast with Monte Carlo scenario modeling for enrollment rates, milestone payments, CRO burn, and FDA timeline shifts.</div>
+      <div class="uc-metric">↑ 94% forecast accuracy at 90 days</div>
+    </div>
+    <div class="uc-card" data-anim>
+      <div class="uc-icon i3"><svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></div>
+      <div class="uc-title">Board & Investor Reporting</div>
+      <div class="uc-desc">One-click board decks with audit-ready financials, pipeline valuations, and compliance-grade formatting. No more assembling slide decks from five spreadsheets.</div>
+      <div class="uc-metric">↓ 8 hours/month saved per analyst</div>
+    </div>
+    <div class="uc-card" data-anim>
+      <div class="uc-icon i4"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+      <div class="uc-title">GxP & SOX Compliance</div>
+      <div class="uc-desc">Full audit trail with timestamped change logs, role-based access, SOC 2 Type II certified infrastructure, and 21 CFR Part 11 alignment for regulated environments.</div>
+      <div class="uc-metric">✓ Zero critical audit findings</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ LIVE PREVIEW ═══ -->
+<div class="preview-section" id="preview">
+  <div style="text-align:center;margin-bottom:32px">
+    <div class="section-eyebrow">Live Dashboard Preview</div>
+    <div class="section-title">This is what your team would see on day one.</div>
+    <div class="section-sub" style="margin:8px auto 0">Pre-configured pharma template with clinical trial financials, cash position, and pipeline tracking.</div>
+  </div>
+  <div class="preview-window" data-anim-window>
+    <div class="preview-titlebar">
+      <div class="preview-dot r"></div>
+      <div class="preview-dot y"></div>
+      <div class="preview-dot g"></div>
+      <span>FinanceOS — Pharma Command Center</span>
+      <div></div>
+    </div>
+    <div class="preview-dash">
+      <!-- KPIs -->
+      <div class="kpi">
+        <div class="kpi-label">Total R&D Spend</div>
+        <div class="kpi-value" style="color:var(--accent)">$24.8M</div>
+        <div class="kpi-delta up"><svg viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"/></svg> 12% vs plan</div>
+        <div class="kpi-bar"><div class="kpi-bar-fill" style="--w:68%;background:var(--accent)"></div></div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label">Cash Position</div>
+        <div class="kpi-value" style="color:var(--green)">$142M</div>
+        <div class="kpi-delta up"><svg viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"/></svg> 18mo runway</div>
+        <div class="kpi-bar"><div class="kpi-bar-fill" style="--w:82%;background:var(--green)"></div></div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label">Active Trials</div>
+        <div class="kpi-value" style="color:var(--purple)">7</div>
+        <div class="kpi-delta up"><svg viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"/></svg> 2 Phase III</div>
+        <div class="kpi-bar"><div class="kpi-bar-fill" style="--w:58%;background:var(--purple)"></div></div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label">Burn Rate</div>
+        <div class="kpi-value" style="color:var(--amber)">$7.8M<span style="font-size:12px;color:var(--muted)">/mo</span></div>
+        <div class="kpi-delta down"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg> 3% over forecast</div>
+        <div class="kpi-bar"><div class="kpi-bar-fill" style="--w:45%;background:var(--amber)"></div></div>
+      </div>
+
+      <!-- Chart -->
+      <div class="chart-area">
+        <div class="chart-header">
+          <div class="chart-label">R&D Spend vs Budget — Rolling 12 Months</div>
+          <div class="chart-legend">
+            <div class="chart-legend-item"><div class="chart-legend-dot actual"></div>Actual</div>
+            <div class="chart-legend-item"><div class="chart-legend-dot budget"></div>Budget</div>
+          </div>
+        </div>
+        <svg class="chart-svg" viewBox="0 0 620 160" preserveAspectRatio="none">
+          <defs>
+            <linearGradient id="chartGrad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="rgba(91,156,245,.18)"/>
+              <stop offset="60%" stop-color="rgba(91,156,245,.04)"/>
+              <stop offset="100%" stop-color="rgba(91,156,245,0)"/>
+            </linearGradient>
+            <linearGradient id="lineGrad" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0%" stop-color="#5b9cf5"/>
+              <stop offset="100%" stop-color="#a78bfa"/>
+            </linearGradient>
+          </defs>
+          <!-- Grid lines -->
+          <line class="chart-grid-line" x1="20" y1="30" x2="600" y2="30"/>
+          <line class="chart-grid-line" x1="20" y1="60" x2="600" y2="60"/>
+          <line class="chart-grid-line" x1="20" y1="90" x2="600" y2="90"/>
+          <line class="chart-grid-line" x1="20" y1="120" x2="600" y2="120"/>
+          <!-- Y-axis labels -->
+          <text class="chart-axis-label" x="14" y="33" text-anchor="end">$30M</text>
+          <text class="chart-axis-label" x="14" y="63" text-anchor="end">$20M</text>
+          <text class="chart-axis-label" x="14" y="93" text-anchor="end">$10M</text>
+          <text class="chart-axis-label" x="14" y="123" text-anchor="end">$0</text>
+          <!-- X-axis labels -->
+          <text class="chart-axis-label" x="40" y="148">Apr</text>
+          <text class="chart-axis-label" x="155" y="148">Jun</text>
+          <text class="chart-axis-label" x="270" y="148">Aug</text>
+          <text class="chart-axis-label" x="385" y="148">Oct</text>
+          <text class="chart-axis-label" x="500" y="148">Dec</text>
+          <text class="chart-axis-label" x="575" y="148">Feb</text>
+          <!-- Gradient fill -->
+          <path class="chart-fill" d="M30,100 C80,95 140,80 200,72 C260,64 310,55 360,60 C410,65 450,44 500,38 C540,33 570,28 600,22 L600,135 L30,135Z"/>
+          <!-- Budget line (dashed) -->
+          <path class="chart-line l2" d="M30,105 C80,100 140,88 200,82 C260,76 310,70 360,65 C410,60 450,54 500,50 C540,47 570,44 600,40" stroke-dasharray="6 4" style="stroke-dasharray:600;stroke-dashoffset:600"/>
+          <!-- Actual spend line -->
+          <path class="chart-line l1" d="M30,100 C80,95 140,80 200,72 C260,64 310,55 360,60 C410,65 450,44 500,38 C540,33 570,28 600,22" stroke="url(#lineGrad)"/>
+          <!-- Data point dots -->
+          <circle class="chart-dot" cx="30" cy="100" r="0"/>
+          <circle class="chart-dot" cx="145" cy="80" r="0"/>
+          <circle class="chart-dot" cx="310" cy="55" r="0"/>
+          <circle class="chart-dot" cx="450" cy="44" r="0"/>
+          <circle class="chart-dot" cx="540" cy="33" r="0"/>
+          <!-- Glowing endpoint -->
+          <circle class="chart-endpoint-ring" cx="600" cy="22" r="6"/>
+          <circle class="chart-endpoint" cx="600" cy="22" r="0"/>
+          <!-- Current value label -->
+          <text class="chart-value-label" x="590" y="16">$24.8M</text>
+        </svg>
+      </div>
+
+      <!-- Table -->
+      <div class="table-area">
+        <div class="table-label">Trial Pipeline — Q1 2026</div>
+        <table class="mini-table">
+          <tr><td>FOS-301 (Phase III)</td><td class="g">On Track</td><td>$8.2M</td></tr>
+          <tr><td>FOS-204 (Phase II)</td><td class="g">On Track</td><td>$4.1M</td></tr>
+          <tr><td>FOS-118 (Phase II)</td><td class="b">Enrolling</td><td>$3.6M</td></tr>
+          <tr><td>FOS-402 (Phase I)</td><td class="g">On Track</td><td>$2.9M</td></tr>
+          <tr><td>FOS-510 (Pre-IND)</td><td class="r">Delayed</td><td>$1.8M</td></tr>
+          <tr><td>FOS-209 (Phase I)</td><td class="b">Enrolling</td><td>$2.4M</td></tr>
+          <tr><td>FOS-315 (Phase III)</td><td class="g">On Track</td><td>$6.1M</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ TRIAL / BOOKING ═══ -->
+<div class="trial-section" id="trial">
+  <div class="trial-box">
+    <div class="trial-badge"><span class="dot"></span> Reserved for You</div>
+    <h2 class="trial-h2">14-Day Guided Evaluation</h2>
+    <p class="trial-p">Full platform access with a dedicated onboarding specialist who configures your environment to your chart of accounts and reporting structure. No self-serve guessing.</p>
+
+    <div class="trial-features">
+      <div class="trial-feat">
+        <div class="trial-feat-num">14</div>
+        <div class="trial-feat-label">Days Full Access</div>
+      </div>
+      <div class="trial-feat">
+        <div class="trial-feat-num">1:1</div>
+        <div class="trial-feat-label">Onboarding Call</div>
+      </div>
+      <div class="trial-feat">
+        <div class="trial-feat-num">Live</div>
+        <div class="trial-feat-label">ERP Connection</div>
+      </div>
+      <div class="trial-feat">
+        <div class="trial-feat-num">24/7</div>
+        <div class="trial-feat-label">Slack Support</div>
+      </div>
+    </div>
+
+    <div style="margin-bottom:16px;font-size:13px;font-weight:700;color:var(--text)">Pick a time for your intro call:</div>
+    <div class="slots" id="slotGrid">
+      <div class="slot" onclick="pickSlot(this)"><span class="slot-day">Thu Mar 26</span><span class="slot-time">10:30 AM ET</span></div>
+      <div class="slot" onclick="pickSlot(this)"><span class="slot-day">Thu Mar 26</span><span class="slot-time">3:00 PM ET</span></div>
+      <div class="slot" onclick="pickSlot(this)"><span class="slot-day">Fri Mar 27</span><span class="slot-time">11:00 AM ET</span></div>
+      <div class="slot" onclick="pickSlot(this)"><span class="slot-day">Mon Mar 30</span><span class="slot-time">10:00 AM ET</span></div>
+      <div class="slot" onclick="pickSlot(this)"><span class="slot-day">Mon Mar 30</span><span class="slot-time">2:00 PM ET</span></div>
+    </div>
+
+    <div class="trial-cta-wrap">
+      <button class="cta-primary" id="bookBtn" onclick="confirmSlot()" style="opacity:.4;pointer-events:none">
+        <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+        Confirm & Start Trial
+      </button>
+    </div>
+
+    <div id="bookConfirm" style="display:none;margin-top:20px;padding:16px 24px;border-radius:var(--radius);background:rgba(52,211,153,.06);border:1px solid rgba(52,211,153,.12)">
+      <div style="font-size:14px;font-weight:700;color:var(--green);margin-bottom:4px">You're booked.</div>
+      <div style="font-size:13px;color:var(--dim)">Check your inbox at <strong>kristalumpkin@yahoo.com</strong> for the calendar invite and your environment setup link.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ PERSONAL NOTE ═══ -->
+<div class="note-section">
+  <div class="note-card">
+    <div class="note-text">I wanted to reach out personally because when someone in pharma asks for trial access, it usually means they're solving a real problem — not just browsing. I'd rather spend 15 minutes understanding what that is and set you up with the right configuration than drop you into a generic instance. Looking forward to connecting, Krista.</div>
+    <div class="note-sig">
+      <div class="note-avatar">MF</div>
+      <div>
+        <div class="note-name">Malik Frazier</div>
+        <div class="note-title">Founder & CEO · FinanceOS</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ FOOTER ═══ -->
+<footer>
+  <div class="f-logo">
+    <svg viewBox="0 0 20 20" fill="none"><rect x="1" y="1" width="18" height="18" rx="5" stroke="url(#fl)" stroke-width="1.5"/><path d="M6 14V10M9 14V8M12 14V11M15 14V6" stroke="url(#fl)" stroke-width="1.5" stroke-linecap="round"/><defs><linearGradient id="fl" x1="0" y1="0" x2="20" y2="20"><stop stop-color="#5b9cf5"/><stop offset="1" stop-color="#a78bfa"/></linearGradient></defs></svg>
+    <span>FinanceOS</span>
+  </div>
+  <div class="f-badges">
+    <span class="f-badge"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>SOC 2 Type II</span>
+    <span class="f-badge"><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>AES-256</span>
+    <span class="f-badge"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>HIPAA Aware</span>
+  </div>
+  <div class="f-copy">© 2026 FinanceOS, Inc. · This page was created exclusively for Krista Lumpkin.</div>
+</footer>
+
+<script>
+// ── Particles ──
+const pc=document.getElementById('particles');
+for(let i=0;i<30;i++){
+  const p=document.createElement('div');p.className='particle';
+  p.style.left=Math.random()*100+'%';
+  p.style.animationDuration=(8+Math.random()*12)+'s';
+  p.style.animationDelay=Math.random()*15+'s';
+  p.style.width=p.style.height=(2+Math.random()*3)+'px';
+  pc.appendChild(p);
+}
+
+// ── Scroll reveal ──
+const observer=new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');observer.unobserve(e.target);}});
+},{threshold:.15});
+document.querySelectorAll('[data-anim]').forEach(el=>observer.observe(el));
+document.querySelectorAll('[data-anim-window]').forEach(el=>observer.observe(el));
+
+// ── Slot picker ──
+let selectedSlot=null;
+function pickSlot(el){
+  document.querySelectorAll('.slot').forEach(s=>s.classList.remove('selected'));
+  el.classList.add('selected');
+  selectedSlot=el;
+  const btn=document.getElementById('bookBtn');
+  btn.style.opacity='1';btn.style.pointerEvents='auto';
+}
+function confirmSlot(){
+  if(!selectedSlot)return;
+  const btn=document.getElementById('bookBtn');
+  btn.innerHTML='<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Booked!';
+  btn.style.background='linear-gradient(135deg,#166534,#15803d)';
+  btn.style.pointerEvents='none';
+  document.getElementById('bookConfirm').style.display='block';
+  document.querySelectorAll('.slot').forEach(s=>{if(!s.classList.contains('selected')){s.style.opacity='.3';s.style.pointerEvents='none';}});
+}
+
+// ── Smooth scroll ──
+document.querySelectorAll('a[href^="#"]').forEach(a=>{
+  a.addEventListener('click',function(e){
+    e.preventDefault();
+    const target=document.querySelector(this.getAttribute('href'));
+    if(target)target.scrollIntoView({behavior:'smooth',block:'start'});
+  });
+});
+</script>
+</body>
+</html>
