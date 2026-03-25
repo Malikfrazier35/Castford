@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Whole Foods Market — Executive Finance Terminal | FinanceOS Enterprise</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#06080c;--surface:rgba(16,19,26,0.85);--surfaceAlt:rgba(22,26,35,0.9);--surfaceDeep:#0d1017;
+  --border:rgba(255,255,255,0.06);--borderSub:rgba(255,255,255,0.04);--borderAccent:rgba(0,100,47,0.15);
+  --text:#f0f2f5;--textSec:#b0b9ca;--textMuted:#636d84;--textFaint:#3d4558;
+  --wf:#00643f;--wfLight:#00a86b;--wfGlow:rgba(0,168,107,0.15);--wfBg:rgba(0,100,63,0.06);--wfBorder:rgba(0,168,107,0.12);
+  --green:#3dd9a0;--greenBg:rgba(61,217,160,0.08);--red:#f87171;--redBg:rgba(248,113,113,0.08);
+  --amber:#f5b731;--amberBg:rgba(245,183,49,0.08);--blue:#60a5fa;--blueBg:rgba(96,165,250,0.08);
+  --purple:#a78bfa;--purpleBg:rgba(167,139,250,0.08);--cyan:#22d3ee;--cyanBg:rgba(34,211,238,0.08);
+  --mono:'JetBrains Mono',monospace;--sans:'Manrope',system-ui,sans-serif;
+  --r:14px;--r-sm:8px;--r-lg:18px;--r-xl:24px;
+  --shadow:0 2px 12px rgba(0,0,0,0.3),0 0 0 1px var(--border);
+  --shadow-md:0 8px 32px rgba(0,0,0,0.4),0 0 0 1px rgba(0,168,107,0.08);
+  --shadow-lg:0 16px 48px rgba(0,0,0,0.5),0 0 0 1px rgba(0,168,107,0.1);
+  --shadow-glow:0 0 40px rgba(0,168,107,0.06);
+  --spring:cubic-bezier(0.22,1,0.36,1);--bounce:cubic-bezier(0.34,1.56,0.64,1);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);-webkit-font-smoothing:antialiased;overflow:hidden;height:100vh}
+::selection{background:var(--wf);color:#fff}
+
+/* ═══ ANIMATIONS ═══ */
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px) scale(0.98)}to{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes slideRight{from{opacity:0;transform:translateX(-12px)}to{opacity:1;transform:translateX(0)}}
+@keyframes shimmer{0%{background-position:-400% 0}100%{background-position:400% 0}}
+@keyframes pulse{0%,100%{opacity:0.6;transform:scale(1)}50%{opacity:1;transform:scale(1.05)}}
+@keyframes glow{0%,100%{box-shadow:0 0 20px rgba(0,168,107,0.08)}50%{box-shadow:0 0 40px rgba(0,168,107,0.15)}}
+@keyframes gradient{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+@keyframes borderPulse{0%,100%{border-color:rgba(0,168,107,0.08)}50%{border-color:rgba(0,168,107,0.2)}}
+@keyframes countUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+@keyframes barFill{from{width:0}to{width:var(--fill)}}
+
+.fade{animation:fadeUp .5s var(--spring) both}
+.fade-d1{animation-delay:.05s}.fade-d2{animation-delay:.1s}.fade-d3{animation-delay:.15s}
+.fade-d4{animation-delay:.2s}.fade-d5{animation-delay:.25s}.fade-d6{animation-delay:.3s}
+
+/* ═══ GLASSMORPHISM CARDS ═══ */
+.card{
+  background:linear-gradient(165deg,rgba(16,19,26,0.92),rgba(12,14,20,0.96));
+  backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);
+  border-radius:var(--r-lg);
+  border:1px solid var(--border);
+  box-shadow:var(--shadow);
+  position:relative;overflow:hidden;
+  transition:all .4s var(--spring);
+}
+.card::before{
+  content:'';position:absolute;top:0;left:10%;right:10%;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,0.04),transparent);
+  pointer-events:none;
+}
+.card:hover{
+  box-shadow:var(--shadow-md);
+  border-color:rgba(255,255,255,0.1);
+  transform:translateY(-2px);
+}
+.card-accent{position:absolute;top:0;left:0;right:0;height:2px;border-radius:2px 2px 0 0}
+.card-glow{position:absolute;top:-50%;left:-50%;width:200%;height:200%;pointer-events:none;opacity:0;transition:opacity .6s}
+.card:hover .card-glow{opacity:1}
+
+/* ═══ TAGS & BUTTONS ═══ */
+.tag{display:inline-flex;align-items:center;gap:3px;padding:3px 8px;border-radius:6px;font-size:9px;font-weight:700;letter-spacing:.05em;backdrop-filter:blur(8px)}
+.btn{font-family:var(--sans);cursor:pointer;border:none;border-radius:var(--r-sm);font-weight:700;transition:all .2s var(--spring);display:inline-flex;align-items:center;gap:5px;font-size:11px;padding:7px 14px;white-space:nowrap;position:relative;overflow:hidden}
+.btn::after{content:'';position:absolute;inset:0;opacity:0;transition:opacity .2s;background:linear-gradient(135deg,rgba(255,255,255,0.1),transparent)}
+.btn:hover::after{opacity:1}
+.btn-wf{background:linear-gradient(135deg,#00643f,#00a86b);color:#fff;box-shadow:0 4px 16px rgba(0,168,107,0.2),inset 0 1px 0 rgba(255,255,255,0.12)}
+.btn-wf:hover{box-shadow:0 8px 32px rgba(0,168,107,0.3),inset 0 1px 0 rgba(255,255,255,0.15);transform:translateY(-1px)}
+.btn-outline{background:rgba(255,255,255,0.03);border:1px solid var(--border);color:var(--textSec)}
+.btn-outline:hover{border-color:var(--wfBorder);color:var(--wfLight);background:var(--wfBg)}
+.btn-ghost{background:transparent;border:none;color:var(--textMuted);padding:5px 8px}
+.btn-ghost:hover{color:var(--text);background:rgba(255,255,255,0.04)}
+.btn-sm{font-size:10px;padding:5px 10px}
+.avatar{border-radius:50%;object-fit:cover;border:2px solid rgba(255,255,255,0.08);box-shadow:0 2px 8px rgba(0,0,0,0.3)}
+
+/* ═══ SIDEBAR ═══ */
+.sidebar-btn{display:flex;align-items:center;gap:9px;padding:8px 12px;border-radius:var(--r-sm);font-size:11px;font-weight:600;color:var(--textSec);cursor:pointer;transition:all .2s var(--spring);border:none;background:none;width:100%;text-align:left;font-family:var(--sans)}
+.sidebar-btn:hover{background:rgba(255,255,255,0.04);color:var(--text)}
+.sidebar-btn.active{background:var(--wfBg);color:var(--wfLight);font-weight:700;border:1px solid var(--wfBorder);box-shadow:0 0 20px rgba(0,168,107,0.05)}
+
+/* ═══ UTILITIES ═══ */
+.metric-bar{height:6px;background:rgba(255,255,255,0.04);border-radius:3px;overflow:hidden}
+.metric-fill{height:100%;border-radius:3px;transition:width .8s var(--spring)}
+.admin-tab{padding:0 16px;height:40px;display:flex;align-items:center;font-size:11px;font-weight:600;color:var(--textMuted);cursor:pointer;border-bottom:2px solid transparent;transition:all .2s var(--spring);background:none;border-top:none;border-left:none;border-right:none;font-family:var(--sans);gap:6px}
+.admin-tab:hover{color:var(--text)}
+.admin-tab.active{color:var(--wfLight);border-bottom-color:var(--wfLight);font-weight:700}
+.kpi-value{font-size:24px;font-weight:800;font-family:var(--mono);letter-spacing:-.03em;line-height:1}
+.section-title{font-size:8px;font-weight:800;text-transform:uppercase;letter-spacing:.14em;color:var(--textFaint);margin-bottom:10px}
+.msg-row{display:flex;gap:10px;padding:12px 0;align-items:flex-start}
+.msg-row+.msg-row{border-top:1px solid var(--borderSub)}
+.task-row{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:var(--r-sm);transition:all .2s var(--spring)}
+.task-row:hover{background:rgba(255,255,255,0.03)}
+.status-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;box-shadow:0 0 6px currentColor}
+
+/* Scrollbar */
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.06);border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:rgba(255,255,255,0.12)}
+
+/* Gradient text */
+.gradient-text{background:linear-gradient(135deg,var(--wfLight),var(--green),var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+</style>
+</head>
+<body>
+
+<!-- ═══ EXECUTIVE BRAND BAR ═══ -->
+<div style="background:linear-gradient(135deg,#001a10 0%,#002a1a 40%,#001510 100%);height:44px;display:flex;align-items:center;justify-content:space-between;padding:0 24px;border-bottom:1px solid rgba(0,168,107,0.08);position:relative;overflow:hidden">
+  <!-- Animated gradient line -->
+  <div style="position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(0,168,107,0.3),rgba(61,217,160,0.2),transparent);background-size:400% 100%;animation:gradient 8s ease infinite"></div>
+  <div style="display:flex;align-items:center;gap:14px">
+    <div style="display:flex;align-items:center;gap:10px">
+      <div style="width:28px;height:28px;border-radius:8px;background:linear-gradient(135deg,#00643f,#00a86b);display:flex;align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(0,168,107,0.25)">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="white" stroke-width="2"/><path d="M8 12l3 3 5-5" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <span style="font-size:14px;font-weight:800;letter-spacing:-.02em;color:#f0f2f5">Whole Foods<span style="color:var(--wfLight);font-weight:400"> Market</span></span>
+    </div>
+    <div style="width:1px;height:14px;background:rgba(255,255,255,.06)"></div>
+    <span style="font-size:7px;font-weight:700;color:rgba(255,255,255,.2);letter-spacing:.14em">AN AMAZON COMPANY</span>
+    <span style="font-size:7px;padding:3px 8px;border-radius:4px;background:linear-gradient(135deg,rgba(0,100,63,0.4),rgba(0,168,107,0.2));color:var(--green);font-weight:800;letter-spacing:.06em;border:1px solid rgba(0,168,107,0.15)">ENTERPRISE</span>
+  </div>
+  <div style="display:flex;align-items:center;gap:16px">
+    <div style="display:flex;align-items:center;gap:8px">
+      <span style="font-size:9px;color:rgba(255,255,255,.2);font-family:var(--mono)">NASDAQ: AMZN</span>
+      <span style="font-size:10px;font-weight:800;color:rgba(255,255,255,.65);font-family:var(--mono)">$198.42</span>
+      <span style="font-size:9px;color:var(--green);font-weight:700">+1.24%</span>
+    </div>
+    <div style="width:1px;height:12px;background:rgba(255,255,255,.04)"></div>
+    <div style="display:flex;align-items:center;gap:6px">
+      <div style="width:6px;height:6px;border-radius:50%;background:var(--green);box-shadow:0 0 8px rgba(61,217,160,0.4);animation:pulse 2s infinite"></div>
+      <span style="font-size:9px;color:rgba(255,255,255,.2)">Live &middot; Mar 24, 2026 &middot; 3:24 PM ET</span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ ADMIN TABS ═══ -->
+<div style="background:linear-gradient(180deg,rgba(16,19,26,0.95),rgba(12,14,20,0.98));backdrop-filter:blur(24px);border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;padding:0 24px;position:sticky;top:0;z-index:100">
+  <div style="display:flex;align-items:center;gap:0">
+    <div style="display:flex;align-items:center;gap:7px;padding:0 20px 0 0;margin-right:12px;border-right:1px solid var(--border);height:40px">
+      <svg width="18" height="18" viewBox="0 0 32 32" fill="none"><defs><linearGradient id="lg" x1="0" y1="0" x2="32" y2="32"><stop offset="0%" stop-color="#60a5fa"/><stop offset="100%" stop-color="#a78bfa"/></linearGradient></defs><rect width="32" height="32" rx="8" fill="url(#lg)"/><path d="M8 10h16M8 16h12M8 22h8" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/><circle cx="24" cy="22" r="3" fill="#3dd9a0"/></svg>
+      <span style="font-size:12px;font-weight:800;letter-spacing:-.02em">FinanceOS</span>
+    </div>
+    <div id="adminTabs" style="display:flex;height:40px"></div>
+  </div>
+  <div style="display:flex;align-items:center;gap:5px">
+    <button class="btn btn-outline btn-sm" onclick="togglePanel('copilot')"><span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--purple);box-shadow:0 0 8px rgba(167,139,250,0.4);margin-right:2px"></span> Copilot</button>
+    <button class="btn btn-outline btn-sm">Export</button>
+    <button class="btn btn-outline btn-sm">Notifications</button>
+    <button class="btn btn-wf btn-sm">Share with Board</button>
+  </div>
+</div>
+
+<div style="display:flex;height:calc(100vh - 84px)">
+
+<!-- ═══ SIDEBAR ═══ -->
+<div style="width:200px;border-right:1px solid var(--border);background:linear-gradient(180deg,rgba(16,19,26,0.9),rgba(10,12,16,0.95));backdrop-filter:blur(20px);padding:12px 8px;flex-shrink:0;overflow-y:auto;display:flex;flex-direction:column">
+  <div style="padding:0 12px;margin-bottom:2px" class="section-title">Finance</div>
+  <div id="sidebarFinance"></div>
+  <div style="height:1px;background:var(--borderSub);margin:8px 6px"></div>
+  <div style="padding:0 12px;margin-bottom:2px" class="section-title">Organization</div>
+  <div id="sidebarOrg"></div>
+  <div style="height:1px;background:var(--borderSub);margin:8px 6px"></div>
+  <div style="padding:0 12px;margin-bottom:2px" class="section-title">Team Online</div>
+  <div id="teamSidebar" style="padding:0 4px"></div>
+  <div style="flex:1"></div>
+  <div style="padding:8px;border-top:1px solid var(--borderSub);margin-top:8px">
+    <div style="display:flex;align-items:center;gap:8px;padding:6px">
+      <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?w=60&q=80&fit=crop&crop=face" class="avatar" style="width:28px;height:28px">
+      <div><div style="font-size:10px;font-weight:700">Daniel Park</div><div style="font-size:8px;color:var(--textMuted)">Chief Financial Officer</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ CONTENT AREA ═══ -->
+<div style="flex:1;overflow-y:auto;padding:20px 24px;position:relative" id="content">
+  <!-- Ambient background orbs -->
+  <div style="position:fixed;top:20%;left:40%;width:400px;height:400px;border-radius:50%;background:radial-gradient(circle,rgba(0,168,107,0.03) 0%,transparent 70%);filter:blur(80px);pointer-events:none;animation:pulse 8s ease-in-out infinite"></div>
+  <div style="position:fixed;bottom:20%;right:20%;width:300px;height:300px;border-radius:50%;background:radial-gradient(circle,rgba(96,165,250,0.02) 0%,transparent 70%);filter:blur(60px);pointer-events:none;animation:pulse 8s ease-in-out infinite 2s"></div>
+</div>
+
+<!-- ═══ RIGHT PANEL ═══ -->
+<div id="rightPanel" style="display:none;width:360px;border-left:1px solid var(--border);background:linear-gradient(180deg,rgba(16,19,26,0.95),rgba(10,12,16,0.98));backdrop-filter:blur(24px);flex-shrink:0;overflow-y:auto;padding:16px"></div>
+</div>
+
+<script>
+// ═══ DATA ═══
+const admins = [
+  {id:"cfo",name:"Daniel Park",role:"CFO",photo:"https://images.unsplash.com/photo-1560250097-0b93528c311a?w=80&q=80&fit=crop&crop=face",status:"online"},
+  {id:"vpf",name:"Rachel Torres",role:"VP Finance",photo:"https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=80&q=80&fit=crop&crop=face",status:"online"},
+  {id:"ctrl",name:"Andre Williams",role:"Controller",photo:"https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&q=80&fit=crop&crop=face",status:"away"},
+  {id:"fpa",name:"Maya Singh",role:"FP&A Director",photo:"https://images.unsplash.com/photo-1580489944761-15a19d654956?w=80&q=80&fit=crop&crop=face",status:"online"},
+  {id:"trs",name:"Kevin Cho",role:"Treasury",photo:"https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=80&q=80&fit=crop&crop=face",status:"offline"},
+  {id:"ops",name:"Lisa Nakamura",role:"VP Operations",photo:"https://images.unsplash.com/photo-1594744803329-e58b31de8bf5?w=80&q=80&fit=crop&crop=face",status:"online"},
+];
+
+const tasks=[
+  {t:"Review Q1 earnings draft",a:"Rachel Torres",p:"high",due:"Mar 26",s:"In Progress",c:"Reporting"},
+  {t:"Finalize store-level P&L rollup",a:"Andre Williams",p:"high",due:"Mar 27",s:"In Review",c:"Close"},
+  {t:"Private label margin analysis",a:"Maya Singh",p:"medium",due:"Mar 28",s:"In Progress",c:"Modeling"},
+  {t:"Board deck — same-store sales bridge",a:"Daniel Park",p:"high",due:"Mar 25",s:"Draft",c:"Board"},
+  {t:"Supplier cost renegotiation model",a:"Rachel Torres",p:"medium",due:"Mar 30",s:"Not Started",c:"Procurement"},
+  {t:"Cash position & sweep optimization",a:"Kevin Cho",p:"medium",due:"Mar 28",s:"In Progress",c:"Treasury"},
+  {t:"New store opening pro formas (Q2)",a:"Maya Singh",p:"low",due:"Apr 5",s:"Not Started",c:"Expansion"},
+  {t:"Organic category trend deck",a:"Lisa Nakamura",p:"high",due:"Mar 25",s:"Draft",c:"Ops"},
+];
+
+const msgs=[
+  {from:admins[1],text:"Private label EBITDA margin hit 38.2% — 420bps above national brand. Recommending 15% more shelf allocation for 365 Everyday Value line.",time:"2:45 PM",channel:"#finance-leadership"},
+  {from:admins[0],text:"Strong. Also pull the shrinkage data by region. The Midwest pilot with AI-powered inventory reduced waste 22% — want that in the board deck.",time:"2:48 PM",channel:"#finance-leadership"},
+  {from:admins[3],text:"Same-store sales +4.8% comp. Organic produce drove 62% of the basket growth. The premium positioning is resonating post-price investments.",time:"2:52 PM",channel:"#finance-leadership"},
+  {from:admins[2],text:"Store-level P&L close is at 94% — 6 locations outstanding (all Pacific NW). Expecting full close by tomorrow noon. Margins look healthy.",time:"3:01 PM",channel:"#finance-leadership"},
+  {from:admins[5],text:"Supply chain efficiency up 8.3% QoQ. The new regional distribution hub cut delivery times 31% for 127 stores. Ready for the ops section of the board deck.",time:"3:14 PM",channel:"#finance-leadership"},
+];
+
+const kpis=[
+  {l:"Net Revenue",v:"$21.2B",d:"+6.8%",u:1,bar:"var(--wfLight)",n:"TTM Consolidated"},
+  {l:"Gross Margin",v:"36.4%",d:"+180bps",u:1,bar:"var(--green)",n:"vs 34.6% prior year"},
+  {l:"Store EBITDA",v:"$2.86B",d:"+11.2%",u:1,bar:"var(--blue)",n:"13.5% EBITDA margin"},
+  {l:"Same-Store Sales",v:"+4.8%",d:"+2.1pp",u:1,bar:"var(--green)",n:"14th consecutive quarter positive"},
+  {l:"Basket Size",v:"$42.60",d:"+3.2%",u:1,bar:"var(--purple)",n:"vs $41.28 prior year"},
+  {l:"Store Count",v:"531",d:"+18 YTD",u:1,bar:"var(--cyan)",n:"42 in pipeline through 2027"},
+];
+
+const segs=[
+  {n:"Northeast",r:5520,p:26,g:5.4,m:37.8,stores:141,c:"var(--wfLight)"},
+  {n:"Southeast",r:3920,p:18.5,g:7.2,m:35.1,stores:98,c:"var(--green)"},
+  {n:"Midwest",r:3180,p:15,g:8.8,m:34.2,stores:79,c:"var(--blue)"},
+  {n:"Southwest",r:3680,p:17.4,g:6.1,m:36.9,stores:92,c:"var(--amber)"},
+  {n:"Pacific",r:4900,p:23.1,g:4.2,m:38.4,stores:121,c:"var(--purple)"},
+];
+
+let activeAdmin = "cfo";
+let activeView = "overview";
+let panelOpen = null;
+
+// ═══ RENDER ADMIN TABS ═══
+function renderAdminTabs(){
+  document.getElementById('adminTabs').innerHTML = admins.map(a=>`
+    <button class="admin-tab ${a.id===activeAdmin?'active':''}" onclick="switchAdmin('${a.id}')">
+      <img src="${a.photo}" style="width:18px;height:18px;border-radius:50%;object-fit:cover;border:1.5px solid ${a.id===activeAdmin?'var(--wfLight)':'transparent'};transition:border .2s">
+      <span>${a.role}</span>
+    </button>
+  `).join('');
+}
+
+function switchAdmin(id){activeAdmin=id;renderAdminTabs();renderContent();}
+
+// ═══ RENDER SIDEBAR ═══
+function renderSidebar(){
+  const fin=[{i:"◆",l:"Overview",v:"overview"},{i:"▣",l:"P&L Statement",v:"pnl"},{i:"◈",l:"Regions",v:"segments"},{i:"▲",l:"Forecast",v:"forecast"},{i:"◎",l:"Cash Flow",v:"cashflow"},{i:"◉",l:"Board Deck",v:"board"}];
+  const org=[{i:"■",l:"Tasks",v:"tasks",b:tasks.filter(t=>t.s!=="Complete").length},{i:"▹",l:"Messages",v:"messages",b:msgs.length},{i:"◇",l:"Team",v:"team"},{i:"▫",l:"Calendar",v:"calendar"},{i:"◻",l:"Documents",v:"docs"},{i:"▧",l:"Pipeline",v:"pipeline"}];
+  document.getElementById('sidebarFinance').innerHTML=fin.map(f=>`<button class="sidebar-btn ${f.v===activeView?'active':''}" onclick="switchView('${f.v}')"><span style="width:16px;text-align:center;font-size:12px;opacity:.5">${f.i}</span>${f.l}</button>`).join('');
+  document.getElementById('sidebarOrg').innerHTML=org.map(o=>`<button class="sidebar-btn ${o.v===activeView?'active':''}" onclick="switchView('${o.v}')"><span style="width:16px;text-align:center;font-size:12px;opacity:.5">${o.i}</span>${o.l}${o.b?`<span class="tag" style="background:linear-gradient(135deg,var(--wf),var(--wfLight));color:#fff;margin-left:auto;padding:2px 6px;font-size:8px">${o.b}</span>`:''}</button>`).join('');
+  document.getElementById('teamSidebar').innerHTML=admins.map(a=>`<div style="display:flex;align-items:center;gap:7px;padding:4px 8px;border-radius:6px;cursor:pointer;transition:all .2s var(--spring)" onmouseover="this.style.background='rgba(255,255,255,0.03)'" onmouseout="this.style.background='transparent'" onclick="switchAdmin('${a.id}')"><div style="position:relative"><img src="${a.photo}" class="avatar" style="width:22px;height:22px"><div class="status-dot" style="position:absolute;bottom:-1px;right:-1px;background:${a.status==='online'?'var(--green)':a.status==='away'?'var(--amber)':'var(--textFaint)'};border:2px solid var(--surfaceDeep);color:${a.status==='online'?'var(--green)':a.status==='away'?'var(--amber)':'var(--textFaint)'}"></div></div><span style="font-size:9px;font-weight:600;color:var(--textSec)">${a.name.split(' ')[0]}</span></div>`).join('');
+}
+
+function switchView(v){activeView=v;renderSidebar();renderContent();}
+
+// ═══ CONTENT VIEWS ═══
+function renderContent(){
+  const el=document.getElementById('content');
+  const admin=admins.find(a=>a.id===activeAdmin);
+  if(activeView==='overview')el.innerHTML=renderOverview(admin);
+  else if(activeView==='tasks')el.innerHTML=renderTasks(admin);
+  else if(activeView==='messages')el.innerHTML=renderMessages(admin);
+  else if(activeView==='team')el.innerHTML=renderTeam(admin);
+  else if(activeView==='segments')el.innerHTML=renderSegments(admin);
+  else if(activeView==='pipeline')el.innerHTML=renderPipeline(admin);
+  else el.innerHTML=`<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:60vh;color:var(--textMuted)"><div style="width:56px;height:56px;border-radius:16px;background:var(--wfBg);display:flex;align-items:center;justify-content:center;font-size:20px;margin-bottom:16px;border:1px solid var(--wfBorder);animation:glow 3s ease infinite">◆</div><div style="font-size:16px;font-weight:700;margin-bottom:4px;color:var(--text)">${activeView.charAt(0).toUpperCase()+activeView.slice(1)}</div><div style="font-size:11px">Available in the full FinanceOS Enterprise deployment.</div></div>`;
+}
+
+function renderOverview(admin){
+  const pColor=p=>p==='high'?'var(--red)':p==='medium'?'var(--amber)':'var(--blue)';
+  return `
+  <!-- Hero header -->
+  <div class="card fade" style="padding:0;margin-bottom:20px;overflow:hidden">
+    <div class="card-glow" style="background:radial-gradient(circle at 70% 30%,rgba(0,168,107,0.06),transparent 60%)"></div>
+    <div style="display:grid;grid-template-columns:1fr 300px;min-height:150px">
+      <div style="padding:28px 32px;display:flex;flex-direction:column;justify-content:center;position:relative;z-index:1">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+          <span class="tag" style="background:var(--greenBg);color:var(--green);border:1px solid rgba(61,217,160,0.1)"><span style="display:inline-block;width:5px;height:5px;border-radius:50%;background:var(--green);margin-right:2px;box-shadow:0 0 6px var(--green)"></span> All Systems Nominal</span>
+          <span class="tag" style="background:var(--purpleBg);color:var(--purple);border:1px solid rgba(167,139,250,0.1)"><span style="display:inline-block;width:5px;height:5px;border-radius:50%;background:var(--purple);margin-right:2px;animation:pulse 2s infinite"></span> Claude Active</span>
+          <span class="tag" style="background:rgba(255,255,255,0.03);color:var(--textMuted);border:1px solid var(--border)">FY2026 Q1</span>
+        </div>
+        <h1 style="font-size:26px;font-weight:800;letter-spacing:-.04em;margin-bottom:6px;line-height:1.1">${admin.role} <span class="gradient-text">Command Center</span></h1>
+        <p style="font-size:12px;color:var(--textMuted);line-height:1.6">Welcome back, ${admin.name.split(' ')[0]}. ${tasks.filter(t=>t.p==='high').length} high-priority items require your attention. Same-store comps are tracking +4.8%.</p>
+      </div>
+      <div style="position:relative;overflow:hidden">
+        <img src="https://images.unsplash.com/photo-1542838132-92c53300491e?w=600&q=80&fit=crop" style="width:100%;height:100%;object-fit:cover;display:block;filter:brightness(0.5) saturate(1.2)" alt="">
+        <div style="position:absolute;inset:0;background:linear-gradient(90deg,var(--surfaceDeep) 0%,transparent 50%)"></div>
+        <div style="position:absolute;inset:0;background:linear-gradient(180deg,transparent 50%,var(--surfaceDeep))"></div>
+        <!-- Floating badge -->
+        <div style="position:absolute;bottom:16px;right:16px;padding:6px 12px;border-radius:8px;background:rgba(0,0,0,0.5);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,0.06);display:flex;align-items:center;gap:6px">
+          <span style="font-size:9px;font-weight:800;color:var(--green);font-family:var(--mono)">531</span>
+          <span style="font-size:8px;color:var(--textMuted)">stores live</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- KPIs -->
+  <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-bottom:20px">
+    ${kpis.map((k,i)=>`<div class="card fade fade-d${i+1}" style="padding:16px 18px;cursor:default">
+      <div class="card-accent" style="background:${k.bar}"></div>
+      <div class="card-glow" style="background:radial-gradient(circle at 50% 0%,${k.bar}10,transparent 70%)"></div>
+      <div class="section-title" style="margin-bottom:8px">${k.l}</div>
+      <div style="display:flex;align-items:baseline;gap:6px;margin-bottom:3px">
+        <span class="kpi-value" style="font-size:20px;animation:countUp .6s var(--spring) ${i*.06}s both">${k.v}</span>
+        <span class="tag" style="background:${k.u?'var(--greenBg)':'var(--redBg)'};color:${k.u?'var(--green)':'var(--red)'};font-size:8px;border:1px solid ${k.u?'rgba(61,217,160,0.1)':'rgba(248,113,113,0.1)'}">▲ ${k.d}</span>
+      </div>
+      <div style="font-size:8px;color:var(--textFaint)">${k.n}</div>
+    </div>`).join('')}
+  </div>
+
+  <!-- 3 Column: Actions + Segments + AI -->
+  <div style="display:grid;grid-template-columns:1fr 1.3fr 1fr;gap:14px;margin-bottom:20px">
+    <!-- Quick Actions -->
+    <div class="card fade fade-d2" style="padding:20px">
+      <div class="card-accent" style="background:linear-gradient(90deg,var(--wf),var(--wfLight))"></div>
+      <div style="font-size:13px;font-weight:800;margin-bottom:14px">Quick Actions</div>
+      ${[
+        {l:"High Priority Tasks",v:tasks.filter(t=>t.p==='high').length,c:"var(--red)",bg:"var(--redBg)",click:"tasks"},
+        {l:"Unread Messages",v:msgs.length,c:"var(--blue)",bg:"var(--blueBg)",click:"messages"},
+        {l:"Board Meeting",v:"Mar 26",c:"var(--green)",bg:"var(--greenBg)",click:"board"},
+        {l:"New Store Pipeline",v:"42",c:"var(--purple)",bg:"var(--purpleBg)",click:"pipeline"},
+      ].map(a=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:10px 12px;border-radius:var(--r-sm);border:1px solid var(--border);margin-bottom:6px;cursor:pointer;transition:all .25s var(--spring)" onclick="switchView('${a.click}')" onmouseover="this.style.borderColor='var(--wfBorder)';this.style.background='var(--wfBg)';this.style.transform='translateX(3px)'" onmouseout="this.style.borderColor='var(--border)';this.style.background='transparent';this.style.transform='none'"><span style="font-size:11px;font-weight:600;color:var(--textSec)">${a.l}</span><span class="tag" style="background:${a.bg};color:${a.c};border:1px solid ${a.c}15">${a.v}</span></div>`).join('')}
+    </div>
+
+    <!-- Segments mini -->
+    <div class="card fade fade-d3" style="padding:20px">
+      <div class="card-accent" style="background:linear-gradient(90deg,var(--wfLight),var(--green),var(--blue))"></div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px"><span style="font-size:13px;font-weight:800">Regions</span><span class="tag" style="background:rgba(255,255,255,0.03);color:var(--textMuted);border:1px solid var(--border)">$21.2B TTM</span></div>
+      ${segs.map((s,i)=>`<div style="display:grid;grid-template-columns:100px 1fr 50px 40px 40px;gap:6px;align-items:center;padding:7px 4px;font-size:10px;border-radius:6px;transition:background .2s" onmouseover="this.style.background='rgba(255,255,255,0.02)'" onmouseout="this.style.background='transparent'">
+        <div style="display:flex;align-items:center;gap:5px"><div style="width:6px;height:6px;border-radius:2px;background:${s.c};box-shadow:0 0 6px ${s.c}40"></div><span style="font-weight:600">${s.n}</span></div>
+        <div class="metric-bar"><div class="metric-fill" style="--fill:${s.p*2.5}%;width:${s.p*2.5}%;background:${s.c};opacity:.4"></div></div>
+        <span style="font-weight:800;font-family:var(--mono);font-size:9px;text-align:right">$${(s.r/1000).toFixed(1)}B</span>
+        <span style="font-weight:700;color:var(--green);font-size:9px;text-align:right">+${s.g}%</span>
+        <span style="font-size:8px;color:var(--textFaint);text-align:right">${s.stores}</span>
+      </div>`).join('')}
+      <div style="margin-top:8px;padding-top:8px;border-top:1px solid var(--borderSub);display:flex;justify-content:space-between;font-size:8px;color:var(--textFaint)"><span>Revenue / Growth / Stores</span><button class="btn btn-ghost btn-sm" style="font-size:8px;padding:2px 6px" onclick="switchView('segments')">Details ▸</button></div>
+    </div>
+
+    <!-- AI Insights -->
+    <div class="card fade fade-d4" style="padding:20px">
+      <div class="card-accent" style="background:linear-gradient(90deg,var(--purple),var(--blue))"></div>
+      <div class="card-glow" style="background:radial-gradient(circle at 80% 20%,rgba(167,139,250,0.05),transparent 60%)"></div>
+      <div style="display:flex;align-items:center;gap:6px;margin-bottom:14px"><span style="font-size:13px;font-weight:800">AI Insights</span><span class="tag" style="background:var(--purpleBg);color:var(--purple);border:1px solid rgba(167,139,250,0.1)"><span style="display:inline-block;width:4px;height:4px;border-radius:50%;background:var(--purple);animation:pulse 2s infinite;margin-right:2px"></span>CLAUDE</span></div>
+      ${[
+        {i:"▲",t:"Private label margins 38.2% — 420bps above national brand. Expand 365 line shelf share.",c:"var(--green)",bg:"var(--greenBg)"},
+        {i:"◆",t:"Midwest AI inventory pilot cut shrinkage 22%. Scale to 200 stores by Q3.",c:"var(--blue)",bg:"var(--blueBg)"},
+        {i:"◎",t:"Organic produce drove 62% of basket growth. Premium positioning validated.",c:"var(--purple)",bg:"var(--purpleBg)"},
+      ].map((ins,i)=>`<div style="display:flex;gap:8px;padding:9px 0;${i<2?'border-bottom:1px solid var(--borderSub)':''};transition:transform .2s var(--spring)" onmouseover="this.style.transform='translateX(3px)'" onmouseout="this.style.transform='none'"><span class="tag" style="background:${ins.bg};color:${ins.c};flex-shrink:0;font-size:10px;border:1px solid ${ins.c}10">${ins.i}</span><div style="font-size:10px;color:var(--textSec);line-height:1.5">${ins.t}</div></div>`).join('')}
+      <button class="btn btn-outline" style="width:100%;justify-content:center;margin-top:12px;font-size:10px;border-color:var(--wfBorder)" onclick="togglePanel('copilot')">Open AI Copilot ▸</button>
+    </div>
+  </div>
+
+  <!-- Recent Activity + Recent Tasks -->
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+    <div class="card fade fade-d5" style="padding:20px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px"><span style="font-size:13px;font-weight:800">Recent Messages</span><button class="btn btn-ghost btn-sm" onclick="switchView('messages')">View all ▸</button></div>
+      ${msgs.slice(0,3).map(m=>`<div class="msg-row"><img src="${m.from.photo}" class="avatar" style="width:28px;height:28px;flex-shrink:0"><div style="flex:1;min-width:0"><div style="display:flex;align-items:center;gap:4px;margin-bottom:2px"><span style="font-size:10px;font-weight:700">${m.from.name.split(' ')[0]}</span><span style="font-size:8px;color:var(--textFaint)">${m.time}</span></div><div style="font-size:10px;color:var(--textSec);line-height:1.5;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical">${m.text}</div></div></div>`).join('')}
+    </div>
+    <div class="card fade fade-d6" style="padding:20px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px"><span style="font-size:13px;font-weight:800">Priority Tasks</span><button class="btn btn-ghost btn-sm" onclick="switchView('tasks')">View all ▸</button></div>
+      ${tasks.filter(t=>t.p==='high').slice(0,4).map(t=>`<div class="task-row"><div class="status-dot" style="background:${pColor(t.p)};color:${pColor(t.p)}"></div><div style="flex:1;min-width:0"><div style="font-size:10px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${t.t}</div></div><span style="font-size:8px;color:var(--textMuted)">${t.due}</span><span class="tag" style="background:var(--blueBg);color:var(--blue);font-size:7px;border:1px solid rgba(96,165,250,0.08)">${t.s}</span></div>`).join('')}
+    </div>
+  </div>
+
+  <!-- Powered by -->
+  <div style="margin-top:20px;padding:18px 22px;border-radius:var(--r-lg);background:linear-gradient(135deg,rgba(0,100,63,0.04),rgba(96,165,250,0.03));border:1px solid rgba(0,168,107,0.08);display:flex;justify-content:space-between;align-items:center;animation:glow 6s ease infinite">
+    <div style="display:flex;align-items:center;gap:10px">
+      <svg width="22" height="22" viewBox="0 0 32 32" fill="none"><defs><linearGradient id="lg3" x1="0" y1="0" x2="32" y2="32"><stop offset="0%" stop-color="#60a5fa"/><stop offset="100%" stop-color="#a78bfa"/></linearGradient></defs><rect width="32" height="32" rx="8" fill="url(#lg3)"/><path d="M8 10h16M8 16h12M8 22h8" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/><circle cx="24" cy="22" r="3" fill="#3dd9a0"/></svg>
+      <div><div style="font-size:11px;font-weight:800">Powered by FinanceOS &middot; Enterprise</div><div style="font-size:9px;color:var(--textMuted)">SOC 2 Type II &middot; AES-256 &middot; 99.9% Uptime &middot; GDPR &middot; Zero Cross-Tenant Leakage</div></div>
+    </div>
+    <a href="https://finance-os.app" target="_blank" class="btn btn-wf btn-sm" style="text-decoration:none">Learn More ▸</a>
+  </div>`;
+}
+
+function renderTasks(admin){
+  const pColor=p=>p==='high'?'var(--red)':p==='medium'?'var(--amber)':'var(--blue)';
+  const sColor=s=>s==='In Progress'?'var(--blue)':s==='In Review'?'var(--purple)':s==='Draft'?'var(--amber)':'var(--textMuted)';
+  return `<div style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:20px" class="fade"><div><div class="section-title">Organization</div><h2 style="font-size:20px;font-weight:800;letter-spacing:-.02em">Task Management</h2></div><button class="btn btn-wf">+ New Task</button></div>
+  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px">${[{l:"All Tasks",v:tasks.length,c:"var(--wfLight)"},{l:"High Priority",v:tasks.filter(t=>t.p==='high').length,c:"var(--red)"},{l:"In Progress",v:tasks.filter(t=>t.s==='In Progress').length,c:"var(--blue)"},{l:"In Review",v:tasks.filter(t=>t.s==='In Review').length,c:"var(--purple)"}].map((s,i)=>`<div class="card fade fade-d${i+1}" style="padding:14px 16px;text-align:center"><div class="card-accent" style="background:${s.c}"></div><div style="font-size:22px;font-weight:800;font-family:var(--mono);animation:countUp .5s var(--spring) ${i*.08}s both">${s.v}</div><div style="font-size:9px;color:var(--textMuted);font-weight:600;margin-top:2px">${s.l}</div></div>`).join('')}</div>
+  <div class="card fade fade-d3" style="padding:0">${tasks.map((t,i)=>`<div class="task-row" style="padding:11px 20px;${i<tasks.length-1?'border-bottom:1px solid var(--borderSub)':''}"><div class="status-dot" style="background:${pColor(t.p)};color:${pColor(t.p)}"></div><div style="flex:1"><div style="font-size:11px;font-weight:600">${t.t}</div></div><div style="display:flex;align-items:center;gap:5px;width:120px"><img src="${admins.find(a=>a.name===t.a)?.photo||''}" class="avatar" style="width:20px;height:20px"><span style="font-size:9px;color:var(--textSec)">${t.a.split(' ')[0]}</span></div><span class="tag" style="background:${sColor(t.s)}10;color:${sColor(t.s)};width:80px;justify-content:center;border:1px solid ${sColor(t.s)}10">${t.s}</span><span style="font-size:9px;color:var(--textMuted);width:50px;text-align:right">${t.due}</span></div>`).join('')}</div>`;
+}
+
+function renderMessages(admin){
+  return `<div style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:20px" class="fade"><div><div class="section-title">Organization</div><h2 style="font-size:20px;font-weight:800;letter-spacing:-.02em">Team Messages</h2></div></div>
+  <div class="card fade fade-d1" style="padding:0;overflow:hidden"><div style="padding:12px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;background:rgba(255,255,255,0.01)"><span style="font-size:12px;font-weight:700"># finance-leadership</span><span class="tag" style="background:var(--greenBg);color:var(--green);border:1px solid rgba(61,217,160,0.08)">${admins.filter(a=>a.status==='online').length} online</span><div style="display:flex;margin-left:auto">${admins.filter(a=>a.status==='online').slice(0,4).map(a=>`<img src="${a.photo}" class="avatar" style="width:22px;height:22px;margin-left:-5px">`).join('')}</div></div>
+  <div style="padding:16px 20px">${msgs.map(m=>`<div class="msg-row"><img src="${m.from.photo}" class="avatar" style="width:30px;height:30px;flex-shrink:0"><div><div style="display:flex;align-items:center;gap:5px;margin-bottom:3px"><span style="font-size:11px;font-weight:700">${m.from.name}</span><span style="font-size:8px;color:var(--textFaint)">${m.from.role} &middot; ${m.time}</span></div><div style="font-size:11px;color:var(--textSec);line-height:1.6;max-width:90%;padding:10px 14px;background:rgba(255,255,255,0.03);border-radius:12px 12px 12px 2px;border:1px solid var(--borderSub)">${m.text}</div></div></div>`).join('')}</div>
+  <div style="padding:12px 20px;border-top:1px solid var(--border);display:flex;gap:6px"><input placeholder="Message #finance-leadership..." style="flex:1;padding:9px 14px;border-radius:var(--r-sm);border:1px solid var(--border);background:rgba(255,255,255,0.03);color:var(--text);font-size:11px;font-family:var(--sans);outline:none;transition:border .2s" onfocus="this.style.borderColor='var(--wfBorder)'" onblur="this.style.borderColor='var(--border)'"><button class="btn btn-wf btn-sm">Send</button></div></div>`;
+}
+
+function renderTeam(admin){
+  return `<div style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:20px" class="fade"><div><div class="section-title">Organization</div><h2 style="font-size:20px;font-weight:800;letter-spacing:-.02em">Finance Leadership</h2></div><button class="btn btn-wf">+ Invite</button></div>
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px">${admins.map((a,i)=>`<div class="card fade fade-d${i+1}" style="padding:0;overflow:hidden"><div style="position:relative;height:100px;overflow:hidden"><img src="https://images.unsplash.com/photo-1542838132-92c53300491e?w=400&q=60&fit=crop" style="width:100%;height:100%;object-fit:cover;filter:brightness(0.4) saturate(1.3)"><div style="position:absolute;inset:0;background:linear-gradient(transparent 30%,var(--surfaceDeep))"></div><div style="position:absolute;bottom:-20px;left:50%;transform:translateX(-50%)"><img src="${a.photo}" class="avatar" style="width:44px;height:44px;border-width:3px;border-color:var(--surfaceDeep)"></div></div><div style="padding:28px 16px 18px;text-align:center"><div style="font-size:13px;font-weight:700;margin-bottom:1px">${a.name}</div><div style="font-size:10px;color:var(--textMuted);margin-bottom:10px">${a.role}</div><div style="display:flex;gap:4px;justify-content:center"><button class="btn btn-outline btn-sm" onclick="switchView('messages')">Message</button><button class="btn btn-outline btn-sm" onclick="switchView('tasks')">Assign</button><button class="btn btn-outline btn-sm" onclick="switchAdmin('${a.id}')">Portal</button></div></div></div>`).join('')}</div>`;
+}
+
+function renderSegments(admin){
+  return `<div style="margin-bottom:20px" class="fade"><div class="section-title">Finance</div><h2 style="font-size:20px;font-weight:800;letter-spacing:-.02em">Regional Performance</h2></div>
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px">${segs.map((s,i)=>`<div class="card fade fade-d${i+1}" style="padding:20px;border-left:3px solid ${s.c}"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px"><span style="font-size:14px;font-weight:700">${s.n}</span><span class="tag" style="background:var(--greenBg);color:var(--green);border:1px solid rgba(61,217,160,0.08)">+${s.g}%</span></div><div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px">${[{l:"Revenue",v:`$${(s.r/1000).toFixed(1)}B`},{l:"Margin",v:`${s.m}%`},{l:"Stores",v:s.stores}].map(m=>`<div><div style="font-size:7px;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--textFaint);margin-bottom:3px">${m.l}</div><div style="font-size:17px;font-weight:800;font-family:var(--mono)">${m.v}</div></div>`).join('')}</div><div class="metric-bar" style="height:4px"><div class="metric-fill" style="width:${s.p*2.6}%;background:${s.c};opacity:.4"></div></div><div style="font-size:8px;color:var(--textFaint);margin-top:6px">${s.p}% of total revenue</div></div>`).join('')}
+  <div class="card fade fade-d6" style="padding:20px;grid-column:span 2"><div class="card-accent" style="background:linear-gradient(90deg,var(--wfLight),var(--green))"></div><div style="font-size:13px;font-weight:800;margin-bottom:12px">Revenue Mix</div><div style="display:flex;height:32px;border-radius:8px;overflow:hidden;margin-bottom:8px">${segs.map(s=>`<div style="width:${s.p}%;background:${s.c};opacity:.5;transition:opacity .2s" onmouseover="this.style.opacity='.8'" onmouseout="this.style.opacity='.5'"></div>`).join('')}</div><div style="display:flex;gap:16px;flex-wrap:wrap">${segs.map(s=>`<div style="display:flex;align-items:center;gap:4px;font-size:9px;color:var(--textSec)"><div style="width:8px;height:8px;border-radius:2px;background:${s.c};opacity:.5"></div>${s.n} ${s.p}%</div>`).join('')}</div></div>
+  </div>`;
+}
+
+function renderPipeline(admin){
+  const stages=[
+    {name:"Lead Qualified",items:[{title:"Trader Joe's — CFO Dashboard",value:"$36K/yr",status:"New"},{title:"Sprouts — FP&A Suite",value:"$72K/yr",status:"Contacted"}],color:"var(--blue)"},
+    {name:"Demo Scheduled",items:[{title:"Whole Foods — Enterprise",value:"$180K/yr",status:"Demo Mar 26"},{title:"Kroger — Regional Analytics",value:"$96K/yr",status:"Demo Mar 28"}],color:"var(--purple)"},
+    {name:"Proposal Sent",items:[{title:"Costco — Full Suite",value:"$240K/yr",status:"Reviewing"}],color:"var(--amber)"},
+    {name:"Negotiation",items:[{title:"Albertsons — FP&A",value:"$120K/yr",status:"Legal Review"}],color:"var(--green)"},
+  ];
+  return `<div style="margin-bottom:20px" class="fade"><div class="section-title">Organization</div><h2 style="font-size:20px;font-weight:800;letter-spacing:-.02em">Deal Pipeline</h2><p style="font-size:10px;color:var(--textMuted);margin-top:4px">Enterprise client acquisition funnel</p></div>
+  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px">${stages.map((s,si)=>`<div class="fade fade-d${si+1}"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px"><span style="font-size:10px;font-weight:700;color:var(--textSec)">${s.name}</span><span class="tag" style="background:rgba(255,255,255,0.03);color:var(--textMuted);border:1px solid var(--border)">${s.items.length}</span></div><div style="display:flex;flex-direction:column;gap:6px">${s.items.map(i=>`<div class="card" style="padding:14px 16px"><div class="card-accent" style="background:${s.color}"></div><div style="font-size:11px;font-weight:700;margin-bottom:4px">${i.title}</div><div style="display:flex;justify-content:space-between;align-items:center"><span style="font-size:12px;font-weight:800;font-family:var(--mono);color:var(--green)">${i.value}</span><span style="font-size:8px;color:var(--textMuted)">${i.status}</span></div></div>`).join('')}</div></div>`).join('')}</div>`;
+}
+
+// ═══ PANELS ═══
+function togglePanel(type){
+  const p=document.getElementById('rightPanel');
+  if(panelOpen===type){p.style.display='none';panelOpen=null;return;}
+  panelOpen=type;p.style.display='block';
+  if(type==='copilot')p.innerHTML=`<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px"><div style="display:flex;align-items:center;gap:6px"><span style="font-size:13px;font-weight:800">AI Copilot</span><span class="tag" style="background:var(--purpleBg);color:var(--purple);border:1px solid rgba(167,139,250,0.1)"><span style="display:inline-block;width:4px;height:4px;border-radius:50%;background:var(--purple);animation:pulse 2s infinite;margin-right:2px"></span>CLAUDE</span></div><button class="btn btn-ghost" onclick="togglePanel('copilot')" style="font-size:14px">&times;</button></div>
+  <p style="font-size:10px;color:var(--textMuted);margin-bottom:14px;line-height:1.5">Ask about Whole Foods financials, regional performance, category mix, or scenario models.</p>
+  ${['What drove same-store comp growth?','Private label vs national brand margins','Model 5% basket size increase','New store ROI by region'].map(q=>`<button class="btn btn-outline btn-sm" style="width:100%;text-align:left;margin-bottom:4px;font-size:10px;transition:all .2s var(--spring)" onmouseover="this.style.borderColor='var(--wfBorder)';this.style.transform='translateX(3px)'" onmouseout="this.style.borderColor='var(--border)';this.style.transform='none'">▸ ${q}</button>`).join('')}
+  <div style="background:rgba(255,255,255,0.02);border-radius:var(--r);padding:16px;margin:16px 0;border:1px solid var(--borderSub)">
+    <div style="font-size:9px;font-weight:700;color:var(--blue);margin-bottom:6px">You</div>
+    <div style="font-size:11px;margin-bottom:12px">What drove same-store comp growth this quarter?</div>
+    <div style="font-size:9px;font-weight:700;color:var(--purple);margin-bottom:6px;display:flex;align-items:center;gap:4px"><span style="display:inline-block;width:4px;height:4px;border-radius:50%;background:var(--purple);animation:pulse 2s infinite"></span>Copilot</div>
+    <div style="font-size:10px;color:var(--textSec);line-height:1.65">Same-store comps <strong>+4.8%</strong> driven by three factors:<br><br><strong>1.</strong> Organic produce: 62% of basket growth, +8.2% category<br><strong>2.</strong> Private label (365): 38.2% margin, expanded 15% shelf share<br><strong>3.</strong> Price investments: traffic +3.1%, conversion +1.4pp<br><br>Midwest strongest at +8.8%, reflecting AI inventory pilot impact on freshness scores and reduced shrinkage.<br><br><em style="font-size:8px;color:var(--textFaint)">Confidence: High &middot; Sources: Store-Level P&L, Category Analytics, Inventory System</em></div>
+  </div>
+  <div style="display:flex;gap:5px;position:sticky;bottom:0;background:var(--surfaceDeep);padding:8px 0"><input placeholder="Ask about financials..." style="flex:1;padding:8px 12px;border-radius:var(--r-sm);border:1px solid var(--border);background:rgba(255,255,255,0.03);color:var(--text);font-size:10px;font-family:var(--sans);outline:none;transition:border .2s" onfocus="this.style.borderColor='var(--wfBorder)'" onblur="this.style.borderColor='var(--border)'"><button class="btn btn-wf btn-sm">▸</button></div>`;
+}
+
+// ═══ INIT ═══
+renderAdminTabs();renderSidebar();renderContent();
+</script>
+</body>
+</html>
