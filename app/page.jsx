@@ -696,11 +696,59 @@ const NAV_ITEMS = [
   { id: "integrations", label: "Integrations", icon: Plug, section: "Platform", desc: "Data connectors" },
   { id: "admin", label: "Admin", icon: Shield, section: "Platform", desc: "Workspace settings" },
   { id: "investor", label: "Investor Metrics", icon: Target, section: "Platform", desc: "Board readiness" },
+  { id: "command_center", label: "Command Center", icon: Activity, section: "Platform", desc: "Executive hub" },
   { id: "intelligence", label: "Intelligence", icon: Globe, section: "Platform", desc: "Market signals" },
   { id: "settings", label: "Settings", icon: Settings, section: "Platform", desc: "Preferences" },
 ];
 
 const SECTION_ICONS = { Overview: LayoutDashboard, Financial: DollarSign, Planning: GitBranch, Collaborate: Users, Platform: Settings };
+
+// ── PLAN GATING — feature access by Stripe-verified tier ─────
+const VIEW_FEATURE_MAP = {
+  dashboard: "dashboard_overview", copilot: "ai_copilot", pnl: "pnl",
+  forecast: "forecast", consolidation: "multi_entity", models: "scenarios",
+  close: "close_tasks", team: "team_management", integrations: "integrations",
+  admin: "dashboard_overview", investor: "investor_metrics",
+  intelligence: "dashboard_overview", settings: "dashboard_overview",
+  command_center: "command_center",
+};
+const PLAN_FEATURES_CLIENT = {
+  free:     { label: "Free Trial", features: ["dashboard_overview"] },
+  starter:  { label: "Starter",  features: ["dashboard_overview","pnl","basic_kpis","integrations","email_support"] },
+  growth:   { label: "Growth",   features: ["dashboard_overview","pnl","basic_kpis","integrations","email_support","forecast","scenarios","ai_copilot","multi_entity","slack_integration"] },
+  business: { label: "Business", features: ["dashboard_overview","pnl","basic_kpis","integrations","email_support","forecast","scenarios","ai_copilot","multi_entity","slack_integration","command_center","close_tasks","investor_metrics","sox_audit","sso","custom_ml","team_management"] },
+};
+const TIER_ORDER = ["free","starter","growth","business"];
+function canAccessView(planKey, viewId) {
+  const f = VIEW_FEATURE_MAP[viewId] || "dashboard_overview";
+  return (PLAN_FEATURES_CLIENT[planKey]?.features || []).includes(f);
+}
+function requiredPlanForView(viewId) {
+  const f = VIEW_FEATURE_MAP[viewId] || "dashboard_overview";
+  for (const t of TIER_ORDER) { if (PLAN_FEATURES_CLIENT[t].features.includes(f)) return t; }
+  return "business";
+}
+const PLAN_PRICES = { starter: "$499/mo", growth: "$999/mo", business: "$2,499/mo" };
+
+// ── UPGRADE PROMPT (inline, no imports needed) ───────────────
+const UpgradePromptInline = ({ viewId, currentPlan, c, mode }) => {
+  const needed = requiredPlanForView(viewId);
+  const neededLabel = PLAN_FEATURES_CLIENT[needed]?.label || needed;
+  const neededPrice = PLAN_PRICES[needed] || "";
+  const isDark = mode !== "light";
+  const viewLabels = { copilot:"AI Copilot", forecast:"Forecast Engine", models:"Scenario Modeling", close:"Close Task Manager", team:"Team Management", investor:"Investor Metrics", consolidation:"Multi-Entity Consolidation", command_center:"Command Center" };
+  const label = viewLabels[viewId] || viewId;
+  return (
+    <div style={{ display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", minHeight:400, padding:"48px 24px", textAlign:"center", background:isDark?"linear-gradient(135deg,rgba(91,156,245,0.04),rgba(167,139,250,0.04))":"linear-gradient(135deg,rgba(91,156,245,0.06),rgba(167,139,250,0.06))", borderRadius:20, border:isDark?"1px solid rgba(91,156,245,0.15)":"1px solid rgba(91,156,245,0.2)", position:"relative", overflow:"hidden", animation:"fosFadeSlideUp 0.4s ease" }}>
+      <div style={{ position:"absolute", top:"50%", left:"50%", transform:"translate(-50%,-50%)", width:300, height:300, borderRadius:"50%", background:"radial-gradient(circle,rgba(91,156,245,0.08) 0%,transparent 70%)", animation:"glowPulse 3s ease-in-out infinite", pointerEvents:"none" }} />
+      <div style={{ width:64, height:64, borderRadius:16, background:isDark?"linear-gradient(135deg,rgba(91,156,245,0.15),rgba(167,139,250,0.15))":"linear-gradient(135deg,rgba(91,156,245,0.1),rgba(167,139,250,0.1))", display:"flex", alignItems:"center", justifyContent:"center", marginBottom:20 }}><Lock size={28} color={isDark?"#5b9cf5":"#4a8de8"} /></div>
+      <h3 style={{ fontSize:22, fontWeight:700, color:isDark?"#ffffff":"#1a1a2e", margin:"0 0 8px 0" }}>Unlock {label}</h3>
+      <p style={{ fontSize:15, color:isDark?"rgba(255,255,255,0.55)":"rgba(0,0,0,0.55)", margin:"0 0 24px 0", maxWidth:420, lineHeight:1.6 }}>{label} is available on the <strong style={{ color:isDark?"#5b9cf5":"#4a8de8" }}>{neededLabel}</strong> plan{neededPrice?` (${neededPrice})`:""}.{" "}Upgrade to access this feature and supercharge your finance operations.</p>
+      <button onClick={() => { window.location.hash=""; setTimeout(() => { const el=document.getElementById("pricing"); if(el) el.scrollIntoView({behavior:"smooth"}); else window.location.href="/#pricing"; },50); }} style={{ padding:"14px 32px", borderRadius:12, border:"none", background:"linear-gradient(135deg,#5b9cf5,#a78bfa)", color:"#fff", fontSize:15, fontWeight:600, cursor:"pointer", transition:"all 0.3s", boxShadow:"0 4px 20px rgba(91,156,245,0.3)" }} onMouseOver={e => { e.target.style.transform="translateY(-2px)"; e.target.style.boxShadow="0 8px 30px rgba(91,156,245,0.4)"; }} onMouseOut={e => { e.target.style.transform="translateY(0)"; e.target.style.boxShadow="0 4px 20px rgba(91,156,245,0.3)"; }}>Upgrade to {neededLabel}</button>
+      <p style={{ fontSize:12, color:isDark?"rgba(255,255,255,0.35)":"rgba(0,0,0,0.35)", marginTop:16 }}>You're currently on the {PLAN_FEATURES_CLIENT[currentPlan]?.label || "Free"} plan</p>
+    </div>
+  );
+};
 
 // ── TUTORIAL / PRODUCT GUIDE DATA ────────────────────────────
 const PRODUCT_GUIDES = [
@@ -5647,6 +5695,205 @@ const INTEL_EVENTS = [
   { title: "CFO Roundtable: Budget Season Automation", date: "Apr 22, 2026", time: "1:00 PM ET", speakers: 6, color: "#a181f7", img: "https://images.unsplash.com/photo-1591115765373-5207764f72e7?w=600&h=200&fit=crop" },
 ];
 
+// ═══════════════════════════════════════════════════════════════════
+// COMMAND CENTER — Business-tier KPI hub, role dashboards, pipeline
+// ═══════════════════════════════════════════════════════════════════
+const CMD_KPI_DATA = [
+  { label: "Net Revenue", value: "$48.2M", delta: "+4.3%", color: "#5b9cf5", icon: DollarSign },
+  { label: "Gross Margin", value: "72.1%", delta: "+1.8pp", color: "#34d399", icon: TrendingUp },
+  { label: "Burn Multiple", value: "0.7x", delta: "-0.2x", color: "#a78bfa", icon: Activity },
+  { label: "ARR", value: "$52.6M", delta: "+28%", color: "#fbbf24", icon: Target },
+  { label: "NRR", value: "118%", delta: "+3%", color: "#22d3ee", icon: RefreshCw },
+  { label: "CAC Payback", value: "14mo", delta: "-2mo", color: "#f472b6", icon: Users },
+];
+const CMD_PIPELINE = [
+  { name: "Acme Corp", stage: "Negotiation", value: "$340K", prob: 85, daysOpen: 22, owner: "MF" },
+  { name: "TechStart Inc", stage: "Proposal", value: "$180K", prob: 60, daysOpen: 45, owner: "JS" },
+  { name: "GlobalFin Ltd", stage: "Discovery", value: "$520K", prob: 35, daysOpen: 12, owner: "MF" },
+  { name: "DataFlow AI", stage: "Contract", value: "$210K", prob: 92, daysOpen: 8, owner: "AR" },
+  { name: "CloudPeak", stage: "Proposal", value: "$95K", prob: 55, daysOpen: 31, owner: "JS" },
+];
+const CMD_ACTIVITY = [
+  { time: "2m ago", text: "Revenue beat Q1 target by $2.09M", type: "success" },
+  { time: "18m ago", text: "S&M overspend alert: +$730K vs plan", type: "warning" },
+  { time: "1h ago", text: "Board deck auto-generated for March", type: "info" },
+  { time: "2h ago", text: "Cash runway extended to 26 months", type: "success" },
+  { time: "3h ago", text: "Enterprise ACV hit $182K avg (+28%)", type: "success" },
+  { time: "5h ago", text: "3 invoices pending >30 days", type: "warning" },
+];
+const CMD_AI_INSIGHTS = [
+  "Revenue is tracking 4.3% above plan — enterprise outperformance is the primary driver.",
+  "S&M timing variance of +$730K will self-correct in Q2 based on event calendar.",
+  "Recommend accelerating Growth hiring: pipeline coverage ratio is 4.2x, above 3x target.",
+  "Cash conversion score improved to 0.87 — best in 4 quarters.",
+];
+
+const CommandCenterView = ({ c, onNav, toast, onDrawer, mode }) => {
+  const [roleTab, setRoleTab] = useState("ceo");
+  const [insightIdx, setInsightIdx] = useState(0);
+  const isDark = mode !== "light";
+
+  useEffect(() => {
+    const t = setInterval(() => setInsightIdx(i => (i + 1) % CMD_AI_INSIGHTS.length), 6000);
+    return () => clearInterval(t);
+  }, []);
+
+  const roles = [
+    { id: "ceo", label: "CEO", icon: Target, color: "#5b9cf5" },
+    { id: "cfo", label: "CFO", icon: DollarSign, color: "#34d399" },
+    { id: "controller", label: "Controller", icon: Shield, color: "#fbbf24" },
+  ];
+
+  return (
+    <div style={{ padding: 24, maxWidth: 1400, margin: "0 auto" }}>
+      {/* AI Insights Strip */}
+      <div style={{ background: `linear-gradient(135deg, ${c.accent}08, ${c.purple}06)`, border: `1px solid ${c.accent}15`, borderRadius: 14, padding: "14px 20px", marginBottom: 24, display: "flex", alignItems: "center", gap: 12, animation: "fadeUp 0.4s ease" }}>
+        <div style={{ width: 32, height: 32, borderRadius: 10, background: `linear-gradient(135deg, ${c.accent}, ${c.purple})`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}><Brain size={16} color="#fff" /></div>
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <div style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: c.accent, marginBottom: 2 }}>AI Insight</div>
+          <div key={insightIdx} style={{ fontSize: 13, color: c.textSec, lineHeight: 1.5, animation: "numberReveal 0.5s ease" }}>{CMD_AI_INSIGHTS[insightIdx]}</div>
+        </div>
+        <Sparkles size={14} color={c.purple} style={{ animation: "pulse 3s infinite" }} />
+      </div>
+
+      {/* KPI Grid */}
+      <div className="fos-stagger-grid" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 16, marginBottom: 28 }}>
+        {CMD_KPI_DATA.map((kpi, i) => {
+          const Icon = kpi.icon;
+          const isPositive = kpi.delta.startsWith("+") || kpi.delta.startsWith("-") && kpi.label.includes("Payback");
+          return (
+            <div key={i} className="fos-kpi-card fos-card-lift" style={{ background: c.glass, backdropFilter: c.glassBlur, border: `1px solid ${c.glassBorder}`, borderRadius: 16, padding: "18px 20px", cursor: "pointer", position: "relative", overflow: "hidden" }} onClick={() => onDrawer && onDrawer(kpi.label)}>
+              <div style={{ position: "absolute", top: 0, left: 0, width: 3, height: "100%", borderRadius: "0 3px 3px 0", background: kpi.color }} />
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 10 }}>
+                <span style={{ fontSize: 11, fontWeight: 600, color: c.textDim, textTransform: "uppercase", letterSpacing: "0.06em" }}>{kpi.label}</span>
+                <div style={{ width: 28, height: 28, borderRadius: 8, background: `${kpi.color}12`, display: "flex", alignItems: "center", justifyContent: "center" }}><Icon size={14} color={kpi.color} /></div>
+              </div>
+              <div className="fos-number-reveal" style={{ fontSize: 26, fontWeight: 800, color: c.text, letterSpacing: "-0.03em", lineHeight: 1.1, marginBottom: 4 }}>{kpi.value}</div>
+              <div style={{ fontSize: 12, fontWeight: 600, color: isPositive ? c.green : c.amber, display: "flex", alignItems: "center", gap: 4 }}>
+                {isPositive ? <ArrowUpRight size={12} /> : <ArrowDownRight size={12} />} {kpi.delta} <span style={{ color: c.textFaint, fontWeight: 400, marginLeft: 4 }}>vs plan</span>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Role Tabs */}
+      <div style={{ display: "flex", gap: 8, marginBottom: 20 }}>
+        {roles.map(r => {
+          const Icon = r.icon;
+          const active = roleTab === r.id;
+          return (
+            <button key={r.id} onClick={() => setRoleTab(r.id)} style={{ display: "flex", alignItems: "center", gap: 8, padding: "10px 20px", borderRadius: 12, border: `1px solid ${active ? r.color + "40" : c.borderSub}`, background: active ? `${r.color}10` : "transparent", color: active ? r.color : c.textDim, fontSize: 13, fontWeight: active ? 700 : 500, cursor: "pointer", transition: "all 0.2s" }}>
+              <Icon size={14} /> {r.label} View
+            </button>
+          );
+        })}
+      </div>
+
+      {/* Role Dashboard Content */}
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 380px", gap: 20, marginBottom: 28 }}>
+        {/* Main Panel */}
+        <div style={{ background: c.glass, backdropFilter: c.glassBlur, border: `1px solid ${c.glassBorder}`, borderRadius: 16, padding: 24, animation: "fadeUp 0.3s ease" }}>
+          <h3 style={{ fontSize: 16, fontWeight: 700, color: c.text, marginBottom: 16 }}>
+            {roleTab === "ceo" ? "Strategic Overview" : roleTab === "cfo" ? "Financial Performance" : "Close & Compliance"}
+          </h3>
+          {roleTab === "ceo" && (
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
+              {[{ label: "Pipeline Coverage", value: "4.2x", target: "3.0x", pct: 100, color: c.green }, { label: "Win Rate", value: "34%", target: "30%", pct: 85, color: c.accent }, { label: "Avg Deal Size", value: "$182K", target: "$150K", pct: 100, color: c.purple }, { label: "Sales Velocity", value: "$1.2M/wk", target: "$1.0M", pct: 100, color: c.cyan }].map((m, i) => (
+                <div key={i} style={{ padding: 16, borderRadius: 12, border: `1px solid ${c.borderSub}`, background: `${m.color}04` }}>
+                  <div style={{ fontSize: 11, fontWeight: 600, color: c.textDim, marginBottom: 6 }}>{m.label}</div>
+                  <div style={{ fontSize: 22, fontWeight: 800, color: c.text, marginBottom: 4 }}>{m.value}</div>
+                  <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
+                    <span style={{ fontSize: 11, color: c.textFaint }}>Target: {m.target}</span>
+                    {m.pct >= 100 && <Check size={12} color={c.green} />}
+                  </div>
+                  <div style={{ height: 4, borderRadius: 2, background: `${m.color}15` }}><div style={{ height: "100%", borderRadius: 2, background: m.color, width: `${Math.min(m.pct, 100)}%`, transition: "width 1s ease" }} /></div>
+                </div>
+              ))}
+            </div>
+          )}
+          {roleTab === "cfo" && (
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
+              {[{ label: "Operating Cash Flow", value: "$8.4M", delta: "+12%", color: c.green }, { label: "Debt-to-Equity", value: "0.3x", delta: "-0.1x", color: c.accent }, { label: "Working Capital", value: "$14.2M", delta: "+$2.1M", color: c.purple }, { label: "EBITDA Margin", value: "18.3%", delta: "+2.1pp", color: c.amber }].map((m, i) => (
+                <div key={i} style={{ padding: 16, borderRadius: 12, border: `1px solid ${c.borderSub}`, background: `${m.color}04` }}>
+                  <div style={{ fontSize: 11, fontWeight: 600, color: c.textDim, marginBottom: 6 }}>{m.label}</div>
+                  <div style={{ fontSize: 22, fontWeight: 800, color: c.text, marginBottom: 4 }}>{m.value}</div>
+                  <div style={{ fontSize: 12, fontWeight: 600, color: c.green }}><ArrowUpRight size={12} /> {m.delta}</div>
+                </div>
+              ))}
+            </div>
+          )}
+          {roleTab === "controller" && (
+            <div>
+              {[{ task: "Revenue Recognition Review", status: "done", due: "Mar 22" }, { task: "Intercompany Eliminations", status: "done", due: "Mar 23" }, { task: "Accruals & Deferrals", status: "in_progress", due: "Mar 25" }, { task: "Bank Reconciliation", status: "pending", due: "Mar 26" }, { task: "Tax Provision Calc", status: "pending", due: "Mar 28" }, { task: "SOX Controls Sign-off", status: "pending", due: "Mar 30" }].map((t, i) => (
+                <div key={i} style={{ display: "flex", alignItems: "center", gap: 12, padding: "12px 0", borderBottom: `1px solid ${c.borderSub}` }}>
+                  <div style={{ width: 24, height: 24, borderRadius: 8, display: "flex", alignItems: "center", justifyContent: "center", background: t.status === "done" ? `${c.green}15` : t.status === "in_progress" ? `${c.accent}15` : `${c.textFaint}10` }}>
+                    {t.status === "done" ? <Check size={12} color={c.green} /> : t.status === "in_progress" ? <Activity size={12} color={c.accent} /> : <div style={{ width: 8, height: 8, borderRadius: "50%", border: `2px solid ${c.textFaint}` }} />}
+                  </div>
+                  <span style={{ flex: 1, fontSize: 13, fontWeight: t.status === "in_progress" ? 600 : 400, color: t.status === "done" ? c.textDim : c.text }}>{t.task}</span>
+                  <span style={{ fontSize: 11, color: c.textFaint }}>{t.due}</span>
+                  <span style={{ fontSize: 10, fontWeight: 700, padding: "2px 8px", borderRadius: 6, textTransform: "uppercase", letterSpacing: "0.05em", background: t.status === "done" ? `${c.green}12` : t.status === "in_progress" ? `${c.accent}12` : `${c.textFaint}08`, color: t.status === "done" ? c.green : t.status === "in_progress" ? c.accent : c.textFaint }}>{t.status === "in_progress" ? "Active" : t.status === "done" ? "Done" : "Pending"}</span>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Activity Feed */}
+        <div style={{ background: c.glass, backdropFilter: c.glassBlur, border: `1px solid ${c.glassBorder}`, borderRadius: 16, padding: 20, animation: "fadeUp 0.4s ease backwards", animationDelay: "0.1s" }}>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 16 }}>
+            <h3 style={{ fontSize: 14, fontWeight: 700, color: c.text }}>Activity Feed</h3>
+            <div className="fos-status-dot" style={{ background: c.green }} />
+          </div>
+          {CMD_ACTIVITY.map((a, i) => (
+            <div key={i} style={{ display: "flex", gap: 10, padding: "10px 0", borderBottom: i < CMD_ACTIVITY.length - 1 ? `1px solid ${c.borderSub}` : "none", animation: `fadeUp 0.3s ease backwards`, animationDelay: `${i * 0.05}s` }}>
+              <div style={{ width: 8, height: 8, borderRadius: "50%", marginTop: 5, flexShrink: 0, background: a.type === "success" ? c.green : a.type === "warning" ? c.amber : c.accent }} />
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{ fontSize: 12.5, color: c.text, lineHeight: 1.45 }}>{a.text}</div>
+                <div style={{ fontSize: 10, color: c.textFaint, marginTop: 2 }}>{a.time}</div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Pipeline Table */}
+      <div style={{ background: c.glass, backdropFilter: c.glassBlur, border: `1px solid ${c.glassBorder}`, borderRadius: 16, padding: 20, animation: "fadeUp 0.5s ease backwards", animationDelay: "0.15s" }}>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 16 }}>
+          <h3 style={{ fontSize: 14, fontWeight: 700, color: c.text }}>Deal Pipeline</h3>
+          <span style={{ fontSize: 12, color: c.accent, fontWeight: 600 }}>$1.35M weighted</span>
+        </div>
+        <table style={{ width: "100%", borderCollapse: "collapse" }}>
+          <thead>
+            <tr>
+              {["Company", "Stage", "Value", "Probability", "Days Open", "Owner"].map(h => (
+                <th key={h} style={{ textAlign: "left", padding: "8px 12px", fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", color: c.textFaint, borderBottom: `1px solid ${c.borderSub}` }}>{h}</th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {CMD_PIPELINE.map((d, i) => (
+              <tr key={i} style={{ transition: "background 0.15s" }} onMouseEnter={e => e.currentTarget.style.background = `${c.accent}04`} onMouseLeave={e => e.currentTarget.style.background = "transparent"}>
+                <td style={{ padding: "10px 12px", fontSize: 13, fontWeight: 600, color: c.text }}>{d.name}</td>
+                <td style={{ padding: "10px 12px" }}><span style={{ fontSize: 11, fontWeight: 600, padding: "3px 8px", borderRadius: 6, background: d.prob > 80 ? `${c.green}12` : d.prob > 50 ? `${c.accent}12` : `${c.amber}12`, color: d.prob > 80 ? c.green : d.prob > 50 ? c.accent : c.amber }}>{d.stage}</span></td>
+                <td style={{ padding: "10px 12px", fontSize: 13, fontWeight: 700, color: c.text, fontVariantNumeric: "tabular-nums" }}>{d.value}</td>
+                <td style={{ padding: "10px 12px" }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                    <div style={{ flex: 1, height: 4, borderRadius: 2, background: `${c.accent}15`, maxWidth: 80 }}><div style={{ height: "100%", borderRadius: 2, width: `${d.prob}%`, background: d.prob > 80 ? c.green : d.prob > 50 ? c.accent : c.amber, transition: "width 1s ease" }} /></div>
+                    <span style={{ fontSize: 12, fontWeight: 600, color: c.textSec, fontVariantNumeric: "tabular-nums" }}>{d.prob}%</span>
+                  </div>
+                </td>
+                <td style={{ padding: "10px 12px", fontSize: 12, color: d.daysOpen > 30 ? c.amber : c.textSec }}>{d.daysOpen}d</td>
+                <td style={{ padding: "10px 12px" }}><div style={{ width: 28, height: 28, borderRadius: "50%", background: `${c.accent}12`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 10, fontWeight: 700, color: c.accent }}>{d.owner}</div></td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+};
+
 const IntelligenceView = ({ c, toast, onNav }) => {
   const [filter, setFilter] = useState("all");
   const [searchTerm, setSearchTerm] = useState("");
@@ -10238,6 +10485,11 @@ function FinanceOSApp() {
   const [showPlanPicker, setShowPlanPicker] = useState(false);
   const [showScrollTop, setShowScrollTop] = useState(false);
 
+  // Plan checkpoint — Stripe-verified on EVERY load, no cache
+  const [verifiedPlan, setVerifiedPlan] = useState("free");
+  const [planLoading, setPlanLoading] = useState(true);
+  const [planSubscription, setPlanSubscription] = useState(null);
+
   // Splash screen timer
   useEffect(() => {
     const t = setTimeout(() => setSplashDone(true), 2400);
@@ -10463,6 +10715,29 @@ function FinanceOSApp() {
     return () => { mounted = false; subscription.unsubscribe(); };
   }, []);
 
+  // ── PLAN CHECKPOINT — runs EVERY load, including returning users ──
+  useEffect(() => {
+    let cancelled = false;
+    async function runPlanCheckpoint() {
+      if (!loggedIn || !user.email) { setPlanLoading(false); setVerifiedPlan("free"); return; }
+      setPlanLoading(true);
+      try {
+        const res = await fetch(`/api/plan?email=${encodeURIComponent(user.email)}`, { cache:"no-store", headers:{"Cache-Control":"no-cache"} });
+        const data = await res.json();
+        if (!cancelled) {
+          const plan = data.plan || "free";
+          setVerifiedPlan(plan);
+          setPlanSubscription(data.subscription || null);
+          setUser(prev => ({ ...prev, plan: plan === "free" ? prev.plan : plan }));
+          setPlanLoading(false);
+          if (plan === "free" && !data._verified) setShowPlanPicker(true);
+        }
+      } catch { if (!cancelled) { setVerifiedPlan("free"); setPlanLoading(false); } }
+    }
+    runPlanCheckpoint();
+    return () => { cancelled = true; };
+  }, [loggedIn, user.email]);
+
   // Handle Stripe checkout redirect: ?checkout=success&session_id=cs_xxx
   // SECURITY: Plan is NEVER read from URL params. It's verified server-side
   // via the Stripe session_id. Anyone can fake ?plan=business — only the
@@ -10624,7 +10899,7 @@ function FinanceOSApp() {
 
   // Navigation with history tracking + loading transition
   // MUST be defined before the if(!loggedIn) return — React Rules of Hooks
-  const viewTitles = { dashboard: "Dashboard", copilot: "AI Copilot", pnl: "P&L Statement", forecast: "Forecast Optimizer", consolidation: "Multi-Entity Consolidation", models: "Scenario Models", close: "Close Tasks", team: "Team", integrations: "Integrations", admin: "Admin Console", investor: "Investor Metrics", settings: "Settings" };
+  const viewTitles = { dashboard: "Dashboard", copilot: "AI Copilot", pnl: "P&L Statement", forecast: "Forecast Optimizer", consolidation: "Multi-Entity Consolidation", models: "Scenario Models", close: "Close Tasks", team: "Team", integrations: "Integrations", admin: "Admin Console", investor: "Investor Metrics", command_center: "Command Center", settings: "Settings" };
   const navigate = useCallback((v) => {
     if (v === view) return;
     setMobileMenuOpen(false);
@@ -10895,6 +11170,47 @@ function FinanceOSApp() {
         [style*="fontSize: 24"], [style*="fontSize: 26"], [style*="fontSize: 28"],
         [style*="fontSize: 30"], [style*="fontSize: 36"], [style*="fontSize: 40"],
         [style*="fontSize: 56"], [style*="fontSize: 60"] { letter-spacing: -0.03em; }
+        /* ═══ ANIMATIONS ADDON — from HTML showcases ═══ */
+        @keyframes ambientDrift{0%{transform:translate(0,0) scale(1)}25%{transform:translate(20px,-15px) scale(1.04)}50%{transform:translate(-15px,10px) scale(0.98)}75%{transform:translate(10px,18px) scale(1.02)}100%{transform:translate(0,0) scale(1)}}
+        @keyframes ambientDrift2{0%{transform:translate(0,0)}33%{transform:translate(-20px,12px)}66%{transform:translate(15px,-18px)}100%{transform:translate(0,0)}}
+        @keyframes meshPulse{0%,100%{opacity:.3}50%{opacity:.5}}
+        @keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+        @keyframes scaleReveal{from{opacity:0;transform:scale(0.94) translateY(20px);filter:blur(4px)}to{opacity:1;transform:scale(1) translateY(0);filter:blur(0)}}
+        @keyframes heroFadeUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+        @keyframes numberReveal{from{opacity:0;filter:blur(4px);transform:translateY(8px)}to{opacity:1;filter:blur(0);transform:translateY(0)}}
+        @keyframes wordReveal{from{opacity:0;filter:blur(6px);transform:translateY(4px)}to{opacity:1;filter:blur(0);transform:translateY(0)}}
+        @keyframes statusPulse{0%{opacity:.6;transform:scale(1)}50%{opacity:0;transform:scale(2.5)}100%{opacity:0;transform:scale(2.5)}}
+        @keyframes breathe{0%,100%{box-shadow:0 0 0 0 rgba(16,185,129,0.3)}50%{box-shadow:0 0 0 5px rgba(16,185,129,0)}}
+        @keyframes borderShimmer{0%{border-color:rgba(59,130,246,0.08)}50%{border-color:rgba(139,92,246,0.15)}100%{border-color:rgba(59,130,246,0.08)}}
+        @keyframes titleShine{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+        @keyframes badgeGlow{0%,100%{box-shadow:0 0 8px transparent}50%{box-shadow:0 0 16px currentColor}}
+        @keyframes progressShine{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
+        @keyframes scrollFill{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+        @keyframes wiggle{0%,100%{transform:rotate(0)}25%{transform:rotate(-15deg) scale(1.2)}75%{transform:rotate(15deg) scale(1.2)}}
+        @keyframes badgePing{0%{box-shadow:0 0 0 0 rgba(248,113,113,.6)}100%{box-shadow:0 0 0 8px rgba(248,113,113,0)}}
+        /* Card lift + glow classes */
+        .fos-card-lift{transition:all .25s cubic-bezier(.22,1,.36,1)}.fos-card-lift:hover{transform:translateY(-4px);box-shadow:0 12px 40px rgba(0,0,0,.15),0 0 0 1px rgba(91,156,245,.08)}
+        .fos-stagger-grid>*{animation:fadeUp .5s cubic-bezier(.22,1,.36,1) backwards}
+        .fos-stagger-grid>*:nth-child(1){animation-delay:.05s}.fos-stagger-grid>*:nth-child(2){animation-delay:.1s}.fos-stagger-grid>*:nth-child(3){animation-delay:.15s}.fos-stagger-grid>*:nth-child(4){animation-delay:.2s}.fos-stagger-grid>*:nth-child(5){animation-delay:.25s}.fos-stagger-grid>*:nth-child(6){animation-delay:.3s}
+        /* KPI card accent bars */
+        .fos-kpi-card{position:relative;overflow:hidden;transition:all .25s cubic-bezier(.22,1,.36,1)}.fos-kpi-card::before{content:'';position:absolute;top:0;left:0;width:3px;height:100%;border-radius:0 3px 3px 0;opacity:.7;transition:opacity .3s}.fos-kpi-card:hover{transform:translateY(-2px)}.fos-kpi-card:hover::before{opacity:1}
+        .fos-kpi-blue::before{background:linear-gradient(180deg,#5b9cf5,#3b82f6)}.fos-kpi-green::before{background:linear-gradient(180deg,#34d399,#10b981)}.fos-kpi-purple::before{background:linear-gradient(180deg,#a78bfa,#8b5cf6)}.fos-kpi-amber::before{background:linear-gradient(180deg,#fbbf24,#f59e0b)}
+        .fos-kpi-blue:hover{box-shadow:0 0 30px rgba(91,156,245,.08),0 4px 16px rgba(0,0,0,.04)}.fos-kpi-green:hover{box-shadow:0 0 30px rgba(52,211,153,.08),0 4px 16px rgba(0,0,0,.04)}.fos-kpi-purple:hover{box-shadow:0 0 30px rgba(167,139,250,.08),0 4px 16px rgba(0,0,0,.04)}.fos-kpi-amber:hover{box-shadow:0 0 30px rgba(251,191,36,.08),0 4px 16px rgba(0,0,0,.04)}
+        /* Title shine gradient */
+        .fos-title-shine{background:linear-gradient(90deg,#5b9cf5,#a78bfa,#5b9cf5);background-size:200% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:titleShine 4s ease-in-out infinite}
+        /* Border shimmer */
+        .fos-border-shimmer{animation:borderShimmer 4s ease-in-out infinite}
+        /* Role card gradient borders */
+        .fos-role-card{position:relative;transition:all .4s cubic-bezier(.22,1,.36,1)}.fos-role-card:hover{transform:translateY(-6px)}
+        /* Number blur-in */
+        .fos-number-reveal{animation:numberReveal .6s ease backwards}
+        /* Status dot pulse */
+        .fos-status-dot{position:relative;display:inline-block;width:8px;height:8px;border-radius:50%}.fos-status-dot::after{content:'';position:absolute;inset:0;border-radius:50%;background:inherit;animation:statusPulse 2s ease-in-out infinite}
+        /* Button hover */
+        .fos-btn-primary{transition:all .25s cubic-bezier(.22,1,.36,1)}.fos-btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(91,156,245,.25)}
+        /* Hover wiggle for icons */
+        .fos-hover-wiggle:hover{animation:wiggle .5s ease-in-out}
+
         /* ── RESPONSIVE ── */
         @media (max-width: 768px) {
           [data-sidebar]:not([data-mobile-open]) { display: none !important; }
@@ -10965,7 +11281,7 @@ function FinanceOSApp() {
             {!sidebarCollapsed && <div>
               <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
                 <span style={{ fontWeight: 800, fontSize: 15, color: c.text, letterSpacing: "-0.3px", whiteSpace: "nowrap" }}>Finance<span style={{ fontWeight: 400, opacity: 0.6 }}>OS</span></span>
-                <span style={{ fontSize: 7, fontWeight: 800, padding: "2px 5px", borderRadius: 3, background: user.plan === "demo" ? c.amberDim : user.plan === "pending" || !user.plan ? `${c.accent}12` : `${c.green}12`, color: user.plan === "demo" ? c.amber : user.plan === "pending" || !user.plan ? c.accent : c.green, letterSpacing: "0.06em", textTransform: "uppercase" }}>{user.plan === "demo" ? "DEMO" : user.plan ? user.plan.toUpperCase() : "STARTER"}</span>
+                <span style={{ fontSize: 7, fontWeight: 800, padding: "2px 5px", borderRadius: 3, background: verifiedPlan === "business" ? `${c.purple}12` : verifiedPlan === "growth" ? `${c.accent}12` : verifiedPlan === "starter" ? `${c.green}12` : user.plan === "demo" ? c.amberDim : `${c.accent}12`, color: verifiedPlan === "business" ? c.purple : verifiedPlan === "growth" ? c.accent : verifiedPlan === "starter" ? c.green : user.plan === "demo" ? c.amber : c.accent, letterSpacing: "0.06em", textTransform: "uppercase" }}>{verifiedPlan !== "free" ? verifiedPlan.toUpperCase() : user.plan === "demo" ? "DEMO" : user.plan ? user.plan.toUpperCase() : "STARTER"}</span>
               </div>
               <div style={{ fontSize: 9, color: c.textFaint, marginTop: 2, whiteSpace: "nowrap" }}>{user.orgName || "My Org"} · FY{new Date().getFullYear()}</div>
             </div>}
@@ -11033,6 +11349,7 @@ function FinanceOSApp() {
                       <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
                         <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{item.label}</span>
                         {item.hot && <span style={{ fontSize: 7, fontWeight: 800, padding: "1px 4px", borderRadius: 3, background: `linear-gradient(135deg, ${c.purple}, ${c.accent})`, color: "#fff", lineHeight: "12px" }}>AI</span>}
+                        {!canAccessView(verifiedPlan, item.id) && !planLoading && <span style={{ fontSize: 7, fontWeight: 800, padding: "1px 5px", borderRadius: 4, background: `${c.accent}12`, color: c.accent, letterSpacing: "0.05em", textTransform: "uppercase", display: "inline-flex", alignItems: "center", gap: 2 }}><Lock size={7} />{PLAN_FEATURES_CLIENT[requiredPlanForView(item.id)]?.label}</span>}
                       </div>
                       {active && <span style={{ fontSize: 9, color: c.textFaint, marginTop: 1, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{item.desc}</span>}
                     </div>
@@ -11295,6 +11612,17 @@ function FinanceOSApp() {
           <div style={{ position: "fixed", bottom: "15%", right: "10%", width: "35%", height: "35%", borderRadius: "50%", background: `radial-gradient(circle, ${c.purple}05 0%, transparent 70%)`, filter: "blur(80px)", pointerEvents: "none", zIndex: 0 }} />
           <div style={{ position: "fixed", top: "50%", right: "35%", width: "25%", height: "25%", borderRadius: "50%", background: `radial-gradient(circle, ${c.green}04 0%, transparent 70%)`, filter: "blur(60px)", pointerEvents: "none", zIndex: 0 }} />
           {viewLoading ? <LoadingSkeleton c={c} /> : (<>
+          {(() => {
+            // Plan gate checkpoint — if loading plan for non-dashboard views, show skeleton
+            if (planLoading && view !== "dashboard" && view !== "settings" && view !== "admin") {
+              return <div style={{ display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", minHeight:300, padding:40 }}><div style={{ width:40, height:40, borderRadius:"50%", border:`3px solid ${c.accentDim}`, borderTopColor:c.accent, animation:"spin 0.8s linear infinite" }} /><p style={{ marginTop:16, fontSize:14, color:c.textDim }}>Verifying your plan...</p></div>;
+            }
+            // Check plan access — show upgrade prompt if locked
+            const hasAccess = canAccessView(verifiedPlan, view);
+            if (!hasAccess && !planLoading) {
+              return <UpgradePromptInline viewId={view} currentPlan={verifiedPlan} c={c} mode={mode} />;
+            }
+            return (<>
           {view === "dashboard" && <SectionBoundary name="Dashboard" bg={c.surface} borderColor={c.border} textColor={c.textDim} accentColor={c.accent}><DashboardView c={c} onNav={navigate} toast={toast} onDrawer={setDrawerKpi} userName={user.name} period={period} closeTasks={closeTasks} activityLog={activityLog} glData={glData} glLoading={glLoading} /></SectionBoundary>}
           {view === "copilot" && <SectionBoundary name="AI Copilot" bg={c.surface} borderColor={c.border} textColor={c.textDim} accentColor={c.accent}><CopilotView c={c} toast={toast} logActivity={logActivity} /></SectionBoundary>}
           {view === "pnl" && <SectionBoundary name="P&L Statement" bg={c.surface} borderColor={c.border} textColor={c.textDim} accentColor={c.accent}><PnlView c={c} onNav={navigate} toast={toast} logActivity={logActivity} orgName={user.orgName} glData={glData} onDrawer={setDrawerKpi} /></SectionBoundary>}
@@ -11306,8 +11634,10 @@ function FinanceOSApp() {
           {view === "integrations" && <SectionBoundary name="Integrations" bg={c.surface} borderColor={c.border} textColor={c.textDim} accentColor={c.accent}><IntegrationsView c={c} toast={toast} /></SectionBoundary>}
           {view === "admin" && <SectionBoundary name="Admin Panel" bg={c.surface} borderColor={c.border} textColor={c.textDim} accentColor={c.accent}><AdminView c={c} toast={toast} onNav={navigate} /></SectionBoundary>}
           {view === "investor" && <SectionBoundary name="Investor Relations" bg={c.surface} borderColor={c.border} textColor={c.textDim} accentColor={c.accent}><InvestorView c={c} toast={toast} onDrawer={setDrawerKpi} /></SectionBoundary>}
+          {view === "command_center" && <SectionBoundary name="Command Center" bg={c.surface} borderColor={c.border} textColor={c.textDim} accentColor={c.accent}><CommandCenterView c={c} onNav={navigate} toast={toast} onDrawer={setDrawerKpi} mode={mode} /></SectionBoundary>}
           {view === "intelligence" && <SectionBoundary name="Intelligence Library" bg={c.surface} borderColor={c.border} textColor={c.textDim} accentColor={c.accent}><IntelligenceView c={c} toast={toast} onNav={navigate} /></SectionBoundary>}
           {view === "settings" && <SectionBoundary name="Settings" bg={c.surface} borderColor={c.border} textColor={c.textDim} accentColor={c.accent}><SettingsView c={c} onLogout={handleLogout} toast={toast} mode={mode} user={user} onShowSuitePanel={() => { setSuitePanelOpen(true); try { localStorage.removeItem("financeos-suite-dismissed"); } catch {} }} suitePanelOpen={suitePanelOpen} /></SectionBoundary>}
+            </>); })()}
           </>)}
         </div>
 
