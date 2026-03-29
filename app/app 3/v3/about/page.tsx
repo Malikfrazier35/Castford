@@ -1,0 +1,159 @@
+'use client';
+
+import { useEffect, useRef } from 'react';
+
+export default function V3AboutPage() {
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    // Run inline scripts after mount
+    const scripts = [
+      `const obs=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('vis');obs.unobserve(e.target);}});},{threshold:0.1});
+document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));`
+    ];
+    scripts.forEach(code => {
+      try { new Function(code)(); } catch(e) { console.warn('Script error:', e); }
+    });
+  }, []);
+
+  return (
+    <>
+      <style dangerouslySetInnerHTML={{ __html: `
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{--bg:#F8FAFC;--green:#10B981;--cyan:#22D3EE;--purple:#8B5CF6;--blue:#3B82F6;--amber:#F59E0B;--red:#EF4444;--t1:#0F172A;--t2:#334155;--t3:#64748B;--t4:#94A3B8;--border:#E2E8F0;--radius:16px;--font:'DM Sans',system-ui,sans-serif;--mono:'JetBrains Mono',monospace;--ease:cubic-bezier(0.16,1,0.3,1);}
+body{font-family:var(--font);color:var(--t1);-webkit-font-smoothing:antialiased;background:#fff;overflow-x:hidden;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+@keyframes gradientShift{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+.reveal{opacity:0;transform:translateY(24px);transition:all 0.6s var(--ease);}.reveal.vis{opacity:1;transform:none;}
+
+/* NAV */
+.nav{position:sticky;top:0;z-index:100;padding:0 40px;height:64px;display:flex;align-items:center;background:rgba(3,7,17,0.95);backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,0.05);}
+.nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none;}
+.nav-logo svg{width:32px;height:32px;}
+.nav-logo span{font-size:17px;font-weight:800;color:#fff;letter-spacing:-0.03em;}
+.nav-links{display:flex;gap:28px;margin-left:50px;}
+.nav-links a{font-size:13px;font-weight:500;color:rgba(255,255,255,0.5);text-decoration:none;transition:color 0.2s;}.nav-links a:hover,.nav-links a.active{color:#fff;}
+.nav-right{margin-left:auto;display:flex;align-items:center;gap:10px;}
+.btn-ghost{padding:8px 18px;border-radius:8px;font-size:13px;font-weight:600;border:1px solid rgba(255,255,255,0.12);background:transparent;color:rgba(255,255,255,0.7);cursor:pointer;transition:all 0.2s;text-decoration:none;}.btn-ghost:hover{color:#fff;}
+.btn-primary{padding:8px 22px;border-radius:8px;font-size:13px;font-weight:700;border:none;background:var(--green);color:#fff;cursor:pointer;transition:all 0.25s var(--ease);text-decoration:none;}.btn-primary:hover{transform:translateY(-2px);box-shadow:0 4px 16px rgba(16,185,129,0.25);}
+.section-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--green);text-align:center;margin-bottom:12px;}
+.section-title{font-size:clamp(28px,3.5vw,42px);font-weight:900;text-align:center;letter-spacing:-0.03em;margin-bottom:14px;}
+.section-sub{font-size:16px;color:var(--t3);text-align:center;max-width:560px;margin:0 auto 50px;line-height:1.6;}
+
+/* HERO */
+.hero{padding:100px 40px 80px;background:linear-gradient(135deg,#030711,#1E1B4B);text-align:center;color:#fff;position:relative;overflow:hidden;}
+.hero::before{content:'';position:absolute;top:-200px;left:50%;transform:translateX(-50%);width:800px;height:800px;border-radius:50%;background:radial-gradient(circle,rgba(16,185,129,0.06),transparent 70%);pointer-events:none;}
+.hero h1{font-size:clamp(36px,5vw,56px);font-weight:900;letter-spacing:-0.03em;margin-bottom:16px;line-height:1.1;}
+.hero p{font-size:18px;color:rgba(255,255,255,0.5);max-width:600px;margin:0 auto;line-height:1.65;}
+
+/* STORY */
+.story{padding:80px 40px;background:#fff;}
+.story-inner{max-width:800px;margin:0 auto;}
+.story-inner h2{font-size:30px;font-weight:900;letter-spacing:-0.02em;margin-bottom:20px;}
+.story-inner p{font-size:15px;color:var(--t2);line-height:1.8;margin-bottom:16px;}
+
+/* METRICS */
+.metrics{padding:60px 40px;background:var(--bg);}
+.metrics-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:20px;max-width:1000px;margin:0 auto;text-align:center;}
+.metric .mv{font-size:40px;font-weight:900;font-family:var(--mono);letter-spacing:-0.03em;background:linear-gradient(135deg,var(--green),var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.metric .ml{font-size:12px;color:var(--t3);font-weight:600;margin-top:4px;}
+
+/* TEAM */
+.team{padding:80px 40px;background:#fff;}
+.team-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;max-width:900px;margin:0 auto;}
+.team-card{text-align:center;padding:24px;border:1px solid var(--border);border-radius:var(--radius);transition:all 0.3s;}.team-card:hover{transform:translateY(-4px);box-shadow:0 8px 30px rgba(0,0,0,0.05);}
+.team-avatar{width:80px;height:80px;border-radius:50%;margin:0 auto 14px;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:900;color:#fff;}
+.team-card h3{font-size:16px;font-weight:800;margin-bottom:2px;}
+.team-card .role{font-size:12px;color:var(--green);font-weight:600;margin-bottom:8px;}
+.team-card p{font-size:12px;color:var(--t3);line-height:1.5;}
+
+/* VALUES */
+.values{padding:80px 40px;background:var(--bg);}
+.values-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;max-width:1000px;margin:0 auto;}
+.value-card{background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:28px;text-align:center;transition:all 0.3s;}.value-card:hover{transform:translateY(-4px);box-shadow:0 8px 30px rgba(0,0,0,0.05);}
+.value-icon{width:48px;height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center;margin:0 auto 14px;}
+.value-icon svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.5;}
+.value-card h3{font-size:16px;font-weight:800;margin-bottom:6px;}
+.value-card p{font-size:12px;color:var(--t3);line-height:1.6;}
+
+/* CAREERS */
+.careers{padding:80px 40px;background:linear-gradient(135deg,#030711,#1E1B4B);text-align:center;color:#fff;}
+.careers h2{font-size:32px;font-weight:900;margin-bottom:10px;}
+.careers p{font-size:15px;color:rgba(255,255,255,0.5);max-width:480px;margin:0 auto 28px;}
+.btn-careers{padding:14px 36px;border-radius:12px;font-size:15px;font-weight:700;border:none;background:var(--green);color:#fff;cursor:pointer;transition:all 0.25s var(--ease);text-decoration:none;display:inline-flex;align-items:center;gap:8px;}.btn-careers:hover{transform:translateY(-2px);box-shadow:0 6px 24px rgba(16,185,129,0.3);}
+
+/* FOOTER */
+.footer{padding:40px;background:#030711;text-align:center;font-size:12px;color:rgba(255,255,255,0.25);}
+
+@media(max-width:768px){.metrics-grid{grid-template-columns:repeat(2,1fr);}.team-grid{grid-template-columns:1fr;max-width:300px;}.values-grid{grid-template-columns:repeat(2,1fr);}.nav-links{display:none;}}
+` }} />
+      <div ref={containerRef} dangerouslySetInnerHTML={{ __html: `
+
+<nav class="nav">
+  <a class="nav-logo" href="FinanceOS-Landing-Page.html"><svg viewBox="0 0 32 32" fill="none"><defs><linearGradient id="lg" x1="0" y1="0" x2="32" y2="32"><stop stop-color="#22D3EE"/><stop offset="1" stop-color="#8B5CF6"/></linearGradient></defs><rect width="32" height="32" rx="8" fill="url(#lg)"/><path d="M8 12h16M8 16h12M8 20h8" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg><span>FinanceOS</span></a>
+  <div class="nav-links"><a href="FinanceOS-Landing-Page.html">Solutions</a><a href="FinanceOS-Pricing-Page.html">Pricing</a><a href="FinanceOS-Resources.html">Resources</a><a href="FinanceOS-About.html" class="active">About</a></div>
+  <div class="nav-right"><a class="btn-ghost" href="FinanceOS-Login.html">Sign In</a><a class="btn-primary" href="FinanceOS-Contact.html">Subscribe</a></div>
+</nav>
+
+<section class="hero">
+  <h1>Built by finance people,<br/>for finance people</h1>
+  <p>We started FinanceOS because we believed the CFO's office deserved the same quality of tooling that engineering and sales teams already had.</p>
+</section>
+
+<section class="story reveal">
+  <div class="story-inner">
+    <h2>Our Story</h2>
+    <p>FinanceOS was founded in 2021 by a team of former CFOs, FP&A directors, and engineers who were frustrated by the state of financial planning software. Legacy EPM tools cost hundreds of thousands of dollars, took months to implement, and still relied on manual spreadsheet exports.</p>
+    <p>We set out to build something different: an AI-native FP&A platform that any finance team could set up in under 48 hours, at a fraction of the cost of legacy vendors. One where the AI doesn't just answer questions -- it shows its reasoning so your team can actually trust the numbers.</p>
+    <p>Today, over 500 finance teams use FinanceOS to close their books faster, forecast with confidence, and stay audit-ready. We're backed by leading investors and we're just getting started.</p>
+  </div>
+</section>
+
+<section class="metrics reveal">
+  <div class="metrics-grid">
+    <div class="metric"><div class="mv">500+</div><div class="ml">Teams onboarded</div></div>
+    <div class="metric"><div class="mv">$2B+</div><div class="ml">Revenue managed</div></div>
+    <div class="metric"><div class="mv">50+</div><div class="ml">Integrations</div></div>
+    <div class="metric"><div class="mv">99.97%</div><div class="ml">Platform uptime</div></div>
+    <div class="metric"><div class="mv">Series B</div><div class="ml">Funded</div></div>
+  </div>
+</section>
+
+<section class="team reveal">
+  <div class="section-label">Leadership</div>
+  <div class="section-title">Meet the team</div>
+  <div class="section-sub">Our leadership team brings decades of experience from top-tier finance, engineering, and product organizations.</div>
+  <div class="team-grid">
+    <div class="team-card"><div class="team-avatar" style="background:linear-gradient(135deg,var(--blue),var(--purple));"><svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="#fff" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M4 21v-1a6 6 0 0112 0v1"/></svg></div><h3>CEO & Co-Founder</h3><div class="role">Executive Leadership</div><p>12+ years leading finance transformation at high-growth SaaS companies.</p></div>
+    <div class="team-card"><div class="team-avatar" style="background:linear-gradient(135deg,var(--green),var(--cyan));"><svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="#fff" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M4 21v-1a6 6 0 0112 0v1"/></svg></div><h3>CTO & Co-Founder</h3><div class="role">Engineering & AI</div><p>Built ML systems for financial data at scale. Deep expertise in cloud infrastructure.</p></div>
+    <div class="team-card"><div class="team-avatar" style="background:linear-gradient(135deg,var(--amber),var(--red));"><svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="#fff" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M4 21v-1a6 6 0 0112 0v1"/></svg></div><h3>Chief Financial Officer</h3><div class="role">Finance & Compliance</div><p>SOX compliance expert with deep experience in enterprise financial controls.</p></div>
+    <div class="team-card"><div class="team-avatar" style="background:linear-gradient(135deg,var(--purple),var(--blue));"><svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="#fff" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M4 21v-1a6 6 0 0112 0v1"/></svg></div><h3>VP Engineering</h3><div class="role">Platform & Infrastructure</div><p>Expert in financial data infrastructure and banking API integrations.</p></div>
+    <div class="team-card"><div class="team-avatar" style="background:linear-gradient(135deg,var(--cyan),var(--green));"><svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="#fff" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M4 21v-1a6 6 0 0112 0v1"/></svg></div><h3>VP Sales</h3><div class="role">Revenue & Growth</div><p>Scaled mid-market FP&A revenue motions with proven go-to-market expertise.</p></div>
+    <div class="team-card"><div class="team-avatar" style="background:linear-gradient(135deg,var(--red),var(--amber));"><svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="#fff" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M4 21v-1a6 6 0 0112 0v1"/></svg></div><h3>VP Product</h3><div class="role">Product & Design</div><p>Designed FP&A tools used by Fortune 500 companies worldwide.</p></div>
+  </div>
+</section>
+
+<section class="values reveal">
+  <div class="section-label">What We Believe</div>
+  <div class="section-title">Our values</div>
+  <div class="values-grid">
+    <div class="value-card"><div class="value-icon" style="background:rgba(16,185,129,0.08);color:var(--green);"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg></div><h3>Transparency</h3><p>Every AI insight shows its reasoning. Every price is published. No black boxes.</p></div>
+    <div class="value-card"><div class="value-icon" style="background:rgba(34,211,238,0.08);color:var(--cyan);"><svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg></div><h3>Speed</h3><p>48-hour setup. 3-day close. Real-time dashboards. We obsess over eliminating wait time.</p></div>
+    <div class="value-card"><div class="value-icon" style="background:rgba(139,92,246,0.08);color:var(--purple);"><svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div><h3>Precision</h3><p>Finance demands accuracy. Our AI shows every source, assumption, and calculation chain.</p></div>
+    <div class="value-card"><div class="value-icon" style="background:rgba(59,130,246,0.08);color:var(--blue);"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div><h3>Trust</h3><p>SOC 2 Type II certified. GDPR compliant. Your data is your data -- always.</p></div>
+  </div>
+</section>
+
+<section class="careers">
+  <h2>Join the team</h2>
+  <p>We're building the future of finance operations. Come shape how CFOs and finance teams work.</p>
+  <a class="btn-careers" href="#">View Open Positions &rarr;</a>
+</section>
+
+<footer class="footer">2026 FinanceOS, Inc. All rights reserved. | SOC 2 Type II Certified | GDPR Compliant</footer>
+
+
+` }} />
+    </>
+  );
+}
