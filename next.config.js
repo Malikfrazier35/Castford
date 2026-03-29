@@ -2,7 +2,7 @@
 
 // The v3 HTML files live in public/v3 4/ (GitHub auto-renamed the folder)
 // Define the path ONCE here so it cannot get corrupted during editing
-const V3 = "/v3 4";
+const V3 = "/site";
 
 const nextConfig = {
   reactStrictMode: true,
