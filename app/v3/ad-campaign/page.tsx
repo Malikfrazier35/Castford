@@ -1,0 +1,205 @@
+'use client';
+
+import { useEffect } from 'react';
+
+export default function V3AdCampaignPage() {
+  
+
+  return (
+    <>
+      <style dangerouslySetInnerHTML={{ __html: `
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--green:#10B981;--cyan:#22D3EE;--purple:#8B5CF6;--amber:#F59E0B;--red:#EF4444;--t1:#0F172A;--font:'DM Sans',system-ui,sans-serif;--mono:'JetBrains Mono',monospace;--ease:cubic-bezier(.16,1,.3,1)}
+body{font-family:var(--font);color:#0F172A;-webkit-font-smoothing:antialiased;background:#fff;overflow-x:hidden}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+@keyframes gradShift{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+
+/* HERO - Full viewport, Google Ads landing page style */
+.hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:80px 40px 40px;position:relative;overflow:hidden;background:linear-gradient(180deg,#ECFDF5 0%,#fff 60%)}
+.hero::before{content:'';position:absolute;top:-400px;left:50%;transform:translateX(-50%);width:1200px;height:1200px;border-radius:50%;background:radial-gradient(circle,rgba(16,185,129,.03),transparent 60%);pointer-events:none}
+.logo-bar{display:flex;align-items:center;gap:10px;margin-bottom:40px}
+.logo-bar svg{width:36px;height:36px}
+.logo-bar span{font-size:20px;font-weight:800;letter-spacing:-.03em}
+.hero h1{font-size:clamp(40px,7vw,72px);font-weight:900;letter-spacing:-.05em;line-height:1;margin-bottom:20px;max-width:800px}
+.hero h1 .line2{display:block;background:linear-gradient(135deg,var(--green),var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-size:clamp(44px,8vw,80px)}
+.hero-sub{font-size:18px;color:#334155;max-width:520px;margin-bottom:40px;line-height:1.7}
+
+/* EMAIL CAPTURE */
+.capture{display:flex;gap:8px;max-width:480px;width:100%;margin-bottom:16px}
+.capture input{flex:1;padding:16px 20px;border-radius:12px;border:1px solid #E2E8F0;background:#F8FAFC;color:#0F172A;font-size:15px;font-family:var(--font);outline:none;transition:border .2s}
+.capture input::placeholder{color:#94A3B8}
+.capture input:focus{border-color:var(--green)}
+.capture button{padding:16px 28px;border-radius:12px;background:var(--green);color:#fff;font-size:15px;font-weight:700;border:none;cursor:pointer;white-space:nowrap;transition:all .25s var(--ease)}
+.capture button:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(16,185,129,.3)}
+.capture-note{font-size:12px;color:#94A3B8;margin-bottom:48px}
+
+/* TRUST BADGES */
+.trust-row{display:flex;gap:24px;align-items:center;flex-wrap:wrap;justify-content:center;margin-bottom:48px}
+.trust-badge{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:#64748B;padding:8px 14px;border-radius:8px;border:1px solid #E2E8F0;background:#F8FAFC}
+.trust-badge svg{width:14px;height:14px;stroke:var(--green);fill:none;stroke-width:2}
+
+/* PAIN/GAIN CARDS */
+.pain-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;max-width:900px;width:100%;margin-bottom:48px}
+.pain-card{background:#F8FAFC;border:1px solid #E2E8F0;border-radius:16px;padding:24px;text-align:left;transition:all .3s}
+.pain-card:hover{background:#F1F5F9}
+.pain-before{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--red);margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.pain-before svg{width:12px;height:12px;stroke:var(--red);fill:none;stroke-width:2.5}
+.pain-stat{font-size:28px;font-weight:900;font-family:var(--mono);letter-spacing:-.04em;margin-bottom:4px;color:#CBD5E1;text-decoration:line-through;text-decoration-color:var(--red)}
+.pain-after{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--green);margin:12px 0 8px;display:flex;align-items:center;gap:6px}
+.pain-after svg{width:12px;height:12px;stroke:var(--green);fill:none;stroke-width:2.5}
+.pain-new-stat{font-size:28px;font-weight:900;font-family:var(--mono);letter-spacing:-.04em;margin-bottom:4px;color:var(--green)}
+.pain-label{font-size:13px;color:#64748B}
+
+/* PROOF STATS */
+.proof-row{display:flex;gap:40px;justify-content:center;flex-wrap:wrap;padding:40px 0;border-top:1px solid #E2E8F0;border-bottom:1px solid #E2E8F0;max-width:700px;width:100%;margin-bottom:48px}
+.proof-stat{text-align:center}
+.proof-num{font-size:28px;font-weight:900;font-family:var(--mono);letter-spacing:-.04em;background:linear-gradient(135deg,var(--green),var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.proof-label{font-size:11px;color:#64748B;margin-top:4px}
+
+/* BOTTOM CTA */
+.bot-cta{text-align:center;padding-bottom:80px}
+.bot-cta h2{font-size:clamp(28px,4vw,40px);font-weight:900;letter-spacing:-.03em;margin-bottom:12px}
+.bot-cta p{font-size:15px;color:#64748B;margin-bottom:28px}
+
+@media(max-width:768px){.pain-grid{grid-template-columns:1fr}.capture{flex-direction:column}.proof-row{gap:24px}}
+
+/* ===== NAVIGATION (light) ===== */
+nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,0.88);backdrop-filter:blur(16px) saturate(180%);-webkit-backdrop-filter:blur(16px) saturate(180%);border-bottom:1px solid #F1F5F9}
+.nav-inner{max-width:1200px;margin:0 auto;padding:0 24px;height:60px;display:flex;align-items:center;justify-content:space-between}
+.logo-link{display:flex;align-items:center;gap:8px;font-weight:800;font-size:17px;color:#0F172A;text-decoration:none;letter-spacing:-0.01em}
+.logo-link .ldot{width:9px;height:9px;background:#10B981;border-radius:50%}
+.nav-mid{display:flex;gap:4px;font-size:14px;font-weight:500;align-items:center}
+.nav-mid a{color:#64748B;padding:8px 12px;border-radius:8px;text-decoration:none;transition:color .15s}
+.nav-mid a:hover{color:#0F172A;background:rgba(0,0,0,0.03)}
+.nav-end{display:flex;align-items:center;gap:10px}
+.nav-end a{font-size:14px;font-weight:500;color:#64748B;padding:8px 12px;text-decoration:none;transition:color .15s}
+.nav-end a:hover{color:#0F172A}
+.btn-sub{display:inline-flex;align-items:center;padding:8px 18px;border-radius:8px;font-weight:600;font-size:13px;background:#10B981;color:#fff;text-decoration:none;border:none;cursor:pointer;transition:all .15s}
+.btn-sub:hover{background:#059669;box-shadow:0 2px 12px rgba(16,185,129,0.25)}
+@media(max-width:900px){.nav-mid{display:none}}
+
+
+/* ===== FOOTER (light) ===== */
+footer{background:#F8FAFC;border-top:1px solid #E2E8F0;padding:56px 24px 24px}
+.ft-inner{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:1.5fr repeat(4,1fr);gap:40px;margin-bottom:40px}
+.ft-brand p{font-size:13px;color:#64748B;line-height:1.6;max-width:240px;margin-top:10px}
+.ft-col{display:flex;flex-direction:column;gap:8px}
+.ft-col h5{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;color:#0F172A;margin-bottom:4px}
+.ft-col a{font-size:13px;color:#64748B;text-decoration:none;transition:color .15s}
+.ft-col a:hover{color:#0F172A}
+.ft-bottom{max-width:1200px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;padding-top:20px;border-top:1px solid #E2E8F0;font-size:12px;color:#64748B}
+.ft-bottom a{color:#64748B;text-decoration:none;transition:color .15s}
+.ft-bottom a:hover{color:#0F172A}
+@media(max-width:768px){.ft-inner{grid-template-columns:1fr 1fr;gap:24px}}
+
+` }} />
+      <div dangerouslySetInnerHTML={{ __html: `
+
+<nav>
+  <div class="nav-inner">
+    <a href="FinanceOS-Landing-V3.html" class="logo-link"><span class="ldot"></span>FinanceOS</a>
+    <div class="nav-mid">
+      <a href="FinanceOS-Solutions-Digital.html">Solutions</a>
+      <a href="FinanceOS-Integrations-V3.html">Integrations</a>
+      <a href="FinanceOS-Security-Zero-Trust.html">Trust</a>
+      <a href="FinanceOS-Pricing-V3.html">Pricing</a>
+      <a href="FinanceOS-vs-Competitors-V2.html">Compare</a>
+      <a href="FinanceOS-Resources-V2.html">Resources</a>
+    </div>
+    <div class="nav-end">
+      <a href="FinanceOS-Login-V2.html">Sign In</a>
+      <a href="FinanceOS-Pricing-V3.html" class="btn-sub">Subscribe</a>
+    </div>
+  </div>
+</nav>
+<section class="hero">
+<div class="logo-bar">
+<svg viewBox="0 0 32 32" fill="none"><rect width="32" height="32" rx="8" fill="#10B981"/><path d="M8 12h10M8 16h14M8 20h8" stroke="#fff" stroke-width="2" stroke-linecap="round"/><circle cx="22" cy="12" r="3" fill="#22D3EE"/></svg>
+<span>FinanceOS</span>
+</div>
+
+<h1>Your spreadsheets<br/>are lying to you.<span class="line2">We're not.</span></h1>
+<div class="hero-sub">AI-powered FP&A that closes the books in 3 days, forecasts at 96% accuracy, and answers your questions in plain English. Start free.</div>
+
+<div class="capture">
+<input type="email" placeholder="Work email"/>
+<button>Start Free →</button>
+</div>
+<div class="capture-note">Free tier. No credit card. Setup in under 10 minutes.</div>
+
+<!-- TRUST BADGES -->
+<div class="trust-row">
+<div class="trust-badge"><svg viewBox="0 0 14 14"><path d="M9.5 2h-5A2.5 2.5 0 002 4.5v5A2.5 2.5 0 004.5 12h5A2.5 2.5 0 0012 9.5v-5A2.5 2.5 0 009.5 2z"/><path d="M5 7l2 2 3-3"/></svg>SOC 2 Type II</div>
+<div class="trust-badge"><svg viewBox="0 0 14 14"><path d="M9.5 2h-5A2.5 2.5 0 002 4.5v5A2.5 2.5 0 004.5 12h5A2.5 2.5 0 0012 9.5v-5A2.5 2.5 0 009.5 2z"/><path d="M5 7l2 2 3-3"/></svg>ISO 27001</div>
+<div class="trust-badge"><svg viewBox="0 0 14 14"><path d="M9.5 2h-5A2.5 2.5 0 002 4.5v5A2.5 2.5 0 004.5 12h5A2.5 2.5 0 0012 9.5v-5A2.5 2.5 0 009.5 2z"/><path d="M5 7l2 2 3-3"/></svg>GDPR</div>
+<div class="trust-badge"><svg viewBox="0 0 14 14"><path d="M9.5 2h-5A2.5 2.5 0 002 4.5v5A2.5 2.5 0 004.5 12h5A2.5 2.5 0 0012 9.5v-5A2.5 2.5 0 009.5 2z"/><path d="M5 7l2 2 3-3"/></svg>200+ Integrations</div>
+<div class="trust-badge"><svg viewBox="0 0 14 14"><path d="M9.5 2h-5A2.5 2.5 0 002 4.5v5A2.5 2.5 0 004.5 12h5A2.5 2.5 0 0012 9.5v-5A2.5 2.5 0 009.5 2z"/><path d="M5 7l2 2 3-3"/></svg>$499/mo Starter</div>
+</div>
+
+<!-- PAIN → GAIN CARDS -->
+<div class="pain-grid">
+<div class="pain-card">
+<div class="pain-before"><svg viewBox="0 0 12 12"><path d="M3 3l6 6M9 3l-6 6"/></svg> Without FinanceOS</div>
+<div class="pain-stat">15 Days</div>
+<div class="pain-label">Month-end close cycle</div>
+<div class="pain-after"><svg viewBox="0 0 12 12"><polyline points="2,6 4.5,8.5 10,3"/></svg> With FinanceOS</div>
+<div class="pain-new-stat">3 Days</div>
+<div class="pain-label">5x faster close</div>
+</div>
+<div class="pain-card">
+<div class="pain-before"><svg viewBox="0 0 12 12"><path d="M3 3l6 6M9 3l-6 6"/></svg> Without FinanceOS</div>
+<div class="pain-stat">±22%</div>
+<div class="pain-label">Forecast variance (typical)</div>
+<div class="pain-after"><svg viewBox="0 0 12 12"><polyline points="2,6 4.5,8.5 10,3"/></svg> With FinanceOS</div>
+<div class="pain-new-stat">96%</div>
+<div class="pain-label">AI forecast accuracy</div>
+</div>
+<div class="pain-card">
+<div class="pain-before"><svg viewBox="0 0 12 12"><path d="M3 3l6 6M9 3l-6 6"/></svg> Without FinanceOS</div>
+<div class="pain-stat">40 hrs/mo</div>
+<div class="pain-label">Manual data consolidation</div>
+<div class="pain-after"><svg viewBox="0 0 12 12"><polyline points="2,6 4.5,8.5 10,3"/></svg> With FinanceOS</div>
+<div class="pain-new-stat">0 hrs</div>
+<div class="pain-label">Real-time auto-consolidation</div>
+</div>
+</div>
+
+<!-- TRACTION PROOF -->
+<div class="proof-row">
+<div class="proof-stat"><div class="proof-num">$48.6M</div><div class="proof-label">ARR</div></div>
+<div class="proof-stat"><div class="proof-num">2,400+</div><div class="proof-label">Teams</div></div>
+<div class="proof-stat"><div class="proof-num">118%</div><div class="proof-label">NDR</div></div>
+<div class="proof-stat"><div class="proof-num">0.8x</div><div class="proof-label">Burn Multiple</div></div>
+</div>
+
+<!-- REPEAT CTA -->
+<div class="bot-cta">
+<h2>Stop paying for software<br/>that makes you do the work.</h2>
+<p>FinanceOS does the analysis. You make the decisions.</p>
+<div class="capture" style="max-width:480px;margin:0 auto">
+<input type="email" placeholder="Work email"/>
+<button>Start Free →</button>
+</div>
+</div>
+</section>
+
+<footer>
+  <div class="ft-inner">
+    <div class="ft-brand">
+      <a href="FinanceOS-Landing-V3.html" class="logo-link"><span class="ldot"></span>FinanceOS</a>
+      <p>AI-native financial planning & analysis for modern finance teams.</p>
+    </div>
+    <div class="ft-col"><h5>Product</h5><a href="FinanceOS-Landing-V3.html">Platform</a><a href="FinanceOS-Integrations-V3.html">Integrations</a><a href="FinanceOS-Pricing-V3.html">Pricing</a><a href="FinanceOS-Security-Zero-Trust.html">Security</a></div>
+    <div class="ft-col"><h5>Solutions</h5><a href="FinanceOS-Solutions-Digital.html">SaaS</a><a href="FinanceOS-Solutions-Digital.html">E-Commerce</a><a href="FinanceOS-xPA-Planning-V2.html">Cross-Dept Planning</a></div>
+    <div class="ft-col"><h5>Resources</h5><a href="FinanceOS-Resources-V2.html">Resource Library</a><a href="FinanceOS-Whats-New-V2.html">Changelog</a></div>
+    <div class="ft-col"><h5>Company</h5><a href="#">About</a><a href="#">Careers</a><a href="#">Contact</a></div>
+  </div>
+  <div class="ft-bottom">
+    <span>&copy; 2026 FinanceOS, Inc.</span>
+    <div style="display:flex;gap:20px"><a href="FinanceOS-Security-Zero-Trust.html">Privacy</a><a href="#">Terms</a><a href="FinanceOS-Security-Zero-Trust.html">Security</a></div>
+  </div>
+</footer>
+` }} />
+    </>
+  );
+}

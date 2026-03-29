@@ -1,0 +1,143 @@
+'use client';
+
+import { useEffect, useRef } from 'react';
+
+export default function V3ContactPage() {
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    // Run inline scripts after mount
+    const scripts = [
+      `const obs=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('vis');obs.unobserve(e.target);}});},{threshold:0.1});
+document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));`
+    ];
+    scripts.forEach(code => {
+      try { new Function(code)(); } catch(e) { console.warn('Script error:', e); }
+    });
+  }, []);
+
+  return (
+    <>
+      <style dangerouslySetInnerHTML={{ __html: `
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{--bg:#F8FAFC;--green:#10B981;--cyan:#22D3EE;--purple:#8B5CF6;--blue:#3B82F6;--amber:#F59E0B;--t1:#0F172A;--t2:#334155;--t3:#64748B;--t4:#94A3B8;--border:#E2E8F0;--radius:16px;--font:'DM Sans',system-ui,sans-serif;--mono:'JetBrains Mono',monospace;--ease:cubic-bezier(0.16,1,0.3,1);}
+body{font-family:var(--font);color:var(--t1);-webkit-font-smoothing:antialiased;background:#fff;overflow-x:hidden;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+.reveal{opacity:0;transform:translateY(24px);transition:all 0.6s var(--ease);}.reveal.vis{opacity:1;transform:none;}
+
+/* NAV */
+.nav{position:sticky;top:0;z-index:100;padding:0 40px;height:64px;display:flex;align-items:center;background:rgba(3,7,17,0.95);backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,0.05);}
+.nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none;}
+.nav-logo svg{width:32px;height:32px;}
+.nav-logo span{font-size:17px;font-weight:800;color:#fff;letter-spacing:-0.03em;}
+.nav-links{display:flex;gap:28px;margin-left:50px;}
+.nav-links a{font-size:13px;font-weight:500;color:rgba(255,255,255,0.5);text-decoration:none;transition:color 0.2s;}.nav-links a:hover{color:#fff;}
+.nav-right{margin-left:auto;display:flex;align-items:center;gap:10px;}
+.btn-ghost{padding:8px 18px;border-radius:8px;font-size:13px;font-weight:600;border:1px solid rgba(255,255,255,0.12);background:transparent;color:rgba(255,255,255,0.7);cursor:pointer;transition:all 0.2s;text-decoration:none;}.btn-ghost:hover{color:#fff;}
+.btn-primary{padding:8px 22px;border-radius:8px;font-size:13px;font-weight:700;border:none;background:var(--green);color:#fff;cursor:pointer;transition:all 0.25s var(--ease);text-decoration:none;}.btn-primary:hover{transform:translateY(-2px);box-shadow:0 4px 16px rgba(16,185,129,0.25);}
+
+/* HERO SPLIT */
+.hero{display:grid;grid-template-columns:1fr 1fr;min-height:calc(100vh - 64px);}
+.hero-left{background:linear-gradient(135deg,#030711,#1E1B4B);padding:80px 60px;display:flex;flex-direction:column;justify-content:center;position:relative;overflow:hidden;color:#fff;}
+.hero-left::before{content:'';position:absolute;top:-200px;right:-200px;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(34,211,238,0.08),transparent 70%);pointer-events:none;}
+.hero-left h1{font-size:40px;font-weight:900;letter-spacing:-0.03em;line-height:1.15;margin-bottom:16px;}
+.hero-left p{font-size:16px;color:rgba(255,255,255,0.55);line-height:1.7;margin-bottom:36px;max-width:420px;}
+.demo-items{display:flex;flex-direction:column;gap:14px;margin-bottom:40px;}
+.demo-item{display:flex;align-items:flex-start;gap:12px;}
+.demo-item .di-icon{width:36px;height:36px;border-radius:10px;background:rgba(16,185,129,0.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--green);}
+.demo-item .di-icon svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2;}
+.demo-item .di-text h4{font-size:14px;font-weight:700;margin-bottom:2px;}.demo-item .di-text p{font-size:12px;color:rgba(255,255,255,0.4);line-height:1.4;}
+.demo-trust{display:flex;gap:16px;flex-wrap:wrap;}
+.demo-trust-item{display:flex;align-items:center;gap:6px;font-size:11px;font-weight:600;color:rgba(255,255,255,0.45);}
+.demo-trust-item .dti{width:24px;height:24px;border-radius:6px;background:rgba(255,255,255,0.06);display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:700;color:var(--cyan);}
+
+/* FORM SIDE */
+.hero-right{background:#fff;padding:60px;display:flex;align-items:center;justify-content:center;}
+.form-card{width:100%;max-width:460px;}
+.form-card h2{font-size:24px;font-weight:900;letter-spacing:-0.02em;margin-bottom:6px;}
+.form-card .fsub{font-size:13px;color:var(--t3);margin-bottom:28px;}
+.form-group{margin-bottom:14px;}
+.form-group label{display:block;font-size:12px;font-weight:600;color:var(--t3);margin-bottom:5px;}
+.form-group input,.form-group select,.form-group textarea{width:100%;padding:11px 14px;border-radius:10px;border:1px solid var(--border);font-size:13px;font-family:var(--font);color:var(--t1);outline:none;transition:all 0.3s;background:#fff;resize:vertical;}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:var(--green);box-shadow:0 0 0 3px rgba(16,185,129,0.1);}
+.form-row{display:flex;gap:12px;}
+.form-row .form-group{flex:1;}
+.btn-submit{width:100%;padding:14px;border-radius:12px;font-size:15px;font-weight:700;border:none;background:var(--green);color:#fff;cursor:pointer;transition:all 0.25s var(--ease);margin-top:6px;}.btn-submit:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(16,185,129,0.3);}
+.form-note{text-align:center;font-size:11px;color:var(--t4);margin-top:12px;}
+
+/* STEPS */
+.steps{padding:80px 40px;background:var(--bg);}
+.steps h2{font-size:28px;font-weight:900;text-align:center;margin-bottom:50px;}
+.steps-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:40px;max-width:900px;margin:0 auto;position:relative;}
+.steps-grid::before{content:'';position:absolute;top:28px;left:16%;right:16%;height:2px;background:var(--border);}
+.step{text-align:center;position:relative;z-index:1;}
+.step-num{width:56px;height:56px;border-radius:50%;background:#fff;border:2px solid var(--green);display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:900;color:var(--green);margin:0 auto 16px;font-family:var(--mono);}
+.step h3{font-size:16px;font-weight:800;margin-bottom:6px;}
+.step p{font-size:13px;color:var(--t3);line-height:1.5;max-width:240px;margin:0 auto;}
+
+/* FOOTER */
+.footer{padding:40px;background:#030711;text-align:center;font-size:12px;color:rgba(255,255,255,0.25);}
+
+@media(max-width:768px){.hero{grid-template-columns:1fr;}.hero-left{padding:40px;}.hero-right{padding:30px;}.steps-grid{grid-template-columns:1fr;}.steps-grid::before{display:none;}.nav-links{display:none;}}
+` }} />
+      <div ref={containerRef} dangerouslySetInnerHTML={{ __html: `
+
+<nav class="nav">
+  <a class="nav-logo" href="FinanceOS-Landing-Page.html"><svg viewBox="0 0 32 32" fill="none"><defs><linearGradient id="lg" x1="0" y1="0" x2="32" y2="32"><stop stop-color="#22D3EE"/><stop offset="1" stop-color="#8B5CF6"/></linearGradient></defs><rect width="32" height="32" rx="8" fill="url(#lg)"/><path d="M8 12h16M8 16h12M8 20h8" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg><span>FinanceOS</span></a>
+  <div class="nav-links"><a href="FinanceOS-Landing-Page.html">Solutions</a><a href="FinanceOS-Pricing-Page.html">Pricing</a><a href="FinanceOS-Resources.html">Resources</a></div>
+  <div class="nav-right"><a class="btn-ghost" href="FinanceOS-Login.html">Sign In</a><a class="btn-primary" href="#">Subscribe</a></div>
+</nav>
+
+<section class="hero">
+  <div class="hero-left">
+    <h1>See FinanceOS<br/>in Action</h1>
+    <p>Get a personalized walkthrough of the platform tailored to your team's specific FP&A challenges and goals.</p>
+    <div class="demo-items">
+      <div class="demo-item"><div class="di-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8" fill="currentColor" stroke="none"/></svg></div><div class="di-text"><h4>Live platform walkthrough</h4><p>See the actual product with your use cases, not slides</p></div></div>
+      <div class="demo-item"><div class="di-icon"><svg viewBox="0 0 24 24"><path d="M12 20V10M18 20V4M6 20v-4"/></svg></div><div class="di-text"><h4>Custom ROI analysis</h4><p>Quantify time saved and cost reduction for your team</p></div></div>
+      <div class="demo-item"><div class="di-icon"><svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></div><div class="di-text"><h4>Integration planning</h4><p>Map your ERP, CRM, and billing stack to FinanceOS connectors</p></div></div>
+      <div class="demo-item"><div class="di-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div><div class="di-text"><h4>Implementation timeline</h4><p>Most teams go live in under 48 hours</p></div></div>
+    </div>
+    <div class="demo-trust">
+      <div class="demo-trust-item"><div class="dti">SOC2</div> SOC 2 Type II</div>
+      <div class="demo-trust-item"><div class="dti">GDPR</div> GDPR Compliant</div>
+      <div class="demo-trust-item"><div class="dti">500+</div> Teams</div>
+    </div>
+  </div>
+  <div class="hero-right">
+    <div class="form-card">
+      <h2>Request your demo</h2>
+      <div class="fsub">We'll respond within 4 business hours.</div>
+      <div class="form-row">
+        <div class="form-group"><label>First Name</label><input type="text" placeholder="Alex"/></div>
+        <div class="form-group"><label>Last Name</label><input type="text" placeholder="Chen"/></div>
+      </div>
+      <div class="form-group"><label>Work Email</label><input type="email" placeholder="you@company.com"/></div>
+      <div class="form-group"><label>Company</label><input type="text" placeholder="Acme Inc."/></div>
+      <div class="form-row">
+        <div class="form-group"><label>Job Title</label><select><option value="">Select...</option><option>CFO</option><option>VP Finance</option><option>Controller</option><option>FP&A Manager</option><option>Director of Finance</option><option>Other</option></select></div>
+        <div class="form-group"><label>Company Size</label><select><option value="">Select...</option><option>1-50</option><option>51-200</option><option>201-500</option><option>501-2000</option><option>2000+</option></select></div>
+      </div>
+      <div class="form-group"><label>What's your biggest FP&A challenge?</label><textarea rows="3" placeholder="e.g., Month-end close takes too long, manual reporting, lack of real-time visibility..."></textarea></div>
+      <button class="btn-submit">Request Demo</button>
+      <div class="form-note">No commitment required &middot; Free personalized walkthrough</div>
+    </div>
+  </div>
+</section>
+
+<section class="steps reveal">
+  <h2>What to expect</h2>
+  <div class="steps-grid">
+    <div class="step"><div class="step-num">1</div><h3>Schedule</h3><p>Pick a time that works for you. We'll confirm within 4 hours.</p></div>
+    <div class="step"><div class="step-num">2</div><h3>Personalized Demo</h3><p>A 30-minute walkthrough tailored to your specific use cases and data.</p></div>
+    <div class="step"><div class="step-num">3</div><h3>Custom Proposal</h3><p>Get a detailed plan with pricing, ROI projection, and implementation timeline.</p></div>
+  </div>
+</section>
+
+<footer class="footer">2026 FinanceOS, Inc. All rights reserved. | SOC 2 Type II Certified | GDPR Compliant</footer>
+
+
+` }} />
+    </>
+  );
+}
