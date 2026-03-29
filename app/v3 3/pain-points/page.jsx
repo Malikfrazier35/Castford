@@ -1,0 +1,272 @@
+'use client';
+
+import { useEffect, useRef } from 'react';
+
+export default function V3PainPointsPage() {
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    // Run inline scripts after mount
+    const scripts = [
+      `const obs=new IntersectionObserver(e=>{e.forEach(el=>{if(el.isIntersecting)el.target.classList.add('visible')})},{threshold:0.08});
+document.querySelectorAll('.fade-in').forEach(el=>obs.observe(el));`
+    ];
+    scripts.forEach(code => {
+      try { new Function(code)(); } catch(e) { console.warn('Script error:', e); }
+    });
+  }, []);
+
+  return (
+    <>
+      <style dangerouslySetInnerHTML={{ __html: `
+/* ===== SHARED NAV ===== */
+nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,0.88);backdrop-filter:blur(16px) saturate(180%);-webkit-backdrop-filter:blur(16px) saturate(180%);border-bottom:1px solid #F1F5F9}
+.nav-inner{max-width:1200px;margin:0 auto;padding:0 24px;height:60px;display:flex;align-items:center;justify-content:space-between}
+.logo-link{display:flex;align-items:center;gap:8px;font-weight:800;font-size:17px;color:#0F172A;text-decoration:none;letter-spacing:-0.01em}
+.logo-link .ldot{width:9px;height:9px;background:#10B981;border-radius:50%}
+.nav-mid{display:flex;gap:4px;font-size:14px;font-weight:500;align-items:center}
+.nav-mid a{color:#64748B;padding:8px 12px;border-radius:8px;text-decoration:none;transition:color .15s}
+.nav-mid a:hover{color:#0F172A;background:rgba(0,0,0,0.03)}
+.nav-end{display:flex;align-items:center;gap:10px}
+.nav-end a{font-size:14px;font-weight:500;color:#64748B;padding:8px 12px;text-decoration:none;transition:color .15s}
+.nav-end a:hover{color:#0F172A}
+.btn-sub{display:inline-flex;align-items:center;padding:8px 18px;border-radius:8px;font-weight:600;font-size:13px;background:#10B981;color:#fff!important;text-decoration:none;border:none;cursor:pointer;transition:all .15s}
+.btn-sub:hover{background:#059669;box-shadow:0 2px 12px rgba(16,185,129,0.25)}
+@media(max-width:900px){.nav-mid{display:none}}
+
+/* ===== SHARED FOOTER ===== */
+footer{background:#F8FAFC;border-top:1px solid #E2E8F0;padding:56px 24px 24px}
+.ft-inner{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:1.5fr repeat(4,1fr);gap:40px;margin-bottom:40px}
+.ft-brand p{font-size:13px;color:#64748B;line-height:1.6;max-width:240px;margin-top:10px}
+.ft-col{display:flex;flex-direction:column;gap:8px}
+.ft-col h5{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;color:#0F172A;margin-bottom:4px}
+.ft-col a{font-size:13px;color:#64748B;text-decoration:none;transition:color .15s}
+.ft-col a:hover{color:#0F172A}
+.ft-bottom{max-width:1200px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;padding-top:20px;border-top:1px solid #E2E8F0;font-size:12px;color:#64748B}
+.ft-bottom a{color:#64748B;text-decoration:none;transition:color .15s}
+.ft-bottom a:hover{color:#0F172A}
+@media(max-width:768px){.ft-inner{grid-template-columns:1fr 1fr;gap:24px}}
+
+:root{--green:#10B981;--green-light:#D1FAE5;--green-dark:#059669;--red:#EF4444;--red-light:#FEE2E2;--bg:#FFFFFF;--bg-alt:#F8FAFC;--text:#1E293B;--text-secondary:#475569;--muted:#64748B;--border:#E2E8F0;--shadow-md:0 4px 6px -1px rgba(0,0,0,0.08);--font:'DM Sans',system-ui,sans-serif;--mono:'JetBrains Mono',monospace;--radius:12px}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:var(--font);background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased;line-height:1.6}
+a{color:inherit;text-decoration:none}
+
+nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,0.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--border)}
+.nav-inner{max-width:1200px;margin:0 auto;padding:0 24px;height:64px;display:flex;align-items:center;justify-content:space-between}
+.logo{display:flex;align-items:center;gap:8px;font-weight:700;font-size:18px}
+.logo-dot{width:10px;height:10px;background:var(--green);border-radius:50%}
+.nav-links{display:flex;gap:28px;font-size:14px;font-weight:500}
+.nav-links a{color:var(--muted);transition:color .2s}
+.nav-links a:hover{color:var(--text)}
+.nav-right{display:flex;align-items:center;gap:12px;font-size:14px}
+.nav-right a{color:var(--muted);font-weight:500}
+.btn{display:inline-flex;align-items:center;padding:9px 20px;border-radius:8px;font-weight:600;font-size:14px;border:none;cursor:pointer;font-family:var(--font);transition:all .15s}
+.btn-primary{background:var(--green);color:#fff}
+.btn-primary:hover{background:var(--green-dark)}
+.btn-outline{border:1px solid var(--border);background:var(--bg);color:var(--text)}
+.btn-outline:hover{border-color:#CBD5E1;background:var(--bg-alt)}
+.btn-lg{padding:12px 28px;font-size:15px;border-radius:10px}
+
+.hero{padding:80px 24px 48px;text-align:center;background:linear-gradient(180deg,#FEF2F2 0%,#F0FDF4 50%,var(--bg) 100%)}
+.hero-badge{display:inline-flex;padding:5px 14px;border-radius:100px;font-size:12px;font-weight:600;color:#B91C1C;background:var(--red-light);margin-bottom:16px}
+.hero h1{font-size:clamp(32px,4.5vw,48px);font-weight:700;letter-spacing:-0.02em;margin-bottom:14px;line-height:1.15}
+.hero h1 .red{color:var(--red)}
+.hero h1 .green{color:var(--green)}
+.hero p{font-size:17px;color:var(--text-secondary);max-width:600px;margin:0 auto 32px;line-height:1.6}
+
+.ind-pills{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;max-width:900px;margin:0 auto;padding:0 24px 64px}
+.ind-pill{padding:5px 14px;border-radius:100px;font-size:12px;font-weight:500;border:1px solid var(--border);color:var(--muted);background:var(--bg)}
+
+.pp-section{max-width:1100px;margin:0 auto;padding:0 24px;margin-bottom:80px}
+.pp-header{display:flex;align-items:flex-start;gap:16px;margin-bottom:32px}
+.pp-num{font-family:var(--mono);font-size:44px;font-weight:700;color:var(--border);line-height:1;flex-shrink:0}
+.pp-title h2{font-size:clamp(22px,2.5vw,28px);font-weight:700;margin-bottom:6px}
+.pp-title p{color:var(--text-secondary);font-size:14px}
+
+.pp-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.pain-card,.solution-card{border-radius:var(--radius);padding:28px;border:1px solid}
+.pain-card{background:#FFFBFB;border-color:#FECACA;border-left:4px solid var(--red)}
+.pain-card .card-tag{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--red);margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.pain-card .card-tag::before{content:'✕';display:inline-flex;width:16px;height:16px;border-radius:50%;background:var(--red-light);align-items:center;justify-content:center;font-size:9px;color:var(--red)}
+.pain-card h3{font-size:16px;font-weight:600;margin-bottom:8px;color:#991B1B}
+.pain-card p{font-size:13px;color:var(--text-secondary);line-height:1.6;margin-bottom:14px}
+.pain-stat{font-family:var(--mono);font-size:28px;font-weight:700;color:var(--red)}
+.pain-stat-label{font-size:12px;color:var(--muted)}
+
+.solution-card{background:#F0FDF9;border-color:#A7F3D0;border-left:4px solid var(--green)}
+.solution-card .card-tag{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--green-dark);margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.solution-card .card-tag::before{content:'✓';display:inline-flex;width:16px;height:16px;border-radius:50%;background:var(--green-light);align-items:center;justify-content:center;font-size:9px;color:var(--green-dark)}
+.solution-card h3{font-size:16px;font-weight:600;margin-bottom:8px;color:#065F46}
+.solution-card p{font-size:13px;color:var(--text-secondary);line-height:1.6;margin-bottom:14px}
+.solution-stat{font-family:var(--mono);font-size:28px;font-weight:700;color:var(--green)}
+.solution-stat-label{font-size:12px;color:var(--muted)}
+.solution-features{display:flex;flex-direction:column;gap:6px;margin-top:10px}
+.solution-feat{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text)}
+.solution-feat::before{content:'→';color:var(--green);font-weight:700}
+
+.compare-section{background:var(--bg-alt);border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:64px 24px}
+.compare-inner{max-width:1100px;margin:0 auto}
+.compare-inner h2{text-align:center;font-size:clamp(24px,3vw,32px);margin-bottom:40px}
+.compare-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.compare-card{background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);padding:24px;text-align:center}
+.compare-card .before{font-family:var(--mono);font-size:22px;font-weight:700;color:var(--red);text-decoration:line-through;opacity:0.6}
+.compare-card .arrow{color:var(--muted);font-size:16px;margin:4px 0}
+.compare-card .after{font-family:var(--mono);font-size:28px;font-weight:700;color:var(--green);margin-bottom:6px}
+.compare-card .compare-label{font-size:13px;color:var(--muted)}
+
+.ai-section{padding:80px 24px}
+.ai-inner{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center}
+.ai-text .overline{font-size:13px;font-weight:600;color:var(--green);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px}
+.ai-text h2{font-size:clamp(24px,3vw,32px);font-weight:700;margin-bottom:12px}
+.ai-text>p{color:var(--text-secondary);font-size:14px;line-height:1.6;margin-bottom:20px}
+.ai-benefits{display:flex;flex-direction:column;gap:14px}
+.ai-benefit{display:flex;gap:12px}
+.ai-benefit-icon{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.ai-benefit h4{font-size:13px;font-weight:600;margin-bottom:1px}
+.ai-benefit p{font-size:12px;color:var(--muted)}
+.ai-terminal{background:#1E293B;border-radius:12px;overflow:hidden;font-family:var(--mono);font-size:11px}
+.ai-terminal-header{padding:10px 14px;background:rgba(0,0,0,0.2);display:flex;gap:6px}
+.ai-terminal-header span{width:10px;height:10px;border-radius:50%}
+.ai-terminal-header span:nth-child(1){background:#EF4444}
+.ai-terminal-header span:nth-child(2){background:#F59E0B}
+.ai-terminal-header span:nth-child(3){background:#10B981}
+.ai-terminal-body{padding:16px;line-height:1.9;color:#94A3B8}
+.ai-terminal-body .prompt{color:#10B981}
+.ai-terminal-body .response{color:#22D3EE}
+.ai-terminal-body .highlight{color:#F59E0B}
+.ai-terminal-body .dim{color:#475569}
+
+.industry-section{background:var(--bg-alt);border-top:1px solid var(--border);padding:80px 24px}
+.industry-inner{max-width:1100px;margin:0 auto}
+.industry-inner>h2{text-align:center;font-size:clamp(24px,3vw,32px);font-weight:700;margin-bottom:10px}
+.industry-inner>p{text-align:center;color:var(--text-secondary);font-size:15px;margin-bottom:40px}
+.industry-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.industry-card{background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);padding:24px;transition:all .2s}
+.industry-card:hover{box-shadow:var(--shadow-md);transform:translateY(-1px)}
+.industry-card .ind-icon{width:40px;height:40px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:18px;margin-bottom:14px}
+.industry-card h4{font-size:15px;font-weight:600;margin-bottom:6px}
+.industry-card p{font-size:13px;color:var(--text-secondary);line-height:1.5;margin-bottom:12px}
+.industry-card .ind-stat{font-family:var(--mono);font-size:13px;font-weight:600;color:var(--green)}
+
+.cta-section{text-align:center;padding:80px 24px}
+.cta-section h2{font-size:clamp(26px,3.5vw,36px);font-weight:700;margin-bottom:10px}
+.cta-section p{color:var(--text-secondary);font-size:15px;margin-bottom:28px;max-width:480px;margin-left:auto;margin-right:auto}
+.cta-buttons{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+
+footer{background:var(--bg-alt);border-top:1px solid var(--border);padding:64px 24px 32px}
+.footer-inner{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr);gap:40px;margin-bottom:48px}
+.footer-col h5{font-size:12px;font-weight:600;margin-bottom:14px;text-transform:uppercase;letter-spacing:0.06em}
+.footer-col a{display:block;font-size:13px;color:var(--muted);margin-bottom:10px;transition:color .15s}
+.footer-col a:hover{color:var(--green)}
+.footer-bottom{max-width:1200px;margin:0 auto;text-align:center;font-size:12px;color:#94A3B8;padding-top:24px;border-top:1px solid var(--border)}
+
+@media(max-width:900px){.pp-grid{grid-template-columns:1fr}.compare-grid{grid-template-columns:repeat(2,1fr)}.ai-inner{grid-template-columns:1fr}.industry-grid{grid-template-columns:1fr}}
+@media(max-width:768px){.nav-links{display:none}.footer-inner{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:480px){.compare-grid{grid-template-columns:1fr}.footer-inner{grid-template-columns:1fr}}
+
+.fade-in{opacity:0;transform:translateY(16px);transition:opacity .5s,transform .5s}
+.fade-in.visible{opacity:1;transform:translateY(0)}
+` }} />
+      <div ref={containerRef} dangerouslySetInnerHTML={{ __html: `
+<nav>
+  <div class="nav-inner">
+    <a href="FinanceOS-Landing-V3.html" class="logo-link"><span class="ldot"></span>FinanceOS</a>
+    <div class="nav-mid">
+      <a href="FinanceOS-Solutions-Digital.html">Solutions</a>
+      <a href="FinanceOS-Integrations-V3.html">Integrations</a>
+      <a href="FinanceOS-Security-Zero-Trust.html">Trust</a>
+      <a href="FinanceOS-Pricing-V3.html">Pricing</a>
+      <a href="FinanceOS-vs-Competitors-V2.html">Compare</a>
+      <a href="FinanceOS-Resources-V2.html">Resources</a>
+    </div>
+    <div class="nav-end">
+      <a href="FinanceOS-Login-V2.html">Sign In</a>
+      <a href="FinanceOS-Pricing-V3.html" class="btn-sub">Subscribe</a>
+    </div>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="hero-badge">Every Finance Team's Worst Nightmares — Solved</div>
+  <h1>We built FinanceOS to fix<br>the problems <span class="red">you live with</span><br><span class="green">every single day</span></h1>
+  <p>Spreadsheet chaos, month-end marathons, zero visibility, and tools that don't talk to each other. Here's how FinanceOS solves each one.</p>
+</section>
+
+<div class="ind-pills"><span class="ind-pill">SaaS & Software</span><span class="ind-pill">Healthcare</span><span class="ind-pill">Manufacturing</span><span class="ind-pill">Financial Services</span><span class="ind-pill">Retail & E-Commerce</span><span class="ind-pill">Professional Services</span><span class="ind-pill">Non-Profit</span><span class="ind-pill">Real Estate</span><span class="ind-pill">Education</span><span class="ind-pill">Construction</span><span class="ind-pill">Energy</span><span class="ind-pill">Logistics</span></div>
+
+<div class="pp-section fade-in"><div class="pp-header"><div class="pp-num">01</div><div class="pp-title"><h2>The Monthly Close Takes Forever</h2><p>Finance teams spend 10-15 days every month manually reconciling and chasing down data.</p></div></div><div class="pp-grid"><div class="pain-card"><div class="card-tag">The Pain</div><h3>Manual reconciliation across 5+ systems</h3><p>Export CSVs, copy into spreadsheets, manually match intercompany transactions. Every entity means another day added to close.</p><div class="pain-stat">10-15 days</div><div class="pain-stat-label">Average monthly close</div></div><div class="solution-card"><div class="card-tag">FinanceOS Solution</div><h3>Automated multi-entity consolidation</h3><p>Direct GL connection, auto-reconciliation, intercompany elimination, consolidated financials with full audit trail.</p><div class="solution-stat">3 days</div><div class="solution-stat-label">Average close with FinanceOS</div><div class="solution-features"><div class="solution-feat">Real-time GL sync from 200+ connectors</div><div class="solution-feat">Automated intercompany elimination</div><div class="solution-feat">One-click consolidation</div></div></div></div></div>
+
+<div class="pp-section fade-in"><div class="pp-header"><div class="pp-num">02</div><div class="pp-title"><h2>Forecasts Are Wildly Inaccurate</h2><p>Static spreadsheet models can't keep up with real-world complexity.</p></div></div><div class="pp-grid"><div class="pain-card"><div class="card-tag">The Pain</div><h3>Spreadsheet forecasts miss by 20%+</h3><p>50-tab Excel model, conflicting versions, broken formulas, and numbers the board doesn't trust.</p><div class="pain-stat">±22%</div><div class="pain-stat-label">Typical forecast variance</div></div><div class="solution-card"><div class="card-tag">FinanceOS Solution</div><h3>AI-powered rolling forecasts</h3><p>Real-time actuals, ML trend detection, continuous updates, Monte Carlo simulations on any scenario.</p><div class="solution-stat">96%</div><div class="solution-stat-label">Forecast accuracy with AI</div><div class="solution-features"><div class="solution-feat">ML-driven trend detection</div><div class="solution-feat">10,000-iteration Monte Carlo</div><div class="solution-feat">Rolling forecasts, never stale</div></div></div></div></div>
+
+<div class="pp-section fade-in"><div class="pp-header"><div class="pp-num">03</div><div class="pp-title"><h2>Departments Plan in Silos</h2><p>Finance, Sales, and HR each build separate plans that never reconcile.</p></div></div><div class="pp-grid"><div class="pain-card"><div class="card-tag">The Pain</div><h3>Disconnected departmental plans</h3><p>Revenue targets don't match headcount, which doesn't match budget. Three versions of reality for the CEO.</p><div class="pain-stat">7+</div><div class="pain-stat-label">Disconnected tools per company</div></div><div class="solution-card"><div class="card-tag">FinanceOS Solution</div><h3>xP&A — unified planning</h3><p>7 departments in one model with automatic cascading. A change in HR updates Finance and Ops instantly.</p><div class="solution-stat">1 model</div><div class="solution-stat-label">7 departments, one truth</div><div class="solution-features"><div class="solution-feat">Bi-directional plan linking</div><div class="solution-feat">Driver-based modeling</div><div class="solution-feat">Auto cascade on changes</div></div></div></div></div>
+
+<div class="pp-section fade-in"><div class="pp-header"><div class="pp-num">04</div><div class="pp-title"><h2>No Real-Time Visibility</h2><p>Reports arrive weeks late. Leadership makes decisions on stale numbers.</p></div></div><div class="pp-grid"><div class="pain-card"><div class="card-tag">The Pain</div><h3>Static reports weeks late</h3><p>"How did we do last month?" takes 3 days. Board decks assembled from screenshots. Nobody trusts the numbers.</p><div class="pain-stat">3-4 weeks</div><div class="pain-stat-label">Reporting lag</div></div><div class="solution-card"><div class="card-tag">FinanceOS Solution</div><h3>Live dashboards & AI queries</h3><p>Real-time dashboards. Ask the AI Copilot anything. One-click board deck generation.</p><div class="solution-stat">Real-time</div><div class="solution-stat-label">Always current</div><div class="solution-features"><div class="solution-feat">AI answers in plain English</div><div class="solution-feat">Self-service dashboards</div><div class="solution-feat">One-click board decks</div></div></div></div></div>
+
+<div class="pp-section fade-in"><div class="pp-header"><div class="pp-num">05</div><div class="pp-title"><h2>Compliance Is a Fire Drill</h2><p>Audit season = all-hands-on-deck pulling evidence from 10 systems.</p></div></div><div class="pp-grid"><div class="pain-card"><div class="card-tag">The Pain</div><h3>Manual audit evidence gathering</h3><p>Weeks spent assembling spreadsheets of controls, approvals, and data changes from email chains and tickets.</p><div class="pain-stat">400+ hrs</div><div class="pain-stat-label">Annual audit prep</div></div><div class="solution-card"><div class="card-tag">FinanceOS Solution</div><h3>SOX 404 automation</h3><p>Auto-logged actions, continuous monitoring, one-click evidence export in audit-ready format.</p><div class="solution-stat">90%</div><div class="solution-stat-label">Reduction in audit prep</div><div class="solution-features"><div class="solution-feat">Immutable audit trail</div><div class="solution-feat">Continuous monitoring</div><div class="solution-feat">One-click evidence export</div></div></div></div></div>
+
+<div class="pp-section fade-in"><div class="pp-header"><div class="pp-num">06</div><div class="pp-title"><h2>Scenario Planning Is Impossible</h2><p>"What if we delay hiring?" needs 2 days to model in spreadsheets.</p></div></div><div class="pp-grid"><div class="pain-card"><div class="card-tag">The Pain</div><h3>One scenario at a time</h3><p>Duplicate a spreadsheet, change assumptions, hope formulas work. Comparing 3 scenarios is a nightmare.</p><div class="pain-stat">2-3 days</div><div class="pain-stat-label">Per scenario</div></div><div class="solution-card"><div class="card-tag">FinanceOS Solution</div><h3>Unlimited scenarios in seconds</h3><p>Adjust any driver, compare side-by-side. AI suggests scenarios from market signals.</p><div class="solution-stat">< 30 sec</div><div class="solution-stat-label">Any scenario</div><div class="solution-features"><div class="solution-feat">Drag-and-drop drivers</div><div class="solution-feat">Side-by-side comparison</div><div class="solution-feat">AI-suggested scenarios</div></div></div></div></div>
+
+<div class="pp-section fade-in"><div class="pp-header"><div class="pp-num">07</div><div class="pp-title"><h2>Systems Don't Talk</h2><p>ERP, CRM, HRIS, billing, bank — all holding critical data in different formats.</p></div></div><div class="pp-grid"><div class="pain-card"><div class="card-tag">The Pain</div><h3>CSV + VLOOKUP + prayer</h3><p>Download CSVs from 5 systems, paste into master sheet, pray VLOOKUP doesn't return #N/A.</p><div class="pain-stat">40+ hrs/mo</div><div class="pain-stat-label">Manual consolidation</div></div><div class="solution-card"><div class="card-tag">FinanceOS Solution</div><h3>200+ connectors, zero CSVs</h3><p>Pre-built connectors to ERP, CRM, HRIS, banks, and warehouses. Auto-mapping, real-time sync.</p><div class="solution-stat">0 hrs</div><div class="solution-stat-label">Manual work eliminated</div><div class="solution-features"><div class="solution-feat">OAuth setup in 5 min</div><div class="solution-feat">Auto schema mapping</div><div class="solution-feat">Real-time error monitoring</div></div></div></div></div>
+
+<div class="compare-section"><div class="compare-inner"><h2>Before vs. After FinanceOS</h2><div class="compare-grid">
+  <div class="compare-card fade-in"><div class="before">10-15 days</div><div class="arrow">↓</div><div class="after">3 days</div><div class="compare-label">Monthly close</div></div>
+  <div class="compare-card fade-in"><div class="before">±22%</div><div class="arrow">↓</div><div class="after">96%</div><div class="compare-label">Forecast accuracy</div></div>
+  <div class="compare-card fade-in"><div class="before">40+ hrs</div><div class="arrow">↓</div><div class="after">0 hrs</div><div class="compare-label">Manual data work/mo</div></div>
+  <div class="compare-card fade-in"><div class="before">400+ hrs</div><div class="arrow">↓</div><div class="after">40 hrs</div><div class="compare-label">Annual audit prep</div></div>
+</div></div></div>
+
+<section class="ai-section"><div class="ai-inner fade-in">
+  <div class="ai-text"><div class="overline">AI-Native Platform</div><h2>An AI Copilot that understands finance</h2><p>Not a chatbot bolted onto a spreadsheet. Understands accounting standards, provides sourced, auditable answers.</p>
+    <div class="ai-benefits">
+      <div class="ai-benefit"><div class="ai-benefit-icon" style="background:#ECFDF5">🔍</div><div><h4>Variance Analysis</h4><p>Sourced breakdown in seconds</p></div></div>
+      <div class="ai-benefit"><div class="ai-benefit-icon" style="background:#EFF6FF">📊</div><div><h4>Anomaly Detection</h4><p>Flags issues before auditors find them</p></div></div>
+      <div class="ai-benefit"><div class="ai-benefit-icon" style="background:#F5F3FF">💡</div><div><h4>Proactive Insights</h4><p>Surfaces hidden risks and opportunities</p></div></div>
+    </div>
+  </div>
+  <div class="ai-terminal"><div class="ai-terminal-header"><span></span><span></span><span></span></div><div class="ai-terminal-body">
+    <div class="prompt">You → Why did OPEX exceed budget by $340K in Q1?</div><br>
+    <div class="response">AI Copilot → Three factors:</div><br>
+    <span class="dim">1.</span> <span class="highlight">Eng headcount</span> <span class="dim">+$180K (4 unbudgeted hires)</span><br>
+    <span class="dim">2.</span> <span class="highlight">AWS infra</span> <span class="dim">+$95K (traffic +47%)</span><br>
+    <span class="dim">3.</span> <span class="highlight">Legal</span> <span class="dim">+$65K (SOC 2 audit, one-time)</span><br><br>
+    <div class="response">Shall I reforecast Q2-Q4 with revised headcount?</div>
+  </div></div>
+</div></section>
+
+<div class="industry-section"><div class="industry-inner"><h2>Built for every industry</h2><p>50-person startup or 5,000-employee enterprise — these pain points are universal.</p>
+  <div class="industry-grid">
+    <div class="industry-card fade-in"><div class="ind-icon" style="background:#ECFDF5">💻</div><h4>SaaS & Software</h4><p>ARR/MRR, cohort analysis, ASC 606 revenue recognition.</p><div class="ind-stat">60% faster close →</div></div>
+    <div class="industry-card fade-in"><div class="ind-icon" style="background:#EFF6FF">🏥</div><h4>Healthcare</h4><p>Multi-facility consolidation, grant tracking, regulatory reporting.</p><div class="ind-stat">Full compliance →</div></div>
+    <div class="industry-card fade-in"><div class="ind-icon" style="background:#F5F3FF">🏭</div><h4>Manufacturing</h4><p>BOM cost modeling, supply chain forecasting, COGS variance.</p><div class="ind-stat">Real-time COGS →</div></div>
+    <div class="industry-card fade-in"><div class="ind-icon" style="background:#EFF6FF">🏦</div><h4>Financial Services</h4><p>Regulatory reporting, portfolio analytics, SOX/Basel compliance.</p><div class="ind-stat">Continuous controls →</div></div>
+    <div class="industry-card fade-in"><div class="ind-icon" style="background:#FFFBEB">🛒</div><h4>Retail & E-Commerce</h4><p>Multi-channel revenue, inventory valuation, seasonal forecasting.</p><div class="ind-stat">Omnichannel visibility →</div></div>
+    <div class="industry-card fade-in"><div class="ind-icon" style="background:#FEF2F2">📋</div><h4>Professional Services</h4><p>Project profitability, utilization, time-based revenue recognition.</p><div class="ind-stat">Project-level P&L →</div></div>
+  </div>
+</div></div>
+
+<section class="cta-section"><h2>Stop living with the pain</h2><p>Book a 15-minute demo tailored to your industry.</p><div class="cta-buttons"><button class="btn btn-primary btn-lg">Book a Demo</button><button class="btn btn-outline btn-lg">Start Free Trial</button></div></section>
+
+<footer>
+  <div class="ft-inner">
+    <div class="ft-brand">
+      <a href="FinanceOS-Landing-V3.html" class="logo-link"><span class="ldot"></span>FinanceOS</a>
+      <p>AI-native financial planning & analysis for modern finance teams.</p>
+    </div>
+    <div class="ft-col"><h5>Product</h5><a href="FinanceOS-Landing-V3.html">Platform</a><a href="FinanceOS-Integrations-V3.html">Integrations</a><a href="FinanceOS-Pricing-V3.html">Pricing</a><a href="FinanceOS-Security-Zero-Trust.html">Security</a></div>
+    <div class="ft-col"><h5>Solutions</h5><a href="FinanceOS-Solutions-Digital.html">SaaS</a><a href="FinanceOS-Solutions-Digital.html">E-Commerce</a><a href="FinanceOS-xPA-Planning-V2.html">Cross-Dept Planning</a></div>
+    <div class="ft-col"><h5>Resources</h5><a href="FinanceOS-Resources-V2.html">Resource Library</a><a href="FinanceOS-Whats-New-V2.html">Changelog</a></div>
+    <div class="ft-col"><h5>Company</h5><a href="#">About</a><a href="#">Careers</a><a href="#">Contact</a></div>
+  </div>
+  <div class="ft-bottom">
+    <span>&copy; 2026 FinanceOS, Inc.</span>
+    <div style="display:flex;gap:20px"><a href="FinanceOS-Security-Zero-Trust.html">Privacy</a><a href="#">Terms</a><a href="FinanceOS-Security-Zero-Trust.html">Security</a></div>
+  </div>
+</footer>
+
+
+` }} />
+    </>
+  );
+}

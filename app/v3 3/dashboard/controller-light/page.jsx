@@ -1,0 +1,274 @@
+'use client';
+
+import { useEffect, useRef } from 'react';
+
+export default function V3DashboardControllerLightPage() {
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    // Run inline scripts after mount
+    const scripts = [
+      `window.addEventListener('scroll',()=>{const h=document.documentElement;document.getElementById('scrollProgress').style.width=(h.scrollTop/(h.scrollHeight-h.clientHeight)*100)+'%'});
+
+function animateClose(){document.getElementById('closeBar').style.width='55%';const el=document.getElementById('closePct'),dur=1200,start=performance.now();(function tick(now){let p=Math.min((now-start)/dur,1);p=1-Math.pow(1-p,3);el.textContent=Math.round(55*p);if(p<1)requestAnimationFrame(tick)})(performance.now())}
+
+function animateBars(){document.querySelectorAll('[data-w]').forEach(b=>{b.style.width=b.dataset.w})}
+
+document.querySelectorAll('.close-step,.aging-bucket,.compliance-card,.recon-item').forEach(card=>{card.addEventListener('mousemove',e=>{const r=card.getBoundingClientRect(),x=(e.clientX-r.left)/r.width-.5,y=(e.clientY-r.top)/r.height-.5;card.style.transform=\`perspective(600px) rotateY(\${x*4}deg) rotateX(\${-y*4}deg) translateY(-2px)\`});card.addEventListener('mouseleave',()=>{card.style.transform=''})});
+
+const obs=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){e.target.style.opacity='1';e.target.style.transform='translateY(0)';obs.unobserve(e.target)}})},{threshold:0.1});
+document.querySelectorAll('.close-progress,.panel,.copilot,.close-step,.aging-bucket,.compliance-card').forEach((el,i)=>{el.style.opacity='0';el.style.transform='translateY(20px)';el.style.transition=\`opacity 0.5s \${i*.05}s cubic-bezier(.23,1,.32,1),transform 0.5s \${i*.05}s cubic-bezier(.23,1,.32,1)\`;obs.observe(el)});
+
+setTimeout(()=>{animateClose();animateBars()},400);`
+    ];
+    scripts.forEach(code => {
+      try { new Function(code)(); } catch(e) { console.warn('Script error:', e); }
+    });
+  }, []);
+
+  return (
+    <>
+      <style dangerouslySetInnerHTML={{ __html: `
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#f8f7f4;--surface:#ffffff;--surface-2:#faf9f6;--surface-3:#f0eeea;
+  --border:rgba(0,0,0,0.06);--border-hover:rgba(5,150,105,0.25);
+  --text:#1a1a2e;--text-2:#5a5a72;--text-3:#8a8a9e;
+  --shadow-sm:0 1px 3px rgba(0,0,0,0.04),0 1px 2px rgba(0,0,0,0.03);
+  --shadow-md:0 4px 20px rgba(0,0,0,0.06),0 2px 8px rgba(0,0,0,0.04);
+  --shadow-lg:0 12px 40px rgba(0,0,0,0.08),0 4px 12px rgba(0,0,0,0.04);
+  --blue:#2563eb;--blue-soft:#dbeafe;--blue-text:#1e40af;
+  --green:#059669;--green-soft:#d1fae5;--green-text:#065f46;
+  --amber:#d97706;--amber-soft:#fef3c7;--amber-text:#92400e;
+  --rose:#dc2626;--rose-soft:#fee2e2;--rose-text:#991b1b;
+  --purple:#7c3aed;--purple-soft:#ede9fe;--purple-text:#5b21b6;
+  --cyan:#0891b2;--cyan-soft:#cffafe;--cyan-text:#155e75;
+  --radius:20px;--radius-sm:14px;--radius-xs:8px;
+}
+body{background:var(--bg);color:var(--text);font-family:'Manrope',system-ui,sans-serif;line-height:1.6;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+body::before{content:'';position:fixed;top:0;left:0;right:0;bottom:0;background:radial-gradient(ellipse 80% 50% at 40% 0%,rgba(209,250,229,0.5),transparent),radial-gradient(ellipse 60% 40% at 60% 100%,rgba(207,250,254,0.4),transparent);pointer-events:none;z-index:0}
+
+.scroll-progress{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--green),var(--cyan),var(--blue));z-index:999;width:0%;border-radius:0 2px 2px 0}
+
+.dash-header{padding:24px 48px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);backdrop-filter:blur(24px) saturate(1.4);position:sticky;top:0;z-index:90;background:rgba(248,247,244,0.8)}
+.dash-logo{display:flex;align-items:center;gap:14px}
+.dash-logo-icon{width:40px;height:40px;border-radius:12px;background:linear-gradient(135deg,var(--green),#047857);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px;color:#fff;box-shadow:0 4px 16px rgba(5,150,105,0.25)}
+.dash-logo-text{font-size:19px;font-weight:800;color:var(--text)}
+.dash-role{font-size:13px;color:var(--text-2);background:var(--surface);padding:8px 18px;border-radius:24px;border:1px solid var(--border);box-shadow:var(--shadow-sm)}
+.dash-role span{color:var(--green);font-weight:700}
+
+.dash-container{max-width:1400px;margin:0 auto;padding:36px 48px 80px;position:relative;z-index:1}
+.dash-title{font-size:30px;font-weight:800;letter-spacing:-0.02em;margin-bottom:4px}
+.dash-subtitle{color:var(--text-2);font-size:14px;margin-bottom:36px}
+
+/* Close Progress */
+.close-progress{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:30px;margin-bottom:28px;box-shadow:var(--shadow-sm)}
+.close-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+.close-title{font-size:18px;font-weight:800}
+.close-meta{display:flex;align-items:center;gap:12px}
+.close-day{font-size:13px;font-weight:700;padding:6px 14px;border-radius:20px;color:var(--green-text);background:var(--green-soft)}
+.close-pct{font-size:13px;color:var(--text-2);font-weight:600}
+.close-bar-outer{height:12px;background:var(--surface-3);border-radius:6px;overflow:hidden;margin-bottom:22px}
+.close-bar-inner{height:100%;border-radius:6px;background:linear-gradient(90deg,var(--green),var(--cyan));width:0%;transition:width 1.4s cubic-bezier(.23,1,.32,1)}
+.close-steps{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px}
+.close-step{background:var(--surface-2);border-radius:var(--radius-sm);padding:14px;display:flex;align-items:center;gap:10px;border:1px solid var(--border);transition:border-color 0.2s,box-shadow 0.2s,transform 0.3s}
+.close-step:hover{border-color:var(--border-hover);box-shadow:var(--shadow-sm);transform:translateY(-2px)}
+.close-step-icon{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0;font-weight:700}
+.close-step-icon.done{background:var(--green-soft);color:var(--green)}
+.close-step-icon.active{background:var(--amber-soft);color:var(--amber);animation:pulse 2s infinite}
+.close-step-icon.pending{background:var(--surface-3);color:var(--text-3)}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.5}}
+.close-step-text{font-size:13px;font-weight:600}
+.close-step-text small{display:block;color:var(--text-3);font-size:11px;font-weight:400;margin-top:1px}
+
+/* Panels */
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:28px}
+.panel{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow-sm);transition:box-shadow 0.3s}
+.panel:hover{box-shadow:var(--shadow-md)}
+.panel-header{padding:22px 28px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.panel-title{font-size:17px;font-weight:700}
+.panel-badge{font-size:11px;font-weight:700;padding:5px 12px;border-radius:20px}
+.badge-green{color:var(--green-text);background:var(--green-soft)}
+.badge-amber{color:var(--amber-text);background:var(--amber-soft)}
+.badge-blue{color:var(--blue-text);background:var(--blue-soft)}
+.panel-body{padding:22px 28px 28px}
+
+/* Recon */
+.recon-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:18px}
+.recon-stat{background:var(--surface-2);border-radius:var(--radius-sm);padding:16px;text-align:center;border:1px solid var(--border)}
+.recon-stat-val{font-size:24px;font-weight:800}
+.recon-stat-label{font-size:11px;color:var(--text-3);text-transform:uppercase;letter-spacing:0.06em;font-weight:600}
+.recon-list{display:flex;flex-direction:column;gap:8px}
+.recon-item{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:var(--surface-2);border-radius:var(--radius-xs);font-size:13px;font-weight:500;border:1px solid var(--border);transition:border-color 0.2s}
+.recon-item:hover{border-color:var(--border-hover)}
+.recon-status{font-size:11px;font-weight:700;padding:4px 10px;border-radius:12px}
+.recon-status.matched{color:var(--green-text);background:var(--green-soft)}
+.recon-status.review{color:var(--amber-text);background:var(--amber-soft)}
+.recon-status.exception{color:var(--rose-text);background:var(--rose-soft)}
+
+/* GL */
+.gl-row{display:grid;grid-template-columns:1.6fr 1fr 1fr 1fr;gap:8px;padding:11px 0;align-items:center;border-bottom:1px solid var(--border);font-size:13px}
+.gl-row:last-child{border-bottom:none}
+.gl-row.hdr{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--text-3)}
+.gl-account{font-weight:700}
+.gl-val{text-align:right;font-weight:600}
+.gl-var{text-align:right;font-weight:700;font-size:12px}
+.gl-var.pos{color:var(--green)}
+.gl-var.neg{color:var(--rose)}
+
+/* Aging */
+.aging-buckets{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:18px}
+.aging-bucket{background:var(--surface-2);border-radius:var(--radius-sm);padding:14px;text-align:center;border:1px solid var(--border);transition:border-color 0.2s,transform 0.3s,box-shadow 0.3s}
+.aging-bucket:hover{transform:translateY(-2px);border-color:var(--border-hover);box-shadow:var(--shadow-sm)}
+.aging-bucket-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--text-3);margin-bottom:6px}
+.aging-bucket-val{font-size:17px;font-weight:800}
+.aging-bar{height:5px;background:var(--surface-3);border-radius:3px;margin-top:8px;overflow:hidden}
+.aging-fill{height:100%;border-radius:3px;transition:width 1s cubic-bezier(.23,1,.32,1)}
+.aging-summary{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.aging-total{background:var(--surface-2);border-radius:var(--radius-sm);padding:16px;text-align:center;border:1px solid var(--border)}
+.aging-total-label{font-size:11px;color:var(--text-3);text-transform:uppercase;letter-spacing:0.06em;font-weight:600}
+.aging-total-val{font-size:24px;font-weight:800;margin-top:4px}
+
+/* Compliance */
+.compliance-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.compliance-card{background:var(--surface-2);border-radius:var(--radius-sm);padding:18px;border:1px solid var(--border);transition:border-color 0.3s,box-shadow 0.3s}
+.compliance-card:hover{border-color:var(--border-hover);box-shadow:var(--shadow-sm)}
+.compliance-card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.compliance-name{font-size:13px;font-weight:700}
+.compliance-status{font-size:10px;font-weight:700;padding:4px 10px;border-radius:12px;text-transform:uppercase;letter-spacing:0.04em}
+.compliance-status.pass{color:var(--green-text);background:var(--green-soft)}
+.compliance-status.warn{color:var(--amber-text);background:var(--amber-soft)}
+.compliance-status.due{color:var(--rose-text);background:var(--rose-soft)}
+.compliance-detail{font-size:12px;color:var(--text-3)}
+.compliance-bar{height:5px;background:var(--surface-3);border-radius:3px;margin-top:10px;overflow:hidden}
+.compliance-fill{height:100%;border-radius:3px;transition:width 1s cubic-bezier(.23,1,.32,1)}
+
+/* Copilot */
+.copilot{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow-sm);margin-bottom:28px}
+.copilot-header{padding:18px 28px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;background:var(--surface-2)}
+.copilot-dot{width:8px;height:8px;border-radius:50%;background:var(--green);animation:pulse 2s infinite}
+.copilot-title{font-size:14px;font-weight:700}
+.copilot-body{padding:22px 28px}
+.copilot-msg{margin-bottom:18px}
+.copilot-msg.user{text-align:right}
+.copilot-msg.user .copilot-bubble{background:linear-gradient(135deg,var(--green),#047857);color:#fff;display:inline-block;text-align:left;box-shadow:0 4px 16px rgba(5,150,105,0.2)}
+.copilot-msg.ai .copilot-bubble{background:var(--surface-2);display:inline-block;border:1px solid var(--border)}
+.copilot-bubble{padding:14px 18px;border-radius:16px;font-size:13px;max-width:85%;line-height:1.6}
+.copilot-input{display:flex;gap:10px;padding:18px 28px;border-top:1px solid var(--border);background:var(--surface-2)}
+.copilot-input input{flex:1;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 16px;color:var(--text);font-size:13px;font-family:inherit;outline:none;transition:border-color 0.2s,box-shadow 0.2s}
+.copilot-input input:focus{border-color:var(--green);box-shadow:0 0 0 3px rgba(5,150,105,0.1)}
+.copilot-input button{background:linear-gradient(135deg,var(--green),#047857);border:none;color:#fff;padding:12px 22px;border-radius:var(--radius-sm);font-weight:700;font-size:13px;cursor:pointer;box-shadow:0 4px 12px rgba(5,150,105,0.2)}
+
+@media(max-width:960px){.two-col{grid-template-columns:1fr}.close-steps{grid-template-columns:repeat(2,1fr)}.dash-header{padding:20px 24px}.dash-container{padding:24px}.aging-buckets{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:560px){.close-steps{grid-template-columns:1fr}.recon-grid{grid-template-columns:1fr}.compliance-grid{grid-template-columns:1fr}.aging-buckets{grid-template-columns:repeat(2,1fr)}}
+` }} />
+      <div ref={containerRef} dangerouslySetInnerHTML={{ __html: `
+<div class="scroll-progress" id="scrollProgress"></div>
+
+<header class="dash-header">
+  <div class="dash-logo"><div class="dash-logo-icon">F</div><div class="dash-logo-text">FinanceOS</div></div>
+  <div class="dash-role"><span>Controller</span>&ensp;Operations Dashboard</div>
+</header>
+
+<main class="dash-container">
+  <h1 class="dash-title">Month-End Close Command Center</h1>
+  <p class="dash-subtitle">Close checklist with live status &middot; March 2026</p>
+
+  <div class="close-progress">
+    <div class="close-header"><div class="close-title">Close Progress</div><div class="close-meta"><span class="close-day">Day 3 of 5</span><span class="close-pct"><strong id="closePct">0</strong>% Complete</span></div></div>
+    <div class="close-bar-outer"><div class="close-bar-inner" id="closeBar"></div></div>
+    <div class="close-steps">
+      <div class="close-step"><div class="close-step-icon done">&#10003;</div><div class="close-step-text">Revenue Recognition<small>Completed Day 1</small></div></div>
+      <div class="close-step"><div class="close-step-icon done">&#10003;</div><div class="close-step-text">Payroll Accruals<small>Completed Day 1</small></div></div>
+      <div class="close-step"><div class="close-step-icon done">&#10003;</div><div class="close-step-text">Bank Reconciliation<small>Completed Day 2</small></div></div>
+      <div class="close-step"><div class="close-step-icon done">&#10003;</div><div class="close-step-text">Intercompany Entries<small>Completed Day 2</small></div></div>
+      <div class="close-step"><div class="close-step-icon done">&#10003;</div><div class="close-step-text">Prepaid Amortization<small>Completed Day 2</small></div></div>
+      <div class="close-step"><div class="close-step-icon active">&#9679;</div><div class="close-step-text">AP Cut-off Review<small>In progress</small></div></div>
+      <div class="close-step"><div class="close-step-icon pending">&#9675;</div><div class="close-step-text">Depreciation Run<small>Day 4</small></div></div>
+      <div class="close-step"><div class="close-step-icon pending">&#9675;</div><div class="close-step-text">Tax Provisions<small>Day 4</small></div></div>
+      <div class="close-step"><div class="close-step-icon pending">&#9675;</div><div class="close-step-text">Flux Analysis<small>Day 5</small></div></div>
+      <div class="close-step"><div class="close-step-icon pending">&#9675;</div><div class="close-step-text">Final Review &amp; Sign-off<small>Day 5</small></div></div>
+    </div>
+  </div>
+
+  <div class="two-col">
+    <div class="panel">
+      <div class="panel-header"><span class="panel-title">Reconciliation Status</span><span class="panel-badge badge-green">14/18 Matched</span></div>
+      <div class="panel-body">
+        <div class="recon-grid">
+          <div class="recon-stat"><div class="recon-stat-val" style="color:var(--green)">14</div><div class="recon-stat-label">Matched</div></div>
+          <div class="recon-stat"><div class="recon-stat-val" style="color:var(--amber)">3</div><div class="recon-stat-label">In Review</div></div>
+          <div class="recon-stat"><div class="recon-stat-val" style="color:var(--rose)">1</div><div class="recon-stat-label">Exception</div></div>
+        </div>
+        <div class="recon-list">
+          <div class="recon-item"><span>Operating Cash — Chase</span><span class="recon-status matched">Matched</span></div>
+          <div class="recon-item"><span>Payroll — ADP</span><span class="recon-status matched">Matched</span></div>
+          <div class="recon-item"><span>Revenue — Stripe</span><span class="recon-status matched">Matched</span></div>
+          <div class="recon-item"><span>AP Subledger</span><span class="recon-status review">Review</span></div>
+          <div class="recon-item"><span>Intercompany — EU Sub</span><span class="recon-status review">Review</span></div>
+          <div class="recon-item"><span>Deferred Revenue</span><span class="recon-status exception">Exception</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="panel-header"><span class="panel-title">GL Summary</span><span class="panel-badge badge-blue">Trial Balance</span></div>
+      <div class="panel-body">
+        <div class="gl-row hdr"><span>Account</span><span style="text-align:right">Balance</span><span style="text-align:right">Prior Mo</span><span style="text-align:right">Variance</span></div>
+        <div class="gl-row"><span class="gl-account">Cash & Equivalents</span><span class="gl-val">$34.2M</span><span class="gl-val" style="color:var(--text-3)">$32.8M</span><span class="gl-var pos">+4.3%</span></div>
+        <div class="gl-row"><span class="gl-account">Accounts Receivable</span><span class="gl-val">$8.6M</span><span class="gl-val" style="color:var(--text-3)">$7.9M</span><span class="gl-var neg">+8.9%</span></div>
+        <div class="gl-row"><span class="gl-account">Deferred Revenue</span><span class="gl-val">$12.4M</span><span class="gl-val" style="color:var(--text-3)">$11.1M</span><span class="gl-var pos">+11.7%</span></div>
+        <div class="gl-row"><span class="gl-account">Accounts Payable</span><span class="gl-val">$3.1M</span><span class="gl-val" style="color:var(--text-3)">$2.9M</span><span class="gl-var neg">+6.9%</span></div>
+        <div class="gl-row"><span class="gl-account">Accrued Expenses</span><span class="gl-val">$2.8M</span><span class="gl-val" style="color:var(--text-3)">$2.6M</span><span class="gl-var neg">+7.7%</span></div>
+        <div class="gl-row"><span class="gl-account">Equity</span><span class="gl-val">$46.3M</span><span class="gl-val" style="color:var(--text-3)">$44.1M</span><span class="gl-var pos">+5.0%</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="two-col">
+    <div class="panel">
+      <div class="panel-header"><span class="panel-title">AP/AR Aging</span><span class="panel-badge badge-amber">AR Focus</span></div>
+      <div class="panel-body">
+        <div style="font-size:13px;font-weight:700;margin-bottom:12px;color:var(--text-2)">Accounts Receivable Aging</div>
+        <div class="aging-buckets">
+          <div class="aging-bucket"><div class="aging-bucket-label">Current</div><div class="aging-bucket-val" style="color:var(--green)">$4.8M</div><div class="aging-bar"><div class="aging-fill" style="width:0%;background:var(--green)" data-w="100%"></div></div></div>
+          <div class="aging-bucket"><div class="aging-bucket-label">1-30 days</div><div class="aging-bucket-val" style="color:var(--blue)">$2.1M</div><div class="aging-bar"><div class="aging-fill" style="width:0%;background:var(--blue)" data-w="44%"></div></div></div>
+          <div class="aging-bucket"><div class="aging-bucket-label">31-60 days</div><div class="aging-bucket-val" style="color:var(--amber)">$1.0M</div><div class="aging-bar"><div class="aging-fill" style="width:0%;background:var(--amber)" data-w="21%"></div></div></div>
+          <div class="aging-bucket"><div class="aging-bucket-label">61-90 days</div><div class="aging-bucket-val" style="color:var(--rose)">$0.5M</div><div class="aging-bar"><div class="aging-fill" style="width:0%;background:var(--rose)" data-w="10%"></div></div></div>
+          <div class="aging-bucket"><div class="aging-bucket-label">90+ days</div><div class="aging-bucket-val" style="color:var(--rose)">$0.2M</div><div class="aging-bar"><div class="aging-fill" style="width:0%;background:var(--rose)" data-w="4%"></div></div></div>
+        </div>
+        <div class="aging-summary">
+          <div class="aging-total"><div class="aging-total-label">Total AR</div><div class="aging-total-val" style="color:var(--blue)">$8.6M</div></div>
+          <div class="aging-total"><div class="aging-total-label">DSO</div><div class="aging-total-val" style="color:var(--amber)">42 days</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="panel-header"><span class="panel-title">Compliance & Controls</span><span class="panel-badge badge-green">SOX Ready</span></div>
+      <div class="panel-body">
+        <div class="compliance-grid">
+          <div class="compliance-card"><div class="compliance-card-header"><span class="compliance-name">SOX 404 Controls</span><span class="compliance-status pass">Pass</span></div><div class="compliance-detail">All 42 key controls tested</div><div class="compliance-bar"><div class="compliance-fill" style="width:0%;background:var(--green)" data-w="100%"></div></div></div>
+          <div class="compliance-card"><div class="compliance-card-header"><span class="compliance-name">Revenue ASC 606</span><span class="compliance-status pass">Compliant</span></div><div class="compliance-detail">All contracts reviewed</div><div class="compliance-bar"><div class="compliance-fill" style="width:0%;background:var(--green)" data-w="100%"></div></div></div>
+          <div class="compliance-card"><div class="compliance-card-header"><span class="compliance-name">Lease ASC 842</span><span class="compliance-status warn">Review</span></div><div class="compliance-detail">2 new leases need classification</div><div class="compliance-bar"><div class="compliance-fill" style="width:0%;background:var(--amber)" data-w="75%"></div></div></div>
+          <div class="compliance-card"><div class="compliance-card-header"><span class="compliance-name">Transfer Pricing</span><span class="compliance-status due">Due Apr 15</span></div><div class="compliance-detail">Intercompany documentation</div><div class="compliance-bar"><div class="compliance-fill" style="width:0%;background:var(--rose)" data-w="40%"></div></div></div>
+          <div class="compliance-card"><div class="compliance-card-header"><span class="compliance-name">Audit Prep</span><span class="compliance-status pass">On Track</span></div><div class="compliance-detail">Q1 audit scheduled Apr 21</div><div class="compliance-bar"><div class="compliance-fill" style="width:0%;background:var(--green)" data-w="90%"></div></div></div>
+          <div class="compliance-card"><div class="compliance-card-header"><span class="compliance-name">Sales Tax Nexus</span><span class="compliance-status pass">Filed</span></div><div class="compliance-detail">12 states current</div><div class="compliance-bar"><div class="compliance-fill" style="width:0%;background:var(--green)" data-w="100%"></div></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="copilot">
+    <div class="copilot-header"><div class="copilot-dot"></div><div class="copilot-title">AI Close Assistant</div></div>
+    <div class="copilot-body">
+      <div class="copilot-msg user"><div class="copilot-bubble">Why is the deferred revenue recon showing an exception?</div></div>
+      <div class="copilot-msg ai"><div class="copilot-bubble">The deferred revenue exception stems from a <strong>$142K timing difference</strong> between Stripe subscription billing and the revenue schedule. Specifically, 8 annual contracts billed on March 28 haven't been matched to their amortization schedules yet. The entries will auto-post once the billing system syncs at end-of-day. This is a known timing issue during close and should clear by Day 4.</div></div>
+    </div>
+    <div class="copilot-input"><input type="text" placeholder="Ask about reconciliations, close tasks, or compliance..."><button>Send</button></div>
+  </div>
+</main>
+
+
+` }} />
+    </>
+  );
+}

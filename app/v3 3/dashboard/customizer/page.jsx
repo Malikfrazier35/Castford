@@ -1,0 +1,677 @@
+'use client';
+
+import { useEffect, useRef } from 'react';
+
+export default function V3DashboardCustomizerPage() {
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    // Run inline scripts after mount
+    const scripts = [
+      `// ═══ DATA MODELS ═══
+const ROLES = {
+  cfo: {
+    name: 'Sarah Chen', title: 'VP Finance', greeting: 'CFO Command Center',
+    kpis: [
+      { label: 'Revenue', value: '$4.2M', change: '+12.3%', dir: 'up', icon: '💰' },
+      { label: 'Burn Rate', value: '$890K', change: '-8.1%', dir: 'up', icon: '🔥' },
+      { label: 'Runway', value: '18.2mo', change: '+2.4mo', dir: 'up', icon: '✈️' },
+      { label: 'EBITDA', value: '$1.1M', change: '+34%', dir: 'up', icon: '📊' }
+    ],
+    charts: {
+      left: { title: 'Revenue vs Forecast', color: 'var(--cyan)', bars: [55,68,72,60,85,78,90,82,95,88,70,65] },
+      right: { title: 'Burn Rate', color: 'var(--amber)', bars: [70,65,72,60,68,55,62,58,52,60,55,50] }
+    },
+    table: { title: 'Close Tasks', cols: ['Task','Owner','Status','Due'], colW: '3fr 1.5fr 1fr 1fr',
+      rows: [
+        ['Revenue recognition','Sarah C.','done','Mar 28'],
+        ['AP accruals review','Priya P.','progress','Mar 29'],
+        ['Interco eliminations','James R.','pending','Mar 30'],
+        ['Board deck draft','Sarah C.','pending','Mar 31']
+      ]
+    },
+    sidebar: {
+      dashboard: ['Overview','P&L','Forecast','Scenarios'],
+      platform: ['Multi-Entity','Integrations','AI Copilot','Command Center','Close Tasks','Team','Settings']
+    }
+  },
+  ceo: {
+    name: 'Michael Torres', title: 'CEO', greeting: 'CEO Strategic Dashboard',
+    kpis: [
+      { label: 'ARR', value: '$51.2M', change: '+28%', dir: 'up', icon: '🚀' },
+      { label: 'NDR', value: '118%', change: '+3pp', dir: 'up', icon: '🔄' },
+      { label: 'CAC Payback', value: '11mo', change: '-2mo', dir: 'up', icon: '⏱️' },
+      { label: 'Rule of 40', value: '52', change: '+4pts', dir: 'up', icon: '📈' }
+    ],
+    charts: {
+      left: { title: 'ARR Growth', color: 'var(--purple)', bars: [40,48,55,52,62,68,72,78,85,90,88,95] },
+      right: { title: 'Net Revenue Retention', color: 'var(--green)', bars: [80,82,85,84,88,90,92,91,94,95,93,96] }
+    },
+    table: { title: 'Board Action Items', cols: ['Item','Owner','Priority','Deadline'], colW: '3fr 1.5fr 1fr 1fr',
+      rows: [
+        ['Series C timeline','Michael T.','done','Mar 28'],
+        ['Hiring plan Q2','Sarah C.','progress','Apr 1'],
+        ['Market expansion EU','David K.','pending','Apr 5'],
+        ['Product roadmap review','CTO','pending','Apr 8']
+      ]
+    },
+    sidebar: {
+      dashboard: ['Overview','Growth Metrics','Forecast','Scenarios'],
+      platform: ['Investor Metrics','Team','AI Copilot','Command Center','SOX Audit','Settings']
+    }
+  },
+  controller: {
+    name: 'Priya Patel', title: 'Controller', greeting: 'Controller Operations',
+    kpis: [
+      { label: 'Close Progress', value: '72%', change: 'Day 3 of 5', dir: 'up', icon: '📋' },
+      { label: 'Open Items', value: '8', change: '-3 today', dir: 'up', icon: '📝' },
+      { label: 'Variances', value: '2', change: 'All < 5%', dir: 'up', icon: '⚡' },
+      { label: 'Audit Score', value: '98.2', change: '+0.4', dir: 'up', icon: '🛡️' }
+    ],
+    charts: {
+      left: { title: 'Close Timeline', color: 'var(--green)', bars: [20,35,50,72,0,0,0,0,0,0,0,0] },
+      right: { title: 'Reconciliation Queue', color: 'var(--cyan)', bars: [95,90,88,82,78,70,65,55,48,40,35,28] }
+    },
+    table: { title: 'Reconciliation Queue', cols: ['Account','Status','Variance','Assignee'], colW: '3fr 1fr 1fr 1.5fr',
+      rows: [
+        ['Cash & equivalents','done','$0','Priya P.'],
+        ['Accounts receivable','progress','$12K','James R.'],
+        ['Prepaid expenses','pending','$42K','Priya P.'],
+        ['Deferred revenue','pending','$8K','James R.']
+      ]
+    },
+    sidebar: {
+      dashboard: ['Overview','Close Tasks','Reconciliation','Audit Trail'],
+      platform: ['SOX Audit','Team','AI Copilot','Settings']
+    }
+  }
+};
+
+const TIERS = {
+  starter: {
+    label: 'Starter', price: '$499/mo', color: 'var(--cyan)', colorClass: 'starter',
+    features: ['Overview','P&L','Basic KPIs','Integrations'],
+    banner: 'Core dashboard with P&L, basic KPIs, and integrations',
+    locked: { growth: ['Forecast','Scenarios','AI Copilot','Multi-Entity'], business: ['Command Center','Close Tasks','Team','Investor Metrics','SOX Audit'] }
+  },
+  growth: {
+    label: 'Growth', price: '$1,499/mo', color: 'var(--green)', colorClass: 'growth',
+    features: ['Everything in Starter','Forecast Models','Scenario Planning','AI Copilot','Multi-Entity','Slack Integration'],
+    banner: 'Advanced analytics with forecasting, scenarios, and AI Copilot',
+    locked: { business: ['Command Center','Close Tasks','Team Management','Investor Metrics','SOX Audit','SSO'] }
+  },
+  business: {
+    label: 'Business', price: '$3,999/mo', color: 'var(--purple)', colorClass: 'business',
+    features: ['Everything in Growth','Command Center','Close Tasks','Investor Metrics','SOX Audit Trail','SSO','Custom ML','Team Management'],
+    banner: 'Full enterprise suite with Command Center, SOX audit, SSO, and team management',
+    locked: {}
+  }
+};
+
+const TEMPLATES = [
+  { id: 'arctic', name: 'Arctic Light', desc: 'Clean white with cyan accents. Professional and modern.', tags: [{ label: 'DEFAULT', color: 'var(--cyan)' }, { label: 'LIGHT', color: 'var(--t3)' }], bg: '#F8FAFC', sidebar: '#fff', topbar: '#fff', kpi: '#fff', chart: '#fff', accent: '#06B6D4', text: '#0F172A', border: 'rgba(15,23,42,0.08)' },
+  { id: 'midnight', name: 'Midnight', desc: 'Deep navy with cyan glow. The signature dark theme.', tags: [{ label: 'DARK', color: '#818CF8' }, { label: 'POPULAR', color: '#34D399' }], bg: '#030711', sidebar: '#070D19', topbar: '#030711', kpi: '#0C1323', chart: '#0C1323', accent: '#22D3EE', text: '#F1F5F9', border: 'rgba(30,48,80,0.4)' },
+  { id: 'warm', name: 'Warm Sand', desc: 'Soft cream tones with amber accents. Elegant and calm.', tags: [{ label: 'LIGHT', color: '#D97706' }], bg: '#FFFBF5', sidebar: '#FFF8EE', topbar: '#FFFBF5', kpi: '#fff', chart: '#fff', accent: '#D97706', text: '#1C1410', border: 'rgba(180,140,100,0.12)' },
+  { id: 'forest', name: 'Forest', desc: 'Deep emerald with green data accents. Nature-inspired dark.', tags: [{ label: 'DARK', color: '#34D399' }], bg: '#040D0A', sidebar: '#040D0A', topbar: '#040D0A', kpi: '#0A1A14', chart: '#0A1A14', accent: '#34D399', text: '#D1FAE5', border: 'rgba(52,211,153,0.1)' },
+  { id: 'executive', name: 'Executive', desc: 'Deep violet with purple data accents. Board-ready.', tags: [{ label: 'DARK', color: '#818CF8' }, { label: 'NEW', color: '#FBBF24' }], bg: '#0C0A1A', sidebar: '#0C0A1A', topbar: '#0C0A1A', kpi: '#14102A', chart: '#14102A', accent: '#818CF8', text: '#E2E0F0', border: 'rgba(129,140,248,0.12)' },
+  { id: 'terminal', name: 'Terminal', desc: 'Monochrome black with cyan matrix vibes. For power users.', tags: [{ label: 'DARK', color: '#22D3EE' }, { label: 'HACKER', color: '#34D399' }], bg: '#0a0a0a', sidebar: '#0a0a0a', topbar: '#0a0a0a', kpi: '#111', chart: '#111', accent: '#22D3EE', text: '#E0E0E0', border: 'rgba(34,211,238,0.08)' }
+];
+
+// ═══ STATE ═══
+let currentRole = 'cfo';
+let currentTier = 'growth';
+let currentTemplate = 'arctic';
+
+// ═══ RENDER FUNCTIONS ═══
+function switchRole(role) {
+  currentRole = role;
+  document.querySelectorAll('.role-tab').forEach(t => t.classList.remove('active'));
+  event.target.closest('.role-tab').classList.add('active');
+  render();
+}
+
+function switchTier(tier) {
+  currentTier = tier;
+  document.querySelectorAll('.tier-pill').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tier-pill.' + tier).forEach(t => t.classList.add('active'));
+  document.getElementById('tierBadge').textContent = TIERS[tier].label.toUpperCase();
+  render();
+}
+
+function render() {
+  renderSidebar();
+  renderMain();
+}
+
+function renderSidebar() {
+  const role = ROLES[currentRole];
+  const tier = TIERS[currentTier];
+  const allLocked = [...(tier.locked.growth || []), ...(tier.locked.business || [])];
+
+  let html = \`<div class="sidebar-section"><div class="sidebar-label">Dashboard</div>\`;
+  role.sidebar.dashboard.forEach((item, i) => {
+    const isLocked = allLocked.some(l => item.toLowerCase().includes(l.toLowerCase().split(' ')[0]));
+    const isActive = i === 0;
+    html += \`<div class="sidebar-item\${isActive ? ' active' : ''}" \${isLocked ? 'style="opacity:0.5"' : ''}>
+      <svg viewBox="0 0 16 16" fill="none"><rect x="2" y="2" width="12" height="12" rx="2" stroke="currentColor" stroke-width="1.2"/></svg>
+      \${item}
+      \${isLocked ? \`<span class="lock-badge" style="background:\${tier.locked.growth?.includes(item) ? 'var(--green-bg);color:var(--green)' : 'var(--purple-bg);color:var(--purple)'}">🔒 \${tier.locked.growth?.includes(item) ? 'Growth' : 'Business'}</span>\` : ''}
+    </div>\`;
+  });
+  html += \`</div><div class="sidebar-section"><div class="sidebar-label">Platform</div>\`;
+  role.sidebar.platform.forEach(item => {
+    const isLockedG = (tier.locked.growth || []).some(l => item.toLowerCase().includes(l.toLowerCase().split(' ')[0]));
+    const isLockedB = (tier.locked.business || []).some(l => item.toLowerCase().includes(l.toLowerCase().split(' ')[0]));
+    const isLocked = isLockedG || isLockedB;
+    html += \`<div class="sidebar-item" \${isLocked ? 'style="opacity:0.5"' : ''}>
+      <svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="1.2"/></svg>
+      \${item}
+      \${isLocked ? \`<span class="lock-badge" style="background:\${isLockedG ? 'var(--green-bg);color:var(--green)' : 'var(--purple-bg);color:var(--purple)'}">🔒 \${isLockedG ? 'Growth' : 'Business'}</span>\` : ''}
+    </div>\`;
+  });
+  html += \`</div>\`;
+  document.getElementById('sidebar').innerHTML = html;
+}
+
+function renderMain() {
+  const role = ROLES[currentRole];
+  const tier = TIERS[currentTier];
+
+  let html = '';
+
+  // Feature banner
+  html += \`<div class="feature-banner">
+    <div class="badge \${tier.colorClass}">\${tier.label}</div>
+    <div class="info"><h3>\${tier.banner}</h3><p>\${tier.price} · Billed annually</p></div>
+    <div class="features-list">
+      \${tier.features.slice(0, 5).map(f => \`<span class="feat"><svg viewBox="0 0 16 16" fill="none"><path d="M4 8l3 3 5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>\${f}</span>\`).join('')}
+    </div>
+  </div>\`;
+
+  // Page header
+  html += \`<div class="page-header">
+    <div>
+      <h1>Good morning, \${role.name.split(' ')[0]}</h1>
+      <div class="subtitle"><span class="live-dot"></span> \${role.greeting} · Live sync · March 28, 2026</div>
+    </div>
+  </div>\`;
+
+  // KPIs
+  html += \`<div class="kpi-grid">\`;
+  role.kpis.forEach(k => {
+    html += \`<div class="kpi-card">
+      <div class="kpi-label"><span>\${k.icon}</span> \${k.label.toUpperCase()}</div>
+      <div class="kpi-value">\${k.value}</div>
+      <div class="kpi-change \${k.dir === 'up' ? 'up' : 'down'}">\${k.dir === 'up' ? '↑' : '↓'} \${k.change}</div>
+    </div>\`;
+  });
+  html += \`</div>\`;
+
+  // Charts
+  html += \`<div class="chart-row">\`;
+  ['left','right'].forEach(side => {
+    const c = role.charts[side];
+    html += \`<div class="chart-card">
+      <h3>\${c.title} <span class="live-tag"><span class="live-dot"></span> Live</span></h3>
+      <div class="chart-area">
+        \${c.bars.map(h => \`<div class="chart-bar" style="height:\${h}%;background:\${c.color};opacity:0.7;"></div>\`).join('')}
+      </div>
+    </div>\`;
+  });
+  html += \`</div>\`;
+
+  // Table
+  html += \`<div class="data-table">
+    <div class="data-table-header" style="grid-template-columns:\${role.table.colW}">
+      \${role.table.cols.map(c => \`<span>\${c.toUpperCase()}</span>\`).join('')}
+    </div>\`;
+  role.table.rows.forEach(row => {
+    html += \`<div class="data-table-row" style="grid-template-columns:\${role.table.colW}">
+      <span style="font-weight:600">\${row[0]}</span>
+      <span>\${row[1]}</span>
+      <span><span class="status-badge status-\${row[2]}">\${row[2].toUpperCase()}</span></span>
+      <span style="color:var(--t3)">\${row[3]}</span>
+    </div>\`;
+  });
+  html += \`</div>\`;
+
+  // AI Insights (Growth+ only)
+  if (currentTier !== 'starter') {
+    html += \`<div style="margin-top:24px"><h3 style="font-size:14px;font-weight:700;margin-bottom:12px;display:flex;align-items:center;gap:6px;">
+      <span style="font-size:16px">✨</span> AI Copilot Insights</h3>
+    <div class="ai-strip">
+      <div class="ai-card">
+        <div class="ai-card-header" style="color:var(--amber);">⚡ VARIANCE ALERT</div>
+        <p>Marketing OPEX is <strong>$67K over budget</strong> — caused by Salesforce annual renewal. Auto-reclassified to prepaid.</p>
+      </div>
+      <div class="ai-card">
+        <div class="ai-card-header" style="color:var(--green);">📈 FORECAST</div>
+        <p>Revenue trending <strong>7.7% above</strong> Q1 forecast. Recommend updating board deck projections.</p>
+      </div>
+      <div class="ai-card">
+        <div class="ai-card-header" style="color:var(--cyan);">✈️ RUNWAY</div>
+        <p>Cash runway extended to <strong>18.2 months</strong> (+2.4mo) after updated headcount plan.</p>
+      </div>
+    </div></div>\`;
+  } else {
+    // Locked AI section for Starter
+    html += \`<div style="position:relative;margin-top:24px;border-radius:var(--radius);overflow:hidden;min-height:120px;border:1px solid var(--border);">
+      <div style="padding:20px;filter:blur(3px);opacity:0.4;">
+        <div class="ai-strip">
+          <div class="ai-card"><div class="ai-card-header">⚡ VARIANCE</div><p>Marketing OPEX alert...</p></div>
+          <div class="ai-card"><div class="ai-card-header">📈 FORECAST</div><p>Revenue trending...</p></div>
+          <div class="ai-card"><div class="ai-card-header">✈️ RUNWAY</div><p>Cash runway...</p></div>
+        </div>
+      </div>
+      <div class="lock-overlay">
+        <div class="lock-icon"><svg viewBox="0 0 20 20" fill="none"><rect x="4" y="9" width="12" height="8" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M7 9V6a3 3 0 016 0v3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+        <div class="lock-text">AI Copilot Insights</div>
+        <div class="lock-sub">Available on Growth plan and above</div>
+        <button class="lock-btn" style="background:var(--green);" onclick="switchTier('growth')">Upgrade to Growth · $1,499/mo</button>
+      </div>
+    </div>\`;
+  }
+
+  // Team section (Business only)
+  if (currentTier === 'business') {
+    html += \`<div style="margin-top:24px"><h3 style="font-size:14px;font-weight:700;margin-bottom:12px;">Team Active</h3>
+    <div class="team-row">
+      <div class="team-card"><div class="team-avatar" style="background:linear-gradient(135deg,#06B6D4,#0891B2);"></div><div class="team-name">Sarah C.</div><div class="team-role">CFO</div></div>
+      <div class="team-card"><div class="team-avatar" style="background:linear-gradient(135deg,#059669,#10B981);"></div><div class="team-name">James R.</div><div class="team-role">FP&A</div></div>
+      <div class="team-card"><div class="team-avatar" style="background:linear-gradient(135deg,#D97706,#F59E0B);"></div><div class="team-name">Priya P.</div><div class="team-role">Controller</div></div>
+      <div class="team-card"><div class="team-avatar" style="background:linear-gradient(135deg,#7C3AED,#8B5CF6);"></div><div class="team-name">David K.</div><div class="team-role">RevOps</div></div>
+    </div></div>\`;
+  } else {
+    // Locked team for non-Business
+    html += \`<div style="position:relative;margin-top:24px;border-radius:var(--radius);overflow:hidden;min-height:100px;border:1px solid var(--border);">
+      <div style="padding:20px;filter:blur(3px);opacity:0.4;">
+        <div class="team-row">
+          <div class="team-card"><div class="team-avatar" style="background:#ccc;"></div><div class="team-name">Team</div></div>
+          <div class="team-card"><div class="team-avatar" style="background:#ccc;"></div><div class="team-name">Team</div></div>
+          <div class="team-card"><div class="team-avatar" style="background:#ccc;"></div><div class="team-name">Team</div></div>
+          <div class="team-card"><div class="team-avatar" style="background:#ccc;"></div><div class="team-name">Team</div></div>
+        </div>
+      </div>
+      <div class="lock-overlay">
+        <div class="lock-icon"><svg viewBox="0 0 20 20" fill="none"><rect x="4" y="9" width="12" height="8" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M7 9V6a3 3 0 016 0v3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+        <div class="lock-text">Team Management</div>
+        <div class="lock-sub">Available on Business plan</div>
+        <button class="lock-btn" style="background:var(--purple);" onclick="switchTier('business')">Upgrade to Business · $3,999/mo</button>
+      </div>
+    </div>\`;
+  }
+
+  // Bottom padding for customize bar
+  html += \`<div style="height:80px;"></div>\`;
+
+  document.getElementById('mainContent').innerHTML = html;
+}
+
+// ═══ TEMPLATE MODAL ═══
+function openTemplateModal() {
+  document.getElementById('templateModal').classList.add('open');
+  renderTemplateGrid();
+}
+function closeTemplateModal() {
+  document.getElementById('templateModal').classList.remove('open');
+}
+document.getElementById('templateModal').addEventListener('click', (e) => {
+  if (e.target === e.currentTarget) closeTemplateModal();
+});
+
+function renderTemplateGrid() {
+  let html = '';
+  TEMPLATES.forEach(t => {
+    const isSelected = t.id === currentTemplate;
+    html += \`<div class="tpl-card \${isSelected ? 'selected' : ''}" onclick="selectTemplate('\${t.id}')">
+      <div class="tpl-preview" style="background:\${t.bg};">
+        <div class="mini-dash">
+          <div class="mini-sidebar" style="background:\${t.sidebar};border-color:\${t.border};">
+            <div class="mini-logo" style="background:linear-gradient(135deg,\${t.accent},#7C3AED);"></div>
+            <div class="mini-dot long" style="background:\${t.accent};"></div>
+            <div class="mini-dot" style="background:\${t.border};"></div>
+            <div class="mini-dot" style="background:\${t.border};"></div>
+            <div class="mini-dot" style="background:\${t.border};"></div>
+          </div>
+          <div class="mini-topbar" style="background:\${t.topbar};border-color:\${t.border};">
+            <div class="mini-title" style="color:\${t.text};">Command Center</div>
+          </div>
+          <div class="mini-content" style="background:\${t.bg};grid-template-rows:auto auto 1fr;">
+            <div class="mini-kpis">
+              \${[1,2,3,4].map(() => \`<div class="mini-kpi" style="background:\${t.kpi};border-color:\${t.border};">
+                <div class="mini-kpi-label mono" style="color:\${t.accent}40;">KPI</div>
+                <div class="mini-kpi-val" style="color:\${t.text};">$4.2M</div>
+              </div>\`).join('')}
+            </div>
+            <div class="mini-chart" style="background:\${t.chart};border-color:\${t.border};">
+              \${[40,55,65,50,72,60,80,68,75,85,70,90].map(h => \`<div class="mini-bar" style="height:\${h}%;background:\${t.accent};opacity:0.5;"></div>\`).join('')}
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="tpl-info">
+        <div style="display:flex;gap:4px;margin-bottom:6px;">
+          \${t.tags.map(tag => \`<span class="tpl-tag" style="color:\${tag.color};background:\${tag.color}10;border:1px solid \${tag.color}25;">\${tag.label}</span>\`).join('')}
+        </div>
+        <h4>\${t.name}</h4>
+        <p>\${t.desc}</p>
+      </div>
+    </div>\`;
+  });
+  document.getElementById('templateGrid').innerHTML = html;
+}
+
+function selectTemplate(id) {
+  currentTemplate = id;
+  const t = TEMPLATES.find(x => x.id === id);
+  // Update swatches
+  document.querySelectorAll('.cbar-swatch').forEach(s => s.classList.remove('active'));
+  // Visual feedback
+  renderTemplateGrid();
+  // In production this would apply the full theme — here we show the selection
+  document.getElementById('templateModal').querySelector('.modal-header p').textContent = \`Selected: \${t.name} — \${t.desc}\`;
+}
+
+// ═══ THEME + LAYOUT (customize bar actions) ═══
+function setTheme(theme) {
+  currentTemplate = theme === 'light' ? 'arctic' : theme === 'dark' ? 'midnight' : theme;
+  document.querySelectorAll('.cbar-swatch').forEach(s => s.classList.remove('active'));
+  event.target.classList.add('active');
+  // In production this would swap CSS vars globally
+}
+
+function setLayout(layout) {
+  document.querySelectorAll('.cbar-btn').forEach(b => b.classList.remove('active'));
+  event.target.closest('.cbar-btn').classList.add('active');
+  // In production this would toggle grid vs compact layout
+}
+
+// ═══ INIT ═══
+render();`
+    ];
+    scripts.forEach(code => {
+      try { new Function(code)(); } catch(e) { console.warn('Script error:', e); }
+    });
+  }, []);
+
+  return (
+    <>
+      <style dangerouslySetInnerHTML={{ __html: `
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #F8FAFC; --surface: #FFFFFF; --card: #FFFFFF; --elevated: #F1F5F9;
+  --border: rgba(15,23,42,0.08); --border2: rgba(15,23,42,0.12);
+  --t1: #0F172A; --t2: #334155; --t3: #64748B; --t4: #94A3B8;
+  --cyan: #06B6D4; --cyan-bg: rgba(6,182,212,0.06); --cyan-border: rgba(6,182,212,0.15);
+  --green: #059669; --green-bg: rgba(5,150,105,0.06);
+  --purple: #7C3AED; --purple-bg: rgba(124,58,237,0.06);
+  --amber: #D97706; --amber-bg: rgba(217,119,6,0.06);
+  --red: #DC2626; --red-bg: rgba(220,38,38,0.06);
+  --radius: 14px; --radius-sm: 10px;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.02);
+  --shadow-md: 0 4px 16px rgba(0,0,0,0.06), 0 2px 4px rgba(0,0,0,0.03);
+  --shadow-lg: 0 12px 40px rgba(0,0,0,0.08), 0 4px 12px rgba(0,0,0,0.04);
+  --ease: cubic-bezier(0.25,0.46,0.45,0.94);
+}
+body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg); color: var(--t1); -webkit-font-smoothing: antialiased; min-height: 100vh; }
+.mono { font-family: 'JetBrains Mono', monospace; }
+
+/* ═══ TOP BAR ═══ */
+.topbar { position: sticky; top: 0; z-index: 100; background: rgba(255,255,255,0.85); backdrop-filter: blur(20px) saturate(1.4); border-bottom: 1px solid var(--border); padding: 0 24px; height: 56px; display: flex; align-items: center; gap: 16px; }
+.topbar-logo { display: flex; align-items: center; gap: 10px; }
+.topbar-logo svg { width: 28px; height: 28px; }
+.topbar-logo span { font-size: 17px; font-weight: 800; letter-spacing: -0.02em; color: var(--t1); }
+.topbar-logo small { font-size: 11px; font-weight: 600; color: var(--cyan); background: var(--cyan-bg); border: 1px solid var(--cyan-border); padding: 2px 8px; border-radius: 6px; margin-left: 4px; }
+
+/* Role + Tier tabs in topbar */
+.topbar-center { display: flex; align-items: center; gap: 8px; margin-left: auto; }
+.role-tab { padding: 6px 16px; border-radius: 8px; font-size: 12px; font-weight: 600; border: 1px solid var(--border); background: transparent; color: var(--t3); cursor: pointer; transition: all 0.2s var(--ease); display: flex; align-items: center; gap: 6px; }
+.role-tab:hover { border-color: var(--cyan-border); color: var(--t2); }
+.role-tab.active { background: var(--cyan); border-color: var(--cyan); color: #fff; }
+.role-tab .dot { width: 6px; height: 6px; border-radius: 50%; }
+
+.topbar-right { display: flex; align-items: center; gap: 8px; margin-left: 16px; }
+.tier-pill { padding: 5px 12px; border-radius: 20px; font-size: 11px; font-weight: 700; cursor: pointer; border: 1px solid transparent; transition: all 0.2s; text-transform: uppercase; letter-spacing: 0.03em; }
+.tier-pill.starter { background: rgba(6,182,212,0.08); color: var(--cyan); border-color: rgba(6,182,212,0.15); }
+.tier-pill.growth { background: rgba(5,150,105,0.08); color: var(--green); border-color: rgba(5,150,105,0.15); }
+.tier-pill.business { background: rgba(124,58,237,0.08); color: var(--purple); border-color: rgba(124,58,237,0.15); }
+.tier-pill.active { box-shadow: 0 0 0 2px currentColor; }
+
+/* ═══ CUSTOMIZATION TOOLBAR (the floating bar) ═══ */
+.customize-bar { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); z-index: 200; background: rgba(15,23,42,0.92); backdrop-filter: blur(20px) saturate(1.5); border-radius: 16px; padding: 10px 16px; display: flex; align-items: center; gap: 12px; box-shadow: 0 8px 40px rgba(0,0,0,0.2), 0 0 0 1px rgba(255,255,255,0.06); color: #fff; animation: slideUp 0.5s var(--ease); }
+@keyframes slideUp { from { transform: translateX(-50%) translateY(30px); opacity: 0; } to { transform: translateX(-50%) translateY(0); opacity: 1; } }
+.cbar-divider { width: 1px; height: 28px; background: rgba(255,255,255,0.1); }
+.cbar-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: rgba(255,255,255,0.4); white-space: nowrap; }
+.cbar-btn { padding: 7px 14px; border-radius: 10px; font-size: 12px; font-weight: 600; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.8); cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 6px; white-space: nowrap; }
+.cbar-btn:hover { background: rgba(255,255,255,0.12); border-color: rgba(255,255,255,0.2); color: #fff; }
+.cbar-btn.active { background: rgba(6,182,212,0.2); border-color: rgba(6,182,212,0.4); color: #67E8F9; }
+.cbar-btn svg { width: 14px; height: 14px; flex-shrink: 0; }
+.cbar-swatch { width: 20px; height: 20px; border-radius: 6px; border: 2px solid transparent; cursor: pointer; transition: all 0.2s; }
+.cbar-swatch:hover, .cbar-swatch.active { border-color: #fff; transform: scale(1.15); }
+
+/* Template picker button */
+.cbar-template-btn { padding: 7px 16px; border-radius: 10px; font-size: 12px; font-weight: 700; border: none; background: linear-gradient(135deg, #06B6D4, #7C3AED); color: #fff; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 6px; }
+.cbar-template-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(6,182,212,0.3); }
+
+/* ═══ TEMPLATE PICKER MODAL ═══ */
+.modal-overlay { position: fixed; inset: 0; background: rgba(15,23,42,0.6); backdrop-filter: blur(8px); z-index: 300; display: none; align-items: center; justify-content: center; animation: fadeIn 0.2s; }
+.modal-overlay.open { display: flex; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+.modal { background: #fff; border-radius: 20px; width: 90%; max-width: 960px; max-height: 85vh; overflow: hidden; box-shadow: 0 24px 80px rgba(0,0,0,0.15); animation: modalIn 0.3s var(--ease); }
+@keyframes modalIn { from { transform: translateY(20px) scale(0.98); opacity: 0; } to { transform: none; opacity: 1; } }
+.modal-header { padding: 24px 28px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+.modal-header h2 { font-size: 20px; font-weight: 800; letter-spacing: -0.02em; }
+.modal-header p { font-size: 13px; color: var(--t3); margin-top: 2px; }
+.modal-close { width: 32px; height: 32px; border-radius: 8px; border: 1px solid var(--border); background: transparent; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; color: var(--t3); font-size: 16px; }
+.modal-close:hover { background: var(--elevated); color: var(--t1); }
+.modal-body { padding: 24px 28px 28px; overflow-y: auto; max-height: calc(85vh - 90px); }
+.template-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+.tpl-card { border-radius: 14px; border: 2px solid var(--border); overflow: hidden; cursor: pointer; transition: all 0.3s var(--ease); position: relative; }
+.tpl-card:hover { border-color: var(--cyan); transform: translateY(-3px); box-shadow: var(--shadow-lg); }
+.tpl-card.selected { border-color: var(--cyan); box-shadow: 0 0 0 3px rgba(6,182,212,0.15); }
+.tpl-card.selected::after { content: '✓'; position: absolute; top: 10px; right: 10px; width: 22px; height: 22px; border-radius: 50%; background: var(--cyan); color: #fff; font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center; z-index: 5; }
+.tpl-preview { height: 160px; position: relative; overflow: hidden; }
+.tpl-info { padding: 14px 16px; }
+.tpl-info h4 { font-size: 14px; font-weight: 700; margin-bottom: 2px; }
+.tpl-info p { font-size: 11px; color: var(--t3); line-height: 1.4; }
+.tpl-tag { display: inline-block; font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; padding: 2px 8px; border-radius: 4px; margin-top: 6px; }
+
+/* ═══ LAYOUT ═══ */
+.layout { display: flex; min-height: calc(100vh - 56px); }
+.sidebar { width: 220px; border-right: 1px solid var(--border); background: var(--surface); padding: 20px 0; flex-shrink: 0; }
+.sidebar-section { padding: 0 16px; margin-bottom: 20px; }
+.sidebar-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--t4); margin-bottom: 8px; padding: 0 8px; }
+.sidebar-item { display: flex; align-items: center; gap: 10px; padding: 8px 12px; border-radius: 8px; font-size: 13px; font-weight: 500; color: var(--t2); cursor: pointer; transition: all 0.15s; margin-bottom: 2px; position: relative; }
+.sidebar-item:hover { background: var(--elevated); color: var(--t1); }
+.sidebar-item.active { background: var(--cyan-bg); color: var(--cyan); font-weight: 600; }
+.sidebar-item.active::before { content: ''; position: absolute; left: 0; top: 6px; bottom: 6px; width: 3px; border-radius: 0 2px 2px 0; background: var(--cyan); }
+.sidebar-item svg { width: 16px; height: 16px; flex-shrink: 0; }
+.sidebar-item .lock-badge { font-size: 8px; font-weight: 700; padding: 1px 6px; border-radius: 4px; margin-left: auto; text-transform: uppercase; letter-spacing: 0.04em; }
+
+/* ═══ MAIN CONTENT ═══ */
+.main { flex: 1; padding: 24px; min-width: 0; }
+.page-header { margin-bottom: 24px; display: flex; align-items: center; justify-content: space-between; }
+.page-header h1 { font-size: 22px; font-weight: 800; letter-spacing: -0.02em; }
+.page-header .subtitle { font-size: 13px; color: var(--t3); display: flex; align-items: center; gap: 8px; margin-top: 2px; }
+.live-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); box-shadow: 0 0 8px rgba(5,150,105,0.4); animation: livePulse 2s ease-in-out infinite; }
+@keyframes livePulse { 0%,100% { opacity: 0.6; } 50% { opacity: 1; } }
+
+/* KPI Grid */
+.kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
+.kpi-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; transition: all 0.3s var(--ease); }
+.kpi-card:hover { border-color: var(--border2); box-shadow: var(--shadow-md); }
+.kpi-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--t4); margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+.kpi-label svg { width: 12px; height: 12px; }
+.kpi-value { font-size: 28px; font-weight: 800; letter-spacing: -0.02em; }
+.kpi-change { font-size: 11px; font-weight: 600; margin-top: 4px; display: flex; align-items: center; gap: 4px; }
+.kpi-change.up { color: var(--green); }
+.kpi-change.down { color: var(--red); }
+
+/* Charts */
+.chart-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px; }
+.chart-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; }
+.chart-card h3 { font-size: 14px; font-weight: 700; margin-bottom: 16px; display: flex; align-items: center; justify-content: space-between; }
+.chart-card h3 .live-tag { font-size: 10px; font-weight: 700; color: var(--green); display: flex; align-items: center; gap: 4px; }
+.chart-area { height: 140px; display: flex; align-items: flex-end; gap: 4px; padding-top: 8px; }
+.chart-bar { flex: 1; border-radius: 4px 4px 0 0; transition: height 0.5s var(--ease); min-width: 8px; position: relative; }
+.chart-bar:hover { opacity: 0.8; }
+
+/* Table */
+.data-table { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+.data-table-header { display: grid; padding: 12px 20px; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--t4); border-bottom: 1px solid var(--border); background: var(--elevated); }
+.data-table-row { display: grid; padding: 12px 20px; font-size: 13px; border-bottom: 1px solid var(--border); transition: background 0.15s; }
+.data-table-row:last-child { border-bottom: none; }
+.data-table-row:hover { background: var(--elevated); }
+.status-badge { font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 4px; text-transform: uppercase; letter-spacing: 0.03em; }
+.status-done { background: var(--green-bg); color: var(--green); }
+.status-progress { background: var(--cyan-bg); color: var(--cyan); }
+.status-pending { background: var(--amber-bg); color: var(--amber); }
+.status-active { background: var(--green-bg); color: var(--green); }
+.status-refresh { background: var(--amber-bg); color: var(--amber); }
+
+/* Lock Overlay */
+.lock-overlay { position: absolute; inset: 0; background: rgba(248,250,252,0.85); backdrop-filter: blur(6px); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 10; border-radius: inherit; }
+.lock-icon { width: 48px; height: 48px; border-radius: 14px; background: var(--elevated); display: flex; align-items: center; justify-content: center; margin-bottom: 12px; }
+.lock-icon svg { width: 20px; height: 20px; color: var(--t3); }
+.lock-text { font-size: 14px; font-weight: 700; color: var(--t1); margin-bottom: 4px; }
+.lock-sub { font-size: 12px; color: var(--t3); margin-bottom: 12px; }
+.lock-btn { padding: 8px 20px; border-radius: 8px; font-size: 12px; font-weight: 700; border: none; color: #fff; cursor: pointer; transition: all 0.2s; }
+
+/* AI Insights strip */
+.ai-strip { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 24px; }
+.ai-card { padding: 16px; border-radius: var(--radius-sm); border: 1px solid var(--border); background: var(--card); }
+.ai-card-header { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px; display: flex; align-items: center; gap: 5px; }
+.ai-card p { font-size: 12px; color: var(--t2); line-height: 1.5; }
+.ai-card strong { color: var(--t1); font-weight: 700; }
+
+/* Team section */
+.team-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 24px; }
+.team-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 16px; text-align: center; transition: all 0.2s; }
+.team-card:hover { box-shadow: var(--shadow-md); }
+.team-avatar { width: 40px; height: 40px; border-radius: 50%; margin: 0 auto 8px; }
+.team-name { font-size: 13px; font-weight: 700; }
+.team-role { font-size: 11px; color: var(--t3); }
+
+/* Feature banner */
+.feature-banner { background: linear-gradient(135deg, rgba(6,182,212,0.06), rgba(124,58,237,0.06)); border: 1px solid rgba(6,182,212,0.12); border-radius: var(--radius); padding: 16px 20px; margin-bottom: 24px; display: flex; align-items: center; gap: 16px; }
+.feature-banner .badge { font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.04em; padding: 6px 14px; border-radius: 8px; white-space: nowrap; }
+.feature-banner .badge.starter { background: var(--cyan-bg); color: var(--cyan); }
+.feature-banner .badge.growth { background: var(--green-bg); color: var(--green); }
+.feature-banner .badge.business { background: var(--purple-bg); color: var(--purple); }
+.feature-banner .info h3 { font-size: 14px; font-weight: 700; }
+.feature-banner .info p { font-size: 12px; color: var(--t3); }
+.feature-banner .features-list { display: flex; gap: 12px; flex-wrap: wrap; margin-left: auto; }
+.feature-banner .feat { font-size: 11px; color: var(--t2); display: flex; align-items: center; gap: 4px; }
+.feature-banner .feat svg { width: 12px; height: 12px; color: var(--green); }
+
+/* ═══ MINI TEMPLATE PREVIEWS (inside modal) ═══ */
+.mini-dash { position: relative; width: 100%; height: 100%; }
+.mini-sidebar { position: absolute; left: 0; top: 0; bottom: 0; width: 36px; border-right: 1px solid; display: flex; flex-direction: column; align-items: center; padding-top: 10px; gap: 6px; }
+.mini-logo { width: 20px; height: 20px; border-radius: 5px; margin-bottom: 6px; }
+.mini-dot { width: 6px; height: 6px; border-radius: 3px; }
+.mini-dot.long { width: 16px; border-radius: 3px; }
+.mini-topbar { position: absolute; top: 0; left: 36px; right: 0; height: 28px; border-bottom: 1px solid; display: flex; align-items: center; padding: 0 10px; }
+.mini-title { font-size: 8px; font-weight: 700; }
+.mini-content { position: absolute; top: 28px; left: 36px; right: 0; bottom: 0; padding: 8px; display: grid; gap: 4px; }
+.mini-kpis { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; }
+.mini-kpi { border-radius: 5px; border: 1px solid; padding: 5px; }
+.mini-kpi-label { font-size: 5px; text-transform: uppercase; letter-spacing: 0.06em; }
+.mini-kpi-val { font-size: 10px; font-weight: 800; }
+.mini-chart { border-radius: 5px; border: 1px solid; height: 50px; display: flex; align-items: flex-end; gap: 2px; padding: 4px 6px; }
+.mini-bar { flex: 1; border-radius: 2px 2px 0 0; }
+
+/* Responsive */
+@media (max-width: 1100px) { .kpi-grid { grid-template-columns: repeat(2, 1fr); } .template-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 768px) { .sidebar { display: none; } .topbar-center { display: none; } .customize-bar { width: 90%; } }
+` }} />
+      <div ref={containerRef} dangerouslySetInnerHTML={{ __html: `
+
+<!-- ═══ TOP BAR ═══ -->
+<div class="topbar">
+  <div class="topbar-logo">
+    <svg viewBox="0 0 32 32" fill="none"><defs><linearGradient id="lg" x1="0" y1="0" x2="32" y2="32"><stop stop-color="#06B6D4"/><stop offset="1" stop-color="#7C3AED"/></linearGradient></defs><rect width="32" height="32" rx="8" fill="url(#lg)"/><path d="M8 12h16M8 16h12M8 20h8" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>
+    <span>Finance<span style="color:var(--cyan)">OS</span></span>
+    <small id="tierBadge">GROWTH</small>
+  </div>
+
+  <!-- Role Tabs -->
+  <div class="topbar-center">
+    <button class="role-tab active" onclick="switchRole('cfo')"><span class="dot" style="background:#06B6D4"></span> CFO</button>
+    <button class="role-tab" onclick="switchRole('ceo')"><span class="dot" style="background:#7C3AED"></span> CEO</button>
+    <button class="role-tab" onclick="switchRole('controller')"><span class="dot" style="background:#059669"></span> Controller</button>
+  </div>
+
+  <!-- Tier Tabs -->
+  <div class="topbar-right">
+    <span class="tier-pill starter" onclick="switchTier('starter')">Starter</span>
+    <span class="tier-pill growth active" onclick="switchTier('growth')">Growth</span>
+    <span class="tier-pill business" onclick="switchTier('business')">Business</span>
+  </div>
+</div>
+
+<!-- ═══ LAYOUT ═══ -->
+<div class="layout">
+  <!-- Sidebar (dynamic) -->
+  <div class="sidebar" id="sidebar"></div>
+
+  <!-- Main Content (dynamic) -->
+  <div class="main" id="mainContent"></div>
+</div>
+
+<!-- ═══ CUSTOMIZATION TOOLBAR (always visible on every dashboard) ═══ -->
+<div class="customize-bar" id="customizeBar">
+  <svg viewBox="0 0 16 16" fill="none" style="width:16px;height:16px;flex-shrink:0;"><circle cx="8" cy="8" r="7" stroke="#67E8F9" stroke-width="1.5"/><path d="M8 5v6M5 8h6" stroke="#67E8F9" stroke-width="1.5" stroke-linecap="round"/></svg>
+  <span style="font-size:12px;font-weight:700;white-space:nowrap;">Customize</span>
+  <div class="cbar-divider"></div>
+
+  <!-- Theme swatches -->
+  <span class="cbar-label">Theme</span>
+  <div class="cbar-swatch active" style="background:linear-gradient(135deg,#F8FAFC,#E2E8F0);" title="Arctic Light" onclick="setTheme('light')"></div>
+  <div class="cbar-swatch" style="background:linear-gradient(135deg,#0F172A,#1E293B);" title="Midnight Dark" onclick="setTheme('dark')"></div>
+  <div class="cbar-swatch" style="background:linear-gradient(135deg,#FFFBF5,#F5E6D3);" title="Warm Sand" onclick="setTheme('warm')"></div>
+  <div class="cbar-swatch" style="background:linear-gradient(135deg,#040D0A,#0D3320);" title="Forest" onclick="setTheme('forest')"></div>
+  <div class="cbar-swatch" style="background:linear-gradient(135deg,#0C0A1A,#1A1040);" title="Executive" onclick="setTheme('executive')"></div>
+
+  <div class="cbar-divider"></div>
+
+  <!-- Layout options -->
+  <span class="cbar-label">Layout</span>
+  <button class="cbar-btn active" onclick="setLayout('default')">
+    <svg viewBox="0 0 16 16" fill="none"><rect x="1" y="1" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.2"/><rect x="9" y="1" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.2"/><rect x="1" y="9" width="14" height="6" rx="1" stroke="currentColor" stroke-width="1.2"/></svg>
+    Grid
+  </button>
+  <button class="cbar-btn" onclick="setLayout('compact')">
+    <svg viewBox="0 0 16 16" fill="none"><rect x="1" y="1" width="14" height="4" rx="1" stroke="currentColor" stroke-width="1.2"/><rect x="1" y="7" width="14" height="4" rx="1" stroke="currentColor" stroke-width="1.2"/><rect x="1" y="13" width="14" height="2" rx="1" stroke="currentColor" stroke-width="1.2"/></svg>
+    Compact
+  </button>
+
+  <div class="cbar-divider"></div>
+
+  <!-- Template Picker trigger -->
+  <button class="cbar-template-btn" onclick="openTemplateModal()">
+    <svg viewBox="0 0 16 16" fill="none"><rect x="1" y="1" width="6" height="6" rx="2" stroke="currentColor" stroke-width="1.3"/><rect x="9" y="1" width="6" height="6" rx="2" stroke="currentColor" stroke-width="1.3"/><rect x="1" y="9" width="6" height="6" rx="2" stroke="currentColor" stroke-width="1.3"/><rect x="9" y="9" width="6" height="6" rx="2" stroke="currentColor" stroke-width="1.3"/></svg>
+    Templates
+  </button>
+</div>
+
+<!-- ═══ TEMPLATE PICKER MODAL ═══ -->
+<div class="modal-overlay" id="templateModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div>
+        <h2>Pick your dashboard template</h2>
+        <p>Every plan includes full theme customization. Choose a starting point that fits your style.</p>
+      </div>
+      <button class="modal-close" onclick="closeTemplateModal()">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="template-grid" id="templateGrid"></div>
+    </div>
+  </div>
+</div>
+
+
+` }} />
+    </>
+  );
+}

@@ -1,0 +1,665 @@
+'use client';
+
+import { useEffect, useRef } from 'react';
+
+export default function V3CompetitorsPage() {
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    // Run inline scripts after mount
+    const scripts = [
+      `document.addEventListener('DOMContentLoaded',()=>{
+const io=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('vis');io.unobserve(e.target)}})},{threshold:.1});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+});`
+    ];
+    scripts.forEach(code => {
+      try { new Function(code)(); } catch(e) { console.warn('Script error:', e); }
+    });
+  }, []);
+
+  return (
+    <>
+      <style dangerouslySetInnerHTML={{ __html: `
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#F8FAFC;--green:#10B981;--cyan:#22D3EE;--purple:#8B5CF6;--blue:#3B82F6;--amber:#F59E0B;--red:#EF4444;--indigo:#6366F1;--t1:#0F172A;--t2:#334155;--t3:#64748B;--t4:#94A3B8;--border:#E2E8F0;--radius:16px;--font:'DM Sans',system-ui,sans-serif;--mono:'JetBrains Mono',monospace;--ease:cubic-bezier(.16,1,.3,1)}
+body{font-family:var(--font);color:var(--t1);-webkit-font-smoothing:antialiased;background:#fff;overflow-x:hidden}
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
+@keyframes gradShift{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+@keyframes glowPulse{0%,100%{box-shadow:0 0 20px rgba(34,211,238,.1)}50%{box-shadow:0 0 40px rgba(139,92,246,.15)}}
+.reveal{opacity:0;transform:translateY(24px);transition:all .6s var(--ease)}.reveal.vis{opacity:1;transform:none}
+
+/* NAV */
+
+/* ===== NAVIGATION (light) ===== */
+nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,0.88);backdrop-filter:blur(16px) saturate(180%);-webkit-backdrop-filter:blur(16px) saturate(180%);border-bottom:1px solid #F1F5F9}
+.nav-inner{max-width:1200px;margin:0 auto;padding:0 24px;height:60px;display:flex;align-items:center;justify-content:space-between}
+.logo-link{display:flex;align-items:center;gap:8px;font-weight:800;font-size:17px;color:#0F172A;text-decoration:none;letter-spacing:-0.01em}
+.logo-link .ldot{width:9px;height:9px;background:#10B981;border-radius:50%}
+.nav-mid{display:flex;gap:4px;font-size:14px;font-weight:500;align-items:center}
+.nav-mid a{color:#64748B;padding:8px 12px;border-radius:8px;text-decoration:none;transition:color .15s}
+.nav-mid a:hover{color:#0F172A;background:rgba(0,0,0,0.03)}
+.nav-end{display:flex;align-items:center;gap:10px}
+.nav-end a{font-size:14px;font-weight:500;color:#64748B;padding:8px 12px;text-decoration:none;transition:color .15s}
+.nav-end a:hover{color:#0F172A}
+.btn-sub{display:inline-flex;align-items:center;padding:8px 18px;border-radius:8px;font-weight:600;font-size:13px;background:#10B981;color:#fff;text-decoration:none;border:none;cursor:pointer;transition:all .15s}
+.btn-sub:hover{background:#059669;box-shadow:0 2px 12px rgba(16,185,129,0.25)}
+@media(max-width:900px){.nav-mid{display:none}}
+
+
+/* ===== FOOTER (light) ===== */
+footer{background:#F8FAFC;border-top:1px solid #E2E8F0;padding:56px 24px 24px}
+.ft-inner{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:1.5fr repeat(4,1fr);gap:40px;margin-bottom:40px}
+.ft-brand p{font-size:13px;color:#64748B;line-height:1.6;max-width:240px;margin-top:10px}
+.ft-col{display:flex;flex-direction:column;gap:8px}
+.ft-col h5{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;color:#0F172A;margin-bottom:4px}
+.ft-col a{font-size:13px;color:#64748B;text-decoration:none;transition:color .15s}
+.ft-col a:hover{color:#0F172A}
+.ft-bottom{max-width:1200px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;padding-top:20px;border-top:1px solid #E2E8F0;font-size:12px;color:#64748B}
+.ft-bottom a{color:#64748B;text-decoration:none;transition:color .15s}
+.ft-bottom a:hover{color:#0F172A}
+@media(max-width:768px){.ft-inner{grid-template-columns:1fr 1fr;gap:24px}}
+
+
+/* HERO */
+.hero{padding:100px 40px 80px;background:linear-gradient(180deg,#ECFDF5 0%,#fff 80%);text-align:center;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;top:-300px;left:50%;transform:translateX(-50%);width:1000px;height:1000px;border-radius:50%;background:radial-gradient(circle,rgba(16,185,129,.04),transparent 60%);pointer-events:none}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;padding:6px 16px;border-radius:20px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;background:rgba(139,92,246,.06);border:1px solid rgba(139,92,246,.15);color:var(--purple);margin-bottom:20px}
+.hero-badge .dot{width:8px;height:8px;border-radius:50%;background:var(--purple);animation:pulse 2s ease infinite}
+.hero h1{font-size:clamp(36px,5.5vw,56px);font-weight:900;letter-spacing:-.04em;line-height:1.1;margin-bottom:16px;color:#0F172A}
+.hero h1 .accent{background:linear-gradient(135deg,var(--cyan),var(--purple),var(--green),var(--blue));background-size:300% 300%;animation:gradShift 6s ease infinite;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero p{font-size:18px;color:#334155;max-width:620px;margin:0 auto 32px;line-height:1.65}
+.hero-cta{display:inline-flex;gap:12px;flex-wrap:wrap;justify-content:center}
+.hero-cta a{padding:14px 32px;border-radius:12px;font-size:15px;font-weight:700;text-decoration:none;transition:all .25s var(--ease)}
+.hero-cta .cta-primary{background:var(--green);color:#fff}.hero-cta .cta-primary:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(16,185,129,.3)}
+.hero-cta .cta-outline{border:1px solid #E2E8F0;color:#0F172A}.hero-cta .cta-outline:hover{background:#F8FAFC}
+
+/* HERO STATS */
+.hero-stats{display:flex;justify-content:center;gap:48px;margin-top:48px;padding-top:32px;border-top:1px solid #E2E8F0}
+.hero-stat{text-align:center}
+.hero-stat .num{font-size:36px;font-weight:900;font-family:var(--mono);letter-spacing:-.04em;background:linear-gradient(135deg,var(--cyan),var(--green));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero-stat .lbl{font-size:12px;color:#64748B;margin-top:4px}
+
+/* SECTIONS */
+.section{max-width:1200px;margin:0 auto;padding:80px 40px}
+.section-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--green);text-align:center;margin-bottom:12px}
+.section-title{font-size:clamp(28px,3.5vw,42px);font-weight:900;text-align:center;letter-spacing:-.03em;margin-bottom:14px}
+.section-sub{font-size:16px;color:var(--t3);text-align:center;max-width:580px;margin:0 auto 50px;line-height:1.6}
+
+/* COMPARISON TABLE */
+.comp-wrap{overflow-x:auto;border-radius:20px;border:1px solid var(--border);background:#fff;box-shadow:0 4px 30px rgba(0,0,0,.04)}
+table.comp{width:100%;border-collapse:collapse;min-width:960px}
+table.comp thead th{padding:16px 14px;font-size:12px;font-weight:700;text-align:center;border-bottom:2px solid var(--border);background:var(--bg);white-space:nowrap}
+table.comp thead th:first-child{text-align:left;padding-left:24px;width:220px}
+table.comp thead th.hl{background:linear-gradient(135deg,rgba(16,185,129,.06),rgba(34,211,238,.06));border-bottom-color:var(--green);position:relative}
+table.comp thead th.hl::after{content:'RECOMMENDED';position:absolute;top:-1px;left:50%;transform:translateX(-50%);background:var(--green);color:#fff;font-size:8px;font-weight:800;letter-spacing:.06em;padding:3px 10px;border-radius:0 0 6px 6px}
+table.comp tbody td{padding:14px;font-size:13px;font-weight:500;text-align:center;border-bottom:1px solid var(--border);color:var(--t2)}
+table.comp tbody td:first-child{text-align:left;padding-left:24px;font-weight:700;color:var(--t1)}
+table.comp tbody td.hl{background:rgba(16,185,129,.02)}
+table.comp tbody tr:last-child td{border-bottom:none}
+table.comp tbody tr:hover{background:rgba(16,185,129,.015)}
+.check{color:var(--green);font-weight:800;font-size:16px}.cross{color:var(--red);font-weight:800;font-size:16px;opacity:.5}.partial{color:var(--amber);font-weight:700;font-size:11px}
+.imp-time{font-family:var(--mono);font-size:12px;font-weight:600}
+.price-cell{font-family:var(--mono);font-size:12px;font-weight:700}.price-cell.green{color:var(--green)}
+
+/* REVIEW SCORES */
+.review-section{background:var(--bg);padding:80px 40px}
+.review-grid{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+.review-card{background:#fff;border:1px solid var(--border);border-radius:20px;padding:32px;text-align:center;transition:all .3s var(--ease)}
+.review-card:hover{transform:translateY(-4px);box-shadow:0 16px 50px rgba(0,0,0,.06)}
+.review-card.featured{border-color:var(--green);background:linear-gradient(135deg,rgba(16,185,129,.02),rgba(34,211,238,.02))}
+.review-logo{font-size:24px;font-weight:900;letter-spacing:-.03em;margin-bottom:8px}
+.review-source{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--t4);margin-bottom:16px}
+.review-score{font-size:52px;font-weight:900;font-family:var(--mono);letter-spacing:-.04em;line-height:1}
+.review-card.featured .review-score{color:var(--green)}
+.review-max{font-size:18px;color:var(--t4);font-weight:500}
+.review-stars{display:flex;justify-content:center;gap:4px;margin-top:12px}
+.review-stars .star{width:20px;height:20px;color:var(--amber)}
+.review-count{font-size:12px;color:var(--t3);margin-top:8px}
+.review-detail{font-size:12px;color:var(--t3);margin-top:4px}
+
+/* HEAD TO HEAD DEEP DIVE */
+.h2h-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+.h2h-card{background:#fff;border:1px solid var(--border);border-radius:20px;padding:32px;transition:all .3s var(--ease);overflow:hidden;position:relative}
+.h2h-card:hover{transform:translateY(-4px);box-shadow:0 16px 50px rgba(0,0,0,.06)}
+.h2h-vs{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--purple);margin-bottom:8px}
+.h2h-card h3{font-size:20px;font-weight:900;letter-spacing:-.02em;margin-bottom:6px}
+.h2h-card .h2h-tagline{font-size:13px;color:var(--t3);font-style:italic;margin-bottom:20px;line-height:1.5}
+.h2h-section{margin-bottom:16px}
+.h2h-section-title{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.h2h-section-title.their{color:var(--t4)}.h2h-section-title.ours{color:var(--green)}
+.h2h-list{list-style:none;display:flex;flex-direction:column;gap:6px}
+.h2h-list li{display:flex;align-items:flex-start;gap:8px;font-size:12px;font-weight:500;color:var(--t2);line-height:1.5}
+.h2h-list li svg{width:14px;height:14px;flex-shrink:0;margin-top:2px}
+.h2h-list.their li svg{stroke:var(--t4);fill:none;stroke-width:2}.h2h-list.ours li svg{stroke:var(--green);fill:none;stroke-width:2.5}
+.h2h-verdict{margin-top:20px;padding:14px 18px;border-radius:12px;background:rgba(16,185,129,.04);border:1px solid rgba(16,185,129,.1);font-size:12px;font-weight:600;color:var(--t2);line-height:1.6}
+.h2h-verdict strong{color:var(--green)}
+
+/* AI COMPARISON - New Section */
+.ai-compare{background:#030711;color:#fff;padding:80px 40px}
+.ai-grid{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:start}
+.ai-col{padding:32px;border-radius:20px}
+.ai-col.them{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06)}
+.ai-col.us{background:linear-gradient(135deg,rgba(16,185,129,.08),rgba(34,211,238,.08));border:1px solid rgba(16,185,129,.15)}
+.ai-col-header{display:flex;align-items:center;gap:12px;margin-bottom:24px}
+.ai-col-badge{padding:4px 12px;border-radius:8px;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.04em}
+.ai-col.them .ai-col-badge{background:rgba(255,255,255,.06);color:rgba(255,255,255,.5)}
+.ai-col.us .ai-col-badge{background:rgba(16,185,129,.15);color:var(--green)}
+.ai-col h3{font-size:22px;font-weight:900;letter-spacing:-.02em}
+.ai-col.them h3{color:rgba(255,255,255,.6)}.ai-col.us h3{color:#fff}
+.ai-feature{padding:16px 0;border-bottom:1px solid rgba(255,255,255,.06)}
+.ai-feature:last-child{border:none}
+.ai-feature-name{font-size:13px;font-weight:700;margin-bottom:4px}
+.ai-col.them .ai-feature-name{color:rgba(255,255,255,.5)}.ai-col.us .ai-feature-name{color:var(--cyan)}
+.ai-feature-desc{font-size:12px;color:rgba(255,255,255,.3);line-height:1.5}
+.ai-col.us .ai-feature-desc{color:rgba(255,255,255,.45)}
+
+/* PRICING INTEL */
+.price-intel{background:var(--bg);padding:80px 40px}
+.price-intel-grid{max-width:1000px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px}
+.price-intel-card{background:#fff;border-radius:16px;border:1px solid var(--border);padding:28px;transition:all .3s var(--ease)}
+.price-intel-card:hover{box-shadow:0 8px 30px rgba(0,0,0,.06)}
+.price-intel-card.featured{border-color:var(--green);background:linear-gradient(135deg,rgba(16,185,129,.02),rgba(34,211,238,.02));box-shadow:0 8px 30px rgba(16,185,129,.08)}
+.pi-name{font-size:18px;font-weight:900;letter-spacing:-.02em;margin-bottom:4px}
+.pi-type{font-size:11px;font-weight:700;color:var(--t4);text-transform:uppercase;letter-spacing:.04em;margin-bottom:16px}
+.pi-price{font-size:32px;font-weight:900;font-family:var(--mono);letter-spacing:-.04em;margin-bottom:4px}
+.price-intel-card.featured .pi-price{color:var(--green)}
+.pi-note{font-size:12px;color:var(--t3);margin-bottom:16px}
+.pi-list{list-style:none;display:flex;flex-direction:column;gap:8px}
+.pi-list li{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--t2)}
+.pi-list li svg{width:14px;height:14px;flex-shrink:0}
+
+/* MIGRATION STEPS */
+.mig-steps{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;position:relative}
+.mig-steps::before{content:'';position:absolute;top:44px;left:12%;right:12%;height:2px;background:linear-gradient(90deg,var(--cyan),var(--purple),var(--green),var(--blue));border-radius:2px;z-index:0}
+.mig-step{text-align:center;position:relative;z-index:1}
+.mig-num{width:88px;height:88px;border-radius:50%;background:#fff;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:28px;font-weight:900;font-family:var(--mono);color:var(--t1);transition:all .3s}
+.mig-step:hover .mig-num{border-color:var(--green);box-shadow:0 8px 30px rgba(16,185,129,.1)}
+.mig-step h4{font-size:15px;font-weight:800;margin-bottom:6px}
+.mig-step p{font-size:12px;color:var(--t3);line-height:1.5;max-width:200px;margin:0 auto}
+
+/* BOTTOM CTA */
+.bottom-cta{padding:80px 40px;text-align:center;background:linear-gradient(135deg,#030711,#1E1B4B)}
+.bottom-cta h2{font-size:clamp(28px,4vw,44px);font-weight:900;letter-spacing:-.03em;margin-bottom:14px;color:#fff}
+.bottom-cta p{font-size:16px;color:rgba(255,255,255,.45);max-width:520px;margin:0 auto 32px;line-height:1.6}
+.bottom-cta .cta-row{display:inline-flex;gap:12px;flex-wrap:wrap;justify-content:center}
+.bottom-cta .cta-row a{padding:14px 32px;border-radius:12px;font-size:15px;font-weight:700;text-decoration:none;transition:all .25s var(--ease)}
+.cta-green{background:var(--green);color:#fff}.cta-green:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(16,185,129,.3)}
+.cta-outline-w{border:1px solid rgba(255,255,255,.15);color:#fff}.cta-outline-w:hover{background:rgba(255,255,255,.05)}
+
+/* FOOTER */
+.footer{padding:60px 40px 30px;border-top:1px solid var(--border);max-width:1100px;margin:0 auto}
+.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px;margin-bottom:40px}
+.footer-brand p{font-size:13px;color:var(--t3);line-height:1.6;margin-top:12px;max-width:260px}
+.footer-col h4{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--t4);margin-bottom:14px}
+.footer-col a{display:block;font-size:13px;font-weight:500;color:var(--t3);text-decoration:none;padding:4px 0;transition:color .2s}.footer-col a:hover{color:var(--t1)}
+.footer-bottom{display:flex;justify-content:space-between;align-items:center;padding-top:20px;border-top:1px solid var(--border);font-size:12px;color:var(--t4)}
+
+@media(max-width:768px){
+.nav-links,.dropdown{display:none}
+.h2h-grid,.review-grid,.ai-grid,.price-intel-grid{grid-template-columns:1fr}
+.mig-steps{grid-template-columns:1fr 1fr}.mig-steps::before{display:none}
+.hero-stats{flex-direction:column;gap:20px}
+.footer-grid{grid-template-columns:1fr 1fr}
+}
+` }} />
+      <div ref={containerRef} dangerouslySetInnerHTML={{ __html: `
+
+<nav>
+  <div class="nav-inner">
+    <a href="FinanceOS-Landing-V3.html" class="logo-link"><span class="ldot"></span>FinanceOS</a>
+    <div class="nav-mid">
+      <a href="FinanceOS-Solutions-Digital.html">Solutions</a>
+      <a href="FinanceOS-Integrations-V3.html">Integrations</a>
+      <a href="FinanceOS-Security-Zero-Trust.html">Trust</a>
+      <a href="FinanceOS-Pricing-V3.html">Pricing</a>
+      <a href="FinanceOS-vs-Competitors-V2.html">Compare</a>
+      <a href="FinanceOS-Resources-V2.html">Resources</a>
+    </div>
+    <div class="nav-end">
+      <a href="FinanceOS-Login-V2.html">Sign In</a>
+      <a href="FinanceOS-Pricing-V3.html" class="btn-sub">Subscribe</a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+<div class="hero-badge"><span class="dot"></span> Real Data. No Spin.</div>
+<h1>How <span class="accent">FinanceOS</span> Actually Compares</h1>
+<p>We pulled real reviews, pricing data, and feature comparisons from TrustRadius, G2, and public filings. Here's what we found — and where we still have ground to cover.</p>
+<div class="hero-cta">
+<a href="#" class="cta-primary">Request Live Demo</a>
+<a href="FinanceOS-Pricing-Page.html" class="cta-outline">View Transparent Pricing</a>
+</div>
+<div class="hero-stats">
+<div class="hero-stat"><div class="num">10x</div><div class="lbl">Faster Close</div></div>
+<div class="hero-stat"><div class="num">60%</div><div class="lbl">Lower TCO</div></div>
+<div class="hero-stat"><div class="num">96%</div><div class="lbl">Forecast Accuracy</div></div>
+<div class="hero-stat"><div class="num">3-Day</div><div class="lbl">Avg. Month-End</div></div>
+</div>
+</section>
+
+<!-- COMPETITOR LANDSCAPE — Real Third-Party Data -->
+<section class="review-section reveal">
+<div style="max-width:1200px;margin:0 auto">
+<div class="section-label">Competitive Landscape</div>
+<h2 class="section-title">Know What You're Up Against</h2>
+<p class="section-sub">Real scores and data from TrustRadius, G2, and public filings on the incumbents. We believe in transparency — even about the competition.</p>
+<div class="review-grid">
+<div class="review-card featured">
+<div class="review-logo" style="color:var(--green)">FinanceOS</div>
+<div class="review-source">Our Promise</div>
+<div class="review-score" style="font-size:28px;line-height:1.3;padding:12px 0">AI-Native<br><span style="font-size:16px;color:var(--t3);font-weight:500">from day one</span></div>
+<div class="review-count" style="margin-top:8px">$48.6M ARR · 118% NDR · 2,400+ teams</div>
+<div class="review-detail">TrustRadius listing coming soon — <a href="#" style="color:var(--green);text-decoration:underline;font-weight:600">leave a review</a></div>
+</div>
+<div class="review-card">
+<div class="review-logo" style="color:var(--indigo)">Planful</div>
+<div class="review-source">TrustRadius</div>
+<div class="review-score">8.3<span class="review-max">/10</span></div>
+<div class="review-stars">★★★★☆</div>
+<div class="review-count">267 verified reviews</div>
+<div class="review-detail">44,387 LinkedIn followers · Etsy, FIGS, Five Guys</div>
+</div>
+<div class="review-card">
+<div class="review-logo" style="color:var(--blue)">Anaplan</div>
+<div class="review-source">TrustRadius</div>
+<div class="review-score">7.8<span class="review-max">/10</span></div>
+<div class="review-stars">★★★★☆</div>
+<div class="review-count">420+ verified reviews</div>
+<div class="review-detail">Enterprise-focused · $100K+/yr starting</div>
+</div>
+</div>
+</div>
+</section>
+
+<!-- COMPARISON TABLE -->
+<section class="section reveal">
+<div class="section-label">Feature Comparison</div>
+<h2 class="section-title">Side-by-Side Feature Matrix</h2>
+<p class="section-sub">An honest look at how FinanceOS stacks up across the capabilities that matter most. Updated March 2026.</p>
+<div class="comp-wrap">
+<table class="comp">
+<thead>
+<tr>
+<th>Capability</th>
+<th class="hl">FinanceOS</th>
+<th>Anaplan</th>
+<th>Adaptive (Workday)</th>
+<th>Planful</th>
+<th>Vena</th>
+<th>Oracle EPM</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>AI-Native Architecture</td>
+<td class="hl"><span class="check">✓</span> Built-in</td>
+<td><span class="partial">Bolt-on</span></td>
+<td><span class="partial">Bolt-on</span></td>
+<td><span class="partial">Analyst Assistant</span></td>
+<td><span class="cross">✗</span></td>
+<td><span class="partial">Bolt-on</span></td>
+</tr>
+<tr>
+<td>Natural Language AI Copilot</td>
+<td class="hl"><span class="check">✓</span> Full NLP</td>
+<td><span class="partial">Basic</span></td>
+<td><span class="cross">✗</span></td>
+<td><span class="partial">Signals / Projections</span></td>
+<td><span class="cross">✗</span></td>
+<td><span class="partial">Limited</span></td>
+</tr>
+<tr>
+<td>Real-Time Consolidation</td>
+<td class="hl"><span class="check">✓</span> Sub-second</td>
+<td><span class="partial">Batch</span></td>
+<td><span class="partial">Near-real-time</span></td>
+<td><span class="partial">Batch</span></td>
+<td><span class="cross">✗</span></td>
+<td><span class="check">✓</span></td>
+</tr>
+<tr>
+<td>Department Planning Modules</td>
+<td class="hl"><span class="check">✓</span> 7 depts</td>
+<td><span class="check">✓</span> Custom</td>
+<td><span class="partial">HR + Finance</span></td>
+<td><span class="check">✓</span> 7 depts</td>
+<td><span class="partial">Finance only</span></td>
+<td><span class="check">✓</span> Custom</td>
+</tr>
+<tr>
+<td>No-Code Scenario Modeling</td>
+<td class="hl"><span class="check">✓</span></td>
+<td><span class="partial">Needs training</span></td>
+<td><span class="partial">Partial</span></td>
+<td><span class="partial">Limited</span></td>
+<td><span class="partial">Excel-based</span></td>
+<td><span class="partial">Complex</span></td>
+</tr>
+<tr>
+<td>Pre-Built Integrations</td>
+<td class="hl"><span class="check">✓</span> 200+</td>
+<td><span class="check">✓</span> 40+</td>
+<td><span class="partial">Workday-first</span></td>
+<td><span class="check">✓</span> 30+</td>
+<td><span class="partial">20+</span></td>
+<td><span class="partial">Oracle-first</span></td>
+</tr>
+<tr>
+<td>SOX 404 Compliance</td>
+<td class="hl"><span class="check">✓</span> Automated</td>
+<td><span class="partial">Manual</span></td>
+<td><span class="partial">Partial</span></td>
+<td><span class="check">✓</span></td>
+<td><span class="partial">Manual</span></td>
+<td><span class="check">✓</span></td>
+</tr>
+<tr>
+<td>Implementation Time</td>
+<td class="hl"><span class="imp-time" style="color:var(--green)">2–4 weeks</span></td>
+<td><span class="imp-time">3–6 months</span></td>
+<td><span class="imp-time">2–4 months</span></td>
+<td><span class="imp-time">1–3 months</span></td>
+<td><span class="imp-time">1–2 months</span></td>
+<td><span class="imp-time">6–12 months</span></td>
+</tr>
+<tr>
+<td>Transparent Pricing</td>
+<td class="hl"><span class="price-cell green">$499/mo</span></td>
+<td><span class="price-cell">Contact Sales</span></td>
+<td><span class="price-cell">Contact Sales</span></td>
+<td><span class="price-cell">Contact Sales</span></td>
+<td><span class="price-cell">Contact Sales</span></td>
+<td><span class="price-cell">Contact Sales</span></td>
+</tr>
+<tr>
+<td>TrustRadius Score</td>
+<td class="hl"><span style="color:var(--green);font-weight:600;font-size:11px">Coming Soon</span></td>
+<td><span style="font-weight:600">7.8/10</span></td>
+<td><span style="font-weight:600">8.0/10</span></td>
+<td><span style="font-weight:600">8.3/10</span></td>
+<td><span style="font-weight:600">8.1/10</span></td>
+<td><span style="font-weight:600">7.4/10</span></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+
+<!-- AI BATTLE: PLANFUL ANALYST ASSISTANT vs FINANCEOS AI -->
+<section class="ai-compare reveal">
+<div style="max-width:1200px;margin:0 auto">
+<div class="section-label" style="color:var(--cyan)">AI Capabilities Compared</div>
+<h2 class="section-title" style="color:#fff">Planful "Analyst Assistant" vs FinanceOS AI</h2>
+<p class="section-sub" style="color:rgba(255,255,255,.4)">Planful recently shipped their Analyst Assistant with three modules: Signals, Projections, and Help. Here's how they stack up against our AI-native engine.</p>
+<div class="ai-grid">
+<div class="ai-col them">
+<div class="ai-col-header">
+<div class="ai-col-badge">Planful</div>
+<h3>Analyst Assistant</h3>
+</div>
+<div class="ai-feature">
+<div class="ai-feature-name">Signals</div>
+<div class="ai-feature-desc">Surfaces anomalies and trends in financial data. Provides alerts when metrics deviate from norms. Requires manual threshold configuration.</div>
+</div>
+<div class="ai-feature">
+<div class="ai-feature-name">Projections</div>
+<div class="ai-feature-desc">AI-assisted forecasting with historical pattern recognition. Limited to pre-configured scenarios. No real-time data refresh.</div>
+</div>
+<div class="ai-feature">
+<div class="ai-feature-name">Help</div>
+<div class="ai-feature-desc">In-product support chatbot for navigation and documentation. Does not interact with live financial data or generate custom analyses.</div>
+</div>
+<div class="ai-feature">
+<div class="ai-feature-name">Department Coverage</div>
+<div class="ai-feature-desc">7 departments: Finance, Accounting, Marketing, HR, Sales, IT, Operations. Each has department-specific tab with tailored views.</div>
+</div>
+</div>
+<div class="ai-col us">
+<div class="ai-col-header">
+<div class="ai-col-badge">FinanceOS</div>
+<h3>AI Copilot</h3>
+</div>
+<div class="ai-feature">
+<div class="ai-feature-name">Intelligent Signals + Auto-Rules</div>
+<div class="ai-feature-desc">Automatically detects anomalies, trends, and risk patterns across all connected data sources. Self-tuning thresholds that learn from your team's behavior. Zero configuration required.</div>
+</div>
+<div class="ai-feature">
+<div class="ai-feature-name">Real-Time Projections</div>
+<div class="ai-feature-desc">Live forecasting that updates as data flows in. Multi-scenario modeling with confidence intervals. Monte Carlo simulations accessible via natural language.</div>
+</div>
+<div class="ai-feature">
+<div class="ai-feature-name">Full NLP Copilot</div>
+<div class="ai-feature-desc">Ask questions in plain English: "What drove the variance in Q3 OPEX?" — get instant, data-backed answers with drill-down capability. Not just help docs — actual analysis.</div>
+</div>
+<div class="ai-feature">
+<div class="ai-feature-name">xP&A Department Planning</div>
+<div class="ai-feature-desc">7+ department modules with AI-powered cross-departmental planning. Finance, Ops, Revenue, Workforce, Marketing, IT, Supply Chain — all connected in a single planning model.</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+
+<!-- COMPETITIVE PRICING INTEL -->
+<section class="price-intel reveal">
+<div style="max-width:1200px;margin:0 auto">
+<div class="section-label">Pricing Intelligence</div>
+<h2 class="section-title">What You'll Actually Pay</h2>
+<p class="section-sub">Based on TrustRadius data, public filings, and verified customer reports. Most competitors hide pricing — we don't.</p>
+<div class="price-intel-grid">
+<div class="price-intel-card featured">
+<div class="pi-name">FinanceOS</div>
+<div class="pi-type">Transparent Pricing</div>
+<div class="pi-price">$499<span style="font-size:16px;color:var(--t3)">/mo</span></div>
+<div class="pi-note">Starter plan. Growth $999/mo. Enterprise custom.</div>
+<ul class="pi-list">
+<li><svg viewBox="0 0 14 14" fill="none" stroke="#10B981" stroke-width="2"><polyline points="2,7 5.5,10.5 12,3.5"/></svg>All AI features included</li>
+<li><svg viewBox="0 0 14 14" fill="none" stroke="#10B981" stroke-width="2"><polyline points="2,7 5.5,10.5 12,3.5"/></svg>200+ integrations</li>
+<li><svg viewBox="0 0 14 14" fill="none" stroke="#10B981" stroke-width="2"><polyline points="2,7 5.5,10.5 12,3.5"/></svg>Free tier available</li>
+<li><svg viewBox="0 0 14 14" fill="none" stroke="#10B981" stroke-width="2"><polyline points="2,7 5.5,10.5 12,3.5"/></svg>Committed spend: save up to 35%</li>
+</ul>
+</div>
+<div class="price-intel-card">
+<div class="pi-name">Planful</div>
+<div class="pi-type">Contact Sales Only</div>
+<div class="pi-price" style="color:var(--t3)">Hidden</div>
+<div class="pi-note">TrustRadius alternatives list: Centage $1,750/mo</div>
+<ul class="pi-list">
+<li><svg viewBox="0 0 14 14" fill="none" stroke="var(--amber)" stroke-width="2"><path d="M7 3v4M7 10v1"/></svg>No public pricing page</li>
+<li><svg viewBox="0 0 14 14" fill="none" stroke="var(--amber)" stroke-width="2"><path d="M7 3v4M7 10v1"/></svg>Requires sales call for quote</li>
+<li><svg viewBox="0 0 14 14" fill="none" stroke="var(--amber)" stroke-width="2"><path d="M7 3v4M7 10v1"/></svg>Multi-year contracts typical</li>
+<li><svg viewBox="0 0 14 14" fill="none" stroke="var(--t4)" stroke-width="2"><path d="M3 7h8"/></svg>No free tier</li>
+</ul>
+</div>
+<div class="price-intel-card">
+<div class="pi-name">Anaplan</div>
+<div class="pi-type">Enterprise Sales Only</div>
+<div class="pi-price" style="color:var(--t3)">$100K+<span style="font-size:16px">/yr</span></div>
+<div class="pi-note">Based on verified customer reports</div>
+<ul class="pi-list">
+<li><svg viewBox="0 0 14 14" fill="none" stroke="var(--amber)" stroke-width="2"><path d="M7 3v4M7 10v1"/></svg>Workspace-based pricing</li>
+<li><svg viewBox="0 0 14 14" fill="none" stroke="var(--amber)" stroke-width="2"><path d="M7 3v4M7 10v1"/></svg>Implementation costs extra</li>
+<li><svg viewBox="0 0 14 14" fill="none" stroke="var(--amber)" stroke-width="2"><path d="M7 3v4M7 10v1"/></svg>Consultant-dependent setup</li>
+<li><svg viewBox="0 0 14 14" fill="none" stroke="var(--t4)" stroke-width="2"><path d="M3 7h8"/></svg>No free tier</li>
+</ul>
+</div>
+</div>
+</div>
+</section>
+
+<!-- HEAD TO HEAD DEEP DIVES -->
+<section class="section reveal">
+<div class="section-label">Head-to-Head</div>
+<h2 class="section-title">Deep Dive Comparisons</h2>
+<p class="section-sub">Detailed breakdowns for the competitors you're most likely evaluating alongside FinanceOS.</p>
+<div class="h2h-grid">
+
+<!-- vs Planful -->
+<div class="h2h-card">
+<div class="h2h-vs">FinanceOS vs Planful</div>
+<h3>The Department Planning Showdown</h3>
+<div class="h2h-tagline">Planful covers 7 departments with tailored tabs. So do we — but with AI-native cross-planning that connects them all.</div>
+<div class="h2h-section">
+<div class="h2h-section-title their">⚪ Where Planful Shines</div>
+<ul class="h2h-list their">
+<li><svg viewBox="0 0 14 14"><circle cx="7" cy="7" r="5"/></svg>Strong accounting close management and consolidation</li>
+<li><svg viewBox="0 0 14 14"><circle cx="7" cy="7" r="5"/></svg>Analyst Assistant (Signals + Projections + Help) AI modules</li>
+<li><svg viewBox="0 0 14 14"><circle cx="7" cy="7" r="5"/></svg>267 reviews on TrustRadius (8.3/10) — mature product</li>
+<li><svg viewBox="0 0 14 14"><circle cx="7" cy="7" r="5"/></svg>Customers include Etsy, FIGS, Five Guys, Bose</li>
+</ul>
+</div>
+<div class="h2h-section">
+<div class="h2h-section-title ours">🟢 Where FinanceOS Wins</div>
+<ul class="h2h-list ours">
+<li><svg viewBox="0 0 14 14"><polyline points="2,7 5.5,10.5 12,3.5"/></svg>True AI-native architecture vs bolt-on "Assistant"</li>
+<li><svg viewBox="0 0 14 14"><polyline points="2,7 5.5,10.5 12,3.5"/></svg>xP&A model connects all 7 departments bidirectionally</li>
+<li><svg viewBox="0 0 14 14"><polyline points="2,7 5.5,10.5 12,3.5"/></svg>Transparent pricing ($499/mo) vs hidden contact-sales</li>
+<li><svg viewBox="0 0 14 14"><polyline points="2,7 5.5,10.5 12,3.5"/></svg>200+ integrations vs 30+ · 2-week setup vs 1-3 months</li>
+</ul>
+</div>
+<div class="h2h-verdict"><strong>Bottom line:</strong> Planful is a solid choice for accounting-heavy teams. FinanceOS is better if you want AI-first planning that goes beyond finance into RevOps, workforce, and marketing.</div>
+</div>
+
+<!-- vs Anaplan -->
+<div class="h2h-card">
+<div class="h2h-vs">FinanceOS vs Anaplan</div>
+<h3>Enterprise Powerhouse vs AI-Native Challenger</h3>
+<div class="h2h-tagline">Anaplan is the 800-lb gorilla. We're the lean, AI-first alternative that doesn't require a consultant army.</div>
+<div class="h2h-section">
+<div class="h2h-section-title their">⚪ Where Anaplan Shines</div>
+<ul class="h2h-list their">
+<li><svg viewBox="0 0 14 14"><circle cx="7" cy="7" r="5"/></svg>Hyperblock engine handles massive model complexity</li>
+<li><svg viewBox="0 0 14 14"><circle cx="7" cy="7" r="5"/></svg>Battle-tested at Fortune 500 (Coca-Cola, P&G, HP)</li>
+<li><svg viewBox="0 0 14 14"><circle cx="7" cy="7" r="5"/></svg>Deepest customization — if you have the SI budget</li>
+</ul>
+</div>
+<div class="h2h-section">
+<div class="h2h-section-title ours">🟢 Where FinanceOS Wins</div>
+<ul class="h2h-list ours">
+<li><svg viewBox="0 0 14 14"><polyline points="2,7 5.5,10.5 12,3.5"/></svg>60% lower TCO: $499/mo vs $100K+/yr</li>
+<li><svg viewBox="0 0 14 14"><polyline points="2,7 5.5,10.5 12,3.5"/></svg>2-week implementation vs 3-6 month deployment</li>
+<li><svg viewBox="0 0 14 14"><polyline points="2,7 5.5,10.5 12,3.5"/></svg>No consultant dependency — self-serve from day 1</li>
+<li><svg viewBox="0 0 14 14"><polyline points="2,7 5.5,10.5 12,3.5"/></svg>AI-native copilot vs Anaplan's bolt-on PlanIQ</li>
+</ul>
+</div>
+<div class="h2h-verdict"><strong>Bottom line:</strong> Anaplan is unbeatable for Fortune 100 complexity. FinanceOS delivers 80% of the capability at 20% of the cost — perfect for mid-market and growth-stage companies.</div>
+</div>
+
+<!-- vs Adaptive -->
+<div class="h2h-card">
+<div class="h2h-vs">FinanceOS vs Workday Adaptive</div>
+<h3>The Workday Lock-In Question</h3>
+<div class="h2h-tagline">If you're already in the Workday ecosystem, Adaptive is seamless. For everyone else, there's a better path.</div>
+<div class="h2h-section">
+<div class="h2h-section-title their">⚪ Where Adaptive Shines</div>
+<ul class="h2h-list their">
+<li><svg viewBox="0 0 14 14"><circle cx="7" cy="7" r="5"/></svg>Native Workday HCM + Financials integration</li>
+<li><svg viewBox="0 0 14 14"><circle cx="7" cy="7" r="5"/></svg>Strong workforce planning module</li>
+<li><svg viewBox="0 0 14 14"><circle cx="7" cy="7" r="5"/></svg>Intuitive spreadsheet-like interface</li>
+</ul>
+</div>
+<div class="h2h-section">
+<div class="h2h-section-title ours">🟢 Where FinanceOS Wins</div>
+<ul class="h2h-list ours">
+<li><svg viewBox="0 0 14 14"><polyline points="2,7 5.5,10.5 12,3.5"/></svg>200+ integrations — not locked to one vendor</li>
+<li><svg viewBox="0 0 14 14"><polyline points="2,7 5.5,10.5 12,3.5"/></svg>Real-time consolidation vs near-real-time batch</li>
+<li><svg viewBox="0 0 14 14"><polyline points="2,7 5.5,10.5 12,3.5"/></svg>AI copilot included — Adaptive has no AI layer</li>
+<li><svg viewBox="0 0 14 14"><polyline points="2,7 5.5,10.5 12,3.5"/></svg>Transparent pricing vs enterprise-only quoting</li>
+</ul>
+</div>
+<div class="h2h-verdict"><strong>Bottom line:</strong> If you're 100% Workday, Adaptive makes sense. Otherwise, FinanceOS gives you more flexibility, better AI, and faster time-to-value.</div>
+</div>
+
+<!-- vs Vena -->
+<div class="h2h-card">
+<div class="h2h-vs">FinanceOS vs Vena Solutions</div>
+<h3>The Excel-Native Approach</h3>
+<div class="h2h-tagline">Vena's Excel-first model is great for spreadsheet lovers. But it keeps you in the spreadsheet era.</div>
+<div class="h2h-section">
+<div class="h2h-section-title their">⚪ Where Vena Shines</div>
+<ul class="h2h-list their">
+<li><svg viewBox="0 0 14 14"><circle cx="7" cy="7" r="5"/></svg>Native Excel add-in — low learning curve for Excel users</li>
+<li><svg viewBox="0 0 14 14"><circle cx="7" cy="7" r="5"/></svg>Good workflow and process automation</li>
+<li><svg viewBox="0 0 14 14"><circle cx="7" cy="7" r="5"/></svg>Reasonable mid-market pricing</li>
+</ul>
+</div>
+<div class="h2h-section">
+<div class="h2h-section-title ours">🟢 Where FinanceOS Wins</div>
+<ul class="h2h-list ours">
+<li><svg viewBox="0 0 14 14"><polyline points="2,7 5.5,10.5 12,3.5"/></svg>Cloud-native — no Excel dependency or version conflicts</li>
+<li><svg viewBox="0 0 14 14"><polyline points="2,7 5.5,10.5 12,3.5"/></svg>AI copilot for natural language analysis (Vena has none)</li>
+<li><svg viewBox="0 0 14 14"><polyline points="2,7 5.5,10.5 12,3.5"/></svg>Real-time collaboration vs file-based workflows</li>
+<li><svg viewBox="0 0 14 14"><polyline points="2,7 5.5,10.5 12,3.5"/></svg>10x more integrations (200+ vs ~20)</li>
+</ul>
+</div>
+<div class="h2h-verdict"><strong>Bottom line:</strong> Vena is the best choice if your team refuses to leave Excel. FinanceOS is the next step for teams ready to upgrade to AI-powered planning.</div>
+</div>
+</div>
+</section>
+
+<!-- MIGRATION STEPS -->
+<section class="section reveal">
+<div class="section-label">Switch in Weeks, Not Months</div>
+<h2 class="section-title">Your Migration Path</h2>
+<p class="section-sub">Our migration team has moved 400+ companies from legacy platforms. Average time-to-value: 14 business days.</p>
+<div class="mig-steps">
+<div class="mig-step">
+<div class="mig-num">01</div>
+<h4>Data Audit</h4>
+<p>We map your current data sources, models, and reports in a 2-hour discovery call.</p>
+</div>
+<div class="mig-step">
+<div class="mig-num">02</div>
+<h4>Auto-Import</h4>
+<p>Our AI migration engine ingests your existing models — Anaplan, Adaptive, Planful, or Excel.</p>
+</div>
+<div class="mig-step">
+<div class="mig-num">03</div>
+<h4>Validate & Train</h4>
+<p>Side-by-side validation of outputs. Self-paced training — most teams are productive in 3 days.</p>
+</div>
+<div class="mig-step">
+<div class="mig-num">04</div>
+<h4>Go Live</h4>
+<p>Flip the switch. Dedicated CSM for first 90 days. 99.9% uptime SLA from day one.</p>
+</div>
+</div>
+</section>
+
+<!-- BOTTOM CTA -->
+<section class="bottom-cta">
+<h2>Ready to see the difference?</h2>
+<p>Book a 30-minute demo and we'll build your comparison with live data from your own systems.</p>
+<div class="cta-row">
+<a href="#" class="cta-green">Request Demo</a>
+<a href="FinanceOS-Pricing-Page.html" class="cta-outline-w">See Pricing</a>
+</div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="ft-inner">
+    <div class="ft-brand">
+      <a href="FinanceOS-Landing-V3.html" class="logo-link"><span class="ldot"></span>FinanceOS</a>
+      <p>AI-native financial planning & analysis for modern finance teams.</p>
+    </div>
+    <div class="ft-col"><h5>Product</h5><a href="FinanceOS-Landing-V3.html">Platform</a><a href="FinanceOS-Integrations-V3.html">Integrations</a><a href="FinanceOS-Pricing-V3.html">Pricing</a><a href="FinanceOS-Security-Zero-Trust.html">Security</a></div>
+    <div class="ft-col"><h5>Solutions</h5><a href="FinanceOS-Solutions-Digital.html">SaaS</a><a href="FinanceOS-Solutions-Digital.html">E-Commerce</a><a href="FinanceOS-xPA-Planning-V2.html">Cross-Dept Planning</a></div>
+    <div class="ft-col"><h5>Resources</h5><a href="FinanceOS-Resources-V2.html">Resource Library</a><a href="FinanceOS-Whats-New-V2.html">Changelog</a></div>
+    <div class="ft-col"><h5>Company</h5><a href="#">About</a><a href="#">Careers</a><a href="#">Contact</a></div>
+  </div>
+  <div class="ft-bottom">
+    <span>&copy; 2026 FinanceOS, Inc.</span>
+    <div style="display:flex;gap:20px"><a href="FinanceOS-Security-Zero-Trust.html">Privacy</a><a href="#">Terms</a><a href="FinanceOS-Security-Zero-Trust.html">Security</a></div>
+  </div>
+</footer>
+
+
+` }} />
+    </>
+  );
+}

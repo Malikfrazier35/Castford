@@ -1,0 +1,635 @@
+'use client';
+
+import { useEffect, useRef } from 'react';
+
+export default function V3DashboardTiersPage() {
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    // Run inline scripts after mount
+    const scripts = [
+      `const observer=new IntersectionObserver((entries)=>{
+  entries.forEach(entry=>{
+    if(entry.isIntersecting){
+      entry.target.style.animationPlayState='running';
+      observer.unobserve(entry.target);
+    }
+  });
+},{threshold:0.08});
+document.querySelectorAll('.fade-up').forEach(el=>{
+  el.style.animationPlayState='paused';
+  observer.observe(el);
+});`
+    ];
+    scripts.forEach(code => {
+      try { new Function(code)(); } catch(e) { console.warn('Script error:', e); }
+    });
+  }, []);
+
+  return (
+    <>
+      <style dangerouslySetInnerHTML={{ __html: `
+:root{
+  --bg:#f4f5f7;--bg-card:#ffffff;--bg-elevated:#f8f9fb;
+  --border:#e5e7ec;--border-accent:#d1d5de;
+  --text:#0f1729;--text-sec:#4b5563;--text-muted:#9ca3af;
+  --blue:#3b82f6;--purple:#8b5cf6;--green:#10b981;--amber:#f59e0b;--cyan:#06b6d4;--rose:#f43f5e;--indigo:#6366f1;
+  --gradient:linear-gradient(135deg,#3b82f6,#8b5cf6);
+  --sans:'Manrope',system-ui,sans-serif;
+  --mono:'JetBrains Mono',monospace;
+  --r:10px;--r-lg:14px;--r-xl:18px;
+  --shadow:0 1px 3px rgba(0,0,0,0.04),0 4px 16px rgba(0,0,0,0.03);
+  --shadow-lg:0 4px 24px rgba(0,0,0,0.06),0 12px 48px rgba(0,0,0,0.04);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);-webkit-font-smoothing:antialiased;line-height:1.6}
+::selection{background:rgba(59,130,246,0.15)}
+
+/* Page layout */
+.page-header{text-align:center;padding:80px 24px 48px}
+.page-badge{display:inline-flex;align-items:center;gap:6px;padding:6px 16px;border-radius:100px;background:rgba(59,130,246,0.06);border:1px solid rgba(59,130,246,0.1);font-size:9px;font-weight:700;color:var(--blue);letter-spacing:.1em;text-transform:uppercase;margin-bottom:16px}
+.page-title{font-size:clamp(28px,5vw,44px);font-weight:800;letter-spacing:-.04em;line-height:1.1;margin-bottom:12px}
+.page-title span{background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.page-sub{font-size:14px;color:var(--text-sec);max-width:520px;margin:0 auto;line-height:1.7}
+
+.tier-section{max-width:960px;margin:0 auto;padding:0 24px 80px}
+.tier-label{display:flex;align-items:center;gap:12px;margin-bottom:20px}
+.tier-name{font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;padding:5px 14px;border-radius:6px}
+.tier-price{font-size:12px;font-weight:700;color:var(--text-muted);font-family:var(--mono)}
+.tier-desc{font-size:12px;color:var(--text-sec);margin-bottom:0;font-weight:500}
+.tier-arrow{flex:1;height:1px;background:var(--border)}
+
+/* === ANIMATIONS === */
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes barGrow{from{transform:scaleY(0)}to{transform:scaleY(1)}}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+@keyframes breathe{0%,100%{box-shadow:0 0 0 0 rgba(16,185,129,0.3)}50%{box-shadow:0 0 0 5px rgba(16,185,129,0)}}
+@keyframes ambientDrift{0%{transform:translate(0,0) scale(1)}50%{transform:translate(-20px,15px) scale(0.97)}100%{transform:translate(0,0) scale(1)}}
+@keyframes ambientDrift2{0%{transform:translate(0,0) scale(1)}50%{transform:translate(15px,-20px) scale(1.04)}100%{transform:translate(0,0) scale(1)}}
+@keyframes shimmer{0%{left:-100%}100%{left:200%}}
+@keyframes meshPulse{0%,100%{opacity:.3}50%{opacity:.5}}
+@keyframes titleShine{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+@keyframes pulse{0%,100%{opacity:.5}50%{opacity:1}}
+.fade-up{animation:fadeUp .7s cubic-bezier(0.22,1,0.36,1) both}
+
+/* =============================================
+   SHARED DASHBOARD CHROME
+   ============================================= */
+.dash{border-radius:var(--r-xl);overflow:hidden;position:relative}
+.dash-chrome{display:flex;align-items:center;gap:7px;padding:10px 16px;border-bottom:1px solid var(--border)}
+.dot{width:8px;height:8px;border-radius:50%}
+.dot-r{background:#ff5f57}.dot-y{background:#ffbd2e}.dot-g{background:#28ca41}
+.dash-url{flex:1;text-align:center;font-size:9px;color:var(--text-muted);font-family:var(--mono);letter-spacing:.02em}
+.dash-body{padding:24px}
+
+/* KPI card shared */
+.kpi{border-radius:var(--r);padding:14px}
+.kpi-label{font-size:7px;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--text-muted);margin-bottom:5px}
+.kpi-val{font-size:20px;font-weight:900;font-family:var(--mono);letter-spacing:-.03em;line-height:1}
+.kpi-delta{font-size:8px;font-weight:700;margin-top:5px;display:inline-flex;align-items:center;gap:3px;padding:2px 6px;border-radius:3px}
+.kpi-delta.up{color:var(--green);background:rgba(16,185,129,0.06)}
+.kpi-delta.down{color:var(--rose);background:rgba(244,63,94,0.06)}
+
+/* Section header inside dash */
+.dash-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+.dash-title{font-size:14px;font-weight:800;letter-spacing:-.02em}
+.dash-subtitle{font-size:10px;color:var(--text-muted);margin-top:2px}
+
+/* =============================================
+   TIER 1: STARTER — Clean & Functional
+   ============================================= */
+.starter .tier-name{background:rgba(0,0,0,0.04);color:var(--text-sec)}
+.dash-starter{background:var(--bg-card);border:1px solid var(--border);box-shadow:var(--shadow)}
+.dash-starter .dash-chrome{background:var(--bg-elevated)}
+.dash-starter .kpi{background:var(--bg-elevated);border:1px solid var(--border)}
+.dash-starter .kpi-val{color:var(--text)}
+.starter-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:18px}
+.starter-table{width:100%;border-collapse:collapse;font-size:11px}
+.starter-table th{text-align:left;font-size:8px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text-muted);padding:8px 10px;border-bottom:1px solid var(--border)}
+.starter-table td{padding:8px 10px;border-bottom:1px solid rgba(0,0,0,0.02);color:var(--text-sec);font-weight:500}
+.starter-table td:last-child{text-align:right;font-family:var(--mono);font-weight:700;font-size:12px;color:var(--text)}
+.starter-chart{background:var(--bg-elevated);border:1px solid var(--border);border-radius:var(--r);padding:16px}
+.starter-chart-title{font-size:10px;font-weight:700;color:var(--text-sec);margin-bottom:12px}
+.starter-bars{display:flex;align-items:flex-end;gap:6px;height:80px}
+.starter-bar{flex:1;background:var(--border-accent);border-radius:3px 3px 0 0;transform-origin:bottom}
+.starter-empty{background:rgba(59,130,246,0.04);border:1px dashed rgba(59,130,246,0.15);border-radius:var(--r);padding:16px;text-align:center;font-size:10px;color:var(--text-muted);margin-top:12px}
+.starter-empty span{display:block;font-size:8px;font-weight:700;color:var(--blue);margin-top:4px;text-transform:uppercase;letter-spacing:.06em}
+
+/* =============================================
+   TIER 2: GROWTH — Platform Comes Alive
+   ============================================= */
+.growth .tier-name{background:rgba(59,130,246,0.08);color:var(--blue)}
+.dash-growth{background:var(--bg-card);border:1px solid var(--border);box-shadow:var(--shadow-lg)}
+.dash-growth .dash-chrome{background:var(--bg-elevated);position:relative}
+.dash-growth .dash-chrome::after{content:'';position:absolute;bottom:-1px;left:0;right:0;height:2px;background:var(--gradient)}
+.growth-kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:18px}
+.dash-growth .kpi{background:var(--bg-elevated);border:1px solid var(--border);position:relative;transition:all .25s}
+.dash-growth .kpi:hover{border-color:rgba(59,130,246,0.15);transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,0.04)}
+.growth-chart{background:var(--bg-elevated);border:1px solid var(--border);border-radius:var(--r);padding:16px;margin-bottom:14px}
+.growth-chart-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.growth-chart-title{font-size:11px;font-weight:700}
+.growth-legend{display:flex;gap:12px}
+.legend-item{display:flex;align-items:center;gap:4px;font-size:8px;font-weight:600;color:var(--text-muted)}
+.legend-dot{width:5px;height:5px;border-radius:2px}
+.growth-bars{display:flex;align-items:flex-end;gap:6px;height:110px}
+.growth-bar-group{flex:1;display:flex;gap:2px;align-items:flex-end;height:100%}
+.growth-bar{flex:1;border-radius:2px 2px 0 0;transform-origin:bottom}
+.growth-bar.actual{background:var(--gradient)}
+.growth-bar.budget{background:rgba(139,92,246,0.2)}
+.growth-bar-label{font-size:7px;color:var(--text-muted);text-align:center;margin-top:4px;font-weight:600}
+
+/* AI Copilot - Growth (basic) */
+.growth-ai{background:var(--bg-elevated);border:1px solid var(--border);border-radius:var(--r);padding:14px;position:relative;overflow:hidden}
+.growth-ai::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--gradient);opacity:.4}
+.ai-row{display:flex;align-items:flex-start;gap:10px}
+.ai-dot{width:28px;height:28px;border-radius:8px;background:var(--gradient);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;color:#fff;flex-shrink:0;box-shadow:0 2px 6px rgba(59,130,246,0.2)}
+.ai-content{flex:1}
+.ai-q{font-size:10px;color:var(--text-sec);font-style:italic;margin-bottom:6px}
+.ai-a{font-size:10px;color:var(--text-sec);line-height:1.6;padding:8px 10px;background:rgba(59,130,246,0.03);border-left:2px solid rgba(59,130,246,0.15);border-radius:0 6px 6px 0}
+.ai-a::after{content:'▊';color:var(--blue);opacity:.4;animation:blink 1.2s step-end infinite;margin-left:2px}
+
+/* Entity switcher */
+.entity-switcher{display:flex;align-items:center;gap:6px;padding:5px 12px;border-radius:6px;border:1px solid var(--border);font-size:10px;font-weight:600;color:var(--text-sec);background:var(--bg-card);cursor:pointer}
+.entity-switcher svg{width:10px;height:10px;opacity:.4}
+
+/* =============================================
+   TIER 3: BUSINESS — Premium Executive
+   ============================================= */
+.business .tier-name{background:rgba(139,92,246,0.08);color:var(--purple)}
+.dash-business{background:var(--bg-card);border:1px solid rgba(139,92,246,0.12);box-shadow:var(--shadow-lg),0 0 60px rgba(139,92,246,0.03)}
+.dash-business .dash-chrome{background:linear-gradient(90deg,var(--bg-elevated),rgba(139,92,246,0.02));position:relative}
+.dash-business .dash-chrome::after{content:'';position:absolute;bottom:-1px;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--purple),var(--blue))}
+.biz-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+.biz-badges{display:flex;gap:6px}
+.biz-badge{font-size:7px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;padding:3px 8px;border-radius:4px}
+.biz-badge-sso{background:rgba(139,92,246,0.08);color:var(--purple);border:1px solid rgba(139,92,246,0.1)}
+.biz-badge-api{background:rgba(16,185,129,0.08);color:var(--green);border:1px solid rgba(16,185,129,0.1)}
+.biz-badge-ml{background:rgba(59,130,246,0.08);color:var(--blue);border:1px solid rgba(59,130,246,0.1)}
+
+.biz-kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:14px}
+.dash-business .kpi{background:var(--bg-elevated);border:1px solid var(--border);position:relative;overflow:hidden;transition:all .3s}
+.dash-business .kpi::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--gradient);opacity:0;transition:opacity .3s}
+.dash-business .kpi:hover::before{opacity:.5}
+.dash-business .kpi:hover{transform:translateY(-2px);box-shadow:0 4px 16px rgba(0,0,0,0.04)}
+
+/* Sparkline in KPI */
+.kpi-spark{display:flex;align-items:flex-end;gap:1px;height:16px;margin-top:6px}
+.kpi-spark-bar{width:3px;border-radius:1px;background:rgba(59,130,246,0.2)}
+.kpi-spark-bar.highlight{background:var(--blue)}
+
+/* Scenario panel */
+.biz-panels{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px}
+.biz-panel{background:var(--bg-elevated);border:1px solid var(--border);border-radius:var(--r);padding:14px;position:relative;overflow:hidden}
+.biz-panel::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:var(--gradient);opacity:.3}
+.biz-panel-title{font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--text-muted);margin-bottom:10px}
+.scenario-row{display:flex;align-items:center;justify-content:space-between;padding:6px 0;border-bottom:1px solid rgba(0,0,0,0.02);font-size:10px}
+.scenario-row:last-child{border-bottom:none}
+.scenario-label{color:var(--text-sec);font-weight:500;display:flex;align-items:center;gap:6px}
+.scenario-dot{width:5px;height:5px;border-radius:50%}
+.scenario-val{font-weight:800;font-family:var(--mono);font-size:11px}
+
+/* ML Insights */
+.ml-insight{display:flex;gap:8px;padding:8px 0;border-bottom:1px solid rgba(0,0,0,0.02);font-size:10px}
+.ml-insight:last-child{border-bottom:none}
+.ml-icon{width:20px;height:20px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:8px;flex-shrink:0;font-weight:800}
+.ml-text{color:var(--text-sec);line-height:1.5;font-weight:500}
+.ml-conf{font-size:8px;font-weight:700;color:var(--green);margin-top:2px}
+
+/* =============================================
+   TIER 4: ENTERPRISE — Command Center
+   ============================================= */
+.enterprise .tier-name{background:var(--gradient);color:#fff}
+.dash-enterprise{background:var(--bg-card);border:1px solid rgba(59,130,246,0.12);box-shadow:var(--shadow-lg),0 0 80px rgba(59,130,246,0.04);position:relative;overflow:hidden}
+
+/* Ambient layer */
+.ent-ambient{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.ent-orb{position:absolute;border-radius:50%;filter:blur(80px)}
+.ent-orb-1{width:400px;height:400px;top:-20%;left:-10%;background:rgba(59,130,246,0.06);animation:ambientDrift 18s ease-in-out infinite}
+.ent-orb-2{width:300px;height:300px;bottom:-15%;right:-5%;background:rgba(139,92,246,0.05);animation:ambientDrift2 22s ease-in-out infinite}
+.ent-mesh{position:absolute;inset:0;background-image:linear-gradient(rgba(59,130,246,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(59,130,246,0.03) 1px,transparent 1px);background-size:48px 48px;animation:meshPulse 8s ease-in-out infinite;mask-image:radial-gradient(ellipse 50% 40% at 50% 30%,black,transparent);-webkit-mask-image:radial-gradient(ellipse 50% 40% at 50% 30%,black,transparent)}
+
+.dash-enterprise .dash-chrome{background:rgba(255,255,255,0.8);backdrop-filter:blur(12px);position:relative;z-index:2}
+.dash-enterprise .dash-chrome::after{content:'';position:absolute;bottom:-1px;left:0;right:0;height:3px;background:var(--gradient)}
+.dash-enterprise .dash-body{position:relative;z-index:2}
+
+/* Branded header */
+.ent-brand{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid var(--border)}
+.ent-brand-left{display:flex;align-items:center;gap:12px}
+.ent-logo{width:36px;height:36px;border-radius:10px;background:var(--gradient);display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(59,130,246,0.2)}
+.ent-logo svg{width:16px;height:16px}
+.ent-brand-title{font-size:15px;font-weight:800;letter-spacing:-.02em}
+.ent-brand-title span{color:var(--blue)}
+.ent-brand-sub{font-size:9px;color:var(--text-muted);font-weight:600;letter-spacing:.04em;text-transform:uppercase;margin-top:1px}
+.ent-brand-right{display:flex;align-items:center;gap:8px}
+.ent-status{display:flex;align-items:center;gap:5px;font-size:9px;font-weight:700;color:var(--green)}
+.ent-status-dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:breathe 3s ease-in-out infinite}
+.ent-badge{font-size:7px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;padding:3px 8px;border-radius:4px;background:rgba(139,92,246,0.08);color:var(--purple);border:1px solid rgba(139,92,246,0.1)}
+
+/* Enterprise KPIs */
+.ent-kpis{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-bottom:14px}
+.ent-kpi{background:rgba(255,255,255,0.7);backdrop-filter:blur(8px);border:1px solid var(--border);border-radius:var(--r);padding:12px;transition:all .3s;position:relative;overflow:hidden}
+.ent-kpi::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;opacity:0;transition:opacity .3s}
+.ent-kpi:nth-child(1)::before{background:var(--blue)}.ent-kpi:nth-child(2)::before{background:var(--green)}
+.ent-kpi:nth-child(3)::before{background:var(--purple)}.ent-kpi:nth-child(4)::before{background:var(--cyan)}
+.ent-kpi:nth-child(5)::before{background:var(--amber)}.ent-kpi:nth-child(6)::before{background:var(--green)}
+.ent-kpi:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,0.04)}
+.ent-kpi:hover::before{opacity:1}
+
+/* Enterprise AI */
+.ent-bottom{display:grid;grid-template-columns:2fr 1fr;gap:12px}
+.ent-ai{background:linear-gradient(135deg,rgba(59,130,246,0.02),rgba(139,92,246,0.01));border:1px solid rgba(59,130,246,0.1);border-radius:var(--r);padding:16px;position:relative;overflow:hidden}
+.ent-ai::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--gradient);opacity:.5}
+.ent-ai-header{display:flex;align-items:center;gap:8px;margin-bottom:12px}
+.ent-ai-badge{font-size:7px;font-weight:700;color:var(--purple);background:rgba(139,92,246,0.08);padding:2px 6px;border-radius:3px;margin-left:auto}
+.ent-ai-reasoning{font-size:8px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--purple);margin-bottom:6px;display:flex;align-items:center;gap:5px}
+.ent-ai-reasoning::before{content:'';width:10px;height:1px;background:var(--purple);opacity:.5}
+.ent-ai-answer{font-size:10px;color:var(--text-sec);line-height:1.7;padding:10px 12px;background:rgba(59,130,246,0.03);border-left:2px solid rgba(59,130,246,0.2);border-radius:0 6px 6px 0}
+
+/* Team sidebar */
+.ent-team{background:var(--bg-elevated);border:1px solid var(--border);border-radius:var(--r);padding:14px}
+.ent-team-title{font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--text-muted);margin-bottom:10px}
+.ent-member{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid rgba(0,0,0,0.02)}
+.ent-member:last-child{border-bottom:none}
+.ent-member-av{width:22px;height:22px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:800;color:#fff;flex-shrink:0}
+.ent-member-name{font-size:10px;font-weight:600;flex:1}
+.ent-member-status{width:6px;height:6px;border-radius:50%}
+
+/* Approval workflow chip */
+.ent-approval{margin-top:10px;background:rgba(245,158,11,0.04);border:1px solid rgba(245,158,11,0.1);border-radius:6px;padding:8px 10px;font-size:9px;color:var(--amber);font-weight:600;display:flex;align-items:center;gap:6px}
+.ent-approval-icon{width:16px;height:16px;border-radius:4px;background:rgba(245,158,11,0.1);display:flex;align-items:center;justify-content:center;font-size:8px}
+
+/* =============================================
+   RESPONSIVE
+   ============================================= */
+@media(max-width:768px){
+  .starter-grid{grid-template-columns:1fr}
+  .growth-kpis{grid-template-columns:repeat(2,1fr)}
+  .biz-kpis{grid-template-columns:repeat(2,1fr)}
+  .biz-panels{grid-template-columns:1fr}
+  .ent-kpis{grid-template-columns:repeat(3,1fr)}
+  .ent-bottom{grid-template-columns:1fr}
+}
+@media(max-width:480px){
+  .growth-kpis,.biz-kpis,.ent-kpis{grid-template-columns:1fr 1fr}
+  .page-title{font-size:28px}
+}
+` }} />
+      <div ref={containerRef} dangerouslySetInnerHTML={{ __html: `
+
+<!-- Page Header -->
+<div class="page-header fade-up">
+  <div class="page-badge">Dashboard Design System</div>
+  <div class="page-title">Each tier looks like<br>what you <span>pay for</span></div>
+  <div class="page-sub">The visual progression from Starter to Enterprise creates natural desire for the next tier. The dashboard itself is the sales tool.</div>
+</div>
+
+<!-- =============================================
+     TIER 1: STARTER
+     ============================================= -->
+<div class="tier-section starter fade-up" style="animation-delay:.1s">
+  <div class="tier-label">
+    <span class="tier-name">Starter</span>
+    <span class="tier-price">$499/mo</span>
+    <span class="tier-desc">Clean. Functional. You can see what you're missing.</span>
+    <span class="tier-arrow"></span>
+  </div>
+
+  <div class="dash dash-starter">
+    <div class="dash-chrome">
+      <span class="dot dot-r"></span><span class="dot dot-y"></span><span class="dot dot-g"></span>
+      <span class="dash-url">finance-os.app/dashboard</span>
+    </div>
+    <div class="dash-body">
+      <div class="dash-header">
+        <div>
+          <div class="dash-title">P&L Overview</div>
+          <div class="dash-subtitle">Single entity · March 2026</div>
+        </div>
+      </div>
+
+      <div class="starter-grid">
+        <div class="kpi"><div class="kpi-label">Revenue</div><div class="kpi-val">$2.4M</div><div class="kpi-delta up">+12% YoY</div></div>
+        <div class="kpi"><div class="kpi-label">Net Income</div><div class="kpi-val">$186K</div><div class="kpi-delta up">+8%</div></div>
+        <div class="kpi"><div class="kpi-label">Expenses</div><div class="kpi-val">$2.2M</div><div class="kpi-delta down">+4%</div></div>
+      </div>
+
+      <div class="starter-chart">
+        <div class="starter-chart-title">Monthly Revenue</div>
+        <div class="starter-bars">
+          <div class="starter-bar" style="height:55%"></div>
+          <div class="starter-bar" style="height:62%"></div>
+          <div class="starter-bar" style="height:58%"></div>
+          <div class="starter-bar" style="height:68%"></div>
+          <div class="starter-bar" style="height:72%"></div>
+          <div class="starter-bar" style="height:65%"></div>
+          <div class="starter-bar" style="height:78%"></div>
+          <div class="starter-bar" style="height:82%"></div>
+          <div class="starter-bar" style="height:76%"></div>
+          <div class="starter-bar" style="height:88%"></div>
+          <div class="starter-bar" style="height:92%"></div>
+          <div class="starter-bar" style="height:100%"></div>
+        </div>
+      </div>
+
+      <table class="starter-table">
+        <tr><th>Category</th><th style="text-align:right">Amount</th></tr>
+        <tr><td>Software Revenue</td><td>$1,680,000</td></tr>
+        <tr><td>Services Revenue</td><td>$720,000</td></tr>
+        <tr><td>Cost of Revenue</td><td>($480,000)</td></tr>
+        <tr><td>Operating Expenses</td><td>($1,734,000)</td></tr>
+      </table>
+
+      <div class="starter-empty">
+        AI Copilot · Scenario Modeling · Multi-Entity
+        <span>Available on Growth →</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- =============================================
+     TIER 2: GROWTH
+     ============================================= -->
+<div class="tier-section growth fade-up" style="animation-delay:.15s">
+  <div class="tier-label">
+    <span class="tier-name">Growth</span>
+    <span class="tier-price">$1,499/mo</span>
+    <span class="tier-desc">The platform comes alive. AI, charts, multi-entity.</span>
+    <span class="tier-arrow"></span>
+  </div>
+
+  <div class="dash dash-growth">
+    <div class="dash-chrome">
+      <span class="dot dot-r"></span><span class="dot dot-y"></span><span class="dot dot-g"></span>
+      <span class="dash-url">finance-os.app/saas-dashboard</span>
+      <div class="entity-switcher">
+        Acme Corp (Parent)
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+      </div>
+    </div>
+    <div class="dash-body">
+      <div class="dash-header">
+        <div>
+          <div class="dash-title">SaaS Command Center</div>
+          <div class="dash-subtitle">Consolidated · YTD 2026</div>
+        </div>
+        <div style="display:flex;gap:4px">
+          <span style="padding:5px 12px;border-radius:5px;font-size:9px;font-weight:600;color:var(--text-muted);border:1px solid var(--border);cursor:pointer">Q1</span>
+          <span style="padding:5px 12px;border-radius:5px;font-size:9px;font-weight:600;color:var(--blue);background:rgba(59,130,246,0.08);border:1px solid rgba(59,130,246,0.12);cursor:pointer">YTD</span>
+          <span style="padding:5px 12px;border-radius:5px;font-size:9px;font-weight:600;color:var(--text-muted);border:1px solid var(--border);cursor:pointer">12M</span>
+        </div>
+      </div>
+
+      <div class="growth-kpis">
+        <div class="kpi"><div class="kpi-label">ARR</div><div class="kpi-val" style="color:var(--blue)">$48.6M</div><div class="kpi-delta up">+24% YoY</div></div>
+        <div class="kpi"><div class="kpi-label">NDR</div><div class="kpi-val" style="color:var(--green)">118%</div><div class="kpi-delta up">+3pp QoQ</div></div>
+        <div class="kpi"><div class="kpi-label">Gross Margin</div><div class="kpi-val" style="color:var(--purple)">84.7%</div><div class="kpi-delta up">+2.1pp</div></div>
+        <div class="kpi"><div class="kpi-label">Rule of 40</div><div class="kpi-val" style="color:var(--cyan)">52.1</div><div class="kpi-delta up">Top 10%</div></div>
+      </div>
+
+      <div class="growth-chart">
+        <div class="growth-chart-header">
+          <div class="growth-chart-title">ARR Growth · Actual vs Budget</div>
+          <div class="growth-legend">
+            <div class="legend-item"><span class="legend-dot" style="background:var(--blue)"></span>Actual</div>
+            <div class="legend-item"><span class="legend-dot" style="background:rgba(139,92,246,0.3)"></span>Budget</div>
+          </div>
+        </div>
+        <div class="growth-bars">
+          <div style="flex:1"><div class="growth-bar-group"><div class="growth-bar budget" style="height:58%"></div><div class="growth-bar actual" style="height:65%"></div></div><div class="growth-bar-label">Jan</div></div>
+          <div style="flex:1"><div class="growth-bar-group"><div class="growth-bar budget" style="height:62%"></div><div class="growth-bar actual" style="height:70%"></div></div><div class="growth-bar-label">Feb</div></div>
+          <div style="flex:1"><div class="growth-bar-group"><div class="growth-bar budget" style="height:65%"></div><div class="growth-bar actual" style="height:72%"></div></div><div class="growth-bar-label">Mar</div></div>
+          <div style="flex:1"><div class="growth-bar-group"><div class="growth-bar budget" style="height:68%"></div><div class="growth-bar actual" style="height:78%"></div></div><div class="growth-bar-label">Apr</div></div>
+          <div style="flex:1"><div class="growth-bar-group"><div class="growth-bar budget" style="height:72%"></div><div class="growth-bar actual" style="height:82%"></div></div><div class="growth-bar-label">May</div></div>
+          <div style="flex:1"><div class="growth-bar-group"><div class="growth-bar budget" style="height:74%"></div><div class="growth-bar actual" style="height:86%"></div></div><div class="growth-bar-label">Jun</div></div>
+          <div style="flex:1"><div class="growth-bar-group"><div class="growth-bar budget" style="height:76%"></div><div class="growth-bar actual" style="height:84%"></div></div><div class="growth-bar-label">Jul</div></div>
+          <div style="flex:1"><div class="growth-bar-group"><div class="growth-bar budget" style="height:78%"></div><div class="growth-bar actual" style="height:90%"></div></div><div class="growth-bar-label">Aug</div></div>
+          <div style="flex:1"><div class="growth-bar-group"><div class="growth-bar budget" style="height:80%"></div><div class="growth-bar actual" style="height:88%"></div></div><div class="growth-bar-label">Sep</div></div>
+          <div style="flex:1"><div class="growth-bar-group"><div class="growth-bar budget" style="height:82%"></div><div class="growth-bar actual" style="height:94%"></div></div><div class="growth-bar-label">Oct</div></div>
+          <div style="flex:1"><div class="growth-bar-group"><div class="growth-bar budget" style="height:85%"></div><div class="growth-bar actual" style="height:96%"></div></div><div class="growth-bar-label">Nov</div></div>
+          <div style="flex:1"><div class="growth-bar-group"><div class="growth-bar budget" style="height:88%"></div><div class="growth-bar actual" style="height:100%"></div></div><div class="growth-bar-label">Dec</div></div>
+        </div>
+      </div>
+
+      <div class="growth-ai">
+        <div class="ai-row">
+          <div class="ai-dot">AI</div>
+          <div class="ai-content">
+            <div class="ai-q">"What drove the $2.1M revenue beat this quarter?"</div>
+            <div class="ai-a">Enterprise expansion drove 68% of the beat. NDR hit 126% in Enterprise, with AI module attach rate at 42% — up from 28% last quarter.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- =============================================
+     TIER 3: BUSINESS
+     ============================================= -->
+<div class="tier-section business fade-up" style="animation-delay:.2s">
+  <div class="tier-label">
+    <span class="tier-name">Business</span>
+    <span class="tier-price">$3,999/mo</span>
+    <span class="tier-desc">Premium executive feel. Scenarios, ML insights, sparklines.</span>
+    <span class="tier-arrow"></span>
+  </div>
+
+  <div class="dash dash-business">
+    <div class="dash-chrome">
+      <span class="dot dot-r"></span><span class="dot dot-y"></span><span class="dot dot-g"></span>
+      <span class="dash-url">finance-os.app/executive</span>
+      <div class="biz-badges">
+        <span class="biz-badge biz-badge-sso">SSO</span>
+        <span class="biz-badge biz-badge-api">API ●</span>
+        <span class="biz-badge biz-badge-ml">ML</span>
+      </div>
+    </div>
+    <div class="dash-body">
+      <div class="biz-top">
+        <div>
+          <div class="dash-title">Executive Command Center</div>
+          <div class="dash-subtitle">Multi-entity consolidated · All regions · YTD 2026</div>
+        </div>
+        <div class="entity-switcher">
+          Global (12 entities)
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+        </div>
+      </div>
+
+      <div class="biz-kpis">
+        <div class="kpi">
+          <div class="kpi-label">ARR</div>
+          <div class="kpi-val" style="color:var(--blue)">$142M</div>
+          <div class="kpi-delta up">+31% YoY</div>
+          <div class="kpi-spark">
+            <div class="kpi-spark-bar" style="height:40%"></div><div class="kpi-spark-bar" style="height:55%"></div><div class="kpi-spark-bar" style="height:48%"></div><div class="kpi-spark-bar" style="height:62%"></div><div class="kpi-spark-bar" style="height:58%"></div><div class="kpi-spark-bar" style="height:70%"></div><div class="kpi-spark-bar" style="height:75%"></div><div class="kpi-spark-bar highlight" style="height:85%"></div><div class="kpi-spark-bar highlight" style="height:90%"></div><div class="kpi-spark-bar highlight" style="height:100%"></div>
+          </div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-label">EBITDA Margin</div>
+          <div class="kpi-val" style="color:var(--green)">28.4%</div>
+          <div class="kpi-delta up">+4.2pp</div>
+          <div class="kpi-spark">
+            <div class="kpi-spark-bar" style="height:50%"></div><div class="kpi-spark-bar" style="height:55%"></div><div class="kpi-spark-bar" style="height:52%"></div><div class="kpi-spark-bar" style="height:60%"></div><div class="kpi-spark-bar" style="height:65%"></div><div class="kpi-spark-bar" style="height:72%"></div><div class="kpi-spark-bar" style="height:78%"></div><div class="kpi-spark-bar highlight" style="height:82%"></div><div class="kpi-spark-bar highlight" style="height:88%"></div><div class="kpi-spark-bar highlight" style="height:95%"></div>
+          </div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-label">Cash Runway</div>
+          <div class="kpi-val" style="color:var(--purple)">26mo</div>
+          <div class="kpi-delta up">+4mo</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-label">Rule of 40</div>
+          <div class="kpi-val" style="color:var(--cyan)">59.4</div>
+          <div class="kpi-delta up">Top 5%</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-label">NRR</div>
+          <div class="kpi-val" style="color:var(--green)">124%</div>
+          <div class="kpi-delta up">+6pp</div>
+        </div>
+      </div>
+
+      <div class="biz-panels">
+        <div class="biz-panel">
+          <div class="biz-panel-title">Scenario Comparison</div>
+          <div class="scenario-row"><span class="scenario-label"><span class="scenario-dot" style="background:var(--blue)"></span>Base Case</span><span class="scenario-val" style="color:var(--blue)">$168M</span></div>
+          <div class="scenario-row"><span class="scenario-label"><span class="scenario-dot" style="background:var(--green)"></span>Bull Case</span><span class="scenario-val" style="color:var(--green)">$192M</span></div>
+          <div class="scenario-row"><span class="scenario-label"><span class="scenario-dot" style="background:var(--rose)"></span>Bear Case</span><span class="scenario-val" style="color:var(--rose)">$148M</span></div>
+          <div class="scenario-row"><span class="scenario-label"><span class="scenario-dot" style="background:var(--purple)"></span>Board Plan</span><span class="scenario-val" style="color:var(--purple)">$175M</span></div>
+        </div>
+        <div class="biz-panel">
+          <div class="biz-panel-title">ML Insights</div>
+          <div class="ml-insight">
+            <div class="ml-icon" style="background:rgba(16,185,129,0.08);color:var(--green)">↑</div>
+            <div><div class="ml-text">Enterprise expansion will likely exceed plan by $4.2M based on pipeline velocity</div><div class="ml-conf">94% confidence</div></div>
+          </div>
+          <div class="ml-insight">
+            <div class="ml-icon" style="background:rgba(245,158,11,0.08);color:var(--amber)">!</div>
+            <div><div class="ml-text">APAC region showing churn risk — 3 accounts flagged for QBR escalation</div><div class="ml-conf">87% confidence</div></div>
+          </div>
+          <div class="ml-insight">
+            <div class="ml-icon" style="background:rgba(59,130,246,0.08);color:var(--blue)">→</div>
+            <div><div class="ml-text">CAC payback trending 2.1 months below model — consider increasing spend</div><div class="ml-conf">91% confidence</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- =============================================
+     TIER 4: ENTERPRISE
+     ============================================= -->
+<div class="tier-section enterprise fade-up" style="animation-delay:.25s">
+  <div class="tier-label">
+    <span class="tier-name">Enterprise</span>
+    <span class="tier-price">Custom</span>
+    <span class="tier-desc">The CFO Command Center. Branded. Ambient. Alive.</span>
+    <span class="tier-arrow"></span>
+  </div>
+
+  <div class="dash dash-enterprise">
+    <div class="ent-ambient">
+      <div class="ent-orb ent-orb-1"></div>
+      <div class="ent-orb ent-orb-2"></div>
+      <div class="ent-mesh"></div>
+    </div>
+
+    <div class="dash-chrome">
+      <span class="dot dot-r"></span><span class="dot dot-y"></span><span class="dot dot-g"></span>
+      <span class="dash-url">acme-corp.finance-os.app/command-center</span>
+    </div>
+    <div class="dash-body">
+      <!-- Branded Header -->
+      <div class="ent-brand">
+        <div class="ent-brand-left">
+          <div class="ent-logo">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect x="3" y="2" width="3" height="20" rx="1.5" fill="white" opacity=".9"/><rect x="3" y="2" width="16" height="3" rx="1.5" fill="white" opacity=".9"/><rect x="3" y="9.5" width="11" height="2.5" rx="1" fill="white" opacity=".6"/><rect x="14" y="14" width="2.5" height="8" rx="1" fill="white" opacity=".35"/><rect x="18" y="10" width="2.5" height="12" rx="1" fill="white" opacity=".5"/></svg>
+          </div>
+          <div>
+            <div class="ent-brand-title">Acme Corp <span>Command Center</span></div>
+            <div class="ent-brand-sub">CFO Dashboard · Branded · Live Data</div>
+          </div>
+        </div>
+        <div class="ent-brand-right">
+          <div class="ent-status"><span class="ent-status-dot"></span> Live</div>
+          <span class="ent-badge">SOX Compliant</span>
+          <span class="ent-badge" style="color:var(--blue);background:rgba(59,130,246,0.08);border-color:rgba(59,130,246,0.1)">Cross-Platform</span>
+        </div>
+      </div>
+
+      <!-- KPIs -->
+      <div class="ent-kpis">
+        <div class="ent-kpi"><div class="kpi-label">ARR</div><div class="kpi-val" style="color:var(--blue);font-size:18px">$142M</div><div class="kpi-delta up">+31%</div></div>
+        <div class="ent-kpi"><div class="kpi-label">NDR</div><div class="kpi-val" style="color:var(--green);font-size:18px">124%</div><div class="kpi-delta up">+6pp</div></div>
+        <div class="ent-kpi"><div class="kpi-label">Gross Margin</div><div class="kpi-val" style="color:var(--purple);font-size:18px">86.2%</div><div class="kpi-delta up">+1.5pp</div></div>
+        <div class="ent-kpi"><div class="kpi-label">Rule of 40</div><div class="kpi-val" style="color:var(--cyan);font-size:18px">59.4</div><div class="kpi-delta up">Top 5%</div></div>
+        <div class="ent-kpi"><div class="kpi-label">CAC Payback</div><div class="kpi-val" style="color:var(--amber);font-size:18px">11.8<span style="font-size:10px;color:var(--text-muted)">mo</span></div><div class="kpi-delta up">-3.2mo</div></div>
+        <div class="ent-kpi"><div class="kpi-label">Burn Multiple</div><div class="kpi-val" style="color:var(--green);font-size:18px">0.6x</div><div class="kpi-delta up">Efficient</div></div>
+      </div>
+
+      <!-- AI + Team -->
+      <div class="ent-bottom">
+        <div class="ent-ai">
+          <div class="ent-ai-header">
+            <div class="ai-dot">AI</div>
+            <span style="font-size:11px;font-weight:700">AI Copilot</span>
+            <div class="ent-ai-badge">Visible Reasoning</div>
+          </div>
+          <div class="ai-q" style="font-size:10px;color:var(--text-sec);font-style:italic;margin-bottom:8px">"What drove the $4.2M revenue beat vs board plan?"</div>
+          <div class="ent-ai-reasoning">Thought & Work Process</div>
+          <div class="ent-ai-answer">Enterprise expansion drove 68% of the beat. NDR hit 126% in Enterprise segment, with AI module attach rate climbing to 42% (up from 28%). Three expansion deals over $200K closed in the final week, primarily driven by APAC region outperformance. Board plan assumed 22% growth; actual was 31%.</div>
+        </div>
+
+        <div class="ent-team">
+          <div class="ent-team-title">Finance Team · 4 Online</div>
+          <div class="ent-member">
+            <div class="ent-member-av" style="background:linear-gradient(135deg,#3b82f6,#6366f1)">MF</div>
+            <span class="ent-member-name">Malik Frazier</span>
+            <span class="ent-member-status" style="background:var(--green)"></span>
+          </div>
+          <div class="ent-member">
+            <div class="ent-member-av" style="background:linear-gradient(135deg,#8b5cf6,#a855f7)">SC</div>
+            <span class="ent-member-name">Sarah Chen</span>
+            <span class="ent-member-status" style="background:var(--green)"></span>
+          </div>
+          <div class="ent-member">
+            <div class="ent-member-av" style="background:linear-gradient(135deg,#06b6d4,#3b82f6)">JR</div>
+            <span class="ent-member-name">James Rodriguez</span>
+            <span class="ent-member-status" style="background:var(--rose)"></span>
+          </div>
+          <div class="ent-member">
+            <div class="ent-member-av" style="background:linear-gradient(135deg,#10b981,#059669)">PP</div>
+            <span class="ent-member-name">Priya Patel</span>
+            <span class="ent-member-status" style="background:var(--green)"></span>
+          </div>
+          <div class="ent-member">
+            <div class="ent-member-av" style="background:linear-gradient(135deg,#f59e0b,#f97316)">DK</div>
+            <span class="ent-member-name">David Kim</span>
+            <span class="ent-member-status" style="background:var(--amber)"></span>
+          </div>
+
+          <div class="ent-approval">
+            <div class="ent-approval-icon">⏳</div>
+            2 approvals pending · Q1 board deck
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Footer -->
+<div style="text-align:center;padding:40px 24px 80px">
+  <div style="font-size:11px;color:var(--text-muted)">FinanceOS Dashboard Design System · Tier Progression v1.0</div>
+</div>
+
+<!-- Scripts -->
+
+
+` }} />
+    </>
+  );
+}

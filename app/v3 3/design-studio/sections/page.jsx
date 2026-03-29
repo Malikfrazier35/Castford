@@ -1,0 +1,817 @@
+'use client';
+
+import { useEffect, useRef } from 'react';
+
+export default function V3DesignStudioSectionsPage() {
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    // Run inline scripts after mount
+    const scripts = [
+      `// Industry tab switching
+function switchIndustry(btn){
+  document.querySelectorAll('.industry-tab').forEach(t=>t.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+// Scroll progress
+const scrollBar=document.querySelector('.scroll-progress');
+window.addEventListener('scroll',()=>{
+  const s=document.documentElement.scrollTop;
+  const h=document.documentElement.scrollHeight-window.innerHeight;
+  if(scrollBar)scrollBar.style.width=(s/h*100)+'%';
+},{passive:true});
+
+// Intersection Observer for fade-ups
+const observer=new IntersectionObserver((entries)=>{
+  entries.forEach(entry=>{
+    if(entry.isIntersecting){
+      entry.target.style.animationPlayState='running';
+      observer.unobserve(entry.target);
+    }
+  });
+},{threshold:0.1});
+document.querySelectorAll('.fade-up').forEach(el=>{
+  el.style.animationPlayState='paused';
+  observer.observe(el);
+});
+
+// 3D tilt on cards
+document.querySelectorAll('.feature-trio-card,.role-card,.feature-card').forEach(card=>{
+  card.addEventListener('mousemove',e=>{
+    const r=card.getBoundingClientRect();
+    const x=(e.clientX-r.left)/r.width-.5;
+    const y=(e.clientY-r.top)/r.height-.5;
+    card.style.transform=\`perspective(800px) rotateY(\${x*5}deg) rotateX(\${-y*5}deg) translateY(-3px)\`;
+  });
+  card.addEventListener('mouseleave',()=>{
+    card.style.transform='';
+  });
+});
+
+// Scroll-triggered KPI counter animation
+const kpiObs=new IntersectionObserver((entries)=>{
+  entries.forEach(entry=>{
+    if(!entry.isIntersecting)return;
+    const el=entry.target;
+    const text=el.dataset.original;
+    const numMatch=text.match(/([\\d,.]+)/);
+    if(numMatch){
+      const numStr=numMatch[1];
+      const num=parseFloat(numStr.replace(/,/g,''));
+      const prefix=text.substring(0,text.indexOf(numStr));
+      const suffix=text.substring(text.indexOf(numStr)+numStr.length);
+      const hasDecimal=numStr.includes('.');
+      const decimals=hasDecimal?(numStr.split('.')[1]||'').length:0;
+      const hasComma=numStr.includes(',');
+      let start=performance.now();
+      const dur=1000;
+      (function tick(now){
+        const p=Math.min((now-start)/dur,1);
+        const ease=1-Math.pow(1-p,3);
+        let v=num*ease;
+        let formatted=hasDecimal?v.toFixed(decimals):Math.round(v).toString();
+        if(hasComma)formatted=parseFloat(formatted).toLocaleString(undefined,{minimumFractionDigits:decimals,maximumFractionDigits:decimals});
+        el.textContent=prefix+formatted+suffix;
+        if(p<1)requestAnimationFrame(tick);
+        else el.textContent=text;
+      })(start);
+    }
+    kpiObs.unobserve(el);
+  });
+},{threshold:0.3});
+document.querySelectorAll('.kpi-value,.consolidation-stat-value').forEach(el=>{
+  el.dataset.original=el.textContent;
+  kpiObs.observe(el);
+});
+
+// Bar chart scroll trigger
+const chartObs=new IntersectionObserver((entries)=>{
+  entries.forEach(entry=>{
+    if(!entry.isIntersecting)return;
+    const bars=entry.target.querySelectorAll('.chart-bar');
+    bars.forEach((bar,i)=>{
+      setTimeout(()=>bar.classList.add('animate'),i*50);
+    });
+    chartObs.unobserve(entry.target);
+  });
+},{threshold:0.2});
+document.querySelectorAll('.chart-area').forEach(el=>chartObs.observe(el));
+
+// AI copilot typewriter
+const aiObs=new IntersectionObserver((entries)=>{
+  entries.forEach(entry=>{
+    if(!entry.isIntersecting)return;
+    const el=entry.target;
+    const text=el.dataset.text;
+    el.textContent='';
+    el.classList.add('typing');
+    let i=0;
+    const iv=setInterval(()=>{
+      el.textContent+=text[i];
+      i++;
+      if(i>=text.length){clearInterval(iv);el.classList.remove('typing')}
+    },22);
+    aiObs.unobserve(el);
+  });
+},{threshold:0.3});
+document.querySelectorAll('.ai-answer').forEach(el=>{
+  el.dataset.text=el.textContent;
+  el.textContent='';
+  aiObs.observe(el);
+});
+
+// Staggered feature grid entrance
+const gridObs=new IntersectionObserver((entries)=>{
+  entries.forEach(entry=>{
+    if(!entry.isIntersecting)return;
+    const cards=entry.target.querySelectorAll('.feature-card');
+    cards.forEach((c,i)=>{
+      c.style.opacity='0';
+      c.style.transform='scale(0.95) translateY(20px)';
+      c.style.filter='blur(3px)';
+      setTimeout(()=>{
+        c.style.transition='all .6s cubic-bezier(0.22,1,0.36,1)';
+        c.style.opacity='1';
+        c.style.transform='scale(1) translateY(0)';
+        c.style.filter='blur(0)';
+      },i*80);
+    });
+    gridObs.unobserve(entry.target);
+  });
+},{threshold:0.1});
+document.querySelectorAll('.feature-grid').forEach(el=>gridObs.observe(el));
+
+// Testimonial word reveal
+const testObs=new IntersectionObserver((entries)=>{
+  entries.forEach(entry=>{
+    if(!entry.isIntersecting)return;
+    const el=entry.target;
+    const words=el.dataset.words.split(' ');
+    el.innerHTML='';
+    words.forEach((w,i)=>{
+      const span=document.createElement('span');
+      span.textContent=w+' ';
+      span.style.cssText='display:inline-block;opacity:0;filter:blur(4px);transform:translateY(4px);transition:all .4s cubic-bezier(0.22,1,0.36,1)';
+      el.appendChild(span);
+      setTimeout(()=>{span.style.opacity='1';span.style.filter='blur(0)';span.style.transform='translateY(0)'},i*60);
+    });
+    testObs.unobserve(el);
+  });
+},{threshold:0.3});
+document.querySelectorAll('.testimonial-quote').forEach(el=>{
+  el.dataset.words=el.textContent;
+  testObs.observe(el);
+});
+
+// Magnetic buttons
+document.querySelectorAll('.btn-primary').forEach(btn=>{
+  btn.addEventListener('mousemove',e=>{
+    const r=btn.getBoundingClientRect();
+    const cx=r.left+r.width/2,cy=r.top+r.height/2;
+    btn.style.transform=\`translate(\${(e.clientX-cx)*0.08}px,\${(e.clientY-cy)*0.08}px) translateY(-2px)\`;
+  });
+  btn.addEventListener('mouseleave',()=>{btn.style.transform=''});
+});`
+    ];
+    scripts.forEach(code => {
+      try { new Function(code)(); } catch(e) { console.warn('Script error:', e); }
+    });
+  }, []);
+
+  return (
+    <>
+      <style dangerouslySetInnerHTML={{ __html: `
+:root{
+  --bg:#ffffff;--bg-elevated:#f8f9fb;--bg-card:#ffffff;--bg-card-hover:#f3f5f8;
+  --border:#e5e7ec;--border-accent:#d1d5de;
+  --text:#0f1729;--text-sec:#4b5563;--text-muted:#9ca3af;
+  --blue:#3b82f6;--purple:#8b5cf6;--green:#10b981;--amber:#f59e0b;--cyan:#06b6d4;--rose:#f43f5e;
+  --gradient:linear-gradient(135deg,#3b82f6,#8b5cf6);
+  --gradient-subtle:linear-gradient(135deg,rgba(59,130,246,0.04),rgba(139,92,246,0.04));
+  --sans:'Manrope',system-ui,-apple-system,sans-serif;
+  --mono:'JetBrains Mono',ui-monospace,monospace;
+  --r:12px;--r-lg:16px;--r-xl:20px;
+  --shadow:0 1px 3px rgba(0,0,0,0.06),0 4px 16px rgba(0,0,0,0.04);
+  --shadow-lg:0 4px 24px rgba(0,0,0,0.08),0 12px 48px rgba(0,0,0,0.04);
+  --shadow-glow:0 0 40px rgba(59,130,246,0.06),0 0 80px rgba(139,92,246,0.03);
+  --glass:rgba(255,255,255,0.7);--glass-border:rgba(0,0,0,0.06);--glass-blur:blur(16px);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);-webkit-font-smoothing:antialiased;line-height:1.7;overflow-x:hidden;text-rendering:optimizeLegibility}
+::selection{background:rgba(59,130,246,0.15)}
+
+/* Future-proof: modern CSS */
+:root{color-scheme:light}
+@supports(animation-timeline:scroll()){
+  .scroll-progress{animation:scrollFill linear;animation-timeline:scroll();width:100%!important;transition:none!important;transform-origin:left}
+  @keyframes scrollFill{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+}
+@supports(container-type:inline-size){
+  .feature-trio,.role-grid,.feature-grid,.kpi-row{container-type:inline-size}
+  @container(max-width:400px){.kpi-card{padding:12px}.kpi-value{font-size:18px}}
+}
+@media(prefers-contrast:more){:root{--border:#bcc0cc;--text-sec:#1f2937}}
+@media(prefers-reduced-transparency:reduce){.feature-trio-card,.feature-card{backdrop-filter:none;background:var(--bg-card)}}
+
+/* Animations */
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+@keyframes ambientDrift{0%{transform:translate(0,0) scale(1)}25%{transform:translate(30px,-20px) scale(1.05)}50%{transform:translate(-20px,15px) scale(0.98)}75%{transform:translate(15px,25px) scale(1.03)}100%{transform:translate(0,0) scale(1)}}
+@keyframes ambientDrift2{0%{transform:translate(0,0) scale(1)}25%{transform:translate(-25px,15px) scale(1.03)}50%{transform:translate(20px,-25px) scale(0.97)}75%{transform:translate(-15px,-20px) scale(1.04)}100%{transform:translate(0,0) scale(1)}}
+@keyframes pulse{0%,100%{opacity:.5}50%{opacity:1}}
+@keyframes typewriter{from{width:0}to{width:100%}}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+@keyframes barGrow{from{transform:scaleY(0)}to{transform:scaleY(1)}}
+@keyframes countUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+@keyframes glowPulse{0%,100%{box-shadow:0 0 20px rgba(59,130,246,0.04)}50%{box-shadow:0 0 40px rgba(59,130,246,0.1),0 0 80px rgba(139,92,246,0.05)}}
+@keyframes borderShimmer{0%{border-color:rgba(59,130,246,0.08)}50%{border-color:rgba(139,92,246,0.15)}100%{border-color:rgba(59,130,246,0.08)}}
+@keyframes numberReveal{from{opacity:0;filter:blur(4px);transform:translateY(8px)}to{opacity:1;filter:blur(0);transform:translateY(0)}}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+.fade-up{animation:fadeUp .8s cubic-bezier(0.22,1,0.36,1) both}
+.fade-up-d1{animation-delay:.1s}.fade-up-d2{animation-delay:.2s}.fade-up-d3{animation-delay:.3s}
+.fade-up-d4{animation-delay:.4s}.fade-up-d5{animation-delay:.5s}.fade-up-d6{animation-delay:.6s}
+.fade-up-d7{animation-delay:.7s}.fade-up-d8{animation-delay:.8s}
+
+/* Scroll Progress */
+.scroll-progress{position:fixed;top:0;left:0;height:2px;background:var(--gradient);z-index:200;width:0%;transition:width .15s linear}
+
+/* Container */
+.container{max-width:1100px;margin:0 auto;padding:0 24px}
+section{padding:120px 0;position:relative}
+
+/* Section Headers */
+.section-label{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.14em;color:var(--blue);margin-bottom:14px;display:flex;align-items:center;gap:10px}
+.section-label::before{content:'';width:20px;height:1px;background:var(--blue);opacity:.5}
+.section-title{font-size:clamp(30px,4.5vw,48px);font-weight:800;letter-spacing:-.04em;line-height:1.1;margin-bottom:18px}
+.section-title span{background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.section-desc{font-size:15px;color:var(--text-sec);max-width:540px;line-height:1.8;margin-bottom:48px}
+
+/* Buttons */
+.btn-primary{padding:16px 36px;border-radius:12px;background:var(--gradient);color:#fff;font-weight:700;font-size:14px;text-decoration:none;border:none;cursor:pointer;font-family:var(--sans);transition:transform .2s cubic-bezier(0.22,1,0.36,1),box-shadow .3s;box-shadow:0 4px 16px rgba(59,130,246,0.2);letter-spacing:.01em;display:inline-flex;align-items:center;gap:8px;position:relative;overflow:hidden}
+.btn-primary::after{content:'';position:absolute;top:0;left:-100%;width:60%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.15),transparent);animation:shimmer 3s ease-in-out infinite}
+@keyframes shimmer{0%{left:-100%}100%{left:200%}}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(59,130,246,0.25)}
+.btn-secondary{padding:16px 36px;border-radius:12px;background:var(--bg);color:var(--text);font-weight:600;font-size:14px;text-decoration:none;border:1px solid var(--border);cursor:pointer;font-family:var(--sans);transition:all .3s;display:inline-flex;align-items:center;gap:8px}
+.btn-secondary:hover{border-color:var(--blue);color:var(--blue);transform:translateY(-2px);box-shadow:0 4px 16px rgba(59,130,246,0.06)}
+
+/* =============================================
+   SECTION 1: Feature Trio (Reasoning / Collab / Scale)
+   ============================================= */
+.feature-trio{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border-radius:var(--r-xl);overflow:hidden;box-shadow:var(--shadow-lg);border:1px solid var(--border);position:relative}
+.feature-trio::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--gradient);z-index:2}
+.feature-trio-card{background:var(--glass);backdrop-filter:var(--glass-blur);-webkit-backdrop-filter:var(--glass-blur);padding:44px 36px;position:relative;transition:all .4s cubic-bezier(0.22,1,0.36,1);border-right:1px solid var(--border)}
+.feature-trio-card:last-child{border-right:none}
+.feature-trio-card::after{content:'';position:absolute;inset:0;background:var(--gradient-subtle);opacity:0;transition:opacity .4s}
+.feature-trio-card:hover{background:var(--bg-card)}
+.feature-trio-card:hover::after{opacity:1}
+
+.ft-icon{width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:20px;margin-bottom:22px;position:relative;box-shadow:0 4px 12px rgba(0,0,0,0.04);z-index:1}
+.ft-icon::after{content:'';position:absolute;inset:0;border-radius:14px;box-shadow:inset 0 -1px 0 rgba(0,0,0,0.05),inset 0 1px 0 rgba(255,255,255,0.5);z-index:2}
+.ft-icon span{position:relative;z-index:1;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.1))}
+
+.ft-title{font-size:17px;font-weight:800;letter-spacing:-.02em;margin-bottom:10px;position:relative;z-index:1}
+.ft-desc{font-size:13px;color:var(--text-sec);line-height:1.8;margin-bottom:22px;position:relative;z-index:1}
+.ft-list{list-style:none;display:flex;flex-direction:column;gap:10px;position:relative;z-index:1}
+.ft-list li{font-size:11px;font-weight:600;color:var(--text-sec);display:flex;align-items:center;gap:10px;letter-spacing:.02em;padding:6px 10px;border-radius:8px;background:rgba(0,0,0,0.01);border:1px solid rgba(0,0,0,0.03);transition:all .25s}
+.ft-list li:hover{background:rgba(59,130,246,0.03);border-color:rgba(59,130,246,0.08)}
+.ft-list li::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--blue);opacity:.7;flex-shrink:0;box-shadow:0 0 6px rgba(59,130,246,0.3)}
+
+/* =============================================
+   SECTION 2: Replace 6 Tools CTA
+   ============================================= */
+.consolidation-cta{position:relative;overflow:hidden;border-radius:var(--r-xl);border:1px solid var(--border);background:var(--bg-card);animation:glowPulse 6s ease-in-out infinite}
+.consolidation-inner{position:relative;z-index:2;padding:80px 48px;text-align:center}
+.consolidation-cta .ambient-orb{position:absolute;border-radius:50%;filter:blur(120px);pointer-events:none}
+.consolidation-cta .orb-1{width:500px;height:500px;top:-30%;left:-10%;background:rgba(59,130,246,0.08);animation:ambientDrift 20s ease-in-out infinite}
+.consolidation-cta .orb-2{width:400px;height:400px;bottom:-20%;right:-5%;background:rgba(139,92,246,0.06);animation:ambientDrift2 25s ease-in-out infinite}
+.consolidation-title{font-size:clamp(28px,4vw,42px);font-weight:800;letter-spacing:-.04em;line-height:1.1;margin-bottom:16px}
+.consolidation-title span{background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.consolidation-sub{font-size:15px;color:var(--text-sec);max-width:520px;margin:0 auto 36px;line-height:1.7}
+.consolidation-stats{display:flex;justify-content:center;gap:48px;margin-top:40px;padding-top:32px;border-top:1px solid var(--border)}
+.consolidation-stat{text-align:center;padding:16px 20px;border-radius:12px;background:rgba(255,255,255,0.6);border:1px solid rgba(0,0,0,0.04);backdrop-filter:blur(8px);transition:all .3s}
+.consolidation-stat:hover{background:rgba(255,255,255,0.85);transform:translateY(-2px);box-shadow:0 4px 16px rgba(59,130,246,0.06)}
+.consolidation-stat-value{font-size:32px;font-weight:900;font-family:var(--mono);letter-spacing:-.04em;background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;filter:drop-shadow(0 1px 2px rgba(59,130,246,0.1))}
+.consolidation-stat-label{font-size:10px;font-weight:600;color:var(--text-muted);margin-top:6px;letter-spacing:.06em;text-transform:uppercase}
+
+/* =============================================
+   SECTION 3: Role-Based Dashboards
+   ============================================= */
+.role-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;perspective:800px}
+.role-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--r-xl);padding:36px;position:relative;overflow:hidden;transition:all .4s cubic-bezier(0.22,1,0.36,1);box-shadow:var(--shadow);transform-style:preserve-3d}
+.role-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--gradient);opacity:0;transition:opacity .4s}
+.role-card:hover{border-color:rgba(59,130,246,0.15);transform:translateY(-6px);box-shadow:var(--shadow-lg),0 0 40px rgba(59,130,246,0.04)}
+.role-card:hover::before{opacity:1}
+.role-card::after{content:'';position:absolute;top:0;right:0;width:200px;height:200px;border-radius:50%;filter:blur(80px);pointer-events:none;opacity:.5}
+.role-card.cfo::after{background:rgba(59,130,246,0.06)}
+.role-card.ceo::after{background:rgba(139,92,246,0.06)}
+.role-card.controller::after{background:rgba(16,185,129,0.06)}
+.role-card.fpa::after{background:rgba(245,158,11,0.06)}
+
+.role-badge{display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:6px;font-size:10px;font-weight:800;letter-spacing:.06em;margin-bottom:16px}
+.role-card.cfo .role-badge{background:rgba(59,130,246,0.08);color:var(--blue)}
+.role-card.ceo .role-badge{background:rgba(139,92,246,0.08);color:var(--purple)}
+.role-card.controller .role-badge{background:rgba(16,185,129,0.08);color:var(--green)}
+.role-card.fpa .role-badge{background:rgba(245,158,11,0.08);color:var(--amber)}
+
+.role-kpis{font-size:12px;color:var(--text-sec);line-height:1.8;margin-bottom:20px}
+.role-link{font-size:12px;font-weight:700;color:var(--blue);text-decoration:none;display:inline-flex;align-items:center;gap:6px;transition:gap .2s}
+.role-link:hover{gap:10px}
+.role-link svg{width:14px;height:14px;transition:transform .2s}
+.role-link:hover svg{transform:translateX(2px)}
+
+/* =============================================
+   SECTION 4: Industry Dashboard Preview
+   ============================================= */
+.industry-section{background:var(--bg-elevated);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+.scroll-progress{position:fixed;top:0;left:0;height:2px;background:var(--gradient);z-index:200;width:0%;transition:width .1s linear}
+
+/* Tabs */
+.industry-tabs{display:flex;gap:4px;margin-bottom:32px;background:rgba(0,0,0,0.01);border:1px solid var(--border);border-radius:10px;padding:4px;width:fit-content}
+.industry-tab{padding:10px 20px;border-radius:8px;font-size:12px;font-weight:600;color:var(--text-muted);cursor:pointer;transition:all .25s;border:none;background:none;font-family:var(--sans);letter-spacing:.01em}
+.industry-tab:hover{color:var(--text-sec)}
+.industry-tab.active{background:var(--bg-card);color:var(--text);box-shadow:0 2px 8px rgba(0,0,0,0.06),0 0 0 1px rgba(0,0,0,0.04)}
+
+/* Dashboard Frame — Rich depth */
+.dash-frame{border:1px solid var(--border-accent);border-radius:var(--r-xl);overflow:hidden;background:var(--bg-card);box-shadow:var(--shadow-lg),0 0 60px rgba(59,130,246,0.04);position:relative}
+.dash-frame::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:var(--gradient);opacity:.3;z-index:1}
+.dash-titlebar{display:flex;align-items:center;gap:8px;padding:12px 16px;border-bottom:1px solid var(--border);background:var(--bg-elevated)}
+.dash-dot{width:8px;height:8px;border-radius:50%}
+.dash-dot-r{background:#ff5f57}.dash-dot-y{background:#ffbd2e}.dash-dot-g{background:#28ca41}
+.dash-url{flex:1;text-align:center;font-size:10px;color:var(--text-muted);font-family:var(--mono);letter-spacing:.02em}
+.dash-body{padding:28px}
+
+/* Dashboard Header */
+.dash-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px}
+.dash-title-group h3{font-size:18px;font-weight:800;letter-spacing:-.02em}
+.dash-title-group p{font-size:11px;color:var(--text-muted);margin-top:2px}
+.dash-period-tabs{display:flex;gap:2px;background:rgba(0,0,0,0.02);border-radius:6px;padding:2px}
+.dash-period{padding:6px 14px;border-radius:5px;font-size:10px;font-weight:600;color:var(--text-muted);cursor:pointer;border:none;background:none;font-family:var(--sans)}
+.dash-period.active{background:rgba(59,130,246,0.1);color:var(--blue)}
+
+/* KPI Row — Rich cards */
+.kpi-row{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;margin-bottom:24px}
+.kpi-card{background:var(--bg-elevated);border:1px solid var(--border);border-radius:12px;padding:18px;position:relative;overflow:hidden;transition:all .3s cubic-bezier(0.22,1,0.36,1)}
+.kpi-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--gradient);opacity:0;transition:opacity .3s}
+.kpi-card:hover{transform:translateY(-3px);box-shadow:var(--shadow);border-color:rgba(59,130,246,0.15)}
+.kpi-card:hover::before{opacity:.6}
+.kpi-label{font-size:8px;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--text-muted);margin-bottom:8px}
+.kpi-value{font-size:24px;font-weight:900;font-family:var(--mono);letter-spacing:-.04em;line-height:1;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.05))}
+.kpi-delta{font-size:9px;font-weight:700;margin-top:8px;display:flex;align-items:center;gap:4px;padding:3px 8px;border-radius:4px;width:fit-content}
+.kpi-delta.positive{color:var(--green);background:rgba(16,185,129,0.06)}
+.kpi-delta.neutral{color:var(--text-muted);background:rgba(0,0,0,0.02)}
+
+/* Chart Area */
+.dash-chart{background:var(--bg-elevated);border:1px solid var(--border);border-radius:10px;padding:20px;margin-bottom:20px}
+.dash-chart-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+.dash-chart-title{font-size:12px;font-weight:700;letter-spacing:-.01em}
+.dash-chart-legend{display:flex;gap:16px}
+.legend-item{display:flex;align-items:center;gap:6px;font-size:9px;font-weight:600;color:var(--text-muted)}
+.legend-dot{width:6px;height:6px;border-radius:2px}
+.legend-dot.actual{background:var(--blue)}
+.legend-dot.budget{background:rgba(139,92,246,0.5)}
+.legend-dot.beating{background:var(--green)}
+
+/* Bar Chart */
+.chart-area{height:180px;display:flex;align-items:flex-end;gap:8px;padding:0 4px}
+.chart-bar-group{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px}
+.chart-bars{display:flex;gap:3px;align-items:flex-end;width:100%;height:160px}
+.chart-bar{flex:1;border-radius:3px 3px 0 0;transform-origin:bottom;animation:barGrow .6s cubic-bezier(0.22,1,0.36,1) both}
+.chart-bar.actual{background:var(--gradient)}
+.chart-bar.budget{background:rgba(139,92,246,0.25)}
+.chart-bar-label{font-size:7px;font-weight:600;color:var(--text-muted);letter-spacing:.04em}
+.chart-beat-badge{position:absolute;top:-8px;right:-4px;font-size:7px;font-weight:800;color:var(--green);background:rgba(16,185,129,0.1);padding:2px 5px;border-radius:3px}
+
+/* AI Copilot Widget — Rich depth */
+.ai-copilot{background:linear-gradient(135deg,rgba(59,130,246,0.02),rgba(139,92,246,0.01));border:1px solid rgba(59,130,246,0.12);border-radius:14px;padding:24px;position:relative;overflow:hidden;box-shadow:0 4px 20px rgba(59,130,246,0.04)}
+.ai-copilot::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--gradient);opacity:.5}
+.ai-header{display:flex;align-items:center;gap:8px;margin-bottom:16px}
+.ai-avatar{width:24px;height:24px;border-radius:8px;background:var(--gradient);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;color:#fff;box-shadow:0 2px 8px rgba(59,130,246,0.2)}
+.ai-name{font-size:11px;font-weight:700}
+.ai-badge{font-size:8px;font-weight:700;color:var(--purple);background:rgba(139,92,246,0.1);padding:2px 8px;border-radius:4px;margin-left:auto}
+.ai-question{font-size:12px;color:var(--text-sec);padding:12px;background:rgba(0,0,0,0.02);border:1px solid rgba(0,0,0,0.04);border-radius:8px;margin-bottom:12px;font-style:italic}
+.ai-reasoning{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--purple);margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.ai-reasoning::before{content:'';width:12px;height:1px;background:var(--purple);opacity:.5}
+.ai-answer{font-size:12px;color:var(--text-sec);line-height:1.7;padding:12px 14px;background:rgba(59,130,246,0.03);border-left:2px solid rgba(59,130,246,0.2);border-radius:0 8px 8px 0}
+.ai-answer::after{content:'▊';color:var(--blue);opacity:.5;animation:blink 1.2s step-end infinite;margin-left:2px}
+
+/* =============================================
+   SECTION 5: Feature Grid (6 features)
+   ============================================= */
+.feature-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;perspective:800px}
+.feature-card{background:var(--bg-card);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid var(--border);border-radius:var(--r-xl);padding:36px;position:relative;overflow:hidden;transition:all .4s cubic-bezier(0.22,1,0.36,1);box-shadow:var(--shadow);transform-style:preserve-3d}
+.feature-card:hover{border-color:rgba(59,130,246,0.15);transform:translateY(-5px);box-shadow:var(--shadow-lg),0 0 40px rgba(59,130,246,0.04)}
+.feature-card::before{content:'';position:absolute;top:-40%;right:-40%;width:200px;height:200px;border-radius:50%;filter:blur(60px);pointer-events:none;opacity:0;transition:opacity .4s}
+.feature-card:hover::before{opacity:1}
+.feature-card:nth-child(1)::before{background:rgba(59,130,246,0.08)}
+.feature-card:nth-child(2)::before{background:rgba(139,92,246,0.08)}
+.feature-card:nth-child(3)::before{background:rgba(16,185,129,0.08)}
+.feature-card:nth-child(4)::before{background:rgba(245,158,11,0.08)}
+.feature-card:nth-child(5)::before{background:rgba(6,182,212,0.08)}
+.feature-card:nth-child(6)::before{background:rgba(244,63,94,0.08)}
+
+.fc-icon{width:48px;height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center;margin-bottom:20px;font-size:18px;box-shadow:0 4px 12px rgba(0,0,0,0.04);position:relative}
+.fc-icon::after{content:'';position:absolute;inset:0;border-radius:14px;box-shadow:inset 0 -1px 0 rgba(0,0,0,0.04),inset 0 1px 0 rgba(255,255,255,0.5)}
+.fc-title{font-size:16px;font-weight:800;letter-spacing:-.02em;margin-bottom:10px}
+.fc-desc{font-size:12px;color:var(--text-sec);line-height:1.8}
+
+/* =============================================
+   SECTION 6: Testimonial
+   ============================================= */
+.testimonial{position:relative;padding:64px 56px;background:linear-gradient(135deg,rgba(59,130,246,0.04),rgba(139,92,246,0.03),rgba(16,185,129,0.02));border:1px solid rgba(59,130,246,0.1);border-radius:var(--r-xl);text-align:center;overflow:hidden;box-shadow:0 8px 40px rgba(59,130,246,0.04),0 1px 3px rgba(0,0,0,0.02)}
+.testimonial::before{content:'';position:absolute;top:-50%;left:50%;transform:translateX(-50%);width:600px;height:600px;border-radius:50%;background:radial-gradient(circle,rgba(59,130,246,0.05) 0%,transparent 60%);pointer-events:none;animation:ambientDrift 25s ease-in-out infinite}
+.testimonial::after{content:'\\201C';position:absolute;top:8px;left:32px;font-size:140px;font-weight:800;background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;opacity:.06;line-height:1;font-family:Georgia,serif;pointer-events:none}
+.testimonial-quote{font-size:clamp(16px,2.5vw,22px);font-weight:600;letter-spacing:-.02em;line-height:1.65;max-width:640px;margin:0 auto 16px;position:relative;color:var(--text)}
+.testimonial-attr{font-size:10px;color:var(--text-muted);font-weight:600;letter-spacing:.06em;text-transform:uppercase}
+
+/* =============================================
+   SECTION 7: Final CTA
+   ============================================= */
+.final-cta{text-align:center;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--r-xl);padding:72px 48px;position:relative;overflow:hidden;box-shadow:var(--shadow);isolation:isolate}
+.final-cta::before{content:'';position:absolute;top:-200px;left:50%;transform:translateX(-50%);width:700px;height:700px;border-radius:50%;background:radial-gradient(circle,rgba(59,130,246,0.05) 0%,rgba(139,92,246,0.03) 40%,transparent 70%);pointer-events:none;animation:ambientDrift 22s ease-in-out infinite}
+.final-cta::after{content:'';position:absolute;inset:-1px;border-radius:var(--r-xl);background:conic-gradient(from var(--angle),#3b82f6,#8b5cf6,#10b981,#f59e0b,#3b82f6);z-index:-1;animation:spin 4s linear infinite;opacity:.08;transition:opacity .4s}
+.final-cta:hover::after{opacity:.15}
+.final-cta-title{font-size:clamp(24px,3.5vw,36px);font-weight:800;letter-spacing:-.03em;margin-bottom:12px;position:relative}
+.final-cta-desc{font-size:14px;color:var(--text-sec);max-width:440px;margin:0 auto 36px;line-height:1.7;position:relative}
+
+/* Responsive */
+@media(max-width:1024px){
+  .kpi-row{grid-template-columns:repeat(3,1fr)}
+}
+@media(max-width:768px){
+  .feature-trio{grid-template-columns:1fr}
+  .role-grid{grid-template-columns:1fr}
+  .feature-grid{grid-template-columns:1fr}
+  .kpi-row{grid-template-columns:repeat(2,1fr)}
+  .industry-tabs{flex-wrap:wrap}
+  .consolidation-stats{flex-direction:column;gap:20px}
+  section{padding:80px 0}
+}
+@media(max-width:480px){
+  .kpi-row{grid-template-columns:1fr}
+  .chart-area{height:120px}
+  .dash-header{flex-direction:column;align-items:flex-start;gap:12px}
+}
+
+/* === GENIUS ANIMATIONS === */
+@property --angle{syntax:'<angle>';initial-value:0deg;inherits:false}
+@keyframes spin{to{--angle:360deg}}
+@keyframes scaleReveal{from{opacity:0;transform:scale(0.94) translateY(20px);filter:blur(4px)}to{opacity:1;transform:scale(1) translateY(0);filter:blur(0)}}
+@keyframes wordReveal{from{opacity:0;filter:blur(6px);transform:translateY(4px)}to{opacity:1;filter:blur(0);transform:translateY(0)}}
+
+/* Morphing border on consolidation CTA */
+.consolidation-cta{isolation:isolate}
+.consolidation-cta::after{content:'';position:absolute;inset:-1px;border-radius:var(--r-xl);background:conic-gradient(from var(--angle),#3b82f6,#8b5cf6,#10b981,#f59e0b,#3b82f6);z-index:-1;animation:spin 4s linear infinite;opacity:.1;transition:opacity .4s}
+.consolidation-cta:hover::after{opacity:.25}
+
+/* 3D tilt setup */
+.feature-trio,.role-grid,.feature-grid{perspective:800px}
+.feature-trio-card,.role-card,.feature-card{transform-style:preserve-3d;will-change:transform}
+
+/* Enhanced card entry */
+.feature-card,.role-card{transition:all .5s cubic-bezier(0.22,1,0.36,1)}
+
+/* Bar chart trigger state */
+.chart-bar{transform:scaleY(0);animation:none}
+.chart-bar.animate{animation:barGrow .6s cubic-bezier(0.22,1,0.36,1) both}
+
+/* AI typewriter */
+.ai-answer.typing{overflow:hidden}
+.ai-answer.typing::after{display:inline}
+
+/* KPI glow on hover */
+.kpi-card{transition:all .3s}
+.kpi-card:hover{transform:translateY(-2px);box-shadow:var(--shadow)}
+
+/* Button magnetic */
+.btn-primary,.btn-secondary{transition:transform .2s cubic-bezier(0.22,1,0.36,1),box-shadow .3s}
+` }} />
+      <div ref={containerRef} dangerouslySetInnerHTML={{ __html: `
+
+<div class="scroll-progress"></div>
+
+<!-- =============================================
+     SECTION 1: Feature Trio
+     ============================================= -->
+<section>
+  <div class="container">
+    <div class="section-label fade-up">Platform Capabilities</div>
+    <div class="section-title fade-up fade-up-d1">Built for how <span>finance teams</span><br>actually work</div>
+    <div class="section-desc fade-up fade-up-d2">Transparent reasoning. Real collaboration. Enterprise scale. Three principles that make FinanceOS different from every BI tool your team has tried.</div>
+
+    <div class="feature-trio fade-up fade-up-d3">
+      <div class="feature-trio-card">
+        <div class="ft-icon" style="background:rgba(139,92,246,0.1)"><span style="color:var(--purple)">&#x1f9e0;</span></div>
+        <div class="ft-title">Visible Reasoning Chain</div>
+        <div class="ft-desc">Every AI-generated insight shows its work. No black boxes. Your team sees the data sources, logic, and confidence levels behind every recommendation.</div>
+        <ul class="ft-list">
+          <li>Source attribution on every metric</li>
+          <li>Confidence scoring with data lineage</li>
+          <li>Audit-ready reasoning trails</li>
+        </ul>
+      </div>
+      <div class="feature-trio-card">
+        <div class="ft-icon" style="background:rgba(59,130,246,0.1)"><span style="color:var(--blue)">&#x1f91d;</span></div>
+        <div class="ft-title">Collaborative by Nature</div>
+        <div class="ft-desc">Your finance team works as one. Assign tasks, send messages, track activity, and review changes — all inside the platform.</div>
+        <ul class="ft-list">
+          <li>Team profiles & live presence</li>
+          <li>Task assignment & tracking</li>
+          <li>Channel-based messaging</li>
+        </ul>
+      </div>
+      <div class="feature-trio-card">
+        <div class="ft-icon" style="background:rgba(16,185,129,0.1)"><span style="color:var(--green)">&#x26a1;</span></div>
+        <div class="ft-title">Flexible at Scale</div>
+        <div class="ft-desc">Add entities, scenarios, and team members without rebuilding models. Scale from startup to enterprise without switching platforms.</div>
+        <ul class="ft-list">
+          <li>Unlimited scenarios</li>
+          <li>Multi-entity consolidation</li>
+          <li>No seat caps (Enterprise)</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =============================================
+     SECTION 2: Consolidation CTA
+     ============================================= -->
+<section style="padding:0 0 120px">
+  <div class="container">
+    <div class="consolidation-cta fade-up">
+      <div class="ambient-orb orb-1"></div>
+      <div class="ambient-orb orb-2"></div>
+      <div class="consolidation-inner">
+        <div class="consolidation-title">Replace <span>6 tools</span> with one platform</div>
+        <div class="consolidation-sub">From budgeting to board decks, FinanceOS consolidates your entire FP&A workflow. Same-day deployment. 96.8% forecast accuracy.</div>
+        <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap">
+          <a href="#" class="btn-primary">Try the Demo <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+          <a href="https://calendly.com/finance-os-support" class="btn-secondary">Book a Demo</a>
+        </div>
+        <div class="consolidation-stats">
+          <div class="consolidation-stat">
+            <div class="consolidation-stat-value">96.8%</div>
+            <div class="consolidation-stat-label">Forecast Accuracy</div>
+          </div>
+          <div class="consolidation-stat">
+            <div class="consolidation-stat-value">6→1</div>
+            <div class="consolidation-stat-label">Tool Consolidation</div>
+          </div>
+          <div class="consolidation-stat">
+            <div class="consolidation-stat-value">&lt;24hr</div>
+            <div class="consolidation-stat-label">Deployment Time</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =============================================
+     SECTION 3: Role-Based Dashboards
+     ============================================= -->
+<section>
+  <div class="container">
+    <div class="section-label fade-up">Tailored to Your Role</div>
+    <div class="section-title fade-up fade-up-d1">One platform.<br><span>Every finance role.</span></div>
+    <div class="section-desc fade-up fade-up-d2">Every executive sees the KPIs that matter to them. Personalized dashboards are not an add-on — they are how FinanceOS works.</div>
+
+    <div class="role-grid">
+      <div class="role-card cfo fade-up fade-up-d1">
+        <div class="role-badge">CFO</div>
+        <div class="role-kpis">Revenue, margins, cash flow, ROIC, EPS, dividend yield, board deck export</div>
+        <a href="#" class="role-link">See CFO dashboard <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+      </div>
+      <div class="role-card ceo fade-up fade-up-d2">
+        <div class="role-badge">CEO</div>
+        <div class="role-kpis">Strategic KPIs, segment growth, market position, Rule of 40, fundraising readiness</div>
+        <a href="#" class="role-link">See CEO dashboard <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+      </div>
+      <div class="role-card controller fade-up fade-up-d3">
+        <div class="role-badge">Controller</div>
+        <div class="role-kpis">Close progress, reconciliation status, GL summary, AP/AR aging, compliance</div>
+        <a href="#" class="role-link">See Controller dashboard <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+      </div>
+      <div class="role-card fpa fade-up fade-up-d4">
+        <div class="role-badge">FP&A Manager</div>
+        <div class="role-kpis">Variance analysis, budget vs actual, forecast accuracy, scenario comparison</div>
+        <a href="#" class="role-link">See FP&A dashboard <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =============================================
+     SECTION 4: Industry Dashboard Preview
+     ============================================= -->
+<section class="industry-section">
+  <div class="container">
+    <div class="section-label fade-up">Designed for Your Decisions</div>
+    <div class="section-title fade-up fade-up-d1">See what FinanceOS looks like<br><span>for your business</span></div>
+    <div class="section-desc fade-up fade-up-d2">Every dashboard is personalized to your industry, metrics, and workflow. Select your business type to preview.</div>
+
+    <!-- Industry Tabs -->
+    <div class="industry-tabs fade-up fade-up-d3">
+      <button class="industry-tab active" onclick="switchIndustry(this)">SaaS / Software</button>
+      <button class="industry-tab" onclick="switchIndustry(this)">E-Commerce</button>
+      <button class="industry-tab" onclick="switchIndustry(this)">Professional Services</button>
+      <button class="industry-tab" onclick="switchIndustry(this)">Manufacturing</button>
+    </div>
+
+    <!-- Dashboard Frame -->
+    <div class="dash-frame fade-up fade-up-d4">
+      <div class="dash-titlebar">
+        <span class="dash-dot dash-dot-r"></span>
+        <span class="dash-dot dash-dot-y"></span>
+        <span class="dash-dot dash-dot-g"></span>
+        <span class="dash-url">finance-os.app/saas-dashboard</span>
+      </div>
+      <div class="dash-body">
+        <!-- Dashboard Header -->
+        <div class="dash-header">
+          <div class="dash-title-group">
+            <h3>SaaS Command Center</h3>
+            <p>Real-time ARR tracking, cohort analysis, and expansion revenue intelligence</p>
+          </div>
+          <div class="dash-period-tabs">
+            <button class="dash-period">This Quarter</button>
+            <button class="dash-period active">YTD</button>
+            <button class="dash-period">12M</button>
+          </div>
+        </div>
+
+        <!-- KPI Row -->
+        <div class="kpi-row">
+          <div class="kpi-card">
+            <div class="kpi-label">ARR</div>
+            <div class="kpi-value" style="color:var(--blue)">$48.6M</div>
+            <div class="kpi-delta positive">+24% YoY</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">NDR</div>
+            <div class="kpi-value" style="color:var(--green)">118%</div>
+            <div class="kpi-delta positive">+3pp QoQ</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Gross Margin</div>
+            <div class="kpi-value" style="color:var(--purple)">84.7%</div>
+            <div class="kpi-delta positive">+2.1pp</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Rule of 40</div>
+            <div class="kpi-value" style="color:var(--cyan)">52.1</div>
+            <div class="kpi-delta positive">Top 10%</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">CAC Payback</div>
+            <div class="kpi-value" style="color:var(--amber)">14.2<span style="font-size:11px;font-weight:600;color:var(--text-muted)"> mo</span></div>
+            <div class="kpi-delta positive">-2.1 mo</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Burn Multiple</div>
+            <div class="kpi-value" style="color:var(--green)">0.8x</div>
+            <div class="kpi-delta positive">Efficient</div>
+          </div>
+        </div>
+
+        <!-- Chart -->
+        <div class="dash-chart">
+          <div class="dash-chart-header">
+            <div>
+              <div class="dash-chart-title">ARR Growth · Actual vs Forecast</div>
+              <div style="font-size:9px;color:var(--text-muted);margin-top:2px">Auto-generated from GL data</div>
+            </div>
+            <div class="dash-chart-legend">
+              <div class="legend-item"><span class="legend-dot actual"></span>Actual</div>
+              <div class="legend-item"><span class="legend-dot budget"></span>Budget</div>
+              <div class="legend-item"><span class="legend-dot beating"></span>Beating plan</div>
+            </div>
+          </div>
+          <div class="chart-area">
+            <div class="chart-bar-group"><div class="chart-bars"><div class="chart-bar budget" style="height:60%"></div><div class="chart-bar actual" style="height:68%;animation-delay:.1s"></div></div><div class="chart-bar-label">Jan</div></div>
+            <div class="chart-bar-group"><div class="chart-bars"><div class="chart-bar budget" style="height:63%"></div><div class="chart-bar actual" style="height:72%;animation-delay:.15s"></div></div><div class="chart-bar-label">Feb</div></div>
+            <div class="chart-bar-group"><div class="chart-bars"><div class="chart-bar budget" style="height:66%"></div><div class="chart-bar actual" style="height:70%;animation-delay:.2s"></div></div><div class="chart-bar-label">Mar</div></div>
+            <div class="chart-bar-group"><div class="chart-bars"><div class="chart-bar budget" style="height:68%"></div><div class="chart-bar actual" style="height:78%;animation-delay:.25s"></div></div><div class="chart-bar-label">Apr</div></div>
+            <div class="chart-bar-group"><div class="chart-bars"><div class="chart-bar budget" style="height:72%"></div><div class="chart-bar actual" style="height:80%;animation-delay:.3s"></div></div><div class="chart-bar-label">May</div></div>
+            <div class="chart-bar-group"><div class="chart-bars"><div class="chart-bar budget" style="height:74%"></div><div class="chart-bar actual" style="height:85%;animation-delay:.35s"></div></div><div class="chart-bar-label">Jun</div></div>
+            <div class="chart-bar-group"><div class="chart-bars"><div class="chart-bar budget" style="height:76%"></div><div class="chart-bar actual" style="height:82%;animation-delay:.4s"></div></div><div class="chart-bar-label">Jul</div></div>
+            <div class="chart-bar-group"><div class="chart-bars"><div class="chart-bar budget" style="height:78%"></div><div class="chart-bar actual" style="height:88%;animation-delay:.45s"></div></div><div class="chart-bar-label">Aug</div></div>
+            <div class="chart-bar-group"><div class="chart-bars"><div class="chart-bar budget" style="height:80%"></div><div class="chart-bar actual" style="height:86%;animation-delay:.5s"></div></div><div class="chart-bar-label">Sep</div></div>
+            <div class="chart-bar-group"><div class="chart-bars"><div class="chart-bar budget" style="height:82%"></div><div class="chart-bar actual" style="height:92%;animation-delay:.55s"></div></div><div class="chart-bar-label">Oct</div></div>
+            <div class="chart-bar-group"><div class="chart-bars"><div class="chart-bar budget" style="height:85%"></div><div class="chart-bar actual" style="height:95%;animation-delay:.6s"></div></div><div class="chart-bar-label">Nov</div></div>
+            <div class="chart-bar-group"><div class="chart-bars"><div class="chart-bar budget" style="height:88%"></div><div class="chart-bar actual" style="height:100%;animation-delay:.65s"></div></div><div class="chart-bar-label">Dec</div></div>
+          </div>
+        </div>
+
+        <!-- AI Copilot -->
+        <div class="ai-copilot">
+          <div class="ai-header">
+            <div class="ai-avatar">AI</div>
+            <div class="ai-name">AI Copilot</div>
+            <div class="ai-badge">Claude</div>
+          </div>
+          <div class="ai-question">"What drove the $2.1M revenue beat this quarter?"</div>
+          <div class="ai-reasoning">Thought & Work Process</div>
+          <div class="ai-answer">Enterprise expansion drove 68% of the beat. NDR hit 126% in Enterprise, with AI module attach rate at 42% — up from 28% last quarter. Three expansion deals over $200K closed in the final week.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Testimonial -->
+<section style="padding:60px 0">
+  <div class="container">
+    <div class="testimonial fade-up">
+      <div class="testimonial-quote">"We replaced Adaptive Planning and 4 spreadsheets in one afternoon."</div>
+      <div class="testimonial-attr">FinanceOS Customer</div>
+    </div>
+  </div>
+</section>
+
+<!-- =============================================
+     SECTION 5: Feature Grid
+     ============================================= -->
+<section>
+  <div class="container">
+    <div class="section-label fade-up">Everything You Need</div>
+    <div class="section-title fade-up fade-up-d1">Everything a modern<br><span>finance team</span> needs</div>
+    <div class="section-desc fade-up fade-up-d2">From variance detection to board-ready reports, powered by AI that shows its reasoning.</div>
+
+    <div class="feature-grid">
+      <div class="feature-card fade-up fade-up-d1">
+        <div class="fc-icon" style="background:rgba(59,130,246,0.1);color:var(--blue)">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+        </div>
+        <div class="fc-title">AI Copilot</div>
+        <div class="fc-desc">Ask questions in plain English. Get data-backed answers with visible reasoning — not a black box.</div>
+      </div>
+      <div class="feature-card fade-up fade-up-d2">
+        <div class="fc-icon" style="background:rgba(139,92,246,0.1);color:var(--purple)">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+        </div>
+        <div class="fc-title">Forecast Optimizer</div>
+        <div class="fc-desc">ML ensemble models with live sensitivity sliders. Adjust NDR, pipeline, churn — see impact instantly.</div>
+      </div>
+      <div class="feature-card fade-up fade-up-d3">
+        <div class="fc-icon" style="background:rgba(16,185,129,0.1);color:var(--green)">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+        </div>
+        <div class="fc-title">Multi-Entity Consolidation</div>
+        <div class="fc-desc">Automatic intercompany eliminations, FX adjustments, and entity-level approval workflows.</div>
+      </div>
+      <div class="feature-card fade-up fade-up-d4">
+        <div class="fc-icon" style="background:rgba(245,158,11,0.1);color:var(--amber)">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        </div>
+        <div class="fc-title">Variance Detective</div>
+        <div class="fc-desc">AI scans every line for favorable/unfavorable variances and explains the drivers automatically.</div>
+      </div>
+      <div class="feature-card fade-up fade-up-d5">
+        <div class="fc-icon" style="background:rgba(6,182,212,0.1);color:var(--cyan)">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20V10"/><path d="M18 20V4"/><path d="M6 20v-4"/></svg>
+        </div>
+        <div class="fc-title">Scenario Modeling</div>
+        <div class="fc-desc">Compare 4+ scenarios side-by-side. Base, bull, bear, and custom — all with live data feeds.</div>
+      </div>
+      <div class="feature-card fade-up fade-up-d6">
+        <div class="fc-icon" style="background:rgba(244,63,94,0.1);color:var(--rose)">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg>
+        </div>
+        <div class="fc-title">Native Integrations</div>
+        <div class="fc-desc">NetSuite, Salesforce, Stripe, Snowflake, Rippling, and more. Real-time bi-directional sync.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =============================================
+     SECTION 7: Final CTA
+     ============================================= -->
+<section style="padding:80px 0 120px">
+  <div class="container">
+    <div class="final-cta fade-up">
+      <div class="final-cta-title">Want a dashboard customized<br>for your business?</div>
+      <div class="final-cta-desc">We'll build a branded prototype in under 48 hours. No contracts, no commitment.</div>
+      <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap">
+        <a href="#" class="btn-primary">Try It Free <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+        <a href="https://calendly.com/finance-os-support" class="btn-secondary">Send Us Your Data</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer style="border-top:1px solid var(--border);padding:40px 0;text-align:center">
+  <div class="container">
+    <div style="font-size:11px;color:var(--text-muted)">FinanceOS by Financial Holding LLC — AI-Powered Financial Intelligence</div>
+  </div>
+</footer>
+
+<!-- Scripts -->
+
+
+` }} />
+    </>
+  );
+}

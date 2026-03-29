@@ -1,0 +1,527 @@
+'use client';
+
+import { useEffect, useRef } from 'react';
+
+export default function V3DashboardCommittedSpendPage() {
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    // Run inline scripts after mount
+    const scripts = [
+      `// Scroll reveal
+const obs=new IntersectionObserver((entries)=>{entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('vis');obs.unobserve(e.target);}});},{threshold:0.1});
+document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+
+// FAQ toggle
+document.querySelectorAll('.faq-q').forEach(q=>{
+q.addEventListener('click',()=>{
+const item=q.parentElement;
+const wasOpen=item.classList.contains('open');
+document.querySelectorAll('.faq-item').forEach(i=>i.classList.remove('open'));
+if(!wasOpen)item.classList.add('open');
+});
+});`
+    ];
+    scripts.forEach(code => {
+      try { new Function(code)(); } catch(e) { console.warn('Script error:', e); }
+    });
+  }, []);
+
+  return (
+    <>
+      <style dangerouslySetInnerHTML={{ __html: `
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{--bg:#F8FAFC;--green:#10B981;--cyan:#22D3EE;--purple:#8B5CF6;--blue:#3B82F6;--amber:#F59E0B;--red:#EF4444;--t1:#0F172A;--t2:#334155;--t3:#64748B;--t4:#94A3B8;--border:#E2E8F0;--radius:16px;--font:'DM Sans',system-ui,sans-serif;--mono:'JetBrains Mono',monospace;--ease:cubic-bezier(0.16,1,0.3,1);}
+body{font-family:var(--font);color:var(--t1);-webkit-font-smoothing:antialiased;background:#fff;overflow-x:hidden;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+@keyframes gradientShift{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+@keyframes colorCycle{0%{color:#22D3EE}20%{color:#8B5CF6}40%{color:#10B981}60%{color:#3B82F6}80%{color:#F59E0B}100%{color:#22D3EE}}
+@keyframes bgColorCycle{0%{background-color:rgba(34,211,238,0.08)}20%{background-color:rgba(139,92,246,0.08)}40%{background-color:rgba(16,185,129,0.08)}60%{background-color:rgba(59,130,246,0.08)}80%{background-color:rgba(245,158,11,0.08)}100%{background-color:rgba(34,211,238,0.08)}}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+@keyframes glowPulse{0%,100%{box-shadow:0 0 20px rgba(34,211,238,0.1)}50%{box-shadow:0 0 40px rgba(139,92,246,0.15)}}
+@keyframes borderGlow{0%{border-color:rgba(34,211,238,0.2)}33%{border-color:rgba(139,92,246,0.2)}66%{border-color:rgba(16,185,129,0.2)}100%{border-color:rgba(34,211,238,0.2)}}
+@keyframes typeCursor{0%,100%{opacity:1}50%{opacity:0}}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
+.reveal{opacity:0;transform:translateY(24px);transition:all 0.6s var(--ease);}.reveal.vis{opacity:1;transform:none;}
+.color-shift{animation:colorCycle 8s ease infinite;}
+
+/* NAV */
+.nav{position:sticky;top:0;z-index:100;padding:0 40px;height:64px;display:flex;align-items:center;background:rgba(3,7,17,0.95);backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,0.05);}
+.nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none;}
+.nav-logo svg{width:32px;height:32px;}
+.nav-logo span{font-size:17px;font-weight:800;color:#fff;letter-spacing:-0.03em;}
+.nav-links{display:flex;gap:6px;margin-left:50px;}
+.nav-item{position:relative;}
+.nav-item>a{font-size:13px;font-weight:500;color:rgba(255,255,255,0.5);text-decoration:none;padding:8px 14px;border-radius:8px;transition:all 0.2s;display:flex;align-items:center;gap:4px;}
+.nav-item>a:hover,.nav-item>a.active{color:#fff;background:rgba(255,255,255,0.06);}
+.nav-item>a svg{width:10px;height:10px;stroke:currentColor;fill:none;stroke-width:2.5;opacity:0.5;}
+.dropdown{position:absolute;top:100%;left:0;min-width:220px;background:#0F172A;border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:8px;opacity:0;visibility:hidden;transform:translateY(8px);transition:all 0.25s var(--ease);box-shadow:0 20px 60px rgba(0,0,0,0.4);}
+.nav-item:hover .dropdown{opacity:1;visibility:visible;transform:translateY(4px);}
+.dropdown a{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;font-size:12px;font-weight:500;color:rgba(255,255,255,0.6);text-decoration:none;transition:all 0.15s;}
+.dropdown a:hover{background:rgba(255,255,255,0.06);color:#fff;}
+.dropdown a .dd-icon{width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.dropdown a .dd-icon svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:1.5;}
+.dd-sep{height:1px;background:rgba(255,255,255,0.06);margin:4px 0;}
+.nav-right{margin-left:auto;display:flex;align-items:center;gap:10px;}
+.btn-ghost{padding:8px 18px;border-radius:8px;font-size:13px;font-weight:600;border:1px solid rgba(255,255,255,0.12);background:transparent;color:rgba(255,255,255,0.7);cursor:pointer;transition:all 0.2s;text-decoration:none;}.btn-ghost:hover{color:#fff;}
+.btn-primary{padding:8px 22px;border-radius:8px;font-size:13px;font-weight:700;border:none;background:var(--green);color:#fff;cursor:pointer;transition:all 0.25s var(--ease);text-decoration:none;}.btn-primary:hover{transform:translateY(-2px);box-shadow:0 4px 16px rgba(16,185,129,0.25);}
+
+/* HERO */
+.hero{padding:100px 40px 80px;background:linear-gradient(135deg,#030711,#1E1B4B,#0F172A);background-size:300% 300%;animation:gradientShift 12s ease infinite;text-align:center;color:#fff;position:relative;overflow:hidden;}
+.hero::before{content:'';position:absolute;top:-300px;left:50%;transform:translateX(-50%);width:1000px;height:1000px;border-radius:50%;background:radial-gradient(circle,rgba(16,185,129,0.06),transparent 60%);pointer-events:none;}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;padding:6px 16px;border-radius:20px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.2);color:var(--green);margin-bottom:20px;}
+.hero-badge .dot{width:8px;height:8px;border-radius:50%;background:var(--green);animation:typeCursor 2s ease infinite;}
+.hero h1{font-size:clamp(36px,5.5vw,60px);font-weight:900;letter-spacing:-0.04em;line-height:1.1;margin-bottom:16px;}
+.hero h1 .accent{background:linear-gradient(135deg,var(--cyan),var(--purple),var(--green),var(--blue));background-size:300% 300%;animation:gradientShift 6s ease infinite;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.hero p{font-size:18px;color:rgba(255,255,255,0.45);max-width:600px;margin:0 auto 32px;line-height:1.65;}
+.hero-cta{display:inline-flex;gap:12px;flex-wrap:wrap;justify-content:center;}
+.hero-cta a{padding:14px 32px;border-radius:12px;font-size:15px;font-weight:700;text-decoration:none;transition:all 0.25s var(--ease);}
+.hero-cta .cta-primary{background:var(--green);color:#fff;}.hero-cta .cta-primary:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(16,185,129,0.3);}
+.hero-cta .cta-outline{border:1px solid rgba(255,255,255,0.15);color:#fff;}.hero-cta .cta-outline:hover{background:rgba(255,255,255,0.05);}
+
+/* SECTIONS */
+.section{max-width:1100px;margin:0 auto;padding:80px 40px;}
+.section-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--green);text-align:center;margin-bottom:12px;}
+.section-title{font-size:clamp(28px,3.5vw,42px);font-weight:900;text-align:center;letter-spacing:-0.03em;margin-bottom:14px;}
+.section-sub{font-size:16px;color:var(--t3);text-align:center;max-width:560px;margin:0 auto 50px;line-height:1.6;}
+
+/* HOW IT WORKS */
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;position:relative;}
+.steps::before{content:'';position:absolute;top:44px;left:16%;right:16%;height:2px;background:linear-gradient(90deg,var(--cyan),var(--purple),var(--green));border-radius:2px;z-index:0;}
+.step{text-align:center;position:relative;z-index:1;}
+.step-num{width:88px;height:88px;border-radius:50%;background:#fff;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;margin:0 auto 20px;transition:all 0.3s;}
+.step:hover .step-num{border-color:var(--green);box-shadow:0 8px 30px rgba(16,185,129,0.1);}
+.step-num svg{width:32px;height:32px;stroke:var(--t1);fill:none;stroke-width:1.5;}
+.step h3{font-size:17px;font-weight:800;margin-bottom:8px;}
+.step p{font-size:13px;color:var(--t3);line-height:1.6;max-width:260px;margin:0 auto;}
+
+/* DISCOUNT TIERS */
+.tiers{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;}
+.tier-card{background:#fff;border:1px solid var(--border);border-radius:20px;padding:32px;position:relative;overflow:hidden;transition:all 0.3s var(--ease);}
+.tier-card:hover{transform:translateY(-6px);box-shadow:0 16px 50px rgba(0,0,0,0.06);}
+.tier-card.best{border-color:var(--green);box-shadow:0 0 0 1px var(--green);}
+.tier-card.best::before{content:'BEST VALUE';position:absolute;top:16px;right:-32px;background:var(--green);color:#fff;font-size:9px;font-weight:800;letter-spacing:0.06em;padding:4px 40px;transform:rotate(45deg);}
+.tier-header{text-align:center;padding-bottom:20px;border-bottom:1px solid var(--border);margin-bottom:20px;}
+.tier-duration{font-size:13px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:0.04em;margin-bottom:6px;}
+.tier-discount{font-size:48px;font-weight:900;letter-spacing:-0.04em;line-height:1;}
+.tier-discount .pct{font-family:var(--mono);}
+.tier-off{font-size:13px;font-weight:600;color:var(--t3);margin-top:4px;}
+.tier-prices{display:flex;flex-direction:column;gap:16px;}
+.tier-plan{display:flex;justify-content:space-between;align-items:center;padding:12px;border-radius:12px;background:var(--bg);}
+.tier-plan-name{font-size:13px;font-weight:700;}
+.tier-plan-right{text-align:right;}
+.tier-plan-price{font-size:17px;font-weight:800;font-family:var(--mono);}
+.tier-plan-save{font-size:11px;font-weight:600;color:var(--green);}
+.tier-plan .original{font-size:11px;color:var(--t4);text-decoration:line-through;font-family:var(--mono);}
+
+/* PERKS */
+.perks-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
+.perk-card{background:#fff;border:1px solid var(--border);border-radius:20px;padding:28px;transition:all 0.3s var(--ease);}
+.perk-card:hover{transform:translateY(-6px);box-shadow:0 16px 50px rgba(0,0,0,0.06);}
+.perk-icon{width:48px;height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center;margin-bottom:16px;animation:bgColorCycle 8s ease infinite;}
+.perk-icon svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.5;}
+.perk-card h3{font-size:17px;font-weight:800;margin-bottom:8px;}
+.perk-card p{font-size:13px;color:var(--t3);line-height:1.6;margin-bottom:12px;}
+.perk-list{list-style:none;display:flex;flex-direction:column;gap:6px;}
+.perk-list li{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:600;color:var(--t2);}
+.perk-list li svg{width:14px;height:14px;stroke:var(--green);fill:none;stroke-width:2.5;flex-shrink:0;}
+
+/* ROI */
+.roi-card{background:linear-gradient(135deg,#0F172A,#1E1B4B);border-radius:24px;padding:50px;color:#fff;text-align:center;animation:glowPulse 4s ease infinite;}
+.roi-card h2{font-size:32px;font-weight:900;letter-spacing:-0.03em;margin-bottom:12px;}
+.roi-card h2 .accent{background:linear-gradient(135deg,var(--cyan),var(--purple),var(--green));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;background-size:300% 300%;animation:gradientShift 6s ease infinite;}
+.roi-card p{font-size:15px;color:rgba(255,255,255,0.5);margin-bottom:40px;line-height:1.6;}
+.roi-bars{display:flex;justify-content:center;gap:40px;flex-wrap:wrap;}
+.roi-bar{text-align:center;width:200px;}
+.roi-bar-label{font-size:12px;font-weight:700;color:rgba(255,255,255,0.5);margin-bottom:10px;text-transform:uppercase;letter-spacing:0.04em;}
+.roi-bar-track{height:160px;width:60px;background:rgba(255,255,255,0.05);border-radius:12px;margin:0 auto 10px;position:relative;overflow:hidden;}
+.roi-bar-fill{position:absolute;bottom:0;width:100%;border-radius:12px;transition:height 1s var(--ease);}
+.roi-bar-val{font-size:24px;font-weight:900;font-family:var(--mono);}
+
+/* FAQ */
+.faq-list{max-width:700px;margin:0 auto;display:flex;flex-direction:column;gap:12px;}
+.faq-item{background:#fff;border:1px solid var(--border);border-radius:16px;overflow:hidden;transition:all 0.3s;}
+.faq-q{padding:20px 24px;font-size:15px;font-weight:700;cursor:pointer;display:flex;justify-content:space-between;align-items:center;user-select:none;}
+.faq-q svg{width:16px;height:16px;stroke:var(--t4);fill:none;stroke-width:2.5;transition:transform 0.3s;flex-shrink:0;}
+.faq-item.open .faq-q svg{transform:rotate(180deg);}
+.faq-a{padding:0 24px;max-height:0;overflow:hidden;transition:all 0.3s var(--ease);}
+.faq-item.open .faq-a{max-height:300px;padding:0 24px 20px;}
+.faq-a p{font-size:14px;color:var(--t3);line-height:1.7;}
+
+/* BOTTOM CTA */
+.bottom-cta{padding:80px 40px;text-align:center;background:var(--bg);}
+.bottom-cta h2{font-size:clamp(28px,4vw,44px);font-weight:900;letter-spacing:-0.03em;margin-bottom:14px;}
+.bottom-cta p{font-size:16px;color:var(--t3);max-width:500px;margin:0 auto 32px;line-height:1.6;}
+.bottom-cta .cta-row{display:inline-flex;gap:12px;flex-wrap:wrap;justify-content:center;}
+.bottom-cta .cta-row a{padding:14px 32px;border-radius:12px;font-size:15px;font-weight:700;text-decoration:none;transition:all 0.25s var(--ease);}
+.cta-green{background:var(--green);color:#fff;}.cta-green:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(16,185,129,0.3);}
+.cta-dark{background:var(--t1);color:#fff;}.cta-dark:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(0,0,0,0.15);}
+
+/* FOOTER */
+.footer{padding:60px 40px 30px;border-top:1px solid var(--border);max-width:1100px;margin:0 auto;}
+.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px;margin-bottom:40px;}
+.footer-brand p{font-size:13px;color:var(--t3);line-height:1.6;margin-top:12px;max-width:260px;}
+.footer-col h4{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--t4);margin-bottom:14px;}
+.footer-col a{display:block;font-size:13px;font-weight:500;color:var(--t3);text-decoration:none;padding:4px 0;transition:color 0.2s;}.footer-col a:hover{color:var(--t1);}
+.footer-bottom{display:flex;justify-content:space-between;align-items:center;padding-top:20px;border-top:1px solid var(--border);font-size:12px;color:var(--t4);}
+
+@media(max-width:768px){
+.nav-links,.dropdown{display:none;}
+.steps,.tiers,.perks-grid{grid-template-columns:1fr;}
+.steps::before{display:none;}
+.roi-bars{flex-direction:column;align-items:center;}
+.footer-grid{grid-template-columns:1fr 1fr;}
+}
+` }} />
+      <div ref={containerRef} dangerouslySetInnerHTML={{ __html: `
+
+<!-- NAV -->
+<nav class="nav">
+<a href="FinanceOS-Landing-Page.html" class="nav-logo">
+<svg viewBox="0 0 32 32" fill="none"><rect width="32" height="32" rx="8" fill="#10B981"/><path d="M8 12h10M8 16h14M8 20h8" stroke="#fff" stroke-width="2" stroke-linecap="round"/><circle cx="22" cy="12" r="3" fill="#22D3EE"/></svg>
+<span>FinanceOS</span>
+</a>
+<div class="nav-links">
+<div class="nav-item"><a href="#">Solutions <svg viewBox="0 0 10 10"><polyline points="2,3.5 5,6.5 8,3.5"/></svg></a>
+<div class="dropdown">
+<a href="FinanceOS-Whats-New.html"><div class="dd-icon" style="background:rgba(139,92,246,0.1);color:var(--purple)"><svg viewBox="0 0 24 24"><path d="M12 2a5 5 0 015 5c0 3-2 5.5-5 8.5C9 12.5 7 10 7 7a5 5 0 015-5z"/></svg></div>AI Copilot</a>
+<a href="FinanceOS-Whats-New.html"><div class="dd-icon" style="background:rgba(34,211,238,0.1);color:var(--cyan)"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></div>Consolidation</a>
+<a href="FinanceOS-Whats-New.html"><div class="dd-icon" style="background:rgba(245,158,11,0.1);color:var(--amber)"><svg viewBox="0 0 24 24"><path d="M12 9v4l3 3"/><circle cx="12" cy="12" r="9"/></svg></div>Variance Detection</a>
+<a href="FinanceOS-Whats-New.html"><div class="dd-icon" style="background:rgba(59,130,246,0.1);color:var(--blue)"><svg viewBox="0 0 24 24"><polyline points="22,12 18,12 15,21 9,3 6,12 2,12"/></svg></div>Scenario Modeling</a>
+<div class="dd-sep"></div>
+<a href="FinanceOS-Whats-New.html"><div class="dd-icon" style="background:rgba(16,185,129,0.1);color:var(--green)"><svg viewBox="0 0 24 24"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg></div>Compliance</a>
+</div>
+</div>
+<div class="nav-item"><a href="#">Resources <svg viewBox="0 0 10 10"><polyline points="2,3.5 5,6.5 8,3.5"/></svg></a>
+<div class="dropdown">
+<a href="FinanceOS-Resources.html"><div class="dd-icon" style="background:rgba(59,130,246,0.1);color:var(--blue)"><svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg></div>Blog &amp; Guides</a>
+<a href="FinanceOS-Whats-New.html"><div class="dd-icon" style="background:rgba(139,92,246,0.1);color:var(--purple)"><svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg></div>What's New</a>
+<a href="FinanceOS-Integrations.html"><div class="dd-icon" style="background:rgba(34,211,238,0.1);color:var(--cyan)"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg></div>Integrations</a>
+<a href="#"><div class="dd-icon" style="background:rgba(16,185,129,0.1);color:var(--green)"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg></div>Case Studies</a>
+</div>
+</div>
+<div class="nav-item"><a href="FinanceOS-Pricing-Page.html">Pricing</a></div>
+<div class="nav-item"><a href="FinanceOS-About.html">About</a></div>
+</div>
+<div class="nav-right">
+<a href="FinanceOS-Login.html" class="btn-ghost">Sign In</a>
+<a href="FinanceOS-Login.html" class="btn-primary">Get Started</a>
+</div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+<div class="hero-badge"><span class="dot"></span> Save Up to 35%</div>
+<h1>Committed Spend<br/><span class="accent">Discounts &amp; Perks</span></h1>
+<p>Lock in significant savings with annual or multi-year commitments. Plus unlock exclusive perks like priority support, early access, and price protection.</p>
+<div class="hero-cta">
+<a href="#" class="cta-primary">Talk to Sales</a>
+<a href="FinanceOS-Pricing-Page.html" class="cta-outline">View Pricing</a>
+</div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="section reveal">
+<div class="section-label">How It Works</div>
+<h2 class="section-title">Three Steps to Savings</h2>
+<p class="section-sub">Committed spend is simple — choose your plan, pick your commitment length, and start saving immediately.</p>
+<div class="steps">
+<div class="step">
+<div class="step-num"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M9 12l2 2 4-4"/></svg></div>
+<h3>Choose Your Tier</h3>
+<p>Select Starter, Growth, or Business based on your team size and feature needs.</p>
+</div>
+<div class="step">
+<div class="step-num"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
+<h3>Select Commitment</h3>
+<p>Pick 1-year, 2-year, or 3-year commitment. Longer terms unlock deeper discounts.</p>
+</div>
+<div class="step">
+<div class="step-num"><svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg></div>
+<h3>Unlock Savings</h3>
+<p>Save up to 35% on monthly pricing plus exclusive perks and price protection.</p>
+</div>
+</div>
+</section>
+
+<!-- DISCOUNT TIERS -->
+<section class="section reveal" style="background:var(--bg);max-width:100%;padding-left:0;padding-right:0;">
+<div style="max-width:1100px;margin:0 auto;padding:0 40px;">
+<div class="section-label">Committed Spend Tiers</div>
+<h2 class="section-title">The Longer You Commit, The More You Save</h2>
+<p class="section-sub">All discounts are applied to your monthly bill for the duration of your commitment.</p>
+<div class="tiers">
+
+<!-- 1 YEAR -->
+<div class="tier-card">
+<div class="tier-header">
+<div class="tier-duration">Annual Commitment</div>
+<div class="tier-discount" style="color:var(--blue);"><span class="pct">17</span>%</div>
+<div class="tier-off">off monthly pricing</div>
+</div>
+<div class="tier-prices">
+<div class="tier-plan">
+<div><div class="tier-plan-name">Starter</div><div class="original">$799/mo</div></div>
+<div class="tier-plan-right"><div class="tier-plan-price">$665<span style="font-size:12px;font-weight:500;color:var(--t3)">/mo</span></div><div class="tier-plan-save">Save $1,608/yr</div></div>
+</div>
+<div class="tier-plan">
+<div><div class="tier-plan-name">Growth</div><div class="original">$2,499/mo</div></div>
+<div class="tier-plan-right"><div class="tier-plan-price">$2,079<span style="font-size:12px;font-weight:500;color:var(--t3)">/mo</span></div><div class="tier-plan-save">Save $5,040/yr</div></div>
+</div>
+<div class="tier-plan">
+<div><div class="tier-plan-name">Business</div><div class="original">$5,999/mo</div></div>
+<div class="tier-plan-right"><div class="tier-plan-price">$4,999<span style="font-size:12px;font-weight:500;color:var(--t3)">/mo</span></div><div class="tier-plan-save">Save $12,000/yr</div></div>
+</div>
+</div>
+</div>
+
+<!-- 2 YEAR -->
+<div class="tier-card">
+<div class="tier-header">
+<div class="tier-duration">2-Year Commitment</div>
+<div class="tier-discount" style="color:var(--purple);"><span class="pct">25</span>%</div>
+<div class="tier-off">off monthly pricing</div>
+</div>
+<div class="tier-prices">
+<div class="tier-plan">
+<div><div class="tier-plan-name">Starter</div><div class="original">$799/mo</div></div>
+<div class="tier-plan-right"><div class="tier-plan-price">$599<span style="font-size:12px;font-weight:500;color:var(--t3)">/mo</span></div><div class="tier-plan-save">Save $4,800/2yr</div></div>
+</div>
+<div class="tier-plan">
+<div><div class="tier-plan-name">Growth</div><div class="original">$2,499/mo</div></div>
+<div class="tier-plan-right"><div class="tier-plan-price">$1,874<span style="font-size:12px;font-weight:500;color:var(--t3)">/mo</span></div><div class="tier-plan-save">Save $15,000/2yr</div></div>
+</div>
+<div class="tier-plan">
+<div><div class="tier-plan-name">Business</div><div class="original">$5,999/mo</div></div>
+<div class="tier-plan-right"><div class="tier-plan-price">$4,499<span style="font-size:12px;font-weight:500;color:var(--t3)">/mo</span></div><div class="tier-plan-save">Save $36,000/2yr</div></div>
+</div>
+</div>
+</div>
+
+<!-- 3 YEAR -->
+<div class="tier-card best">
+<div class="tier-header">
+<div class="tier-duration">3-Year Commitment</div>
+<div class="tier-discount" style="color:var(--green);"><span class="pct">35</span>%</div>
+<div class="tier-off">off monthly pricing</div>
+</div>
+<div class="tier-prices">
+<div class="tier-plan">
+<div><div class="tier-plan-name">Starter</div><div class="original">$799/mo</div></div>
+<div class="tier-plan-right"><div class="tier-plan-price">$519<span style="font-size:12px;font-weight:500;color:var(--t3)">/mo</span></div><div class="tier-plan-save">Save $10,080/3yr</div></div>
+</div>
+<div class="tier-plan">
+<div><div class="tier-plan-name">Growth</div><div class="original">$2,499/mo</div></div>
+<div class="tier-plan-right"><div class="tier-plan-price">$1,624<span style="font-size:12px;font-weight:500;color:var(--t3)">/mo</span></div><div class="tier-plan-save">Save $31,500/3yr</div></div>
+</div>
+<div class="tier-plan">
+<div><div class="tier-plan-name">Business</div><div class="original">$5,999/mo</div></div>
+<div class="tier-plan-right"><div class="tier-plan-price">$3,899<span style="font-size:12px;font-weight:500;color:var(--t3)">/mo</span></div><div class="tier-plan-save">Save $75,600/3yr</div></div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+</section>
+
+<!-- PERKS -->
+<section class="section reveal">
+<div class="section-label">Exclusive Perks</div>
+<h2 class="section-title">More Than Just a Discount</h2>
+<p class="section-sub">Committed spend customers unlock exclusive benefits that accelerate your finance transformation.</p>
+<div class="perks-grid">
+
+<div class="perk-card">
+<div class="perk-icon" style="color:var(--purple)"><svg viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></div>
+<h3>Priority Support</h3>
+<p>Get faster answers when you need them most.</p>
+<ul class="perk-list">
+<li><svg viewBox="0 0 24 24"><polyline points="20,6 9,17 4,12"/></svg>Dedicated Customer Success Manager</li>
+<li><svg viewBox="0 0 24 24"><polyline points="20,6 9,17 4,12"/></svg>1-hour SLA for critical issues</li>
+<li><svg viewBox="0 0 24 24"><polyline points="20,6 9,17 4,12"/></svg>Direct Slack or Teams channel</li>
+</ul>
+</div>
+
+<div class="perk-card">
+<div class="perk-icon" style="color:var(--cyan)"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg></div>
+<h3>Custom Onboarding</h3>
+<p>White-glove implementation tailored to your workflows.</p>
+<ul class="perk-list">
+<li><svg viewBox="0 0 24 24"><polyline points="20,6 9,17 4,12"/></svg>Dedicated implementation engineer</li>
+<li><svg viewBox="0 0 24 24"><polyline points="20,6 9,17 4,12"/></svg>Full data migration assistance</li>
+<li><svg viewBox="0 0 24 24"><polyline points="20,6 9,17 4,12"/></svg>Custom team training sessions</li>
+</ul>
+</div>
+
+<div class="perk-card">
+<div class="perk-icon" style="color:var(--green)"><svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg></div>
+<h3>Early Access Program</h3>
+<p>Be the first to try new capabilities before anyone else.</p>
+<ul class="perk-list">
+<li><svg viewBox="0 0 24 24"><polyline points="20,6 9,17 4,12"/></svg>Beta features 60 days early</li>
+<li><svg viewBox="0 0 24 24"><polyline points="20,6 9,17 4,12"/></svg>Influence the product roadmap</li>
+<li><svg viewBox="0 0 24 24"><polyline points="20,6 9,17 4,12"/></svg>Private feedback channel</li>
+</ul>
+</div>
+
+<div class="perk-card">
+<div class="perk-icon" style="color:var(--blue)"><svg viewBox="0 0 24 24"><rect x="1" y="3" width="15" height="13" rx="2"/><path d="M16 8h4a2 2 0 012 2v9a2 2 0 01-2 2H8a2 2 0 01-2-2v-4"/></svg></div>
+<h3>Volume Discounts</h3>
+<p>Stack additional savings on top of committed spend discounts.</p>
+<ul class="perk-list">
+<li><svg viewBox="0 0 24 24"><polyline points="20,6 9,17 4,12"/></svg>Multi-product bundle savings</li>
+<li><svg viewBox="0 0 24 24"><polyline points="20,6 9,17 4,12"/></svg>Department-wide rollout pricing</li>
+<li><svg viewBox="0 0 24 24"><polyline points="20,6 9,17 4,12"/></svg>Custom enterprise agreements</li>
+</ul>
+</div>
+
+<div class="perk-card">
+<div class="perk-icon" style="color:var(--amber)"><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg></div>
+<h3>Locked-In Pricing</h3>
+<p>Price protection against any future increases.</p>
+<ul class="perk-list">
+<li><svg viewBox="0 0 24 24"><polyline points="20,6 9,17 4,12"/></svg>Rate guaranteed for full term</li>
+<li><svg viewBox="0 0 24 24"><polyline points="20,6 9,17 4,12"/></svg>No surprise price hikes</li>
+<li><svg viewBox="0 0 24 24"><polyline points="20,6 9,17 4,12"/></svg>Transparent renewal terms</li>
+</ul>
+</div>
+
+<div class="perk-card">
+<div class="perk-icon" style="color:var(--red)"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+<h3>Extended Money-Back Guarantee</h3>
+<p>Extra confidence with a longer risk-free trial window.</p>
+<ul class="perk-list">
+<li><svg viewBox="0 0 24 24"><polyline points="20,6 9,17 4,12"/></svg>60-day MBG (vs standard 30-day)</li>
+<li><svg viewBox="0 0 24 24"><polyline points="20,6 9,17 4,12"/></svg>Full refund, no questions asked</li>
+<li><svg viewBox="0 0 24 24"><polyline points="20,6 9,17 4,12"/></svg>Risk-free commitment decision</li>
+</ul>
+</div>
+
+</div>
+</section>
+
+<!-- ROI -->
+<section class="section reveal">
+<div class="roi-card">
+<h2>A Growth Customer Saves <span class="accent">$31,500</span> Over 3 Years</h2>
+<p>That's real budget freed up for headcount, tooling, or strategic initiatives — just by committing to the platform you already love.</p>
+<div class="roi-bars">
+<div class="roi-bar">
+<div class="roi-bar-label">Monthly (No Commit)</div>
+<div class="roi-bar-track"><div class="roi-bar-fill" style="height:100%;background:linear-gradient(180deg,var(--t4),var(--t3));"></div></div>
+<div class="roi-bar-val" style="color:var(--t3);">$89,964</div>
+<div style="font-size:11px;color:var(--t4);margin-top:2px;">3-year total</div>
+</div>
+<div class="roi-bar">
+<div class="roi-bar-label">1-Year Commit</div>
+<div class="roi-bar-track"><div class="roi-bar-fill" style="height:83%;background:linear-gradient(180deg,var(--blue),var(--cyan));"></div></div>
+<div class="roi-bar-val" style="color:var(--blue);">$74,844</div>
+<div style="font-size:11px;color:var(--t4);margin-top:2px;">Save $15,120</div>
+</div>
+<div class="roi-bar">
+<div class="roi-bar-label">2-Year Commit</div>
+<div class="roi-bar-track"><div class="roi-bar-fill" style="height:75%;background:linear-gradient(180deg,var(--purple),var(--cyan));"></div></div>
+<div class="roi-bar-val" style="color:var(--purple);">$67,464</div>
+<div style="font-size:11px;color:var(--t4);margin-top:2px;">Save $22,500</div>
+</div>
+<div class="roi-bar">
+<div class="roi-bar-label">3-Year Commit</div>
+<div class="roi-bar-track"><div class="roi-bar-fill" style="height:65%;background:linear-gradient(180deg,var(--green),var(--cyan));"></div></div>
+<div class="roi-bar-val" style="color:var(--green);">$58,464</div>
+<div style="font-size:11px;color:var(--t4);margin-top:2px;">Save $31,500</div>
+</div>
+</div>
+</div>
+</section>
+
+<!-- FAQ -->
+<section class="section reveal" style="background:var(--bg);max-width:100%;padding-left:0;padding-right:0;">
+<div style="max-width:1100px;margin:0 auto;padding:0 40px;">
+<div class="section-label">FAQ</div>
+<h2 class="section-title">Common Questions</h2>
+<p class="section-sub">Everything you need to know about committed spend.</p>
+<div class="faq-list">
+
+<div class="faq-item">
+<div class="faq-q">Can I upgrade mid-commitment?<svg viewBox="0 0 24 24"><polyline points="6,9 12,15 18,9"/></svg></div>
+<div class="faq-a"><p>Yes. You can upgrade your tier at any time during your commitment. The discount percentage stays the same, and you simply pay the difference for the higher tier. For example, upgrading from Starter to Growth on a 3-year commit keeps your 35% discount and adjusts the monthly rate accordingly.</p></div>
+</div>
+
+<div class="faq-item">
+<div class="faq-q">What happens if I need to downgrade?<svg viewBox="0 0 24 24"><polyline points="6,9 12,15 18,9"/></svg></div>
+<div class="faq-a"><p>Downgrades are handled on a case-by-case basis. If your team's needs change, reach out to your Customer Success Manager. We'll work with you to find a solution, whether that's adjusting your tier, pausing features, or restructuring your commitment.</p></div>
+</div>
+
+<div class="faq-item">
+<div class="faq-q">Is the discount applied to add-ons and overages?<svg viewBox="0 0 24 24"><polyline points="6,9 12,15 18,9"/></svg></div>
+<div class="faq-a"><p>Committed spend discounts apply to your base subscription tier. Add-ons like additional API calls, premium integrations, or extra storage are billed separately. However, volume discount perks may apply to add-ons — talk to Sales for a custom quote.</p></div>
+</div>
+
+<div class="faq-item">
+<div class="faq-q">How does the money-back guarantee work with commitments?<svg viewBox="0 0 24 24"><polyline points="6,9 12,15 18,9"/></svg></div>
+<div class="faq-a"><p>Annual and multi-year committed spend customers get an extended 60-day money-back guarantee (vs the standard 30 days). If you're not satisfied within the first 60 days, we'll refund you in full — no questions asked. After the MBG period, the commitment term applies as agreed.</p></div>
+</div>
+
+<div class="faq-item">
+<div class="faq-q">Can I pay upfront for an additional discount?<svg viewBox="0 0 24 24"><polyline points="6,9 12,15 18,9"/></svg></div>
+<div class="faq-a"><p>Yes. Prepaying for the full commitment term upfront unlocks an additional 5% discount on top of the committed spend rate. For example, a 3-year Growth prepay would save you over $40,000 total. Contact Sales for prepayment terms.</p></div>
+</div>
+
+</div>
+</div>
+</section>
+
+<!-- BOTTOM CTA -->
+<section class="bottom-cta reveal">
+<h2>Ready to <span class="color-shift">Lock In Savings</span>?</h2>
+<p>Talk to our team to find the right commitment structure for your organization and start saving today.</p>
+<div class="cta-row">
+<a href="#" class="cta-green">Talk to Sales</a>
+<a href="FinanceOS-Pricing-Page.html" class="cta-dark">View Pricing</a>
+</div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+<div class="footer-grid">
+<div class="footer-brand">
+<a href="FinanceOS-Landing-Page.html" class="nav-logo" style="margin-bottom:4px;">
+<svg viewBox="0 0 32 32" fill="none" width="28" height="28"><rect width="32" height="32" rx="8" fill="#10B981"/><path d="M8 12h10M8 16h14M8 20h8" stroke="#fff" stroke-width="2" stroke-linecap="round"/><circle cx="22" cy="12" r="3" fill="#22D3EE"/></svg>
+<span style="color:var(--t1)">FinanceOS</span>
+</a>
+<p>AI-powered FP&A platform that transforms how modern finance teams plan, analyze, and report.</p>
+</div>
+<div class="footer-col">
+<h4>Product</h4>
+<a href="FinanceOS-Whats-New.html">Features</a>
+<a href="FinanceOS-Pricing-Page.html">Pricing</a>
+<a href="FinanceOS-Integrations.html">Integrations</a>
+<a href="FinanceOS-Whats-New.html">What's New</a>
+</div>
+<div class="footer-col">
+<h4>Resources</h4>
+<a href="FinanceOS-Resources.html">Blog & Guides</a>
+<a href="#">Documentation</a>
+<a href="#">API Reference</a>
+<a href="#">Community</a>
+</div>
+<div class="footer-col">
+<h4>Company</h4>
+<a href="FinanceOS-About.html">About</a>
+<a href="#">Careers</a>
+<a href="#">Contact</a>
+<a href="#">Security</a>
+</div>
+</div>
+<div class="footer-bottom">
+<span>&copy; 2026 FinanceOS, Inc. All rights reserved.</span>
+<span>SOC 2 Type II &middot; ISO 27001 &middot; GDPR</span>
+</div>
+</footer>
+
+
+` }} />
+    </>
+  );
+}
