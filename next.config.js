@@ -45,11 +45,18 @@ const nextConfig = {
       },
       // Cache static assets aggressively
       {
-        source: "/(.*)\\.(svg|png|ico|webp|woff2)",
+        source: "/(.*)\\.(svg|png|ico|woff2|woff|webp)",
         headers: [
           { key: "Cache-Control", value: "public, max-age=31536000, immutable" },
         ],
       },
+    ];
+  },
+
+  async rewrites() {
+    return [
+      // Map clean /v3/ paths to the actual folder (GitHub renamed it to "v3 4")
+      { source: "/v3/:path*", destination: "/v3%204/:path*" },
     ];
   },
 
