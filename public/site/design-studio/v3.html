@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>FinanceOS — Design Studio + Customizer (Production Preview)</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#f3f4f8;--surface:#ffffff;--card:#ffffff;--elevated:#eef0f5;
+  --border:#e2e5ed;--border2:#cdd2de;
+  --t1:#0a0d15;--t2:#3a4259;--t3:#576175;--t4:#8792a8;
+  --accent:#3b82f6;--accent-dim:rgba(59,130,246,0.07);
+  --green:#10b981;--green-dim:rgba(16,185,129,0.07);
+  --red:#ef4444;--red-dim:rgba(239,68,68,0.07);
+  --amber:#f59e0b;--amber-dim:rgba(245,158,11,0.07);
+  --purple:#8b5cf6;--purple-dim:rgba(139,92,246,0.07);
+  --cyan:#06b6d4;--cyan-dim:rgba(6,182,212,0.07);
+  --radius:12px;--radius-sm:8px;
+  --shadow:0 1px 3px rgba(0,0,0,0.06);
+  --shadow-md:0 4px 16px rgba(0,0,0,0.06);
+  --shadow-lg:0 12px 40px rgba(0,0,0,0.08);
+  --ease:cubic-bezier(0.4,0,.2,1);
+  --font:'DM Sans',system-ui,sans-serif;
+  --mono:'JetBrains Mono',monospace;
+}
+body{font-family:var(--font);background:var(--bg);color:var(--t1);-webkit-font-smoothing:antialiased;min-height:100vh;font-size:14px;overflow-x:hidden;}
+
+/* ═══ TOP BAR ═══ */
+.topbar{position:sticky;top:0;z-index:100;background:var(--surface);border-bottom:1px solid var(--border);padding:0 20px;height:52px;display:flex;align-items:center;gap:12px;}
+.topbar-logo{display:flex;align-items:center;gap:8px;padding-right:16px;border-right:1px solid var(--border);}
+.topbar-logo svg{width:32px;height:32px;}
+.topbar-logo .name{font-size:16px;font-weight:800;letter-spacing:-0.02em;}
+.plan-badge{font-size:9px;font-weight:800;padding:2px 7px;border-radius:4px;text-transform:uppercase;letter-spacing:0.04em;}
+
+/* Role + Tier controls */
+.topbar-controls{display:flex;align-items:center;gap:6px;margin-left:auto;}
+.role-btn{padding:5px 14px;border-radius:var(--radius-sm);font-size:12px;font-weight:600;border:1px solid var(--border);background:var(--surface);color:var(--t3);cursor:pointer;transition:all 0.15s;display:flex;align-items:center;gap:5px;}
+.role-btn:hover{border-color:var(--border2);color:var(--t2);}
+.role-btn.active{background:var(--accent);border-color:var(--accent);color:#fff;}
+.role-btn .rdot{width:6px;height:6px;border-radius:50%;}
+.tier-btn{padding:5px 12px;border-radius:20px;font-size:10px;font-weight:700;border:1px solid;cursor:pointer;transition:all 0.15s;text-transform:uppercase;letter-spacing:0.03em;}
+.tier-btn.active{box-shadow:0 0 0 2px currentColor,0 0 8px currentColor;}
+.tier-starter{color:var(--cyan);border-color:rgba(6,182,212,0.2);background:var(--cyan-dim);}
+.tier-growth{color:var(--green);border-color:rgba(16,185,129,0.2);background:var(--green-dim);}
+.tier-business{color:var(--purple);border-color:rgba(139,92,246,0.2);background:var(--purple-dim);}
+
+/* ═══ LAYOUT ═══ */
+.layout{display:flex;min-height:calc(100vh - 52px);}
+
+/* Sidebar */
+.sidebar{width:200px;border-right:1px solid var(--border);background:var(--surface);padding:16px 0;flex-shrink:0;display:flex;flex-direction:column;overflow-y:auto;}
+.sb-section{padding:0 12px;margin-bottom:14px;}
+.sb-label{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--t4);margin-bottom:6px;padding:0 8px;}
+.sb-item{display:flex;align-items:center;gap:8px;padding:7px 8px;border-radius:var(--radius-sm);font-size:13px;font-weight:500;color:var(--t2);cursor:pointer;transition:all 0.12s;margin-bottom:1px;}
+.sb-item:hover{background:var(--elevated);color:var(--t1);}
+.sb-item.active{background:rgba(59,130,246,0.08);color:var(--accent);font-weight:600;}
+.sb-item svg{width:14px;height:14px;flex-shrink:0;opacity:0.5;}
+.sb-item.active svg{opacity:1;}
+.sb-item .tier-lock{font-size:7px;font-weight:800;padding:1px 5px;border-radius:3px;margin-left:auto;text-transform:uppercase;letter-spacing:0.03em;display:flex;align-items:center;gap:2px;}
+.sb-item .cnt{font-size:9px;font-weight:700;min-width:16px;height:16px;border-radius:50%;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;margin-left:auto;}
+
+/* Main */
+.main{flex:1;padding:20px 24px;min-width:0;overflow-y:auto;}
+
+/* ═══ TIER BANNER ═══ */
+.tier-banner{display:flex;align-items:center;gap:14px;padding:12px 18px;border-radius:var(--radius);border:1px solid var(--border);background:var(--surface);margin-bottom:18px;}
+.tier-banner .badge{font-size:10px;font-weight:800;padding:4px 12px;border-radius:6px;text-transform:uppercase;letter-spacing:0.04em;}
+.tier-banner .info{flex:1;}
+.tier-banner .info h3{font-size:13px;font-weight:700;}
+.tier-banner .info p{font-size:11px;color:var(--t4);}
+.tier-banner .features{display:flex;gap:12px;font-size:11px;color:var(--t3);}
+.tier-banner .features span::before{content:'✓ ';color:var(--green);font-weight:700;}
+
+/* ═══ DASHBOARD HEADER ═══ */
+.dash-header h1{font-size:22px;font-weight:800;letter-spacing:-0.02em;}
+.dash-header .sub{font-size:12px;color:var(--t3);display:flex;align-items:center;gap:6px;margin-top:2px;}
+.dash-header .sub .live{width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 2s ease infinite;}
+@keyframes pulse{0%,100%{opacity:0.5;}50%{opacity:1;}}
+
+/* ═══ KPI CARDS ═══ */
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:16px 0;}
+.kpi{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:16px 18px;transition:all 0.2s;}
+.kpi:hover{box-shadow:var(--shadow-md);border-color:var(--border2);}
+.kpi .icon{font-size:14px;margin-bottom:2px;}
+.kpi .label{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.04em;color:var(--t4);margin-bottom:6px;}
+.kpi .value{font-size:26px;font-weight:800;font-family:var(--mono);letter-spacing:-0.02em;}
+.kpi .change{font-size:11px;font-weight:600;margin-top:3px;}
+.kpi .change.up{color:var(--green);}
+.kpi .change.down{color:var(--red);}
+
+/* ═══ CHARTS ═══ */
+.charts{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;}
+.chart-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:16px 18px;}
+.chart-card h3{font-size:13px;font-weight:700;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;}
+.chart-card h3 .live-tag{font-size:9px;font-weight:700;color:var(--green);display:flex;align-items:center;gap:3px;}
+.chart-card h3 .live-tag::before{content:'';width:4px;height:4px;border-radius:50%;background:var(--green);}
+.bar-chart{display:flex;align-items:flex-end;gap:3px;height:120px;}
+.bar{flex:1;border-radius:3px 3px 0 0;transition:height 0.5s var(--ease);min-width:5px;}
+
+/* ═══ TABLE ═══ */
+.data-table{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:16px;}
+.dt-head{display:grid;padding:10px 18px;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:var(--t4);border-bottom:1px solid var(--border);background:var(--elevated);}
+.dt-row{display:grid;padding:10px 18px;font-size:13px;border-bottom:1px solid var(--border);transition:background 0.1s;}
+.dt-row:last-child{border:none;}
+.dt-row:hover{background:var(--elevated);}
+.status{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.03em;}
+.s-done{color:var(--green);}
+.s-progress{color:var(--cyan);}
+.s-pending{color:var(--amber);}
+
+/* ═══ AI INSIGHTS ═══ */
+.ai-section h3{font-size:13px;font-weight:700;margin-bottom:10px;display:flex;align-items:center;gap:6px;}
+.ai-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px;}
+.ai-card{padding:14px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--card);}
+.ai-card .tag{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;margin-bottom:4px;display:flex;align-items:center;gap:4px;}
+.ai-card p{font-size:11px;color:var(--t2);line-height:1.5;}
+.ai-card strong{color:var(--t1);}
+
+/* ═══ LOCK OVERLAY ═══ */
+.lock-wrap{position:relative;border-radius:var(--radius);overflow:hidden;margin-bottom:16px;}
+.lock-blur{filter:blur(4px);opacity:0.35;pointer-events:none;}
+.lock-gate{position:absolute;inset:0;background:rgba(248,250,252,0.8);backdrop-filter:blur(4px);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:5;border-radius:inherit;}
+.lock-gate .icon{width:44px;height:44px;border-radius:12px;background:var(--elevated);display:flex;align-items:center;justify-content:center;margin-bottom:10px;font-size:18px;}
+.lock-gate .title{font-size:14px;font-weight:700;margin-bottom:3px;}
+.lock-gate .sub{font-size:11px;color:var(--t3);margin-bottom:10px;}
+.lock-gate .upgrade-btn{padding:8px 20px;border-radius:var(--radius-sm);font-size:12px;font-weight:700;border:none;color:#fff;cursor:pointer;transition:all 0.2s;}
+.lock-gate .upgrade-btn:hover{transform:translateY(-1px);box-shadow:var(--shadow-md);}
+
+/* ═══ TEAM SECTION ═══ */
+.team-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px;}
+.team-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px;text-align:center;transition:all 0.15s;}
+.team-card:hover{box-shadow:var(--shadow-md);}
+.team-card .avatar{width:36px;height:36px;border-radius:50%;margin:0 auto 6px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;}
+.team-card .name{font-size:12px;font-weight:700;}
+.team-card .role{font-size:10px;color:var(--t4);}
+
+/* ═══ CUSTOMIZE BAR (floating) ═══ */
+.cbar{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);z-index:200;background:rgba(15,23,42,0.94);backdrop-filter:blur(24px) saturate(1.5);border-radius:14px;padding:8px 16px;display:flex;align-items:center;gap:10px;box-shadow:0 8px 40px rgba(0,0,0,0.2),0 0 0 1px rgba(255,255,255,0.05);color:#fff;animation:slideUp 0.5s var(--ease);}
+@keyframes slideUp{from{transform:translateX(-50%) translateY(30px);opacity:0;}to{transform:translateX(-50%) translateY(0);opacity:1;}}
+.cbar-icon{width:26px;height:26px;border-radius:7px;background:linear-gradient(135deg,#06B6D4,#8B5CF6);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:12px;}
+.cbar-title{font-size:12px;font-weight:700;white-space:nowrap;}
+.cbar-sep{width:1px;height:22px;background:rgba(255,255,255,0.08);}
+.cbar-lbl{font-size:8px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:rgba(255,255,255,0.3);white-space:nowrap;}
+.cbar-swatch{width:18px;height:18px;border-radius:5px;border:2px solid transparent;cursor:pointer;transition:all 0.12s;}
+.cbar-swatch:hover,.cbar-swatch.active{border-color:rgba(255,255,255,0.8);transform:scale(1.15);}
+.cbar-btn{padding:5px 10px;border-radius:6px;font-size:10px;font-weight:600;border:1px solid rgba(255,255,255,0.08);background:rgba(255,255,255,0.04);color:rgba(255,255,255,0.6);cursor:pointer;transition:all 0.12s;white-space:nowrap;}
+.cbar-btn:hover{background:rgba(255,255,255,0.1);color:#fff;}
+.cbar-btn.active{background:rgba(6,182,212,0.2);border-color:rgba(6,182,212,0.4);color:#67E8F9;}
+.cbar-studio{padding:6px 14px;border-radius:8px;font-size:11px;font-weight:700;border:none;background:linear-gradient(135deg,#06B6D4,#8B5CF6);color:#fff;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;gap:5px;}
+.cbar-studio:hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(6,182,212,0.3);}
+
+/* ═══ DESIGN STUDIO MODAL ═══ */
+.modal-overlay{position:fixed;inset:0;background:rgba(15,23,42,0.45);backdrop-filter:blur(6px);z-index:300;display:none;align-items:center;justify-content:center;}
+.modal-overlay.open{display:flex;}
+.modal{background:#fff;border-radius:18px;width:92%;max-width:920px;max-height:88vh;overflow:hidden;box-shadow:var(--shadow-lg);animation:modalIn 0.3s var(--ease);}
+@keyframes modalIn{from{transform:translateY(14px) scale(0.97);opacity:0;}to{transform:none;opacity:1;}}
+.modal-head{padding:22px 26px 16px;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;justify-content:space-between;}
+.modal-head h2{font-size:20px;font-weight:800;letter-spacing:-0.02em;}
+.modal-head p{font-size:12px;color:var(--t3);margin-top:3px;}
+.modal-close{width:30px;height:30px;border-radius:8px;border:1px solid var(--border);background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--t3);font-size:18px;transition:all 0.12s;}
+.modal-close:hover{background:var(--elevated);color:var(--t1);}
+.modal-body{padding:22px 26px 26px;overflow-y:auto;max-height:calc(88vh - 75px);}
+
+/* Studio categories */
+.studio-cats{display:flex;gap:6px;margin-bottom:18px;}
+.studio-cat{padding:6px 14px;border-radius:20px;font-size:11px;font-weight:600;border:1px solid var(--border);background:transparent;color:var(--t3);cursor:pointer;transition:all 0.15s;}
+.studio-cat:hover{border-color:var(--border2);color:var(--t2);}
+.studio-cat.active{background:var(--accent);border-color:var(--accent);color:#fff;}
+
+/* Studio grid */
+.studio-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
+.studio-card{border-radius:14px;border:2px solid var(--border);overflow:hidden;cursor:pointer;transition:all 0.3s var(--ease);position:relative;}
+.studio-card:hover{border-color:var(--cyan);transform:translateY(-4px);box-shadow:var(--shadow-lg);}
+.studio-card.selected{border-color:var(--cyan);}
+.studio-card.selected .check{display:flex;}
+.check{display:none;position:absolute;top:8px;right:8px;width:22px;height:22px;border-radius:50%;background:var(--cyan);color:#fff;font-size:12px;font-weight:700;align-items:center;justify-content:center;z-index:5;box-shadow:0 2px 8px rgba(6,182,212,0.3);}
+
+/* Mini preview in studio card */
+.studio-preview{height:150px;position:relative;overflow:hidden;}
+.sp-sidebar{position:absolute;left:0;top:0;bottom:0;width:32px;border-right:1px solid;display:flex;flex-direction:column;align-items:center;padding-top:8px;gap:5px;}
+.sp-logo{width:18px;height:18px;border-radius:5px;margin-bottom:4px;}
+.sp-dot{width:5px;height:5px;border-radius:2px;opacity:0.25;}
+.sp-dot.active{opacity:1;width:14px;}
+.sp-topbar{position:absolute;top:0;left:32px;right:0;height:24px;border-bottom:1px solid;display:flex;align-items:center;padding:0 8px;font-size:7px;font-weight:700;}
+.sp-content{position:absolute;top:24px;left:32px;right:0;bottom:0;padding:6px;}
+.sp-kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:3px;margin-bottom:5px;}
+.sp-kpi{border-radius:4px;border:1px solid;padding:4px 3px;text-align:center;}
+.sp-kpi-val{font-size:9px;font-weight:800;}
+.sp-kpi-lbl{font-size:4px;text-transform:uppercase;letter-spacing:0.05em;}
+.sp-chart{border-radius:4px;border:1px solid;display:flex;align-items:flex-end;gap:1px;padding:4px;height:55px;}
+.sp-bar{flex:1;border-radius:2px 2px 0 0;transition:height 0.5s;}
+.studio-card:hover .sp-bar{animation:barPop 0.6s var(--ease);}
+@keyframes barPop{0%{transform:scaleY(0.4);}100%{transform:scaleY(1);}}
+.sp-status{position:absolute;bottom:0;left:32px;right:0;height:14px;border-top:1px solid;display:flex;align-items:center;padding:0 6px;font-size:5px;gap:6px;}
+.sp-live{width:3px;height:3px;border-radius:50%;animation:pulse 2s ease infinite;}
+
+/* Card info */
+.studio-info{padding:12px 14px;}
+.studio-info .tags{display:flex;gap:4px;margin-bottom:5px;}
+.studio-tag{font-size:8px;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;padding:2px 7px;border-radius:4px;}
+.studio-info h4{font-size:14px;font-weight:700;letter-spacing:-0.01em;margin-bottom:2px;}
+.studio-info p{font-size:11px;color:var(--t3);line-height:1.4;}
+.studio-info .feats{display:flex;gap:8px;margin-top:6px;font-size:10px;color:var(--t4);}
+.studio-info .feats span::before{content:'· ';}
+
+/* Apply bar */
+.modal-footer{padding:14px 26px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;background:var(--elevated);}
+.modal-footer .info{font-size:12px;color:var(--t3);}
+.modal-footer .info strong{color:var(--t1);}
+.apply-btn{padding:10px 28px;border-radius:var(--radius-sm);font-size:13px;font-weight:700;border:none;background:linear-gradient(135deg,var(--cyan),var(--purple));color:#fff;cursor:pointer;transition:all 0.2s;}
+.apply-btn:hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(6,182,212,0.3);}
+
+/* Bottom spacer */
+.bottom-space{height:70px;}
+
+/* ═══ RESPONSIVE ═══ */
+@media(max-width:900px){.sidebar{width:60px;}.sb-label,.sb-item span:not(.cnt):not(.tier-lock){display:none;}.kpis{grid-template-columns:repeat(2,1fr);}.studio-grid{grid-template-columns:repeat(2,1fr);}}
+</style>
+</head>
+<body>
+
+<!-- Top Bar -->
+<div class="topbar">
+  <div class="topbar-logo">
+    <svg viewBox="0 0 32 32" fill="none"><defs><linearGradient id="lg" x1="0" y1="0" x2="32" y2="32"><stop stop-color="#3B82F6"/><stop offset="1" stop-color="#8B5CF6"/></linearGradient></defs><rect width="32" height="32" rx="8" fill="url(#lg)"/><path d="M8 12h16M8 16h12M8 20h8" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>
+    <span class="name">FinanceOS</span>
+    <span class="plan-badge" id="planBadge" style="background:var(--green-dim);color:var(--green);">GROWTH</span>
+  </div>
+
+  <div class="topbar-controls">
+    <button class="role-btn active" data-role="cfo" onclick="setRole('cfo',this)"><span class="rdot" style="background:#3B82F6;"></span> CFO</button>
+    <button class="role-btn" data-role="ceo" onclick="setRole('ceo',this)"><span class="rdot" style="background:#8B5CF6;"></span> CEO</button>
+    <button class="role-btn" data-role="controller" onclick="setRole('controller',this)"><span class="rdot" style="background:#10B981;"></span> Controller</button>
+    <span style="width:1px;height:24px;background:var(--border);margin:0 4px;"></span>
+    <button class="tier-btn tier-starter" data-tier="starter" onclick="setTier('starter',this)">Starter</button>
+    <button class="tier-btn tier-growth active" data-tier="growth" onclick="setTier('growth',this)">Growth</button>
+    <button class="tier-btn tier-business" data-tier="business" onclick="setTier('business',this)">Business</button>
+  </div>
+</div>
+
+<div class="layout">
+  <div class="sidebar" id="sidebar"></div>
+  <div class="main" id="main"></div>
+</div>
+
+<!-- Customize Bar -->
+<div class="cbar">
+  <div class="cbar-icon">✦</div>
+  <span class="cbar-title">Customize</span>
+  <div class="cbar-sep"></div>
+  <span class="cbar-lbl">Theme</span>
+  <div class="cbar-swatch active" style="background:linear-gradient(135deg,#F3F4F8,#E2E8F0);" onclick="pickTheme('light',this)" title="Arctic Light"></div>
+  <div class="cbar-swatch" style="background:linear-gradient(135deg,#030711,#0C1323);" onclick="pickTheme('midnight',this)" title="Midnight"></div>
+  <div class="cbar-swatch" style="background:linear-gradient(135deg,#FFFBF5,#F5E6D3);" onclick="pickTheme('warm',this)" title="Warm Sand"></div>
+  <div class="cbar-swatch" style="background:linear-gradient(135deg,#040D0A,#0D3320);" onclick="pickTheme('forest',this)" title="Forest"></div>
+  <div class="cbar-swatch" style="background:linear-gradient(135deg,#0C0A1A,#1A1040);" onclick="pickTheme('executive',this)" title="Executive"></div>
+  <div class="cbar-swatch" style="background:linear-gradient(135deg,#0a0a0a,#111);" onclick="pickTheme('terminal',this)" title="Terminal"></div>
+  <div class="cbar-sep"></div>
+  <span class="cbar-lbl">Layout</span>
+  <button class="cbar-btn active" onclick="pickLayout('grid',this)">Grid</button>
+  <button class="cbar-btn" onclick="pickLayout('compact',this)">Compact</button>
+  <div class="cbar-sep"></div>
+  <button class="cbar-studio" onclick="openStudio()">✦ Design Studio</button>
+</div>
+
+<!-- Design Studio Modal -->
+<div class="modal-overlay" id="studioModal" onclick="if(event.target===this)closeStudio()">
+  <div class="modal">
+    <div class="modal-head">
+      <div>
+        <h2>Design Studio</h2>
+        <p id="studioSub">Pre-styled command centers and boards. Switch anytime.</p>
+      </div>
+      <button class="modal-close" onclick="closeStudio()">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="studio-cats">
+        <button class="studio-cat active" onclick="filterStudio('all',this)">All Designs</button>
+        <button class="studio-cat" onclick="filterStudio('light',this)">Light</button>
+        <button class="studio-cat" onclick="filterStudio('dark',this)">Dark</button>
+        <button class="studio-cat" onclick="filterStudio('new',this)">New</button>
+      </div>
+      <div class="studio-grid" id="studioGrid"></div>
+    </div>
+    <div class="modal-footer">
+      <div class="info">Selected: <strong id="selectedDesign">Arctic Light</strong> · Included with all plans</div>
+      <button class="apply-btn" onclick="applyDesign()">Apply Design →</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════════
+// DATA
+// ═══════════════════════════════════════════════════════════════
+const ROLES = {
+  cfo: {
+    name:'Sarah', title:'CFO Command Center',
+    kpis:[
+      {icon:'💰',label:'Revenue',value:'$4.2M',change:'+12.3%',dir:'up'},
+      {icon:'🔥',label:'Burn Rate',value:'$890K',change:'-8.1%',dir:'up'},
+      {icon:'✈️',label:'Runway',value:'18.2mo',change:'+2.4mo',dir:'up'},
+      {icon:'📊',label:'EBITDA',value:'$1.1M',change:'+34%',dir:'up'}
+    ],
+    charts:{
+      left:{title:'Revenue vs Forecast',bars:[42,55,62,50,72,65,80,70,85,78,60,52],color:'var(--accent)'},
+      right:{title:'Burn Rate Trend',bars:[70,65,72,60,68,55,62,58,52,60,55,50],color:'var(--amber)'}
+    },
+    table:{title:'Close Tasks',cols:['Task','Owner','Status','Due'],w:'3fr 1.5fr 1fr 1fr',
+      rows:[['Revenue recognition','Sarah C.','done','Mar 28'],['AP accruals review','Priya P.','progress','Mar 29'],['Interco eliminations','James R.','pending','Mar 30'],['Board deck draft','Sarah C.','pending','Mar 31']]
+    },
+    sidebar:['Overview','P&L','Forecast','Scenarios','Multi-Entity','Integrations','AI Copilot','Command Center','Close Tasks','Team','Settings']
+  },
+  ceo: {
+    name:'Michael', title:'CEO Strategic Dashboard',
+    kpis:[
+      {icon:'🚀',label:'ARR',value:'$51.2M',change:'+28%',dir:'up'},
+      {icon:'🔄',label:'NDR',value:'118%',change:'+3pp',dir:'up'},
+      {icon:'⏱️',label:'CAC Payback',value:'11mo',change:'-2mo',dir:'up'},
+      {icon:'📈',label:'Rule of 40',value:'52',change:'+4pts',dir:'up'}
+    ],
+    charts:{
+      left:{title:'ARR Growth',bars:[40,48,55,52,62,68,72,78,85,90,88,95],color:'var(--purple)'},
+      right:{title:'Net Revenue Retention',bars:[80,82,85,84,88,90,92,91,94,95,93,96],color:'var(--green)'}
+    },
+    table:{title:'Board Action Items',cols:['Item','Owner','Priority','Deadline'],w:'3fr 1.5fr 1fr 1fr',
+      rows:[['Series C timeline','Michael T.','done','Mar 28'],['Hiring plan Q2','Sarah C.','progress','Apr 1'],['Market expansion EU','David K.','pending','Apr 5'],['Product roadmap review','CTO','pending','Apr 8']]
+    },
+    sidebar:['Overview','Growth Metrics','Forecast','Scenarios','Investor Metrics','Team','AI Copilot','Command Center','SOX Audit','Settings']
+  },
+  controller: {
+    name:'Priya', title:'Controller Operations',
+    kpis:[
+      {icon:'📋',label:'Close Progress',value:'72%',change:'Day 3 of 5',dir:'up'},
+      {icon:'📝',label:'Open Items',value:'8',change:'-3 today',dir:'up'},
+      {icon:'⚡',label:'Variances',value:'2',change:'All < 5%',dir:'up'},
+      {icon:'🛡️',label:'Audit Score',value:'98.2',change:'+0.4',dir:'up'}
+    ],
+    charts:{
+      left:{title:'Close Timeline',bars:[20,35,50,72,0,0,0,0,0,0,0,0],color:'var(--green)'},
+      right:{title:'Reconciliation Queue',bars:[95,90,88,82,78,70,65,55,48,40,35,28],color:'var(--cyan)'}
+    },
+    table:{title:'Reconciliation Queue',cols:['Account','Status','Variance','Assignee'],w:'3fr 1fr 1fr 1.5fr',
+      rows:[['Cash & equivalents','done','$0','Priya P.'],['Accounts receivable','progress','$12K','James R.'],['Prepaid expenses','pending','$42K','Priya P.'],['Deferred revenue','pending','$8K','James R.']]
+    },
+    sidebar:['Overview','Close Tasks','Reconciliation','Audit Trail','SOX Audit','Team','AI Copilot','Settings']
+  }
+};
+
+const TIERS = {
+  starter:{label:'Starter',color:'var(--cyan)',colorClass:'tier-starter',price:'$499/mo',
+    banner:'Core dashboard with P&L, basic KPIs, and integrations',
+    features:['Overview','P&L','Basic KPIs','Integrations'],
+    lockGrowth:['Forecast','Scenarios','AI Copilot','Multi-Entity','Consolidation','Growth Metrics'],
+    lockBusiness:['Command Center','Close Tasks','Team','Investor Metrics','SOX Audit','Audit Trail','Reconciliation']},
+  growth:{label:'Growth',color:'var(--green)',colorClass:'tier-growth',price:'$1,499/mo',
+    banner:'Advanced analytics with forecasting, scenarios, and AI Copilot',
+    features:['Everything in Starter','Forecast','Scenarios','AI Copilot','Multi-Entity'],
+    lockGrowth:[],
+    lockBusiness:['Command Center','Close Tasks','Team','Investor Metrics','SOX Audit','Audit Trail','Reconciliation']},
+  business:{label:'Business',color:'var(--purple)',colorClass:'tier-business',price:'$3,999/mo',
+    banner:'Full enterprise suite with Command Center, SOX audit, SSO, and team management',
+    features:['Everything in Growth','Command Center','Close Tasks','Investor Metrics','SOX Audit Trail'],
+    lockGrowth:[],lockBusiness:[]}
+};
+
+const DESIGNS = [
+  {id:'arctic',name:'Arctic Light',desc:'Clean white surfaces with blue accents. Professional and modern.',cats:['light'],tags:[{l:'DEFAULT',c:'var(--accent)'},{l:'LIGHT',c:'var(--t4)'}],feats:['Glass blur','Clean type','White surfaces'],
+   bg:'#F3F4F8',sidebar:'#fff',topbar:'#fff',kpi:'#fff',accent:'#3B82F6',text:'#0F172A',border:'rgba(15,23,42,0.08)',bars:[45,58,65,52,75,68,82,74,88,80,62,55]},
+  {id:'midnight',name:'Midnight',desc:'Deep navy with cyan glow. The signature FinanceOS dark aesthetic.',cats:['dark'],tags:[{l:'DARK',c:'#818CF8'},{l:'POPULAR',c:'#34D399'}],feats:['Glow effects','Cyan palette','Glass blur'],
+   bg:'#030711',sidebar:'#070D19',topbar:'#030711',kpi:'#0C1323',accent:'#22D3EE',text:'#F1F5F9',border:'rgba(30,48,80,0.4)',bars:[35,42,50,32,55,38,45,28,52,30,48,40]},
+  {id:'warm',name:'Warm Sand',desc:'Soft cream tones with amber data accents. Elegant and sophisticated.',cats:['light','new'],tags:[{l:'LIGHT',c:'#D97706'},{l:'NEW',c:'#EC4899'}],feats:['Warm palette','Amber accents','Cream surfaces'],
+   bg:'#FFFBF5',sidebar:'#FFF8EE',topbar:'#FFFBF5',kpi:'#fff',accent:'#D97706',text:'#1C1410',border:'rgba(180,140,100,0.12)',bars:[60,55,70,48,65,72,58,80,62,75,68,85]},
+  {id:'forest',name:'Forest',desc:'Deep emerald with green data accents. Nature-inspired and focused.',cats:['dark'],tags:[{l:'DARK',c:'#34D399'}],feats:['Emerald palette','Green data viz','Deep surfaces'],
+   bg:'#040D0A',sidebar:'#040D0A',topbar:'#040D0A',kpi:'#0A1A14',accent:'#34D399',text:'#D1FAE5',border:'rgba(52,211,153,0.08)',bars:[40,52,48,65,58,72,55,68,78,62,85,70]},
+  {id:'executive',name:'Executive',desc:'Deep violet with purple accents. Board-ready for investor meetings.',cats:['dark','new'],tags:[{l:'DARK',c:'#818CF8'},{l:'NEW',c:'#FBBF24'}],feats:['Purple palette','Board-ready','Premium feel'],
+   bg:'#0C0A1A',sidebar:'#0C0A1A',topbar:'#0C0A1A',kpi:'#14102A',accent:'#818CF8',text:'#E2E0F0',border:'rgba(129,140,248,0.12)',bars:[50,62,55,70,65,78,72,82,75,88,80,92]},
+  {id:'terminal',name:'Terminal',desc:'Pure black with monospace type and cyan matrix effects. Power users.',cats:['dark'],tags:[{l:'DARK',c:'#22D3EE'},{l:'HACKER',c:'#34D399'}],feats:['Monospace fonts','Matrix aesthetic','Keyboard-first'],
+   bg:'#0a0a0a',sidebar:'#0a0a0a',topbar:'#0a0a0a',kpi:'#111',accent:'#22D3EE',text:'#E0E0E0',border:'rgba(34,211,238,0.06)',bars:[30,45,38,52,42,58,35,62,48,55,65,40]}
+];
+
+// ═══════════════════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════════════════
+let role='cfo', tier='growth', design='arctic';
+
+// ═══════════════════════════════════════════════════════════════
+// ACTIONS
+// ═══════════════════════════════════════════════════════════════
+function setRole(r,el){
+  role=r;
+  document.querySelectorAll('.role-btn').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+  render();
+}
+function setTier(t,el){
+  tier=t;
+  document.querySelectorAll('.tier-btn').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+  const T=TIERS[t];
+  const badge=document.getElementById('planBadge');
+  badge.textContent=T.label.toUpperCase();
+  badge.style.background=t==='starter'?'var(--cyan-dim)':t==='growth'?'var(--green-dim)':'var(--purple-dim)';
+  badge.style.color=T.color;
+  render();
+}
+function pickTheme(id,el){
+  design=id;
+  document.querySelectorAll('.cbar-swatch').forEach(s=>s.classList.remove('active'));
+  el.classList.add('active');
+}
+function pickLayout(l,el){
+  document.querySelectorAll('.cbar-btn').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+}
+
+// ═══════════════════════════════════════════════════════════════
+// RENDER
+// ═══════════════════════════════════════════════════════════════
+function render(){
+  renderSidebar();
+  renderMain();
+}
+
+function isLocked(item){
+  const T=TIERS[tier];
+  return T.lockGrowth.some(l=>item.toLowerCase().includes(l.toLowerCase().split(' ')[0]))
+      || T.lockBusiness.some(l=>item.toLowerCase().includes(l.toLowerCase().split(' ')[0]));
+}
+function lockTier(item){
+  const T=TIERS[tier];
+  if(T.lockGrowth.some(l=>item.toLowerCase().includes(l.toLowerCase().split(' ')[0]))) return 'growth';
+  if(T.lockBusiness.some(l=>item.toLowerCase().includes(l.toLowerCase().split(' ')[0]))) return 'business';
+  return null;
+}
+
+function renderSidebar(){
+  const R=ROLES[role];
+  let h='<div class="sb-section"><div class="sb-label">DASHBOARD</div>';
+  R.sidebar.slice(0,4).forEach((item,i)=>{
+    const locked=isLocked(item);
+    const lt=lockTier(item);
+    h+=`<div class="sb-item${i===0?' active':''}" ${locked?'style="opacity:0.45"':''}>
+      <svg viewBox="0 0 14 14" fill="none"><rect x="1" y="1" width="12" height="12" rx="2" stroke="currentColor" stroke-width="1"/></svg>
+      <span>${item}</span>
+      ${locked?`<span class="tier-lock" style="background:${lt==='growth'?'var(--green-dim);color:var(--green)':'var(--purple-dim);color:var(--purple)'}">🔒 ${lt==='growth'?'Growth':'Business'}</span>`:''}
+      ${i===0?'<span class="cnt">4</span>':''}
+    </div>`;
+  });
+  h+='</div><div class="sb-section"><div class="sb-label">PLATFORM</div>';
+  R.sidebar.slice(4).forEach(item=>{
+    const locked=isLocked(item);
+    const lt=lockTier(item);
+    h+=`<div class="sb-item" ${locked?'style="opacity:0.45"':''}>
+      <svg viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="5" stroke="currentColor" stroke-width="1"/></svg>
+      <span>${item}</span>
+      ${locked?`<span class="tier-lock" style="background:${lt==='growth'?'var(--green-dim);color:var(--green)':'var(--purple-dim);color:var(--purple)'}">🔒 ${lt==='growth'?'Growth':'Business'}</span>`:''}
+    </div>`;
+  });
+  h+='</div>';
+  document.getElementById('sidebar').innerHTML=h;
+}
+
+function renderMain(){
+  const R=ROLES[role], T=TIERS[tier];
+  let h='';
+
+  // Tier banner
+  h+=`<div class="tier-banner">
+    <span class="badge" style="background:${tier==='starter'?'var(--cyan-dim);color:var(--cyan)':tier==='growth'?'var(--green-dim);color:var(--green)':'var(--purple-dim);color:var(--purple)'}">${T.label.toUpperCase()}</span>
+    <div class="info"><h3>${T.banner}</h3><p>${T.price} · Billed annually</p></div>
+    <div class="features">${T.features.slice(0,5).map(f=>`<span>${f}</span>`).join('')}</div>
+  </div>`;
+
+  // Header
+  h+=`<div class="dash-header">
+    <h1>Good morning, ${R.name}</h1>
+    <div class="sub"><span class="live"></span> ${R.title} · Live sync · March 28, 2026</div>
+  </div>`;
+
+  // KPIs
+  h+=`<div class="kpis">${R.kpis.map(k=>`
+    <div class="kpi">
+      <div class="icon">${k.icon}</div>
+      <div class="label">${k.label.toUpperCase()}</div>
+      <div class="value">${k.value}</div>
+      <div class="change ${k.dir}">${k.dir==='up'?'↑':'↓'} ${k.change}</div>
+    </div>`).join('')}</div>`;
+
+  // Charts
+  h+=`<div class="charts">`;
+  ['left','right'].forEach(s=>{
+    const c=R.charts[s];
+    h+=`<div class="chart-card">
+      <h3>${c.title} <span class="live-tag">Live</span></h3>
+      <div class="bar-chart">${c.bars.map(b=>`<div class="bar" style="height:${b}%;background:${c.color};opacity:0.65;"></div>`).join('')}</div>
+    </div>`;
+  });
+  h+=`</div>`;
+
+  // Table
+  h+=`<div class="data-table">
+    <div class="dt-head" style="grid-template-columns:${R.table.w}">${R.table.cols.map(c=>`<span>${c.toUpperCase()}</span>`).join('')}</div>
+    ${R.table.rows.map(r=>`<div class="dt-row" style="grid-template-columns:${R.table.w}">
+      <span style="font-weight:600;">${r[0]}</span><span>${r[1]}</span>
+      <span class="status s-${r[2]}">${r[2].toUpperCase()}</span>
+      <span style="color:var(--t4);">${r[3]}</span>
+    </div>`).join('')}
+  </div>`;
+
+  // AI Insights (locked for Starter)
+  if(tier==='starter'){
+    h+=`<div class="lock-wrap" style="min-height:120px;">
+      <div class="lock-blur"><div class="ai-grid">
+        <div class="ai-card"><div class="tag" style="color:var(--amber);">⚡ VARIANCE</div><p>Marketing OPEX alert...</p></div>
+        <div class="ai-card"><div class="tag" style="color:var(--green);">📈 FORECAST</div><p>Revenue trending...</p></div>
+        <div class="ai-card"><div class="tag" style="color:var(--cyan);">✈️ RUNWAY</div><p>Cash runway...</p></div>
+      </div></div>
+      <div class="lock-gate">
+        <div class="icon">🔒</div>
+        <div class="title">AI Copilot Insights</div>
+        <div class="sub">Available on Growth plan and above</div>
+        <button class="upgrade-btn" style="background:var(--green);" onclick="setTier('growth',document.querySelector('[data-tier=growth]'))">Upgrade to Growth · $1,499/mo</button>
+      </div>
+    </div>`;
+  } else {
+    h+=`<div class="ai-section"><h3>✨ AI Copilot Insights</h3>
+    <div class="ai-grid">
+      <div class="ai-card"><div class="tag" style="color:var(--amber);">⚡ VARIANCE ALERT</div><p>Marketing OPEX is <strong>$67K over budget</strong> — caused by Salesforce annual renewal. Auto-reclassified to prepaid.</p></div>
+      <div class="ai-card"><div class="tag" style="color:var(--green);">📈 FORECAST</div><p>Revenue trending <strong>7.7% above</strong> Q1 forecast. Recommend updating board deck projections.</p></div>
+      <div class="ai-card"><div class="tag" style="color:var(--cyan);">✈️ RUNWAY</div><p>Cash runway extended to <strong>18.2 months</strong> (+2.4mo) after updated headcount plan.</p></div>
+    </div></div>`;
+  }
+
+  // Team (locked for non-Business)
+  if(tier==='business'){
+    h+=`<h3 style="font-size:13px;font-weight:700;margin:16px 0 10px;">Team Active</h3>
+    <div class="team-grid">
+      <div class="team-card"><div class="avatar" style="background:linear-gradient(135deg,#3B82F6,#2563EB);">SC</div><div class="name">Sarah C.</div><div class="role">CFO</div></div>
+      <div class="team-card"><div class="avatar" style="background:linear-gradient(135deg,#10B981,#059669);">JR</div><div class="name">James R.</div><div class="role">FP&A</div></div>
+      <div class="team-card"><div class="avatar" style="background:linear-gradient(135deg,#F59E0B,#D97706);">PP</div><div class="name">Priya P.</div><div class="role">Controller</div></div>
+      <div class="team-card"><div class="avatar" style="background:linear-gradient(135deg,#8B5CF6,#7C3AED);">DK</div><div class="name">David K.</div><div class="role">RevOps</div></div>
+    </div>`;
+  } else {
+    h+=`<div class="lock-wrap" style="min-height:100px;">
+      <div class="lock-blur"><div class="team-grid">
+        <div class="team-card"><div class="avatar" style="background:#ccc;"></div><div class="name">Team</div></div>
+        <div class="team-card"><div class="avatar" style="background:#ccc;"></div><div class="name">Team</div></div>
+        <div class="team-card"><div class="avatar" style="background:#ccc;"></div><div class="name">Team</div></div>
+        <div class="team-card"><div class="avatar" style="background:#ccc;"></div><div class="name">Team</div></div>
+      </div></div>
+      <div class="lock-gate">
+        <div class="icon">🔒</div>
+        <div class="title">Team Management</div>
+        <div class="sub">Available on Business plan</div>
+        <button class="upgrade-btn" style="background:var(--purple);" onclick="setTier('business',document.querySelector('[data-tier=business]'))">Upgrade to Business · $3,999/mo</button>
+      </div>
+    </div>`;
+  }
+
+  h+=`<div class="bottom-space"></div>`;
+  document.getElementById('main').innerHTML=h;
+}
+
+// ═══════════════════════════════════════════════════════════════
+// DESIGN STUDIO
+// ═══════════════════════════════════════════════════════════════
+function openStudio(){document.getElementById('studioModal').classList.add('open');renderStudio('all');}
+function closeStudio(){document.getElementById('studioModal').classList.remove('open');}
+
+function filterStudio(cat,el){
+  document.querySelectorAll('.studio-cat').forEach(c=>c.classList.remove('active'));
+  el.classList.add('active');
+  renderStudio(cat);
+}
+
+function renderStudio(cat){
+  const filtered=cat==='all'?DESIGNS:DESIGNS.filter(d=>d.cats.includes(cat));
+  document.getElementById('studioGrid').innerHTML=filtered.map(d=>`
+    <div class="studio-card${d.id===design?' selected':''}" onclick="selectDesign('${d.id}',this)">
+      <div class="check">✓</div>
+      <div class="studio-preview" style="background:${d.bg};">
+        <div class="sp-sidebar" style="background:${d.sidebar};border-color:${d.border};">
+          <div class="sp-logo" style="background:linear-gradient(135deg,${d.accent},#8B5CF6);"></div>
+          <div class="sp-dot active" style="background:${d.accent};"></div>
+          <div class="sp-dot" style="background:${d.border};"></div>
+          <div class="sp-dot" style="background:${d.border};"></div>
+          <div class="sp-dot" style="background:${d.border};"></div>
+        </div>
+        <div class="sp-topbar" style="background:${d.topbar};border-color:${d.border};color:${d.text};">Command Center</div>
+        <div class="sp-content" style="background:${d.bg};">
+          <div class="sp-kpis">
+            ${d.bars.slice(0,4).map((_,i)=>`<div class="sp-kpi" style="background:${d.kpi};border-color:${d.border};">
+              <div class="sp-kpi-val" style="color:${d.text};">$${(4+i)}M</div>
+              <div class="sp-kpi-lbl" style="color:${d.accent}80;">KPI</div>
+            </div>`).join('')}
+          </div>
+          <div class="sp-chart" style="background:${d.kpi};border-color:${d.border};">
+            ${d.bars.map(h=>`<div class="sp-bar" style="height:${h}%;background:${d.accent};opacity:0.5;"></div>`).join('')}
+          </div>
+        </div>
+        <div class="sp-status" style="background:${d.bg};border-color:${d.border};color:${d.accent}80;">
+          <div class="sp-live" style="background:${d.accent};box-shadow:0 0 4px ${d.accent};"></div>
+          <span style="font-family:var(--mono);">LIVE</span>
+          <span style="font-family:var(--mono);">4 ACCOUNTS</span>
+          <span style="font-family:var(--mono);margin-left:auto;">SYNC: OK</span>
+        </div>
+      </div>
+      <div class="studio-info">
+        <div class="tags">${d.tags.map(t=>`<span class="studio-tag" style="color:${t.c};background:${t.c}12;border:1px solid ${t.c}25;">${t.l}</span>`).join('')}</div>
+        <h4>${d.name}</h4>
+        <p>${d.desc}</p>
+        <div class="feats">${d.feats.map(f=>`<span>${f}</span>`).join('')}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function selectDesign(id,el){
+  design=id;
+  const d=DESIGNS.find(x=>x.id===id);
+  document.querySelectorAll('.studio-card').forEach(c=>c.classList.remove('selected'));
+  el.classList.add('selected');
+  document.getElementById('selectedDesign').textContent=d.name;
+  document.getElementById('studioSub').textContent=`Selected: ${d.name} — ${d.desc}`;
+  // Update theme swatches
+  document.querySelectorAll('.cbar-swatch').forEach(s=>s.classList.remove('active'));
+}
+
+function applyDesign(){
+  closeStudio();
+  // In production: POST /api/settings/theme with design ID, then refresh dashboard CSS vars
+  const d=DESIGNS.find(x=>x.id===design);
+  document.getElementById('studioSub').textContent=`Applied: ${d.name}`;
+}
+
+// ═══════════════════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════════════════
+render();
+</script>
+</body>
+</html>

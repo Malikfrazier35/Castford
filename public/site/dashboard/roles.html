@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover">
+<meta name="theme-color" content="#ffffff">
+<title>FinanceOS — Every Finance Role</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#ffffff;--bg-elevated:#f8f9fb;--bg-card:#ffffff;--bg-card-hover:#f3f5f8;
+  --border:#e5e7ec;--border-accent:#d1d5de;
+  --text:#0f1729;--text-sec:#4b5563;--text-muted:#9ca3af;
+  --blue:#3b82f6;--purple:#8b5cf6;--green:#10b981;--amber:#f59e0b;--cyan:#06b6d4;--rose:#f43f5e;
+  --gradient:linear-gradient(135deg,#3b82f6,#8b5cf6);
+  --gradient-subtle:linear-gradient(135deg,rgba(59,130,246,0.04),rgba(139,92,246,0.04));
+  --sans:'Manrope',system-ui,-apple-system,sans-serif;
+  --mono:'JetBrains Mono',ui-monospace,monospace;
+  --r:12px;--r-lg:16px;--r-xl:20px;
+  --glass:rgba(255,255,255,0.7);--glass-border:rgba(0,0,0,0.05);
+  --shadow:0 1px 3px rgba(0,0,0,0.04),0 4px 16px rgba(0,0,0,0.03);
+  --shadow-lg:0 4px 24px rgba(0,0,0,0.06),0 12px 48px rgba(0,0,0,0.04);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);-webkit-font-smoothing:antialiased;line-height:1.7;overflow-x:hidden}
+::selection{background:rgba(59,130,246,0.15)}
+
+/* Animations */
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+@keyframes ambientDrift{0%{transform:translate(0,0) scale(1)}25%{transform:translate(20px,-15px) scale(1.04)}50%{transform:translate(-15px,10px) scale(0.98)}75%{transform:translate(10px,18px) scale(1.02)}100%{transform:translate(0,0) scale(1)}}
+@keyframes ambientDrift2{0%{transform:translate(0,0)}33%{transform:translate(-20px,12px)}66%{transform:translate(15px,-18px)}100%{transform:translate(0,0)}}
+@keyframes shimmer{0%{left:-100%}100%{left:200%}}
+@keyframes pulse{0%,100%{opacity:.4}50%{opacity:.8}}
+.fade-up{animation:fadeUp .8s cubic-bezier(0.22,1,0.36,1) both}
+.fd1{animation-delay:.1s}.fd2{animation-delay:.2s}.fd3{animation-delay:.3s}
+.fd4{animation-delay:.4s}.fd5{animation-delay:.5s}
+
+.container{max-width:1100px;margin:0 auto;padding:0 24px}
+section{padding:120px 0;position:relative;overflow:hidden}
+
+/* Section Header */
+.section-label{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.14em;color:var(--blue);margin-bottom:14px;display:flex;align-items:center;gap:10px}
+.section-label::before{content:'';width:20px;height:1px;background:var(--blue);opacity:.5}
+.section-title{font-size:clamp(30px,4.5vw,48px);font-weight:800;letter-spacing:-.04em;line-height:1.08;margin-bottom:18px}
+.section-title span{background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.section-desc{font-size:15px;color:var(--text-sec);max-width:520px;line-height:1.8;margin-bottom:56px}
+
+/* Ambient Background */
+.role-ambient{position:absolute;inset:0;pointer-events:none}
+.role-ambient .orb{position:absolute;border-radius:50%;filter:blur(120px)}
+.role-ambient .orb-1{width:500px;height:500px;top:-10%;right:-5%;background:rgba(59,130,246,0.05);animation:ambientDrift 22s ease-in-out infinite}
+.role-ambient .orb-2{width:400px;height:400px;bottom:0;left:-8%;background:rgba(139,92,246,0.04);animation:ambientDrift2 28s ease-in-out infinite}
+
+/* =============================================
+   ROLE CARDS — Full Width Stacked
+   ============================================= */
+.role-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:20px;position:relative;z-index:2}
+
+.role-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--r-xl);padding:0;overflow:hidden;position:relative;transition:all .4s cubic-bezier(0.22,1,0.36,1);display:flex;flex-direction:column}
+.role-card:hover{transform:translateY(-6px);box-shadow:var(--shadow-lg),0 0 0 1px rgba(0,0,0,0.03)}
+
+/* Gradient top accent per role */
+.role-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;opacity:0;transition:opacity .4s}
+.role-card:hover::before{opacity:1}
+.role-card.cfo::before{background:linear-gradient(90deg,var(--blue),var(--cyan))}
+.role-card.ceo::before{background:linear-gradient(90deg,var(--purple),var(--rose))}
+.role-card.controller::before{background:linear-gradient(90deg,var(--green),var(--cyan))}
+.role-card.fpa::before{background:linear-gradient(90deg,var(--amber),var(--rose))}
+
+/* Ambient glow per card on hover */
+.role-card::after{content:'';position:absolute;top:-40%;right:-30%;width:300px;height:300px;border-radius:50%;filter:blur(80px);pointer-events:none;opacity:0;transition:opacity .5s}
+.role-card:hover::after{opacity:1}
+.role-card.cfo::after{background:rgba(59,130,246,0.06)}
+.role-card.ceo::after{background:rgba(139,92,246,0.06)}
+.role-card.controller::after{background:rgba(16,185,129,0.06)}
+.role-card.fpa::after{background:rgba(245,158,11,0.06)}
+
+/* Card Inner */
+.role-card-inner{padding:36px 32px;position:relative;z-index:1;flex:1;display:flex;flex-direction:column}
+
+/* Role Badge */
+.role-badge{display:inline-flex;align-items:center;gap:6px;padding:5px 14px;border-radius:8px;font-size:11px;font-weight:800;letter-spacing:.04em;margin-bottom:20px;width:fit-content}
+.cfo .role-badge{background:rgba(59,130,246,0.08);color:var(--blue);border:1px solid rgba(59,130,246,0.12)}
+.ceo .role-badge{background:rgba(139,92,246,0.08);color:var(--purple);border:1px solid rgba(139,92,246,0.12)}
+.controller .role-badge{background:rgba(16,185,129,0.08);color:var(--green);border:1px solid rgba(16,185,129,0.12)}
+.fpa .role-badge{background:rgba(245,158,11,0.08);color:var(--amber);border:1px solid rgba(245,158,11,0.12)}
+
+/* Role Icon */
+.role-icon{width:48px;height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center;margin-bottom:20px;position:relative}
+.role-icon::after{content:'';position:absolute;inset:-2px;border-radius:16px;opacity:.12}
+.cfo .role-icon{background:rgba(59,130,246,0.08)}
+.cfo .role-icon::after{background:var(--blue)}
+.ceo .role-icon{background:rgba(139,92,246,0.08)}
+.ceo .role-icon::after{background:var(--purple)}
+.controller .role-icon{background:rgba(16,185,129,0.08)}
+.controller .role-icon::after{background:var(--green)}
+.fpa .role-icon{background:rgba(245,158,11,0.08)}
+.fpa .role-icon::after{background:var(--amber)}
+
+/* KPI Tags */
+.kpi-tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:24px}
+.kpi-tag{font-size:10px;font-weight:600;color:var(--text-sec);background:rgba(0,0,0,0.02);border:1px solid rgba(0,0,0,0.06);padding:4px 10px;border-radius:6px;letter-spacing:.02em;transition:all .2s}
+.role-card:hover .kpi-tag{border-color:rgba(0,0,0,0.1);background:rgba(0,0,0,0.04)}
+
+/* CTA Link */
+.role-link{font-size:12px;font-weight:700;text-decoration:none;display:inline-flex;align-items:center;gap:8px;transition:all .25s;margin-top:auto;padding-top:20px;border-top:1px solid var(--border)}
+.cfo .role-link{color:var(--blue)}
+.ceo .role-link{color:var(--purple)}
+.controller .role-link{color:var(--green)}
+.fpa .role-link{color:var(--amber)}
+.role-link:hover{gap:12px}
+.role-link svg{width:16px;height:16px;transition:transform .25s}
+.role-link:hover svg{transform:translateX(3px)}
+
+/* Arrow icon */
+.arrow-icon{display:inline-flex}
+
+/* Mini-preview strip at bottom of card */
+.role-preview{padding:0 32px 28px;position:relative;z-index:1}
+.preview-strip{display:flex;gap:8px}
+.preview-kpi{flex:1;background:var(--bg-elevated);border:1px solid var(--border);border-radius:8px;padding:10px 12px;text-align:center}
+.preview-kpi-label{font-size:7px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--text-muted);margin-bottom:3px}
+.preview-kpi-value{font-size:16px;font-weight:900;font-family:var(--mono);letter-spacing:-.03em;line-height:1}
+
+/* Responsive */
+@media(max-width:768px){
+  .role-grid{grid-template-columns:1fr}
+  section{padding:80px 0}
+  .kpi-tags{gap:4px}
+  .preview-strip{flex-wrap:wrap}
+  .preview-kpi{min-width:calc(50% - 4px)}
+}
+@media(max-width:480px){
+  .section-title{font-size:30px}
+  .preview-kpi{min-width:100%}
+}
+
+/* === GENIUS ANIMATIONS === */
+@property --angle{syntax:'<angle>';initial-value:0deg;inherits:false}
+@keyframes spin{to{--angle:360deg}}
+@keyframes badgeGlow{0%,100%{box-shadow:0 0 8px transparent}50%{box-shadow:0 0 16px currentColor}}
+
+.role-grid{perspective:900px}
+.role-card{transform-style:preserve-3d;will-change:transform}
+
+/* Badge micro-pulse */
+.role-badge{animation:badgeGlow 4s ease-in-out infinite;transition:transform .2s}
+.role-card:hover .role-badge{transform:scale(1.05)}
+
+/* Hover gradient border with conic rotation */
+.role-card{isolation:isolate}
+.role-card .gradient-border{position:absolute;inset:-1px;border-radius:var(--r-xl);background:conic-gradient(from var(--angle),transparent 60%,var(--blue) 80%,transparent 100%);z-index:-1;opacity:0;animation:spin 3s linear infinite;transition:opacity .4s}
+.role-card:hover .gradient-border{opacity:.2}
+.ceo .gradient-border{background:conic-gradient(from var(--angle),transparent 60%,var(--purple) 80%,transparent 100%)!important}
+.controller .gradient-border{background:conic-gradient(from var(--angle),transparent 60%,var(--green) 80%,transparent 100%)!important}
+.fpa .gradient-border{background:conic-gradient(from var(--angle),transparent 60%,var(--amber) 80%,transparent 100%)!important}
+
+/* KPI value reveal */
+.preview-kpi-value{transition:all .6s cubic-bezier(0.22,1,0.36,1)}
+</style>
+</head>
+<body>
+
+<section>
+  <!-- Ambient Background -->
+  <div class="role-ambient">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+  </div>
+
+  <div class="container">
+    <div class="section-label fade-up">Tailored to Your Role</div>
+    <div class="section-title fade-up fd1">One platform.<br><span>Every finance role.</span></div>
+    <div class="section-desc fade-up fd2">Every executive sees the KPIs that matter to them. Personalized dashboards are not an add-on — they are how FinanceOS works.</div>
+
+    <div class="role-grid">
+
+      <!-- CFO -->
+      <div class="role-card cfo fade-up fd1">
+        <div class="gradient-border"></div>
+        <div class="role-card-inner">
+          <div class="role-badge">CFO</div>
+          <div class="role-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+          </div>
+          <div class="kpi-tags">
+            <span class="kpi-tag">Revenue</span>
+            <span class="kpi-tag">Margins</span>
+            <span class="kpi-tag">Cash flow</span>
+            <span class="kpi-tag">ROIC</span>
+            <span class="kpi-tag">EPS</span>
+            <span class="kpi-tag">Dividend yield</span>
+            <span class="kpi-tag">Board deck export</span>
+          </div>
+          <a href="#" class="role-link">
+            See CFO dashboard
+            <svg class="arrow-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </a>
+        </div>
+        <div class="role-preview">
+          <div class="preview-strip">
+            <div class="preview-kpi">
+              <div class="preview-kpi-label">Revenue</div>
+              <div class="preview-kpi-value" style="color:var(--blue)">$24.8M</div>
+            </div>
+            <div class="preview-kpi">
+              <div class="preview-kpi-label">Margin</div>
+              <div class="preview-kpi-value" style="color:var(--green)">18.2%</div>
+            </div>
+            <div class="preview-kpi">
+              <div class="preview-kpi-label">ROIC</div>
+              <div class="preview-kpi-value" style="color:var(--purple)">14.6%</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CEO -->
+      <div class="role-card ceo fade-up fd2">
+        <div class="gradient-border"></div>
+        <div class="role-card-inner">
+          <div class="role-badge">CEO</div>
+          <div class="role-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--purple)" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+          </div>
+          <div class="kpi-tags">
+            <span class="kpi-tag">Strategic KPIs</span>
+            <span class="kpi-tag">Segment growth</span>
+            <span class="kpi-tag">Market position</span>
+            <span class="kpi-tag">Rule of 40</span>
+            <span class="kpi-tag">Fundraising readiness</span>
+          </div>
+          <a href="#" class="role-link">
+            See CEO dashboard
+            <svg class="arrow-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </a>
+        </div>
+        <div class="role-preview">
+          <div class="preview-strip">
+            <div class="preview-kpi">
+              <div class="preview-kpi-label">Rule of 40</div>
+              <div class="preview-kpi-value" style="color:var(--purple)">52.1</div>
+            </div>
+            <div class="preview-kpi">
+              <div class="preview-kpi-label">ARR Growth</div>
+              <div class="preview-kpi-value" style="color:var(--green)">+24%</div>
+            </div>
+            <div class="preview-kpi">
+              <div class="preview-kpi-label">NDR</div>
+              <div class="preview-kpi-value" style="color:var(--cyan)">118%</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Controller -->
+      <div class="role-card controller fade-up fd3">
+        <div class="gradient-border"></div>
+        <div class="role-card-inner">
+          <div class="role-badge">Controller</div>
+          <div class="role-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          </div>
+          <div class="kpi-tags">
+            <span class="kpi-tag">Close progress</span>
+            <span class="kpi-tag">Reconciliation status</span>
+            <span class="kpi-tag">GL summary</span>
+            <span class="kpi-tag">AP/AR aging</span>
+            <span class="kpi-tag">Compliance</span>
+          </div>
+          <a href="#" class="role-link">
+            See Controller dashboard
+            <svg class="arrow-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </a>
+        </div>
+        <div class="role-preview">
+          <div class="preview-strip">
+            <div class="preview-kpi">
+              <div class="preview-kpi-label">Close</div>
+              <div class="preview-kpi-value" style="color:var(--green)">6/8</div>
+            </div>
+            <div class="preview-kpi">
+              <div class="preview-kpi-label">Recon</div>
+              <div class="preview-kpi-value" style="color:var(--amber)">94%</div>
+            </div>
+            <div class="preview-kpi">
+              <div class="preview-kpi-label">AP Aging</div>
+              <div class="preview-kpi-value" style="color:var(--blue)">$1.2M</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- FP&A Manager -->
+      <div class="role-card fpa fade-up fd4">
+        <div class="gradient-border"></div>
+        <div class="role-card-inner">
+          <div class="role-badge">FP&A Manager</div>
+          <div class="role-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--amber)" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+          </div>
+          <div class="kpi-tags">
+            <span class="kpi-tag">Variance analysis</span>
+            <span class="kpi-tag">Budget vs actual</span>
+            <span class="kpi-tag">Forecast accuracy</span>
+            <span class="kpi-tag">Scenario comparison</span>
+          </div>
+          <a href="#" class="role-link">
+            See FP&A dashboard
+            <svg class="arrow-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </a>
+        </div>
+        <div class="role-preview">
+          <div class="preview-strip">
+            <div class="preview-kpi">
+              <div class="preview-kpi-label">Accuracy</div>
+              <div class="preview-kpi-value" style="color:var(--amber)">96.8%</div>
+            </div>
+            <div class="preview-kpi">
+              <div class="preview-kpi-label">Variance</div>
+              <div class="preview-kpi-value" style="color:var(--green)">+$2.1M</div>
+            </div>
+            <div class="preview-kpi">
+              <div class="preview-kpi-label">Scenarios</div>
+              <div class="preview-kpi-value" style="color:var(--purple)">4</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer style="border-top:1px solid var(--border);padding:40px 0;text-align:center">
+  <div class="container">
+    <div style="font-size:11px;color:var(--text-muted)">FinanceOS by Financial Holding LLC — AI-Powered Financial Intelligence</div>
+  </div>
+</footer>
+
+<!-- Scroll Animations -->
+<script>
+const observer=new IntersectionObserver((entries)=>{
+  entries.forEach(entry=>{
+    if(entry.isIntersecting){
+      entry.target.style.animationPlayState='running';
+      observer.unobserve(entry.target);
+    }
+  });
+},{threshold:0.1});
+document.querySelectorAll('.fade-up').forEach(el=>{
+  el.style.animationPlayState='paused';
+  observer.observe(el);
+});
+
+// 3D tilt on cards
+document.querySelectorAll('.role-card').forEach(card=>{
+  card.addEventListener('mousemove',e=>{
+    const r=card.getBoundingClientRect();
+    const x=(e.clientX-r.left)/r.width-.5;
+    const y=(e.clientY-r.top)/r.height-.5;
+    card.style.transform=`perspective(800px) rotateY(${x*6}deg) rotateX(${-y*6}deg) translateY(-6px)`;
+  });
+  card.addEventListener('mouseleave',()=>{
+    card.style.transform='';
+  });
+});
+
+// Mouse parallax on ambient orbs
+document.addEventListener('mousemove',e=>{
+  const mx=e.clientX/window.innerWidth-.5;
+  const my=e.clientY/window.innerHeight-.5;
+  const orbs=document.querySelectorAll('.orb');
+  if(orbs[0])orbs[0].style.transform=`translate(${mx*30}px,${my*20}px)`;
+  if(orbs[1])orbs[1].style.transform=`translate(${mx*-20}px,${my*-15}px)`;
+});
+
+// KPI value counter animation
+const kpiObs=new IntersectionObserver((entries)=>{
+  entries.forEach(entry=>{
+    if(!entry.isIntersecting)return;
+    const el=entry.target;
+    const text=el.dataset.original;
+    const numMatch=text.match(/([\d,.]+)/);
+    if(numMatch){
+      const numStr=numMatch[1];
+      const num=parseFloat(numStr.replace(/,/g,''));
+      const prefix=text.substring(0,text.indexOf(numStr));
+      const suffix=text.substring(text.indexOf(numStr)+numStr.length);
+      const hasDecimal=numStr.includes('.');
+      const decimals=hasDecimal?(numStr.split('.')[1]||'').length:0;
+      let start=performance.now();
+      (function tick(now){
+        const p=Math.min((now-start)/900,1);
+        const ease=1-Math.pow(1-p,3);
+        let v=num*ease;
+        let f=hasDecimal?v.toFixed(decimals):Math.round(v).toString();
+        el.textContent=prefix+f+suffix;
+        if(p<1)requestAnimationFrame(tick);
+        else el.textContent=text;
+      })(start);
+    }
+    kpiObs.unobserve(el);
+  });
+},{threshold:0.3});
+document.querySelectorAll('.preview-kpi-value').forEach(el=>{
+  el.dataset.original=el.textContent;
+  kpiObs.observe(el);
+});
+
+// Magnetic arrow links
+document.querySelectorAll('.role-link').forEach(link=>{
+  link.addEventListener('mousemove',e=>{
+    const svg=link.querySelector('svg');
+    if(!svg)return;
+    const r=link.getBoundingClientRect();
+    const dx=(e.clientX-(r.left+r.width/2))*0.12;
+    svg.style.transform=`translateX(${3+dx}px)`;
+  });
+  link.addEventListener('mouseleave',()=>{
+    const svg=link.querySelector('svg');
+    if(svg)svg.style.transform='';
+  });
+});
+</script>
+
+</body>
+</html>

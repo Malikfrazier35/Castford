@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover">
+<meta name="theme-color" content="#ffffff">
+<title>CFO Command Center — FinanceOS Enterprise Feature</title>
+<meta property="og:title" content="CFO Command Center — FinanceOS">
+<meta property="og:description" content="A real-time executive dashboard built for your finance team. Personalized to your brand, your KPIs, your org. Deployed in 48 hours.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://finance-os.app/command-center">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="CFO Command Center — FinanceOS">
+<meta name="twitter:description" content="A real-time executive dashboard built for your finance team. Deployed in 48 hours. Upgraded continuously.">
+<meta name="description" content="The CFO Command Center by FinanceOS — a branded, real-time executive dashboard with 15+ modules. Deployed in 48 hours, upgraded continuously.">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#ffffff;--bg-elevated:#f8f9fb;--bg-card:#ffffff;--bg-card-hover:#f3f5f8;
+  --border:#e5e7ec;--border-accent:#d1d5de;
+  --text:#0f1729;--text-sec:#4b5563;--text-muted:#9ca3af;
+  --blue:#3b82f6;--purple:#8b5cf6;--green:#10b981;--amber:#f59e0b;--cyan:#06b6d4;--rose:#f43f5e;
+  --gradient:linear-gradient(135deg,#3b82f6,#8b5cf6);
+  --gradient-subtle:linear-gradient(135deg,rgba(59,130,246,0.04),rgba(139,92,246,0.04));
+  --sans:'Manrope',system-ui,-apple-system,sans-serif;
+  --mono:'JetBrains Mono',ui-monospace,monospace;
+  --r:12px;--r-lg:16px;--r-xl:20px;
+  --shadow:0 1px 3px rgba(0,0,0,0.04),0 4px 16px rgba(0,0,0,0.03);
+  --shadow-lg:0 4px 24px rgba(0,0,0,0.06),0 12px 48px rgba(0,0,0,0.04);
+  --shadow-glow:0 0 40px rgba(59,130,246,0.06),0 0 80px rgba(139,92,246,0.03);
+  --glass:rgba(255,255,255,0.7);--glass-border:rgba(0,0,0,0.05);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);-webkit-font-smoothing:antialiased;line-height:1.7;overflow-x:hidden;text-rendering:optimizeLegibility}
+::selection{background:rgba(59,130,246,0.15)}
+
+/* === FUTURE-PROOF: Modern CSS === */
+/* Color-scheme for system-level theming */
+:root{color-scheme:light}
+
+/* Logical properties for i18n readiness */
+.container{margin-inline:auto;padding-inline:24px}
+
+/* Scroll-driven animation support (progressive) */
+@supports(animation-timeline:scroll()){
+  .scroll-progress{animation:scrollFill linear;animation-timeline:scroll();width:100%!important}
+  @keyframes scrollFill{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+  .scroll-progress{transform-origin:left;transition:none!important}
+}
+
+/* Container queries for component-level responsiveness */
+@supports(container-type:inline-size){
+  .features,.module-grid{container-type:inline-size}
+  @container(max-width:500px){
+    .feature{padding:24px}
+    .module{padding:14px 16px}
+  }
+}
+
+/* View transitions (progressive enhancement) */
+@supports(view-transition-name:auto){
+  ::view-transition-old(root),::view-transition-new(root){animation-duration:.3s}
+}
+
+/* Prefers-contrast support */
+@media(prefers-contrast:more){
+  :root{--border:#bcc0cc;--text-sec:#1f2937;--shadow:0 2px 4px rgba(0,0,0,0.1)}
+  .feature,.module,.stat{border-width:2px}
+}
+
+/* Prefers reduced transparency */
+@media(prefers-reduced-transparency:reduce){
+  .nav{background:#ffffff;backdrop-filter:none}
+  .hero-orb{opacity:.3}
+}
+
+/* Scroll Progress */
+.scroll-progress{position:fixed;top:0;left:0;height:2px;background:var(--gradient);z-index:200;width:0%;transition:width .1s linear}
+
+/* Animations */
+@keyframes fadeUp{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes ambientDrift{0%{transform:translate(0,0) scale(1)}25%{transform:translate(40px,-30px) scale(1.08)}50%{transform:translate(-30px,20px) scale(0.96)}75%{transform:translate(20px,35px) scale(1.04)}100%{transform:translate(0,0) scale(1)}}
+@keyframes ambientDrift2{0%{transform:translate(0,0) scale(1)}25%{transform:translate(-35px,20px) scale(1.05)}50%{transform:translate(25px,-30px) scale(0.95)}75%{transform:translate(-20px,-25px) scale(1.06)}100%{transform:translate(0,0) scale(1)}}
+@keyframes ambientDrift3{0%{transform:translate(0,0) scale(1)}33%{transform:translate(25px,25px) scale(1.07)}66%{transform:translate(-35px,-15px) scale(0.94)}100%{transform:translate(0,0) scale(1)}}
+@keyframes titleShine{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+@keyframes lineExpand{from{width:0;opacity:0}to{width:80px;opacity:1}}
+@keyframes meshPulse{0%,100%{opacity:.4}50%{opacity:.7}}
+@keyframes pulse{0%,100%{opacity:.5}50%{opacity:1}}
+@keyframes glowPulse{0%,100%{box-shadow:0 0 20px rgba(59,130,246,0.04)}50%{box-shadow:0 0 40px rgba(59,130,246,0.1),0 0 80px rgba(139,92,246,0.04)}}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+@keyframes shimmer{0%{left:-100%}100%{left:200%}}
+.fade-up{animation:fadeUp .9s cubic-bezier(0.22,1,0.36,1) both}
+.fd1{animation-delay:.1s}.fd2{animation-delay:.2s}.fd3{animation-delay:.3s}
+.fd4{animation-delay:.4s}.fd5{animation-delay:.5s}.fd6{animation-delay:.6s}
+
+/* Container */
+.container{max-width:1100px;margin:0 auto;padding:0 24px}
+section{padding:100px 0}
+
+/* Nav */
+.nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:14px 0;backdrop-filter:blur(20px) saturate(1.2);-webkit-backdrop-filter:blur(20px) saturate(1.2);background:rgba(255,255,255,0.8);border-bottom:1px solid rgba(0,0,0,0.06)}
+.nav-inner{display:flex;align-items:center;justify-content:space-between}
+.nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--text)}
+.nav-logo-icon{width:32px;height:32px;border-radius:10px;background:var(--gradient);display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(59,130,246,0.2)}
+.nav-cta{padding:10px 20px;border-radius:10px;background:var(--gradient);color:#fff;font-weight:700;font-size:13px;text-decoration:none;border:none;cursor:pointer;font-family:var(--sans);transition:all .25s;box-shadow:0 2px 8px rgba(59,130,246,0.2)}
+.nav-cta:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(59,130,246,0.25)}
+
+/* =============================================
+   HERO — Light Ambient Corporate
+   ============================================= */
+.hero{padding:200px 0 120px;text-align:center;position:relative;overflow:hidden;min-height:100vh;display:flex;align-items:center;justify-content:center;background:linear-gradient(180deg,#ffffff 0%,#f8f9fb 100%)}
+
+/* Ambient Orbs — soft watercolor blobs */
+.hero-ambient{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.hero-orb{position:absolute;border-radius:50%;filter:blur(80px);will-change:transform;opacity:.7}
+.hero-orb-1{width:700px;height:700px;top:-15%;left:-5%;background:radial-gradient(circle,rgba(59,130,246,0.12) 0%,transparent 70%);animation:ambientDrift 18s ease-in-out infinite}
+.hero-orb-2{width:550px;height:550px;bottom:-10%;right:-3%;background:radial-gradient(circle,rgba(139,92,246,0.1) 0%,transparent 70%);animation:ambientDrift2 22s ease-in-out infinite}
+.hero-orb-3{width:400px;height:400px;top:25%;left:55%;background:radial-gradient(circle,rgba(16,185,129,0.06) 0%,transparent 70%);animation:ambientDrift3 26s ease-in-out infinite}
+
+/* Mesh grid */
+.hero-mesh{position:absolute;inset:0;pointer-events:none;background-image:
+  linear-gradient(rgba(59,130,246,0.04) 1px,transparent 1px),
+  linear-gradient(90deg,rgba(59,130,246,0.04) 1px,transparent 1px);
+  background-size:64px 64px;
+  animation:meshPulse 8s ease-in-out infinite;
+  mask-image:radial-gradient(ellipse 60% 50% at 50% 40%,black 0%,transparent 100%);
+  -webkit-mask-image:radial-gradient(ellipse 60% 50% at 50% 40%,black 0%,transparent 100%)}
+
+/* Accent line */
+.hero-accent-line{width:80px;height:2px;margin:0 auto 32px;background:var(--gradient);border-radius:2px;animation:lineExpand 1.2s cubic-bezier(0.22,1,0.36,1) .6s both}
+
+.hero-badge{display:inline-flex;align-items:center;gap:8px;padding:8px 20px;border-radius:100px;background:rgba(59,130,246,0.06);border:1px solid rgba(59,130,246,0.12);font-size:10px;font-weight:700;color:var(--blue);letter-spacing:.08em;text-transform:uppercase;margin-bottom:16px;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+.hero-badge-dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 3s ease-in-out infinite;box-shadow:0 0 8px rgba(16,185,129,0.4)}
+
+.hero h1{font-size:clamp(42px,7vw,82px);font-weight:800;letter-spacing:-.05em;line-height:1.04;margin-bottom:28px}
+.hero h1 span{background:linear-gradient(135deg,#3b82f6,#8b5cf6,#3b82f6);background-size:200% 200%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:titleShine 6s ease-in-out infinite}
+
+.hero-sub{font-size:clamp(14px,1.6vw,17px);color:var(--text-sec);max-width:540px;margin:0 auto 16px;line-height:1.8;font-weight:400}
+.hero-tagline{font-size:clamp(12px,1.2vw,14px);color:var(--text-muted);max-width:480px;margin:0 auto 48px;line-height:1.7;font-weight:600;letter-spacing:.03em}
+
+.hero-ctas{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-bottom:48px}
+.btn-primary{padding:16px 36px;border-radius:12px;background:var(--gradient);color:#fff;font-weight:700;font-size:14px;text-decoration:none;border:none;cursor:pointer;font-family:var(--sans);transition:transform .3s cubic-bezier(0.22,1,0.36,1),box-shadow .3s;box-shadow:0 4px 16px rgba(59,130,246,0.2);letter-spacing:.01em;position:relative;overflow:hidden}
+.btn-primary::after{content:'';position:absolute;top:0;left:-100%;width:200%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.12),transparent);animation:shimmer 3s ease-in-out infinite}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(59,130,246,0.25)}
+.btn-secondary{padding:16px 36px;border-radius:12px;background:var(--bg);color:var(--text);font-weight:600;font-size:14px;text-decoration:none;border:1px solid var(--border);cursor:pointer;font-family:var(--sans);transition:all .3s cubic-bezier(0.22,1,0.36,1)}
+.btn-secondary:hover{border-color:var(--blue);color:var(--blue);transform:translateY(-2px);box-shadow:0 4px 16px rgba(59,130,246,0.08)}
+
+/* Trust Bar */
+.hero-trust{display:flex;align-items:center;justify-content:center;gap:32px;flex-wrap:wrap;padding:24px 0;border-top:1px solid var(--border)}
+.hero-trust-item{font-size:10px;font-weight:600;color:var(--text-muted);letter-spacing:.06em;text-transform:uppercase;display:flex;align-items:center;gap:6px}
+.hero-trust-item span{color:var(--text);font-weight:800}
+
+/* Stats — Rich light theme */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border-radius:var(--r-xl);overflow:hidden;margin:60px 0;box-shadow:var(--shadow-lg);border:1px solid var(--border);position:relative}
+.stats::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--gradient);z-index:1}
+.stat{background:var(--bg-card);padding:40px 24px;text-align:center;transition:all .4s;position:relative;border-right:1px solid var(--border)}
+.stat:last-child{border-right:none}
+.stat::after{content:'';position:absolute;inset:0;background:var(--gradient-subtle);opacity:0;transition:opacity .4s}
+.stat:hover::after{opacity:1}
+.stat:hover{transform:scale(1.02)}
+.stat-value{font-size:36px;font-weight:900;font-family:var(--mono);letter-spacing:-.03em;background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;position:relative;z-index:1;filter:drop-shadow(0 2px 4px rgba(59,130,246,0.15))}
+.stat-label{font-size:11px;color:var(--text-muted);font-weight:600;margin-top:6px;position:relative;z-index:1}
+
+/* Features — Rich depth */
+.features{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;perspective:800px}
+.feature{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--r-xl);padding:36px;transition:all .4s cubic-bezier(0.22,1,0.36,1);position:relative;overflow:hidden;box-shadow:var(--shadow);transform-style:preserve-3d}
+.feature:hover{transform:translateY(-6px) scale(1.01);box-shadow:var(--shadow-lg),0 0 40px rgba(59,130,246,0.06);border-color:rgba(59,130,246,0.2)}
+.feature::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--gradient);opacity:0;transition:opacity .4s}
+.feature:hover::before{opacity:1}
+.feature::after{content:'';position:absolute;top:-50%;right:-50%;width:200px;height:200px;border-radius:50%;background:radial-gradient(circle,rgba(59,130,246,0.06),transparent 70%);pointer-events:none;opacity:0;transition:opacity .4s}
+.feature:hover::after{opacity:1}
+.feature-icon{width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:800;margin-bottom:20px;box-shadow:0 4px 12px rgba(0,0,0,0.04);position:relative}
+.feature-icon::after{content:'';position:absolute;inset:0;border-radius:14px;box-shadow:inset 0 -1px 0 rgba(0,0,0,0.04),inset 0 1px 0 rgba(255,255,255,0.6)}
+.feature h3{font-size:16px;font-weight:800;margin-bottom:10px;letter-spacing:-.02em}
+.feature p{font-size:13px;color:var(--text-sec);line-height:1.8}
+
+/* Modules — Rich cards */
+.module-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;perspective:800px}
+.module{display:flex;align-items:center;gap:16px;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--r-lg);padding:20px 22px;transition:all .35s cubic-bezier(0.22,1,0.36,1);box-shadow:0 1px 2px rgba(0,0,0,0.02);transform-style:preserve-3d;position:relative;overflow:hidden}
+.module::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--gradient);opacity:0;transition:opacity .3s;border-radius:0 3px 3px 0}
+.module:hover{border-color:rgba(59,130,246,0.2);background:linear-gradient(135deg,rgba(59,130,246,0.02),rgba(139,92,246,0.01));transform:translateX(6px);box-shadow:var(--shadow)}
+.module:hover::before{opacity:1}
+.module-icon{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;flex-shrink:0;box-shadow:0 2px 8px rgba(0,0,0,0.04);position:relative}
+.module-icon::after{content:'';position:absolute;inset:0;border-radius:12px;box-shadow:inset 0 1px 0 rgba(255,255,255,0.5)}
+.module-name{font-size:14px;font-weight:700}
+.module-desc{font-size:11px;color:var(--text-muted);margin-top:3px}
+
+/* Quote — Rich depth */
+.quote-block{background:linear-gradient(135deg,rgba(59,130,246,0.04),rgba(139,92,246,0.03),rgba(16,185,129,0.02));border:1px solid rgba(59,130,246,0.1);border-radius:var(--r-xl);padding:72px 56px;text-align:center;margin:80px 0;position:relative;overflow:hidden;box-shadow:0 8px 40px rgba(59,130,246,0.04),0 1px 3px rgba(0,0,0,0.02)}
+.quote-block::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(circle at 30% 50%,rgba(59,130,246,0.05) 0%,transparent 50%);pointer-events:none;animation:ambientDrift 25s ease-in-out infinite}
+.quote-block::after{content:'\201C';position:absolute;top:10px;left:36px;font-size:160px;font-weight:800;background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;opacity:.08;line-height:1;font-family:Georgia,serif;pointer-events:none}
+.quote-text{font-size:clamp(17px,2.5vw,22px);font-weight:600;letter-spacing:-.02em;line-height:1.65;max-width:660px;margin:0 auto 20px;position:relative;color:var(--text)}
+.quote-attr{font-size:11px;color:var(--text-muted);letter-spacing:.06em;text-transform:uppercase;font-weight:600}
+
+/* CTA Block */
+.cta-block{text-align:center;padding:96px 48px;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--r-xl);position:relative;overflow:hidden;box-shadow:var(--shadow);animation:glowPulse 8s ease-in-out infinite}
+.cta-block::before{content:'';position:absolute;top:-200px;left:50%;transform:translateX(-50%);width:800px;height:800px;border-radius:50%;background:radial-gradient(circle,rgba(59,130,246,0.06) 0%,rgba(139,92,246,0.03) 40%,transparent 70%);pointer-events:none;animation:ambientDrift2 20s ease-in-out infinite}
+.cta-block h2{font-size:clamp(28px,4vw,38px);font-weight:800;letter-spacing:-.03em;margin-bottom:16px}
+.cta-block p{font-size:14px;color:var(--text-sec);margin-bottom:40px;max-width:460px;margin-left:auto;margin-right:auto;line-height:1.7}
+
+/* Section Headers */
+.section-label{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.14em;color:var(--blue);margin-bottom:12px;display:flex;align-items:center;gap:10px}
+.section-label::before{content:'';width:20px;height:1px;background:var(--blue);opacity:.5}
+.section-title{font-size:clamp(28px,4vw,40px);font-weight:800;letter-spacing:-.03em;line-height:1.12;margin-bottom:16px}
+.section-desc{font-size:15px;color:var(--text-sec);max-width:560px;line-height:1.8;margin-bottom:40px}
+
+/* Footer */
+footer{border-top:1px solid var(--border);padding:40px 0;text-align:center}
+
+/* ═══ TEAM ROLES SECTION ═══ */
+.team-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:40px}
+.team-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--r-xl);overflow:hidden;transition:all .45s cubic-bezier(0.22,1,0.36,1);position:relative;transform-style:preserve-3d;will-change:transform;cursor:pointer}
+.team-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--card-accent);opacity:0;transition:opacity .4s;z-index:3}
+.team-card:hover::before{opacity:1}
+.team-card:hover{transform:translateY(-8px);box-shadow:0 16px 48px var(--card-shadow)}
+.team-card-hero{height:120px;background:var(--card-accent);background-size:200% 200%;animation:gradientShift 6s ease-in-out infinite;position:relative;display:flex;align-items:center;justify-content:center}
+@keyframes gradientShift{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+.team-card-icon{width:56px;height:56px;border-radius:16px;background:rgba(255,255,255,0.18);backdrop-filter:blur(12px);display:flex;align-items:center;justify-content:center;font-size:24px;border:1px solid rgba(255,255,255,0.2);transition:all .4s;z-index:2}
+.team-card:hover .team-card-icon{transform:scale(1.1);background:rgba(255,255,255,0.25)}
+.team-card-particle{position:absolute;border-radius:50%;background:rgba(255,255,255,0.12);pointer-events:none;animation:float 3s ease-in-out infinite}
+.team-card-body{padding:16px 20px 20px}
+.team-card-role{font-size:15px;font-weight:900;letter-spacing:-.02em;margin-bottom:6px}
+.team-card-kpis{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:12px}
+.team-card-kpi{font-size:9px;font-weight:700;padding:3px 8px;border-radius:100px;background:var(--bg-elevated);border:1px solid var(--border);color:var(--text-sec);transition:all .25s}
+.team-card:hover .team-card-kpi{border-color:var(--card-accent-light);background:var(--card-accent-bg)}
+.team-card-focus{font-size:11.5px;color:var(--text-muted);line-height:1.6;margin-bottom:14px}
+.team-card-cta{font-size:10px;font-weight:800;color:var(--card-accent-text);background:none;border:none;cursor:pointer;font-family:var(--sans);padding:0;display:flex;align-items:center;gap:6px;transition:gap .25s}
+.team-card-cta:hover{gap:10px}
+
+/* Card color themes */
+.team-card[data-role="cfo"]{--card-accent:linear-gradient(135deg,#3b82f6,#2563eb,#6366f1);--card-shadow:rgba(59,130,246,0.12);--card-accent-light:rgba(59,130,246,0.2);--card-accent-bg:rgba(59,130,246,0.04);--card-accent-text:#3b82f6}
+.team-card[data-role="ceo"]{--card-accent:linear-gradient(135deg,#8b5cf6,#7c3aed,#a78bfa);--card-shadow:rgba(139,92,246,0.12);--card-accent-light:rgba(139,92,246,0.2);--card-accent-bg:rgba(139,92,246,0.04);--card-accent-text:#8b5cf6}
+.team-card[data-role="controller"]{--card-accent:linear-gradient(135deg,#10b981,#059669,#34d399);--card-shadow:rgba(16,185,129,0.12);--card-accent-light:rgba(16,185,129,0.2);--card-accent-bg:rgba(16,185,129,0.04);--card-accent-text:#10b981}
+.team-card[data-role="fpa"]{--card-accent:linear-gradient(135deg,#f59e0b,#d97706,#fbbf24);--card-shadow:rgba(245,158,11,0.12);--card-accent-light:rgba(245,158,11,0.2);--card-accent-bg:rgba(245,158,11,0.04);--card-accent-text:#d97706}
+
+/* ═══ DEPLOYMENT TIMELINE ═══ */
+.timeline{position:relative;padding-left:48px;margin-top:40px}
+.timeline::before{content:'';position:absolute;left:19px;top:0;bottom:0;width:2px;background:linear-gradient(to bottom,var(--blue),var(--purple),var(--green));border-radius:1px;transform-origin:top;animation:drawTimeline 1.2s cubic-bezier(0.22,1,0.36,1) both}
+@keyframes drawTimeline{from{transform:scaleY(0)}to{transform:scaleY(1)}}
+.timeline-step{position:relative;padding-bottom:32px}
+.timeline-step:last-child{padding-bottom:0}
+.timeline-dot{position:absolute;left:-48px;top:4px;width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;z-index:2;transition:all .3s}
+.timeline-dot-inner{width:8px;height:8px;border-radius:50%}
+.timeline-step:hover .timeline-dot-inner{transform:scale(1.4)}
+.timeline-day{font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--text-muted);margin-bottom:4px}
+.timeline-title{font-size:15px;font-weight:800;letter-spacing:-.01em;margin-bottom:4px}
+.timeline-desc{font-size:12.5px;color:var(--text-sec);line-height:1.65}
+
+/* ═══ METRIC HIGHLIGHT ═══ */
+.metric-hl{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:6px;font-family:var(--mono);font-weight:700;font-size:12px;letter-spacing:-.01em}
+.metric-hl.blue{background:rgba(59,130,246,0.06);border:1px solid rgba(59,130,246,0.12);color:var(--blue)}
+.metric-hl.green{background:rgba(16,185,129,0.06);border:1px solid rgba(16,185,129,0.12);color:var(--green)}
+.metric-hl.purple{background:rgba(139,92,246,0.06);border:1px solid rgba(139,92,246,0.12);color:var(--purple)}
+
+/* ═══ ENHANCED QUOTE ═══ */
+.quote-block .metric-hl{transform:translateY(-1px)}
+
+/* Responsive */
+@media(max-width:768px){
+  .team-grid{grid-template-columns:repeat(2,1fr)}
+  .features{grid-template-columns:1fr}
+  .module-grid{grid-template-columns:1fr}
+  .stats{grid-template-columns:repeat(2,1fr)}
+  .hero{padding:140px 0 80px;min-height:auto}
+  .hero-trust{gap:16px}
+  .hero-orb-1{width:400px;height:400px}
+  .hero-orb-2{width:300px;height:300px}
+  .hero-orb-3{width:250px;height:250px}
+  section{padding:60px 0}
+}
+@media(max-width:480px){
+  .stats{grid-template-columns:1fr}
+  .hero-ctas{flex-direction:column;align-items:center}
+  .hero-trust{flex-direction:column;gap:8px}
+  .hero h1{font-size:36px}
+  .quote-block{padding:40px 24px}
+}
+/* Splash / Loading Screen */
+.splash{position:fixed;inset:0;z-index:9999;background:#ffffff;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity .6s cubic-bezier(0.22,1,0.36,1),visibility .6s}
+.splash.hidden{opacity:0;visibility:hidden;pointer-events:none}
+.splash-logo{width:64px;height:64px;border-radius:18px;background:var(--gradient);display:flex;align-items:center;justify-content:center;box-shadow:0 8px 32px rgba(59,130,246,0.2);animation:splashPulse 2s ease-in-out infinite;margin-bottom:24px}
+.splash-logo svg{width:28px;height:28px}
+.splash-wordmark{font-size:20px;font-weight:800;letter-spacing:-.03em;color:var(--text);margin-bottom:8px}
+.splash-wordmark span{color:var(--blue)}
+.splash-sub{font-size:11px;font-weight:600;color:var(--text-muted);letter-spacing:.08em;text-transform:uppercase;margin-bottom:32px}
+.splash-bar{width:120px;height:2px;background:var(--border);border-radius:2px;overflow:hidden;position:relative}
+.splash-bar-fill{position:absolute;top:0;left:0;height:100%;width:0%;background:var(--gradient);border-radius:2px;animation:splashLoad 1.8s cubic-bezier(0.22,1,0.36,1) forwards}
+@keyframes splashPulse{0%,100%{transform:scale(1);box-shadow:0 8px 32px rgba(59,130,246,0.2)}50%{transform:scale(1.05);box-shadow:0 12px 40px rgba(59,130,246,0.3)}}
+@keyframes splashLoad{0%{width:0%}40%{width:60%}80%{width:90%}100%{width:100%}}
+
+/* === GENIUS ANIMATIONS === */
+@property --angle{syntax:'<angle>';initial-value:0deg;inherits:false}
+@keyframes spin{to{--angle:360deg}}
+@keyframes scaleIn{from{opacity:0;transform:scale(0.92) translateY(20px);filter:blur(6px)}to{opacity:1;transform:scale(1) translateY(0);filter:blur(0)}}
+@keyframes revealChar{from{opacity:0;filter:blur(4px);transform:translateY(6px)}to{opacity:1;filter:blur(0);transform:translateY(0)}}
+
+/* Morphing border on CTA block */
+.cta-block{position:relative;background:var(--bg-card)!important;isolation:isolate}
+.cta-block::after{content:'';position:absolute;inset:-1px;border-radius:var(--r-xl);background:conic-gradient(from var(--angle),#3b82f6,#8b5cf6,#10b981,#f59e0b,#3b82f6);z-index:-1;animation:spin 4s linear infinite;opacity:.15;transition:opacity .4s}
+.cta-block:hover::after{opacity:.3}
+
+/* 3D card tilt setup */
+.features,.module-grid{perspective:800px}
+.feature,.module{transform-style:preserve-3d;will-change:transform}
+
+/* Enhanced card entrance */
+.feature,.module{opacity:0;transform:scale(0.95) translateY(24px);transition:opacity .6s cubic-bezier(0.22,1,0.36,1),transform .6s cubic-bezier(0.22,1,0.36,1),box-shadow .35s,border-color .35s}
+.feature.revealed,.module.revealed{opacity:1;transform:scale(1) translateY(0)}
+
+/* Stat counter glow */
+.stat-value{transition:all .6s}
+.stat:hover .stat-value{text-shadow:0 0 20px rgba(59,130,246,0.15)}
+
+/* Magnetic button */
+.btn-primary,.nav-cta{transition:transform .2s cubic-bezier(0.22,1,0.36,1),box-shadow .3s}
+
+/* Nav scroll state */
+.nav{transition:backdrop-filter .4s,box-shadow .4s,background .4s}
+.nav.scrolled{backdrop-filter:blur(40px) saturate(1.4);-webkit-backdrop-filter:blur(40px) saturate(1.4);background:rgba(255,255,255,0.92);box-shadow:0 1px 8px rgba(0,0,0,0.04)}
+
+@media(prefers-reduced-motion:reduce){
+  *{animation-duration:0s!important;transition-duration:0s!important}
+}
+</style>
+</head>
+<body>
+
+<div class="scroll-progress" id="scrollProgress"></div>
+
+<!-- Splash Screen -->
+<div class="splash" id="splash">
+  <div class="splash-logo">
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="none"><rect x="3" y="2" width="3" height="20" rx="1.5" fill="white" opacity=".9"/><rect x="3" y="2" width="16" height="3" rx="1.5" fill="white" opacity=".9"/><rect x="3" y="9.5" width="11" height="2.5" rx="1" fill="white" opacity=".6"/><rect x="14" y="14" width="2.5" height="8" rx="1" fill="white" opacity=".35"/><rect x="18" y="10" width="2.5" height="12" rx="1" fill="white" opacity=".5"/></svg>
+  </div>
+  <div class="splash-wordmark">Finance<span>OS</span></div>
+  <div class="splash-sub">CFO Command Center</div>
+  <div class="splash-bar"><div class="splash-bar-fill"></div></div>
+</div>
+
+<!-- Nav -->
+<nav class="nav">
+  <div class="container nav-inner">
+    <a href="https://finance-os.app" class="nav-logo">
+      <div class="nav-logo-icon">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect x="3" y="2" width="3" height="20" rx="1.5" fill="white" opacity=".9"/><rect x="3" y="2" width="16" height="3" rx="1.5" fill="white" opacity=".9"/><rect x="3" y="9.5" width="11" height="2.5" rx="1" fill="white" opacity=".6"/><rect x="14" y="14" width="2.5" height="8" rx="1" fill="white" opacity=".35"/><rect x="18" y="10" width="2.5" height="12" rx="1" fill="white" opacity=".5"/></svg>
+      </div>
+      <span style="font-size:14px;font-weight:800;letter-spacing:-.02em">Finance<span style="color:var(--blue)">OS</span></span>
+    </a>
+    <div style="display:flex;align-items:center;gap:24px">
+      <a href="https://finance-os.app/#pricing" style="font-size:12px;font-weight:600;color:var(--text-sec);text-decoration:none">Pricing</a>
+      <a href="https://finance-os.app/#features" style="font-size:12px;font-weight:600;color:var(--text-sec);text-decoration:none">Features</a>
+      <a href="https://calendly.com/finance-os-support" class="nav-cta">Book a Demo</a>
+    </div>
+  </div>
+</nav>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="hero-ambient">
+    <div class="hero-orb hero-orb-1"></div>
+    <div class="hero-orb hero-orb-2"></div>
+    <div class="hero-orb hero-orb-3"></div>
+  </div>
+  <div class="hero-mesh"></div>
+
+  <div class="container" style="position:relative;z-index:2">
+    <div class="fade-up">
+      <div class="hero-badge"><span class="hero-badge-dot"></span> Enterprise Feature</div>
+    </div>
+    <div class="hero-accent-line"></div>
+    <h1 class="fade-up fd1">The <span>CFO Command<br>Center</span></h1>
+    <p class="hero-sub fade-up fd2">A real-time executive dashboard built for your finance team — personalized to your brand, your KPIs, your org structure.</p>
+    <p class="hero-tagline fade-up fd3">Deployed in days. Upgraded continuously. Branded completely.</p>
+    <div class="hero-ctas fade-up fd4">
+      <a href="https://calendly.com/finance-os-support" class="btn-primary">Schedule a Demo</a>
+      <a href="https://finance-os.app" class="btn-secondary">Explore Platform</a>
+    </div>
+
+    <div class="hero-trust fade-up fd5">
+      <div class="hero-trust-item"><span>SOC 2</span> Architecture</div>
+      <div class="hero-trust-item"><span>AES-256</span> Encrypted</div>
+      <div class="hero-trust-item"><span>iOS + Windows</span> Optimized</div>
+      <div class="hero-trust-item"><span>48hr</span> Deployment</div>
+    </div>
+  </div>
+</section>
+
+<!-- Stats -->
+<section style="padding:0">
+  <div class="container">
+    <div class="stats fade-up">
+      <div class="stat"><div class="stat-value">48hr</div><div class="stat-label">Deployment Time</div></div>
+      <div class="stat"><div class="stat-value">15+</div><div class="stat-label">Dashboard Modules</div></div>
+      <div class="stat"><div class="stat-value">100%</div><div class="stat-label">Client Branded</div></div>
+      <div class="stat"><div class="stat-value">Live</div><div class="stat-label">Continuous Upgrades</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- How It Works -->
+<section>
+  <div class="container">
+    <div class="section-label fade-up">How It Works</div>
+    <div class="section-title fade-up fd1">Your brand. Your metrics.<br>Your team's workspace.</div>
+    <div class="section-desc fade-up fd2">Every command center is built from scratch for your organization. We start with a scratch account on day one, then continuously upgrade your dashboard as your needs evolve.</div>
+    <div class="features">
+      <div class="feature fade-up fd1">
+        <div class="feature-icon" style="background:rgba(59,130,246,0.08);color:var(--blue)">1</div>
+        <h3>Scratch Account</h3>
+        <p>We deploy your branded command center with industry-specific KPIs, your logo, your color palette, and placeholder metrics tailored to your business model.</p>
+      </div>
+      <div class="feature fade-up fd2">
+        <div class="feature-icon" style="background:rgba(139,92,246,0.08);color:var(--purple)">2</div>
+        <h3>Data Connection</h3>
+        <p>Connect your ERP, CRM, and billing systems. Real numbers replace placeholders. Your finance team sees live data within the first week.</p>
+      </div>
+      <div class="feature fade-up fd3">
+        <div class="feature-icon" style="background:rgba(16,185,129,0.08);color:var(--green)">3</div>
+        <h3>Continuous Upgrades</h3>
+        <p>New modules, refined views, AI copilot improvements, cross-platform optimization. Your command center gets better every week, not every quarter.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Modules -->
+<section style="background:var(--bg-elevated);border-top:1px solid var(--border);border-bottom:1px solid var(--border)">
+  <div class="container">
+    <div class="section-label fade-up">15+ Modules</div>
+    <div class="section-title fade-up fd1">Everything a CFO needs.<br>Nothing they don't.</div>
+    <div class="section-desc fade-up fd2">Each module is purpose-built for finance leadership. No generic charts, no unused widgets.</div>
+    <div class="module-grid">
+      <div class="module fade-up"><div class="module-icon" style="background:rgba(59,130,246,0.08);color:var(--blue)">P</div><div><div class="module-name">P&L Statement</div><div class="module-desc">Interactive drill-down from company to cost center</div></div></div>
+      <div class="module fade-up fd1"><div class="module-icon" style="background:rgba(139,92,246,0.08);color:var(--purple)">R</div><div><div class="module-name">Regional Analytics</div><div class="module-desc">Per-region performance, comps, and benchmarks</div></div></div>
+      <div class="module fade-up fd2"><div class="module-icon" style="background:rgba(16,185,129,0.08);color:var(--green)">C</div><div><div class="module-name">Month-End Close</div><div class="module-desc">8-step checklist with progress ring and ownership</div></div></div>
+      <div class="module fade-up fd3"><div class="module-icon" style="background:rgba(245,158,11,0.08);color:var(--amber)">A</div><div><div class="module-name">Approval Workflows</div><div class="module-desc">Multi-stage approval chains with document tracking</div></div></div>
+      <div class="module fade-up fd4"><div class="module-icon" style="background:rgba(6,182,212,0.08);color:var(--cyan)">F</div><div><div class="module-name">Forecast & Scenarios</div><div class="module-desc">AI-powered scenario models with confidence bands</div></div></div>
+      <div class="module fade-up fd5"><div class="module-icon" style="background:rgba(244,63,94,0.08);color:var(--rose)">$</div><div><div class="module-name">Refund Pipeline</div><div class="module-desc">Vendor refund queue with approval routing and cash impact</div></div></div>
+      <div class="module fade-up"><div class="module-icon" style="background:rgba(59,130,246,0.08);color:var(--blue)">AI</div><div><div class="module-name">AI Copilot</div><div class="module-desc">Natural language queries against your financial data</div></div></div>
+      <div class="module fade-up fd1"><div class="module-icon" style="background:rgba(139,92,246,0.08);color:var(--purple)">T</div><div><div class="module-name">Team Workspace</div><div class="module-desc">Tasks, messages, celebrations, and live activity feed</div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- Cross-Platform -->
+<section>
+  <div class="container">
+    <div class="section-label fade-up">Cross-Platform</div>
+    <div class="section-title fade-up fd1">Built for the boardroom<br>and the back seat.</div>
+    <div class="section-desc fade-up fd2">Every command center is optimized for iOS and Windows. 44px touch targets, safe area insets, high-DPI rendering, responsive breakpoints. Your CFO checks numbers on their iPad at 35,000 feet — it has to work perfectly.</div>
+    <div class="features">
+      <div class="feature fade-up">
+        <div class="feature-icon" style="background:rgba(59,130,246,0.08);color:var(--blue)">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+        </div>
+        <h3>iPad / iPhone</h3>
+        <p>Safari-optimized with PWA support, Dynamic Island safe areas, momentum scrolling, and touch-first interactions. Feels native on every Apple device.</p>
+      </div>
+      <div class="feature fade-up fd1">
+        <div class="feature-icon" style="background:rgba(139,92,246,0.08);color:var(--purple)">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+        </div>
+        <h3>Windows / Surface</h3>
+        <p>High-DPI rendering, Edge taskbar integration, fine pointer precision, native scrollbar styling. Pixel-perfect on every Windows device.</p>
+      </div>
+      <div class="feature fade-up fd2">
+        <div class="feature-icon" style="background:rgba(16,185,129,0.08);color:var(--green)">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        </div>
+        <h3>Enterprise Security</h3>
+        <p>SOC 2 architecture, AES-256 encryption, row-level security, HSTS preload, CSP headers. Zero cross-tenant data leakage by design.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Built for Your Entire Finance Team -->
+<section>
+  <div class="container">
+    <div class="section-label fade-up">Your Finance Team</div>
+    <div class="section-title fade-up fd1">One command center.<br>Every finance role.</div>
+    <div class="section-desc fade-up fd2">Every team member gets a personalized view with the KPIs that matter to their role. No shared dashboards, no irrelevant metrics.</div>
+    <div class="team-grid">
+      <!-- CFO -->
+      <div class="team-card fade-up" data-role="cfo">
+        <div class="team-card-hero">
+          <div class="team-card-icon">📊</div>
+          <div class="team-card-particle" style="width:6px;height:6px;top:20%;left:15%;animation-delay:0s"></div>
+          <div class="team-card-particle" style="width:4px;height:4px;top:60%;left:80%;animation-delay:.8s"></div>
+        </div>
+        <div class="team-card-body">
+          <div class="team-card-role">CFO</div>
+          <div class="team-card-kpis">
+            <span class="team-card-kpi">Revenue</span>
+            <span class="team-card-kpi">Margins</span>
+            <span class="team-card-kpi">Cash Flow</span>
+            <span class="team-card-kpi">ROIC</span>
+            <span class="team-card-kpi">Board Deck</span>
+          </div>
+          <p class="team-card-focus">Full P&L visibility with drill-down to cost centers, real-time cash position, and one-click board deck exports.</p>
+          <button class="team-card-cta">See CFO dashboard →</button>
+        </div>
+      </div>
+      <!-- CEO -->
+      <div class="team-card fade-up fd1" data-role="ceo">
+        <div class="team-card-hero">
+          <div class="team-card-icon">🎯</div>
+          <div class="team-card-particle" style="width:5px;height:5px;top:25%;left:20%;animation-delay:.3s"></div>
+          <div class="team-card-particle" style="width:7px;height:7px;top:55%;left:75%;animation-delay:1.1s"></div>
+        </div>
+        <div class="team-card-body">
+          <div class="team-card-role">CEO</div>
+          <div class="team-card-kpis">
+            <span class="team-card-kpi">Strategic KPIs</span>
+            <span class="team-card-kpi">Segment Growth</span>
+            <span class="team-card-kpi">Rule of 40</span>
+            <span class="team-card-kpi">Fundraising</span>
+          </div>
+          <p class="team-card-focus">Bird's-eye view of company health with segment-level growth, competitive positioning, and fundraising readiness.</p>
+          <button class="team-card-cta">See CEO dashboard →</button>
+        </div>
+      </div>
+      <!-- Controller -->
+      <div class="team-card fade-up fd2" data-role="controller">
+        <div class="team-card-hero">
+          <div class="team-card-icon">✅</div>
+          <div class="team-card-particle" style="width:6px;height:6px;top:30%;left:10%;animation-delay:.5s"></div>
+          <div class="team-card-particle" style="width:5px;height:5px;top:50%;left:85%;animation-delay:1.3s"></div>
+        </div>
+        <div class="team-card-body">
+          <div class="team-card-role">Controller</div>
+          <div class="team-card-kpis">
+            <span class="team-card-kpi">Close Progress</span>
+            <span class="team-card-kpi">Reconciliation</span>
+            <span class="team-card-kpi">GL Summary</span>
+            <span class="team-card-kpi">Compliance</span>
+          </div>
+          <p class="team-card-focus">Close checklist with live status, automated reconciliation alerts, and aging analysis across all entities.</p>
+          <button class="team-card-cta">See Controller dashboard →</button>
+        </div>
+      </div>
+      <!-- FP&A Manager -->
+      <div class="team-card fade-up fd3" data-role="fpa">
+        <div class="team-card-hero">
+          <div class="team-card-icon">📈</div>
+          <div class="team-card-particle" style="width:7px;height:7px;top:20%;left:25%;animation-delay:.7s"></div>
+          <div class="team-card-particle" style="width:4px;height:4px;top:65%;left:70%;animation-delay:1.5s"></div>
+        </div>
+        <div class="team-card-body">
+          <div class="team-card-role">FP&A Manager</div>
+          <div class="team-card-kpis">
+            <span class="team-card-kpi">Variance</span>
+            <span class="team-card-kpi">Budget vs Actual</span>
+            <span class="team-card-kpi">Forecast</span>
+            <span class="team-card-kpi">Scenarios</span>
+          </div>
+          <p class="team-card-focus">Drill into every variance, compare scenarios side-by-side, and track forecast accuracy over rolling periods.</p>
+          <button class="team-card-cta">See FP&A dashboard →</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Deployment Timeline -->
+<section style="background:var(--bg-elevated);border-top:1px solid var(--border);border-bottom:1px solid var(--border)">
+  <div class="container">
+    <div class="section-label fade-up">Deployment</div>
+    <div class="section-title fade-up fd1">From zero to live in <span class="metric-hl blue">48 hours</span></div>
+    <div class="section-desc fade-up fd2">No consultants. No 6-month implementations. Your team sees live data within the first week.</div>
+    <div class="timeline fade-up fd3">
+      <div class="timeline-step">
+        <div class="timeline-dot" style="background:rgba(59,130,246,0.08)"><div class="timeline-dot-inner" style="background:var(--blue)"></div></div>
+        <div class="timeline-day">Day 1</div>
+        <div class="timeline-title">Scratch Account Deployed</div>
+        <div class="timeline-desc">Branded command center with your logo, colors, org structure, and industry-specific KPI templates. Your team can log in immediately.</div>
+      </div>
+      <div class="timeline-step">
+        <div class="timeline-dot" style="background:rgba(139,92,246,0.08)"><div class="timeline-dot-inner" style="background:var(--purple)"></div></div>
+        <div class="timeline-day">Day 2–3</div>
+        <div class="timeline-title">Data Connections Live</div>
+        <div class="timeline-desc">ERP, CRM, and billing integrations connected. Real numbers replace placeholders. AI copilot starts learning your data patterns.</div>
+      </div>
+      <div class="timeline-step">
+        <div class="timeline-dot" style="background:rgba(16,185,129,0.08)"><div class="timeline-dot-inner" style="background:var(--green)"></div></div>
+        <div class="timeline-day">Week 2+</div>
+        <div class="timeline-title">Continuous Upgrades Begin</div>
+        <div class="timeline-desc">New modules pushed weekly based on your team's feedback. Forecast models calibrate. AI copilot accuracy improves with every query.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Quote -->
+<section style="padding:40px 0 80px">
+  <div class="container">
+    <div class="quote-block fade-up">
+      <div class="quote-text">"We gave our finance team a scratch account on Monday. By Friday, they had a fully branded command center with live data. By the end of the month, it had been upgraded three times."</div>
+      <div class="quote-attr">How FinanceOS enterprise onboarding works</div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section style="padding:0 0 100px">
+  <div class="container">
+    <div class="cta-block fade-up">
+      <h2>See your command center.</h2>
+      <p>We'll build a branded prototype for your company in under 48 hours. No contracts, no commitment — just your dashboard, live.</p>
+      <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap">
+        <a href="https://calendly.com/finance-os-support" class="btn-primary">Book a Demo</a>
+        <a href="https://finance-os.app" class="btn-secondary">Explore FinanceOS</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <div style="font-size:11px;color:var(--text-muted)">FinanceOS by Financial Holding LLC — AI-Powered Financial Intelligence</div>
+  </div>
+</footer>
+
+<script>
+// Splash screen
+setTimeout(()=>{document.getElementById('splash').classList.add('hidden')},2200);
+
+// Scroll progress + nav scroll state + parallax
+const nav=document.querySelector('.nav');
+const orbs=document.querySelectorAll('.hero-orb');
+window.addEventListener('scroll',()=>{
+  const s=document.documentElement.scrollTop;
+  const h=document.documentElement.scrollHeight-window.innerHeight;
+  document.getElementById('scrollProgress').style.width=(s/h*100)+'%';
+  // Nav blur upgrade
+  nav.classList.toggle('scrolled',s>80);
+  // Parallax orbs
+  if(orbs[0])orbs[0].style.transform=`translate(0,${s*0.3}px) scale(1)`;
+  if(orbs[1])orbs[1].style.transform=`translate(0,${s*0.5}px) scale(1)`;
+  if(orbs[2])orbs[2].style.transform=`translate(0,${s*0.15}px) scale(1)`;
+},{passive:true});
+
+// Intersection Observer for fade-ups
+const observer=new IntersectionObserver((entries)=>{
+  entries.forEach(entry=>{
+    if(entry.isIntersecting){
+      entry.target.style.animationPlayState='running';
+      observer.unobserve(entry.target);
+    }
+  });
+},{threshold:0.1});
+document.querySelectorAll('.fade-up').forEach(el=>{
+  el.style.animationPlayState='paused';
+  observer.observe(el);
+});
+
+// Staggered card reveal
+const cardObserver=new IntersectionObserver((entries)=>{
+  entries.forEach(entry=>{
+    if(entry.isIntersecting){
+      const parent=entry.target.closest('.features,.module-grid');
+      if(parent){
+        const cards=parent.querySelectorAll('.feature,.module');
+        cards.forEach((c,i)=>{
+          setTimeout(()=>c.classList.add('revealed'),i*70);
+        });
+      }
+      cardObserver.unobserve(entry.target);
+    }
+  });
+},{threshold:0.15});
+document.querySelectorAll('.features,.module-grid').forEach(g=>{
+  cardObserver.observe(g);
+});
+
+// 3D tilt on cards
+document.querySelectorAll('.feature,.module').forEach(card=>{
+  card.addEventListener('mousemove',e=>{
+    const r=card.getBoundingClientRect();
+    const x=(e.clientX-r.left)/r.width-.5;
+    const y=(e.clientY-r.top)/r.height-.5;
+    card.style.transform=`perspective(800px) rotateY(${x*6}deg) rotateX(${-y*6}deg) scale(1.02)`;
+  });
+  card.addEventListener('mouseleave',()=>{
+    card.style.transform='perspective(800px) rotateY(0) rotateX(0) scale(1)';
+  });
+});
+
+// Stat value counter/typewriter reveal
+const statObserver=new IntersectionObserver((entries)=>{
+  entries.forEach(entry=>{
+    if(entry.isIntersecting){
+      const el=entry.target;
+      const text=el.dataset.val||el.textContent;
+      const num=parseFloat(text);
+      if(!isNaN(num)&&text.match(/\d/)){
+        const suffix=text.replace(/[\d.,]+/,'');
+        const prefix=text.match(/^[^\d]*/)[0];
+        const hasDecimal=text.includes('.');
+        const decimals=hasDecimal?(text.split('.')[1]||'').replace(/[^\d]/g,'').length:0;
+        let start=performance.now();
+        const dur=900;
+        el.textContent=prefix+'0'+suffix;
+        (function tick(now){
+          const p=Math.min((now-start)/dur,1);
+          const ease=1-Math.pow(1-p,3);
+          const v=(num*ease);
+          el.textContent=prefix+(hasDecimal?v.toFixed(decimals):Math.round(v).toLocaleString())+suffix;
+          if(p<1)requestAnimationFrame(tick);
+          else el.textContent=text;
+        })(start);
+      } else {
+        // Typewriter for text values
+        el.textContent='';
+        [...text].forEach((ch,i)=>{
+          setTimeout(()=>{el.textContent+=ch},i*60);
+        });
+      }
+      statObserver.unobserve(el);
+    }
+  });
+},{threshold:0.3});
+document.querySelectorAll('.stat-value').forEach(el=>{
+  el.dataset.val=el.textContent;
+  statObserver.observe(el);
+});
+
+// 3D tilt on team cards
+document.querySelectorAll('.team-card').forEach(card=>{
+  card.addEventListener('mousemove',e=>{
+    const r=card.getBoundingClientRect();
+    const x=(e.clientX-r.left)/r.width-.5;
+    const y=(e.clientY-r.top)/r.height-.5;
+    card.style.transform=`perspective(800px) rotateY(${x*8}deg) rotateX(${-y*8}deg) translateY(-8px)`;
+  });
+  card.addEventListener('mouseleave',()=>{card.style.transform=''});
+});
+
+// KPI chip stagger on team card hover
+document.querySelectorAll('.team-card').forEach(card=>{
+  const chips=card.querySelectorAll('.team-card-kpi');
+  card.addEventListener('mouseenter',()=>{
+    chips.forEach((chip,i)=>{
+      chip.style.transition=`all .3s cubic-bezier(0.22,1,0.36,1) ${i*40}ms`;
+      chip.style.transform='translateY(-2px)';
+    });
+  });
+  card.addEventListener('mouseleave',()=>{
+    chips.forEach(chip=>{chip.style.transform='';chip.style.transition='all .25s'});
+  });
+});
+
+// Timeline step stagger reveal
+const tlObs=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(!e.isIntersecting)return;
+    const steps=e.target.querySelectorAll('.timeline-step');
+    steps.forEach((s,i)=>{
+      s.style.opacity='0';s.style.transform='translateX(-16px)';
+      setTimeout(()=>{
+        s.style.transition='all .6s cubic-bezier(0.22,1,0.36,1)';
+        s.style.opacity='1';s.style.transform='translateX(0)';
+      },i*150);
+    });
+    tlObs.unobserve(e.target);
+  });
+},{threshold:0.2});
+document.querySelectorAll('.timeline').forEach(el=>tlObs.observe(el));
+
+// Magnetic hover on buttons
+document.querySelectorAll('.btn-primary,.nav-cta').forEach(btn=>{
+  btn.addEventListener('mousemove',e=>{
+    const r=btn.getBoundingClientRect();
+    const cx=r.left+r.width/2;
+    const cy=r.top+r.height/2;
+    const dx=(e.clientX-cx)*0.08;
+    const dy=(e.clientY-cy)*0.08;
+    btn.style.transform=`translate(${dx}px,${dy}px) translateY(-2px)`;
+  });
+  btn.addEventListener('mouseleave',()=>{
+    btn.style.transform='';
+  });
+});
+</script>
+
+</body>
+</html>

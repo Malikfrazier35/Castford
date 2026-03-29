@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FinanceOS -- Zero Trust Security & Data Privacy</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ===== SHARED NAV ===== */
+nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,0.88);backdrop-filter:blur(16px) saturate(180%);-webkit-backdrop-filter:blur(16px) saturate(180%);border-bottom:1px solid #F1F5F9}
+.nav-inner{max-width:1200px;margin:0 auto;padding:0 24px;height:60px;display:flex;align-items:center;justify-content:space-between}
+.logo-link{display:flex;align-items:center;gap:8px;font-weight:800;font-size:17px;color:#0F172A;text-decoration:none;letter-spacing:-0.01em}
+.logo-link .ldot{width:9px;height:9px;background:#10B981;border-radius:50%}
+.nav-mid{display:flex;gap:4px;font-size:14px;font-weight:500;align-items:center}
+.nav-mid a{color:#64748B;padding:8px 12px;border-radius:8px;text-decoration:none;transition:color .15s}
+.nav-mid a:hover{color:#0F172A;background:rgba(0,0,0,0.03)}
+.nav-end{display:flex;align-items:center;gap:10px}
+.nav-end a{font-size:14px;font-weight:500;color:#64748B;padding:8px 12px;text-decoration:none;transition:color .15s}
+.nav-end a:hover{color:#0F172A}
+.btn-sub{display:inline-flex;align-items:center;padding:8px 18px;border-radius:8px;font-weight:600;font-size:13px;background:#10B981;color:#fff!important;text-decoration:none;border:none;cursor:pointer;transition:all .15s}
+.btn-sub:hover{background:#059669;box-shadow:0 2px 12px rgba(16,185,129,0.25)}
+@media(max-width:900px){.nav-mid{display:none}}
+
+/* ===== SHARED FOOTER ===== */
+footer{background:#F8FAFC;border-top:1px solid #E2E8F0;padding:56px 24px 24px}
+.ft-inner{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:1.5fr repeat(4,1fr);gap:40px;margin-bottom:40px}
+.ft-brand p{font-size:13px;color:#64748B;line-height:1.6;max-width:240px;margin-top:10px}
+.ft-col{display:flex;flex-direction:column;gap:8px}
+.ft-col h5{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;color:#0F172A;margin-bottom:4px}
+.ft-col a{font-size:13px;color:#64748B;text-decoration:none;transition:color .15s}
+.ft-col a:hover{color:#0F172A}
+.ft-bottom{max-width:1200px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;padding-top:20px;border-top:1px solid #E2E8F0;font-size:12px;color:#64748B}
+.ft-bottom a{color:#64748B;text-decoration:none;transition:color .15s}
+.ft-bottom a:hover{color:#0F172A}
+@media(max-width:768px){.ft-inner{grid-template-columns:1fr 1fr;gap:24px}}
+
+:root{
+  --green:#10B981;--green-50:#ECFDF5;--green-100:#D1FAE5;--green-200:#A7F3D0;--green-600:#059669;--green-700:#047857;
+  --cyan:#0891B2;--purple:#7C3AED;--blue:#2563EB;--amber:#D97706;--red:#EF4444;
+  --bg:#FFFFFF;--bg-alt:#F8FAFC;--text:#0F172A;--text-secondary:#334155;--muted:#64748B;--light:#94A3B8;
+  --border:#E2E8F0;--border-light:#F1F5F9;
+  --shadow-sm:0 1px 3px rgba(0,0,0,0.06),0 1px 2px rgba(0,0,0,0.04);
+  --shadow-md:0 4px 6px -1px rgba(0,0,0,0.07),0 2px 4px -2px rgba(0,0,0,0.04);
+  --shadow-lg:0 10px 15px -3px rgba(0,0,0,0.07),0 4px 6px -4px rgba(0,0,0,0.04);
+  --shadow-xl:0 20px 25px -5px rgba(0,0,0,0.07),0 8px 10px -6px rgba(0,0,0,0.04);
+  --font:'DM Sans',system-ui,-apple-system,sans-serif;--mono:'JetBrains Mono',monospace;
+  --radius:12px;--radius-lg:16px;--max-w:1100px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:var(--font);background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased;line-height:1.6;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+
+/* NAV */
+nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,0.88);backdrop-filter:blur(16px) saturate(180%);-webkit-backdrop-filter:blur(16px) saturate(180%);border-bottom:1px solid var(--border-light)}
+.nav-inner{max-width:var(--max-w);margin:0 auto;padding:0 24px;height:60px;display:flex;align-items:center;justify-content:space-between}
+.logo{display:flex;align-items:center;gap:8px;font-weight:800;font-size:17px;letter-spacing:-0.01em}
+.logo-dot{width:9px;height:9px;background:var(--green);border-radius:50%}
+.nav-links{display:flex;gap:24px;font-size:14px;font-weight:500}
+.nav-links a{color:var(--muted);transition:color .15s}
+.nav-links a:hover{color:var(--text)}
+.nav-right{display:flex;align-items:center;gap:10px}
+.nav-right a{font-size:14px;font-weight:500;color:var(--muted);padding:8px 12px;transition:color .15s}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;border-radius:8px;font-weight:600;font-size:14px;border:none;cursor:pointer;font-family:var(--font);transition:all .15s;white-space:nowrap}
+.btn-sm{padding:8px 16px;font-size:13px}
+.btn-md{padding:10px 22px}
+.btn-lg{padding:13px 28px;font-size:15px;border-radius:10px}
+.btn-primary{background:var(--green);color:#fff}
+.btn-primary:hover{background:var(--green-600)}
+.btn-outline{background:var(--bg);color:var(--text);border:1px solid var(--border)}
+.btn-outline:hover{background:var(--bg-alt);border-color:#CBD5E1}
+
+/* HERO */
+.hero{padding:80px 24px 56px;text-align:center;position:relative}
+.hero::before{content:'';position:absolute;top:0;left:0;right:0;height:100%;background:linear-gradient(180deg,var(--green-50) 0%,var(--bg) 80%);z-index:-1}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;padding:6px 6px 6px 14px;border-radius:100px;font-size:13px;font-weight:500;color:var(--text-secondary);background:var(--bg);border:1px solid var(--border);margin-bottom:20px}
+.hero-badge .tag{background:var(--green-100);color:var(--green-700);padding:3px 10px;border-radius:100px;font-size:11px;font-weight:700;letter-spacing:0.02em}
+.hero h1{font-size:clamp(32px,4.5vw,52px);font-weight:800;letter-spacing:-0.035em;line-height:1.1;margin-bottom:16px;max-width:720px;margin-left:auto;margin-right:auto}
+.hero h1 span{color:var(--green-600)}
+.hero-sub{font-size:clamp(15px,1.5vw,17px);color:var(--text-secondary);max-width:560px;margin:0 auto 36px;line-height:1.55}
+
+/* CERTIFICATIONS STRIP */
+.cert-strip{padding:40px 24px;border-bottom:1px solid var(--border-light)}
+.cert-inner{max-width:var(--max-w);margin:0 auto;text-align:center}
+.cert-inner p{font-size:12px;color:var(--light);text-transform:uppercase;letter-spacing:0.08em;font-weight:500;margin-bottom:20px}
+.cert-logos{display:flex;justify-content:center;gap:32px;flex-wrap:wrap;align-items:center}
+.cert-badge{display:flex;flex-direction:column;align-items:center;gap:6px}
+.cert-icon{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:11px;letter-spacing:0.02em;border:2px solid var(--border)}
+.cert-badge span{font-size:11px;font-weight:600;color:var(--muted)}
+
+/* SECTIONS */
+.section{max-width:var(--max-w);margin:0 auto;padding:80px 24px}
+.section-alt{background:var(--bg-alt)}
+.overline{font-size:12px;font-weight:600;color:var(--green);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px}
+h2{font-size:clamp(24px,3vw,36px);font-weight:800;letter-spacing:-0.025em;margin-bottom:10px;line-height:1.15}
+.sub{font-size:15px;color:var(--text-secondary);max-width:560px;line-height:1.55;margin-bottom:40px}
+.sub-center{margin-left:auto;margin-right:auto;text-align:center}
+.section-header{text-align:center;margin-bottom:48px}
+
+/* ZERO TRUST PRINCIPLES */
+.zt-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.zt-card{background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-lg);padding:28px;transition:all .2s}
+.zt-card:hover{box-shadow:var(--shadow-md);border-color:#CBD5E1}
+.zt-num{font-family:var(--mono);font-size:12px;font-weight:700;color:var(--green);margin-bottom:14px}
+.zt-card h3{font-size:16px;font-weight:700;margin-bottom:6px;letter-spacing:-0.01em}
+.zt-card p{font-size:13px;color:var(--text-secondary);line-height:1.55}
+
+/* DATA FLOW DIAGRAM */
+.flow-diagram{max-width:800px;margin:0 auto 48px;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;box-shadow:var(--shadow-lg)}
+.flow-header{padding:12px 20px;background:var(--bg-alt);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px}
+.flow-header .dots{display:flex;gap:5px}
+.flow-header .dots span{width:9px;height:9px;border-radius:50%}
+.flow-header .dots span:nth-child(1){background:#EF4444}
+.flow-header .dots span:nth-child(2){background:#F59E0B}
+.flow-header .dots span:nth-child(3){background:var(--green)}
+.flow-header .label{font-size:11px;font-family:var(--mono);color:var(--muted);margin-left:12px}
+.flow-body{padding:32px 28px}
+.flow-step{display:grid;grid-template-columns:56px 1fr;gap:16px;align-items:flex-start;position:relative;padding-bottom:28px}
+.flow-step:not(:last-child)::after{content:'';position:absolute;left:28px;top:48px;bottom:0;width:2px;background:var(--green-200)}
+.flow-step:last-child{padding-bottom:0}
+.flow-icon{width:56px;height:56px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;color:#fff;position:relative;z-index:1}
+.flow-content h4{font-size:15px;font-weight:700;margin-bottom:4px;letter-spacing:-0.01em}
+.flow-content p{font-size:13px;color:var(--text-secondary);line-height:1.55}
+.flow-content .detail{font-size:11px;color:var(--muted);font-family:var(--mono);background:var(--bg-alt);padding:6px 10px;border-radius:6px;margin-top:8px;display:inline-block;border:1px solid var(--border-light)}
+
+/* TWO PATHS */
+.paths{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:40px}
+.path-card{border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden}
+.path-header{padding:16px 24px;border-bottom:1px solid var(--border-light);display:flex;align-items:center;gap:10px}
+.path-header .path-icon{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;color:#fff}
+.path-header h3{font-size:15px;font-weight:700}
+.path-body{padding:20px 24px}
+.path-body p{font-size:13px;color:var(--text-secondary);line-height:1.6;margin-bottom:12px}
+.path-steps{display:flex;flex-direction:column;gap:8px}
+.path-step{display:flex;align-items:flex-start;gap:8px;font-size:13px;color:var(--text-secondary);line-height:1.5}
+.path-step .step-num{flex-shrink:0;width:22px;height:22px;border-radius:50%;background:var(--green-50);color:var(--green-700);font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center}
+
+/* ENCRYPTION TABLE */
+.enc-table{width:100%;border-collapse:collapse;border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow-sm)}
+.enc-table thead{background:var(--text);color:#fff}
+.enc-table th{padding:12px 16px;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.04em;text-align:left}
+.enc-table td{padding:12px 16px;font-size:13px;border-bottom:1px solid var(--border-light);vertical-align:top}
+.enc-table tr:nth-child(even){background:var(--bg-alt)}
+.enc-table .secure{color:var(--green);font-weight:600}
+
+/* COMPLIANCE GRID */
+.comp-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+.comp-card{display:flex;gap:16px;align-items:flex-start;padding:24px;border:1px solid var(--border);border-radius:var(--radius-lg);background:var(--bg);transition:all .2s}
+.comp-card:hover{box-shadow:var(--shadow-md)}
+.comp-icon{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:12px;flex-shrink:0}
+.comp-card h4{font-size:14px;font-weight:700;margin-bottom:4px}
+.comp-card p{font-size:12px;color:var(--muted);line-height:1.5}
+
+/* RETENTION */
+.ret-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.ret-card{background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-lg);padding:24px;text-align:center;transition:all .2s}
+.ret-card:hover{box-shadow:var(--shadow-md)}
+.ret-card h4{font-size:14px;font-weight:700;margin-bottom:6px}
+.ret-card p{font-size:12px;color:var(--muted);line-height:1.5}
+.ret-card .metric{font-family:var(--mono);font-size:28px;font-weight:700;color:var(--green);margin-bottom:8px;letter-spacing:-0.02em}
+
+/* FAQ */
+.faq-list{display:flex;flex-direction:column;gap:12px;max-width:720px;margin:0 auto}
+.faq-item{border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;background:var(--bg)}
+.faq-q{padding:16px 20px;font-size:14px;font-weight:600;cursor:pointer;display:flex;justify-content:space-between;align-items:center;transition:background .15s}
+.faq-q:hover{background:var(--bg-alt)}
+.faq-q .toggle{font-size:18px;color:var(--muted);transition:transform .2s}
+.faq-a{padding:0 20px 16px;font-size:13px;color:var(--text-secondary);line-height:1.6;display:none}
+.faq-item.open .faq-a{display:block}
+.faq-item.open .toggle{transform:rotate(45deg)}
+
+/* CTA */
+.cta{text-align:center;padding:80px 24px 96px}
+.cta h2{font-size:clamp(26px,3vw,38px);font-weight:800;letter-spacing:-0.03em;margin-bottom:12px;line-height:1.1}
+.cta p{font-size:15px;color:var(--text-secondary);margin-bottom:28px;max-width:480px;margin-left:auto;margin-right:auto}
+.cta-buttons{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.cta-note{font-size:12px;color:var(--light);margin-top:14px}
+
+/* FOOTER */
+footer{background:var(--bg-alt);border-top:1px solid var(--border);padding:56px 24px 28px}
+.footer-inner{max-width:var(--max-w);margin:0 auto;display:grid;grid-template-columns:1.5fr repeat(4,1fr);gap:40px;margin-bottom:40px}
+.footer-brand .logo{margin-bottom:12px}
+.footer-brand p{font-size:13px;color:var(--muted);line-height:1.5;max-width:220px}
+.footer-col h5{font-size:11px;font-weight:600;color:var(--text);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:12px}
+.footer-col a{display:block;font-size:13px;color:var(--muted);margin-bottom:8px;transition:color .15s}
+.footer-col a:hover{color:var(--green)}
+.footer-bottom{max-width:var(--max-w);margin:0 auto;display:flex;justify-content:space-between;align-items:center;padding-top:20px;border-top:1px solid var(--border);font-size:12px;color:var(--light)}
+.footer-bottom-links{display:flex;gap:20px}
+.footer-bottom-links a{color:var(--light);transition:color .15s}
+.footer-bottom-links a:hover{color:var(--text)}
+
+/* ANIMATIONS */
+.fade-in{opacity:0;transform:translateY(16px);transition:opacity .45s ease,transform .45s ease}
+.fade-in.visible{opacity:1;transform:translateY(0)}
+
+/* RESPONSIVE */
+@media(max-width:960px){
+  .zt-grid{grid-template-columns:1fr 1fr}
+  .paths{grid-template-columns:1fr}
+  .comp-grid{grid-template-columns:1fr}
+  .footer-inner{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:768px){
+  .nav-links{display:none}
+  .zt-grid{grid-template-columns:1fr}
+  .ret-grid{grid-template-columns:1fr}
+  .footer-inner{grid-template-columns:1fr}
+  .footer-bottom{flex-direction:column;gap:10px;text-align:center}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-inner">
+    <a href="FinanceOS-Landing-V3.html" class="logo-link"><span class="ldot"></span>FinanceOS</a>
+    <div class="nav-mid">
+      <a href="FinanceOS-Solutions-Digital.html">Solutions</a>
+      <a href="FinanceOS-Integrations-V3.html">Integrations</a>
+      <a href="FinanceOS-Security-Zero-Trust.html">Trust</a>
+      <a href="FinanceOS-Pricing-V3.html">Pricing</a>
+      <a href="FinanceOS-vs-Competitors-V2.html">Compare</a>
+      <a href="FinanceOS-Resources-V2.html">Resources</a>
+    </div>
+    <div class="nav-end">
+      <a href="FinanceOS-Login-V2.html">Sign In</a>
+      <a href="FinanceOS-Pricing-V3.html" class="btn-sub">Subscribe</a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-badge">
+    Zero Trust Security Architecture
+    <span class="tag">TRUST</span>
+  </div>
+  <h1>Your financial data is <span>never trusted, always verified</span></h1>
+  <p class="hero-sub">FinanceOS applies zero trust principles to every data interaction — whether your team connects via our integration portal or uploads files manually. No implicit trust. Every request authenticated. Every byte encrypted.</p>
+  <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:12px">
+    <button class="btn btn-primary btn-lg">Request Security Whitepaper</button>
+    <button class="btn btn-outline btn-lg">Talk to Security Team</button>
+  </div>
+  <p style="font-size:12px;color:var(--light)">SOC 2 Type II certified -- GDPR compliant -- SOX 404 ready</p>
+</section>
+
+<!-- CERTIFICATIONS -->
+<div class="cert-strip">
+  <div class="cert-inner">
+    <p>Compliance & Certifications</p>
+    <div class="cert-logos">
+      <div class="cert-badge"><div class="cert-icon" style="border-color:var(--green-200);color:var(--green-700)">SOC 2</div><span>Type II</span></div>
+      <div class="cert-badge"><div class="cert-icon" style="border-color:#BFDBFE;color:#1D4ED8">GDPR</div><span>Compliant</span></div>
+      <div class="cert-badge"><div class="cert-icon" style="border-color:#DDD6FE;color:#6D28D9">SOX</div><span>404 Ready</span></div>
+      <div class="cert-badge"><div class="cert-icon" style="border-color:#FED7AA;color:#C2410C">ISO</div><span>27001</span></div>
+      <div class="cert-badge"><div class="cert-icon" style="border-color:#CFFAFE;color:#0E7490">CCPA</div><span>Compliant</span></div>
+      <div class="cert-badge"><div class="cert-icon" style="border-color:var(--border);color:var(--muted)">HIPAA</div><span>BAA Available</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ZERO TRUST PRINCIPLES -->
+<section class="section">
+  <div class="section-header">
+    <div class="overline">Zero Trust Framework</div>
+    <h2>Never trust, always verify</h2>
+    <p class="sub sub-center">Every data interaction within FinanceOS follows six core zero trust principles. No user, device, or system is implicitly trusted — regardless of whether it sits inside or outside the network perimeter.</p>
+  </div>
+
+  <div class="zt-grid">
+    <div class="zt-card fade-in">
+      <div class="zt-num">01</div>
+      <h3>Verify every identity</h3>
+      <p>Every user and service account is authenticated before accessing any resource. Multi-factor authentication (MFA) is enforced for all human users. Service-to-service calls use short-lived, automatically rotated credentials — never static API keys.</p>
+    </div>
+    <div class="zt-card fade-in">
+      <div class="zt-num">02</div>
+      <h3>Least privilege access</h3>
+      <p>Users and integrations receive only the minimum permissions required for their role. A VP of Finance sees consolidated reports; a department analyst sees only their cost center. Connector service accounts are scoped to read-only access by default.</p>
+    </div>
+    <div class="zt-card fade-in">
+      <div class="zt-num">03</div>
+      <h3>Encrypt everything</h3>
+      <p>All data is encrypted in transit using TLS 1.3 and at rest using AES-256. Encryption keys are managed through a dedicated key management service with automatic rotation every 90 days. Customer data and key material are never stored in the same system.</p>
+    </div>
+    <div class="zt-card fade-in">
+      <div class="zt-num">04</div>
+      <h3>Assume breach</h3>
+      <p>Every system component is designed as if neighboring components may already be compromised. Micro-segmentation isolates customer data environments. Lateral movement is blocked by default — even internal services must authenticate to access data stores.</p>
+    </div>
+    <div class="zt-card fade-in">
+      <div class="zt-num">05</div>
+      <h3>Continuous monitoring</h3>
+      <p>Every access event is logged and analyzed in real time. Anomalous patterns — such as a user querying data outside their normal scope, or a connector pulling an unusual volume — trigger automated alerts and can suspend access within seconds.</p>
+    </div>
+    <div class="zt-card fade-in">
+      <div class="zt-num">06</div>
+      <h3>Immutable audit trail</h3>
+      <p>Every data access, transformation, and export is recorded in a tamper-proof audit log. These logs are retained for 7 years and can be exported for SOX compliance audits, internal investigations, or regulatory review at any time.</p>
+    </div>
+  </div>
+</section>
+
+<!-- DATA INGESTION: TWO PATHS -->
+<div class="section-alt">
+  <section class="section">
+    <div class="section-header">
+      <div class="overline">Data Ingestion</div>
+      <h2>What happens to your data</h2>
+      <p class="sub sub-center">Whether your team connects through our integration portal or uploads files manually, every piece of financial data follows the same zero trust pipeline from the moment it enters FinanceOS.</p>
+    </div>
+
+    <div class="paths fade-in">
+      <!-- PATH 1: CONNECTOR PORTAL -->
+      <div class="path-card">
+        <div class="path-header">
+          <div class="path-icon" style="background:var(--green)">A</div>
+          <h3>Integration Portal (Connectors)</h3>
+        </div>
+        <div class="path-body">
+          <p>When a customer connects their ERP, CRM, HRIS, or billing system through the FinanceOS connector portal, the following happens:</p>
+          <div class="path-steps">
+            <div class="path-step"><span class="step-num">1</span>Customer authenticates via OAuth 2.0 or SAML SSO with the source system (e.g., NetSuite, SAP, Salesforce). FinanceOS never receives or stores the customer's source system password.</div>
+            <div class="path-step"><span class="step-num">2</span>A scoped, read-only access token is issued by the source system. This token is encrypted and stored in a dedicated secrets vault — isolated from the application database.</div>
+            <div class="path-step"><span class="step-num">3</span>Data is pulled through the connector over TLS 1.3 encrypted channels. The raw payload is validated against the expected schema before any processing occurs.</div>
+            <div class="path-step"><span class="step-num">4</span>Validated data is written to the customer's isolated data environment (single-tenant logical partition). No cross-customer data mixing ever occurs.</div>
+            <div class="path-step"><span class="step-num">5</span>Schema mapping and transformation happen within the customer's partition. Original source records are preserved alongside the mapped data for full audit lineage.</div>
+            <div class="path-step"><span class="step-num">6</span>Sync status, record counts, and any anomalies are logged to the immutable audit trail. The customer can view the full sync history in their dashboard.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PATH 2: MANUAL UPLOAD -->
+      <div class="path-card">
+        <div class="path-header">
+          <div class="path-icon" style="background:var(--blue)">B</div>
+          <h3>Manual File Upload</h3>
+        </div>
+        <div class="path-body">
+          <p>When a customer uploads financial data manually (CSV, Excel, PDF), the file goes through the same zero trust pipeline:</p>
+          <div class="path-steps">
+            <div class="path-step"><span class="step-num">1</span>The file is uploaded over TLS 1.3 directly to a temporary staging area. The upload session is authenticated with the user's active session token and validated against their role permissions.</div>
+            <div class="path-step"><span class="step-num">2</span>The file is scanned for malware, macros, and anomalous content before any processing. Files that fail validation are quarantined and the user is notified.</div>
+            <div class="path-step"><span class="step-num">3</span>Validated files are parsed and the data is extracted. The original file is encrypted with AES-256 and archived in the customer's isolated storage partition for reference.</div>
+            <div class="path-step"><span class="step-num">4</span>Extracted data goes through the same schema validation and mapping pipeline as connector data. No shortcuts — manual uploads receive identical security treatment.</div>
+            <div class="path-step"><span class="step-num">5</span>The user is shown a preview of the mapped data before it is committed. They can review, adjust mapping, or cancel. Nothing is written to the financial model until the user confirms.</div>
+            <div class="path-step"><span class="step-num">6</span>Upload metadata (who uploaded, when, file hash, record count, mapping applied) is logged to the immutable audit trail. The original file hash is preserved for integrity verification.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- DATA LIFECYCLE FLOW -->
+<section class="section">
+  <div class="section-header">
+    <div class="overline">Data Lifecycle</div>
+    <h2>From ingestion to deletion</h2>
+    <p class="sub sub-center">Every stage of the data lifecycle is governed by zero trust controls. Here is exactly what happens to customer financial data inside FinanceOS.</p>
+  </div>
+
+  <div class="flow-diagram fade-in">
+    <div class="flow-header">
+      <div class="dots"><span></span><span></span><span></span></div>
+      <div class="label">data-lifecycle-flow</div>
+    </div>
+    <div class="flow-body">
+      <div class="flow-step">
+        <div class="flow-icon" style="background:var(--green)">1</div>
+        <div class="flow-content">
+          <h4>Ingestion</h4>
+          <p>Data enters through connector sync or manual upload. Encrypted in transit via TLS 1.3. Authenticated session required. Schema validated before acceptance.</p>
+          <span class="detail">AES-256 in transit -- OAuth 2.0 or session token auth</span>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-icon" style="background:var(--cyan)">2</div>
+        <div class="flow-content">
+          <h4>Isolation</h4>
+          <p>Data is written to the customer's logically isolated partition. Each customer's data environment is separated at the storage, compute, and network layer. No shared tables, no shared query engines.</p>
+          <span class="detail">Single-tenant logical partition -- network micro-segmentation</span>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-icon" style="background:var(--purple)">3</div>
+        <div class="flow-content">
+          <h4>Processing</h4>
+          <p>Financial models, AI analysis, variance detection, and forecasting happen entirely within the customer's partition. The AI engine accesses only that customer's data — it has no visibility into other customer environments, ever.</p>
+          <span class="detail">AI inference within partition -- no cross-tenant data access</span>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-icon" style="background:var(--blue)">4</div>
+        <div class="flow-content">
+          <h4>Storage</h4>
+          <p>Processed data is encrypted at rest with AES-256. Encryption keys are customer-specific and managed through a dedicated key management service. Keys rotate automatically every 90 days. Customers can also bring their own keys (BYOK).</p>
+          <span class="detail">AES-256 at rest -- customer-specific keys -- 90-day rotation</span>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-icon" style="background:var(--amber)">5</div>
+        <div class="flow-content">
+          <h4>Access</h4>
+          <p>Every query, report, export, and API call is authenticated and authorized against the user's role and permissions. Sensitive operations (bulk export, admin changes) require re-authentication. All access events are logged.</p>
+          <span class="detail">Role-based access control -- re-auth for sensitive operations</span>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-icon" style="background:var(--red)">6</div>
+        <div class="flow-content">
+          <h4>Retention & Deletion</h4>
+          <p>Customers control their data retention policy. When a customer requests deletion, all data — including backups, derived models, and cached results — is cryptographically erased within 30 days. A certificate of destruction is issued upon completion.</p>
+          <span class="detail">Customer-controlled retention -- 30-day crypto-erasure -- destruction certificate</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ENCRYPTION DETAILS -->
+<div class="section-alt">
+  <section class="section">
+    <div class="section-header">
+      <div class="overline">Encryption</div>
+      <h2>Encryption at every layer</h2>
+    </div>
+
+    <table class="enc-table fade-in">
+      <thead>
+        <tr>
+          <th>Data State</th>
+          <th>Method</th>
+          <th>Standard</th>
+          <th>Key Management</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>In transit (connector sync)</strong></td>
+          <td class="secure">TLS 1.3</td>
+          <td>AEAD cipher suites only</td>
+          <td>Certificate pinning, automatic renewal</td>
+        </tr>
+        <tr>
+          <td><strong>In transit (manual upload)</strong></td>
+          <td class="secure">TLS 1.3</td>
+          <td>AEAD cipher suites only</td>
+          <td>Certificate pinning, automatic renewal</td>
+        </tr>
+        <tr>
+          <td><strong>In transit (API calls)</strong></td>
+          <td class="secure">TLS 1.3 + mTLS</td>
+          <td>Mutual authentication</td>
+          <td>Short-lived client certificates</td>
+        </tr>
+        <tr>
+          <td><strong>At rest (primary storage)</strong></td>
+          <td class="secure">AES-256-GCM</td>
+          <td>FIPS 140-2 Level 3</td>
+          <td>Customer-specific keys, 90-day rotation</td>
+        </tr>
+        <tr>
+          <td><strong>At rest (backups)</strong></td>
+          <td class="secure">AES-256-GCM</td>
+          <td>FIPS 140-2 Level 3</td>
+          <td>Separate backup encryption key</td>
+        </tr>
+        <tr>
+          <td><strong>At rest (audit logs)</strong></td>
+          <td class="secure">AES-256-GCM</td>
+          <td>Immutable, append-only</td>
+          <td>Separate audit key, 7-year retention</td>
+        </tr>
+        <tr>
+          <td><strong>Secrets (OAuth tokens, API keys)</strong></td>
+          <td class="secure">AES-256 envelope</td>
+          <td>Isolated secrets vault</td>
+          <td>Automatic rotation, never in application DB</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+</div>
+
+<!-- COMPLIANCE & GOVERNANCE -->
+<section class="section">
+  <div class="section-header">
+    <div class="overline">Compliance & Governance</div>
+    <h2>Built for regulated industries</h2>
+    <p class="sub sub-center">FinanceOS is designed for finance teams operating under SOX, GDPR, CCPA, HIPAA, and industry-specific regulatory requirements.</p>
+  </div>
+
+  <div class="comp-grid">
+    <div class="comp-card fade-in">
+      <div class="comp-icon" style="background:var(--green-50);color:var(--green-700)">SOX</div>
+      <div>
+        <h4>SOX 404 Compliance</h4>
+        <p>Continuous control monitoring, segregation of duties enforcement, immutable audit trails, and one-click evidence export for internal and external auditors. Designed for public company finance teams.</p>
+      </div>
+    </div>
+    <div class="comp-card fade-in">
+      <div class="comp-icon" style="background:#EFF6FF;color:#1D4ED8">GDP</div>
+      <div>
+        <h4>GDPR Data Protection</h4>
+        <p>Right to access, right to erasure, data portability, and processing records. Data residency options for EU customers. Data Processing Agreement (DPA) available for all customers.</p>
+      </div>
+    </div>
+    <div class="comp-card fade-in">
+      <div class="comp-icon" style="background:#F5F3FF;color:#6D28D9">SOC</div>
+      <div>
+        <h4>SOC 2 Type II</h4>
+        <p>Annual third-party audit covering security, availability, processing integrity, confidentiality, and privacy. Audit report available to customers and prospects under NDA.</p>
+      </div>
+    </div>
+    <div class="comp-card fade-in">
+      <div class="comp-icon" style="background:#FFFBEB;color:#B45309">CCP</div>
+      <div>
+        <h4>CCPA Consumer Privacy</h4>
+        <p>Do-not-sell compliance, consumer data access requests, and deletion workflows. Applicable to customers operating in California or processing California resident data.</p>
+      </div>
+    </div>
+    <div class="comp-card fade-in">
+      <div class="comp-icon" style="background:#FEF2F2;color:#DC2626">HIP</div>
+      <div>
+        <h4>HIPAA (BAA Available)</h4>
+        <p>Business Associate Agreement available for healthcare and life sciences customers. PHI-specific controls, access restrictions, and breach notification procedures.</p>
+      </div>
+    </div>
+    <div class="comp-card fade-in">
+      <div class="comp-icon" style="background:#ECFEFF;color:#0E7490">ISO</div>
+      <div>
+        <h4>ISO 27001 Information Security</h4>
+        <p>Certified information security management system covering risk assessment, access control, incident management, and business continuity planning.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DATA RETENTION & CUSTOMER CONTROL -->
+<div class="section-alt">
+  <section class="section">
+    <div class="section-header">
+      <div class="overline">Customer Control</div>
+      <h2>You own your data. Period.</h2>
+      <p class="sub sub-center">FinanceOS never sells, shares, or uses customer data to train AI models. Your financial data is yours — and you can export or delete it at any time.</p>
+    </div>
+
+    <div class="ret-grid">
+      <div class="ret-card fade-in">
+        <div class="metric">100%</div>
+        <h4>Customer-owned</h4>
+        <p>Your financial data belongs to you. FinanceOS acts as a data processor, never a data owner. We process your data solely to provide the services you've contracted for.</p>
+      </div>
+      <div class="ret-card fade-in">
+        <div class="metric">0</div>
+        <h4>AI training on your data</h4>
+        <p>FinanceOS AI models are trained on synthetic and anonymized data sets. Your actual financial data is never used for model training, benchmarking, or any purpose beyond serving your account.</p>
+      </div>
+      <div class="ret-card fade-in">
+        <div class="metric">30 days</div>
+        <h4>To full deletion</h4>
+        <p>When you request deletion, all data — primary storage, backups, derived models, cached results, and audit logs beyond regulatory minimums — is cryptographically erased within 30 calendar days.</p>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- FAQ -->
+<section class="section">
+  <div class="section-header">
+    <div class="overline">Frequently Asked</div>
+    <h2>Security questions from finance teams</h2>
+  </div>
+
+  <div class="faq-list">
+    <div class="faq-item fade-in">
+      <div class="faq-q">Can FinanceOS employees access my financial data?<span class="toggle">+</span></div>
+      <div class="faq-a">No. Customer data environments are encrypted with customer-specific keys and access is restricted by role-based controls. FinanceOS engineering and support staff do not have access to customer financial data in the normal course of operations. In the rare case that access is needed for a support escalation, it requires written customer approval, time-limited access, and full audit logging.</div>
+    </div>
+    <div class="faq-item fade-in">
+      <div class="faq-q">Where is my data stored geographically?<span class="toggle">+</span></div>
+      <div class="faq-a">FinanceOS operates data centers in the United States (us-east, us-west), European Union (eu-west), and Asia-Pacific (ap-southeast). Enterprise customers can select their preferred data residency region during onboarding. Data does not leave the selected region for processing, storage, or backup purposes.</div>
+    </div>
+    <div class="faq-item fade-in">
+      <div class="faq-q">What happens if I disconnect a connector?<span class="toggle">+</span></div>
+      <div class="faq-a">When you disconnect a connector, the OAuth token is immediately revoked and deleted from the secrets vault. Previously synced data remains in your FinanceOS environment for continuity, but no new data will be pulled. You can choose to delete the synced data at any time through the data management console.</div>
+    </div>
+    <div class="faq-item fade-in">
+      <div class="faq-q">Is my data used to train FinanceOS AI models?<span class="toggle">+</span></div>
+      <div class="faq-a">No. FinanceOS AI models are trained exclusively on synthetic and anonymized data sets. Your actual financial data is never used for model training, benchmarking, or aggregate analysis. The AI copilot processes your data only in real time to serve your queries — it does not retain context between sessions unless you explicitly enable conversation history.</div>
+    </div>
+    <div class="faq-item fade-in">
+      <div class="faq-q">Can I export all my data if I cancel?<span class="toggle">+</span></div>
+      <div class="faq-a">Yes. FinanceOS provides a full data export capability in standard formats (CSV, JSON, Excel). You can export at any time during your subscription or within 90 days after cancellation. After the 90-day window, data is queued for cryptographic erasure. Enterprise customers can negotiate extended export windows in their contract.</div>
+    </div>
+    <div class="faq-item fade-in">
+      <div class="faq-q">Do you have a penetration testing program?<span class="toggle">+</span></div>
+      <div class="faq-a">Yes. FinanceOS engages independent third-party security firms for annual penetration testing and continuous vulnerability assessment. We also maintain a responsible disclosure program for external security researchers. Pen test reports are available to enterprise customers and prospects under NDA.</div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta">
+  <h2>Ready to see our security in action?</h2>
+  <p>Request a security review with our trust team. We'll walk through our zero trust architecture, compliance certifications, and data handling practices.</p>
+  <div class="cta-buttons">
+    <button class="btn btn-primary btn-lg">Request Security Review</button>
+    <button class="btn btn-outline btn-lg">Download SOC 2 Report</button>
+  </div>
+  <p class="cta-note">Available to qualified prospects under NDA</p>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="ft-inner">
+    <div class="ft-brand">
+      <a href="FinanceOS-Landing-V3.html" class="logo-link"><span class="ldot"></span>FinanceOS</a>
+      <p>AI-native financial planning & analysis for modern finance teams.</p>
+    </div>
+    <div class="ft-col"><h5>Product</h5><a href="FinanceOS-Landing-V3.html">Platform</a><a href="FinanceOS-Integrations-V3.html">Integrations</a><a href="FinanceOS-Pricing-V3.html">Pricing</a><a href="FinanceOS-Security-Zero-Trust.html">Security</a></div>
+    <div class="ft-col"><h5>Solutions</h5><a href="FinanceOS-Solutions-Digital.html">SaaS</a><a href="FinanceOS-Solutions-Digital.html">E-Commerce</a><a href="FinanceOS-xPA-Planning-V2.html">Cross-Dept Planning</a></div>
+    <div class="ft-col"><h5>Resources</h5><a href="FinanceOS-Resources-V2.html">Resource Library</a><a href="FinanceOS-Whats-New-V2.html">Changelog</a></div>
+    <div class="ft-col"><h5>Company</h5><a href="#">About</a><a href="#">Careers</a><a href="#">Contact</a></div>
+  </div>
+  <div class="ft-bottom">
+    <span>&copy; 2026 FinanceOS, Inc.</span>
+    <div style="display:flex;gap:20px"><a href="FinanceOS-Security-Zero-Trust.html">Privacy</a><a href="#">Terms</a><a href="FinanceOS-Security-Zero-Trust.html">Security</a></div>
+  </div>
+</footer>
+
+<script>
+// Scroll animations
+const obs = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.08 });
+document.querySelectorAll('.fade-in').forEach(el => obs.observe(el));
+
+// FAQ toggles
+document.querySelectorAll('.faq-q').forEach(q => {
+  q.addEventListener('click', () => {
+    q.parentElement.classList.toggle('open');
+  });
+});
+</script>
+</body>
+</html>

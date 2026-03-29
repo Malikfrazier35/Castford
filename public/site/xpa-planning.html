@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>FinanceOS xP&A | Cross-Departmental Planning Platform</title>
+<meta name="description" content="Connect Finance, Operations, Revenue, Workforce, Marketing, IT, and Supply Chain in a single AI-powered planning model. Break down silos with FinanceOS xP&A."/>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700;9..40,800;9..40,900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#F8FAFC;--green:#10B981;--cyan:#22D3EE;--purple:#8B5CF6;--blue:#3B82F6;--amber:#F59E0B;--red:#EF4444;--indigo:#6366F1;--pink:#EC4899;--teal:#14B8A6;--t1:#0F172A;--t2:#334155;--t3:#64748B;--t4:#94A3B8;--border:#E2E8F0;--font:'DM Sans',system-ui,sans-serif;--mono:'JetBrains Mono',monospace;--ease:cubic-bezier(.16,1,.3,1)}
+body{font-family:var(--font);color:var(--t1);-webkit-font-smoothing:antialiased;background:#fff;overflow-x:hidden}
+@keyframes gradShift{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+@keyframes nodeConnect{0%{stroke-dashoffset:200}100%{stroke-dashoffset:0}}
+@keyframes glow{0%,100%{filter:drop-shadow(0 0 6px rgba(16,185,129,.3))}50%{filter:drop-shadow(0 0 16px rgba(34,211,238,.4))}}
+.reveal{opacity:0;transform:translateY(24px);transition:all .6s var(--ease)}.reveal.vis{opacity:1;transform:none}
+
+/* NAV */
+
+/* ===== NAVIGATION (light) ===== */
+nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,0.88);backdrop-filter:blur(16px) saturate(180%);-webkit-backdrop-filter:blur(16px) saturate(180%);border-bottom:1px solid #F1F5F9}
+.nav-inner{max-width:1200px;margin:0 auto;padding:0 24px;height:60px;display:flex;align-items:center;justify-content:space-between}
+.logo-link{display:flex;align-items:center;gap:8px;font-weight:800;font-size:17px;color:#0F172A;text-decoration:none;letter-spacing:-0.01em}
+.logo-link .ldot{width:9px;height:9px;background:#10B981;border-radius:50%}
+.nav-mid{display:flex;gap:4px;font-size:14px;font-weight:500;align-items:center}
+.nav-mid a{color:#64748B;padding:8px 12px;border-radius:8px;text-decoration:none;transition:color .15s}
+.nav-mid a:hover{color:#0F172A;background:rgba(0,0,0,0.03)}
+.nav-end{display:flex;align-items:center;gap:10px}
+.nav-end a{font-size:14px;font-weight:500;color:#64748B;padding:8px 12px;text-decoration:none;transition:color .15s}
+.nav-end a:hover{color:#0F172A}
+.btn-sub{display:inline-flex;align-items:center;padding:8px 18px;border-radius:8px;font-weight:600;font-size:13px;background:#10B981;color:#fff;text-decoration:none;border:none;cursor:pointer;transition:all .15s}
+.btn-sub:hover{background:#059669;box-shadow:0 2px 12px rgba(16,185,129,0.25)}
+@media(max-width:900px){.nav-mid{display:none}}
+
+
+/* ===== FOOTER (light) ===== */
+footer{background:#F8FAFC;border-top:1px solid #E2E8F0;padding:56px 24px 24px}
+.ft-inner{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:1.5fr repeat(4,1fr);gap:40px;margin-bottom:40px}
+.ft-brand p{font-size:13px;color:#64748B;line-height:1.6;max-width:240px;margin-top:10px}
+.ft-col{display:flex;flex-direction:column;gap:8px}
+.ft-col h5{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;color:#0F172A;margin-bottom:4px}
+.ft-col a{font-size:13px;color:#64748B;text-decoration:none;transition:color .15s}
+.ft-col a:hover{color:#0F172A}
+.ft-bottom{max-width:1200px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;padding-top:20px;border-top:1px solid #E2E8F0;font-size:12px;color:#64748B}
+.ft-bottom a{color:#64748B;text-decoration:none;transition:color .15s}
+.ft-bottom a:hover{color:#0F172A}
+@media(max-width:768px){.ft-inner{grid-template-columns:1fr 1fr;gap:24px}}
+
+
+/* HERO */
+.hero{padding:100px 40px 60px;background:linear-gradient(180deg,#EEF2FF 0%,#fff 80%);text-align:center;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;top:-200px;left:50%;transform:translateX(-50%);width:800px;height:800px;border-radius:50%;background:radial-gradient(circle,rgba(99,102,241,.04),transparent 60%);pointer-events:none}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;padding:6px 16px;border-radius:20px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;background:rgba(99,102,241,.06);border:1px solid rgba(99,102,241,.15);color:var(--indigo);margin-bottom:20px}
+.hero-badge .dot{width:8px;height:8px;border-radius:50%;background:var(--indigo);animation:pulse 2s ease infinite}
+.hero h1{font-size:clamp(36px,5.5vw,56px);font-weight:900;letter-spacing:-.04em;line-height:1.1;margin-bottom:16px;color:#0F172A}
+.hero h1 .accent{background:linear-gradient(135deg,var(--indigo),var(--cyan),var(--green));background-size:300% 300%;animation:gradShift 6s ease infinite;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero p{font-size:18px;color:#334155;max-width:640px;margin:0 auto 32px;line-height:1.65}
+.hero-cta{display:inline-flex;gap:12px;flex-wrap:wrap;justify-content:center}
+.hero-cta a{padding:14px 32px;border-radius:12px;font-size:15px;font-weight:700;text-decoration:none;transition:all .25s var(--ease)}
+.cta-primary{background:var(--indigo);color:#fff}.cta-primary:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(99,102,241,.3)}
+.cta-outline{border:1px solid #E2E8F0;color:#0F172A}.cta-outline:hover{background:#F8FAFC}
+
+/* ANIMATED SVG PLANNING MODEL */
+.hero-visual{max-width:700px;margin:50px auto 0;position:relative}
+.hero-visual svg{width:100%;height:auto;animation:glow 4s ease infinite}
+
+/* SECTIONS */
+.section{max-width:1200px;margin:0 auto;padding:80px 40px}
+.section-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--indigo);text-align:center;margin-bottom:12px}
+.section-title{font-size:clamp(28px,3.5vw,42px);font-weight:900;text-align:center;letter-spacing:-.03em;margin-bottom:14px}
+.section-sub{font-size:16px;color:var(--t3);text-align:center;max-width:580px;margin:0 auto 50px;line-height:1.6}
+
+/* DEPARTMENT TABS */
+.dept-tabs{display:flex;justify-content:center;gap:6px;flex-wrap:wrap;margin-bottom:40px}
+.dept-tab{padding:10px 20px;border-radius:10px;font-size:13px;font-weight:700;border:1px solid var(--border);background:#fff;cursor:pointer;transition:all .25s var(--ease);display:flex;align-items:center;gap:8px;color:var(--t3)}
+.dept-tab:hover{border-color:var(--indigo);color:var(--indigo)}
+.dept-tab.active{background:var(--indigo);color:#fff;border-color:var(--indigo);box-shadow:0 4px 16px rgba(99,102,241,.2)}
+.dept-tab svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2}
+
+/* DEPARTMENT CONTENT PANELS */
+.dept-panels{position:relative}
+.dept-panel{display:none;animation:fadeIn .4s var(--ease)}
+.dept-panel.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+.dept-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:start}
+.dept-info{padding:32px;background:#fff;border:1px solid var(--border);border-radius:20px}
+.dept-info h3{font-size:24px;font-weight:900;letter-spacing:-.02em;margin-bottom:8px}
+.dept-info .dept-desc{font-size:14px;color:var(--t3);line-height:1.7;margin-bottom:24px}
+.dept-kpis{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.dept-kpi{padding:16px;border-radius:12px;background:var(--bg);border:1px solid var(--border)}
+.dept-kpi .kpi-val{font-size:24px;font-weight:900;font-family:var(--mono);letter-spacing:-.03em}
+.dept-kpi .kpi-label{font-size:11px;color:var(--t3);margin-top:2px}
+.dept-mockup{padding:24px;background:#0F172A;border-radius:20px;border:1px solid rgba(255,255,255,.06);color:#fff}
+.mock-bar{display:flex;align-items:center;gap:8px;margin-bottom:16px}
+.mock-dot{width:8px;height:8px;border-radius:50%}
+.mock-title{font-size:12px;font-weight:700;color:rgba(255,255,255,.5);margin-left:auto;font-family:var(--mono)}
+.mock-row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.06)}
+.mock-row:last-child{border:none}
+.mock-label{font-size:12px;font-weight:600;color:rgba(255,255,255,.5);width:120px;flex-shrink:0}
+.mock-bar-track{flex:1;height:8px;border-radius:4px;background:rgba(255,255,255,.06);overflow:hidden}
+.mock-bar-fill{height:100%;border-radius:4px;transition:width 1s var(--ease)}
+.mock-val{font-size:12px;font-weight:700;font-family:var(--mono);color:rgba(255,255,255,.7);width:60px;text-align:right}
+
+/* FLOW TIMELINE */
+.flow-steps{display:grid;grid-template-columns:repeat(5,1fr);gap:16px;position:relative}
+.flow-steps::before{content:'';position:absolute;top:36px;left:10%;right:10%;height:2px;background:linear-gradient(90deg,var(--indigo),var(--cyan),var(--green),var(--purple),var(--amber));border-radius:2px}
+.flow-step{text-align:center;position:relative;z-index:1}
+.flow-num{width:72px;height:72px;border-radius:50%;background:#fff;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;margin:0 auto 14px;transition:all .3s}
+.flow-num svg{width:28px;height:28px;stroke-width:1.5}
+.flow-step:hover .flow-num{border-color:var(--indigo);box-shadow:0 8px 24px rgba(99,102,241,.1)}
+.flow-step h4{font-size:14px;font-weight:800;margin-bottom:4px}
+.flow-step p{font-size:11px;color:var(--t3);line-height:1.5;max-width:160px;margin:0 auto}
+
+/* BEFORE/AFTER */
+.ba-grid{display:grid;grid-template-columns:1fr auto 1fr;gap:24px;align-items:start}
+.ba-card{padding:32px;border-radius:20px;border:1px solid var(--border)}
+.ba-card.before{background:#FFF7ED;border-color:#FED7AA}
+.ba-card.after{background:rgba(16,185,129,.03);border-color:rgba(16,185,129,.2)}
+.ba-label{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;margin-bottom:16px;display:flex;align-items:center;gap:6px}
+.ba-card.before .ba-label{color:var(--amber)}
+.ba-card.after .ba-label{color:var(--green)}
+.ba-list{list-style:none;display:flex;flex-direction:column;gap:10px}
+.ba-list li{display:flex;align-items:flex-start;gap:8px;font-size:13px;color:var(--t2);line-height:1.5}
+.ba-list li svg{width:16px;height:16px;flex-shrink:0;margin-top:2px}
+.ba-arrow{display:flex;align-items:center;justify-content:center;font-size:32px;color:var(--indigo)}
+
+/* CTA */
+.bottom-cta{padding:80px 40px;text-align:center;background:linear-gradient(135deg,#030711,#1a1145)}
+.bottom-cta h2{font-size:clamp(28px,4vw,44px);font-weight:900;letter-spacing:-.03em;margin-bottom:14px;color:#fff}
+.bottom-cta p{font-size:16px;color:rgba(255,255,255,.45);max-width:520px;margin:0 auto 32px;line-height:1.6}
+.bottom-cta .cta-row{display:inline-flex;gap:12px}
+.bottom-cta .cta-row a{padding:14px 32px;border-radius:12px;font-size:15px;font-weight:700;text-decoration:none;transition:all .25s var(--ease)}
+
+/* FOOTER */
+.footer{padding:60px 40px 30px;border-top:1px solid var(--border);max-width:1100px;margin:0 auto}
+.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px;margin-bottom:40px}
+.footer-brand p{font-size:13px;color:var(--t3);line-height:1.6;margin-top:12px;max-width:260px}
+.footer-col h4{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--t4);margin-bottom:14px}
+.footer-col a{display:block;font-size:13px;font-weight:500;color:var(--t3);text-decoration:none;padding:4px 0;transition:color .2s}.footer-col a:hover{color:var(--t1)}
+.footer-bottom{display:flex;justify-content:space-between;align-items:center;padding-top:20px;border-top:1px solid var(--border);font-size:12px;color:var(--t4)}
+
+@media(max-width:768px){
+.nav-links{display:none}
+.dept-tabs{gap:4px}.dept-tab{padding:8px 12px;font-size:11px}
+.dept-grid,.ba-grid{grid-template-columns:1fr}
+.ba-arrow{transform:rotate(90deg)}
+.flow-steps{grid-template-columns:1fr 1fr}.flow-steps::before{display:none}
+.footer-grid{grid-template-columns:1fr 1fr}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a href="FinanceOS-Landing-V3.html" class="logo-link"><span class="ldot"></span>FinanceOS</a>
+    <div class="nav-mid">
+      <a href="FinanceOS-Solutions-Digital.html">Solutions</a>
+      <a href="FinanceOS-Integrations-V3.html">Integrations</a>
+      <a href="FinanceOS-Security-Zero-Trust.html">Trust</a>
+      <a href="FinanceOS-Pricing-V3.html">Pricing</a>
+      <a href="FinanceOS-vs-Competitors-V2.html">Compare</a>
+      <a href="FinanceOS-Resources-V2.html">Resources</a>
+    </div>
+    <div class="nav-end">
+      <a href="FinanceOS-Login-V2.html">Sign In</a>
+      <a href="FinanceOS-Pricing-V3.html" class="btn-sub">Subscribe</a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+<div class="hero-badge"><span class="dot"></span> Extended Planning & Analysis</div>
+<h1>One Plan. <span class="accent">Every Department.</span></h1>
+<p>Break down planning silos with FinanceOS xP&A. Finance, Operations, Revenue, Workforce, Marketing, IT, and Supply Chain — connected in a single AI-powered planning model.</p>
+<div class="hero-cta">
+<a href="#" class="cta-primary">See xP&A in Action</a>
+<a href="FinanceOS-vs-Competitors-V2.html" class="cta-outline">Compare vs Planful</a>
+</div>
+
+<!-- Animated Connected Planning SVG -->
+<div class="hero-visual">
+<svg viewBox="0 0 700 280" fill="none" xmlns="http://www.w3.org/2000/svg">
+<!-- Center node -->
+<circle cx="350" cy="140" r="40" fill="rgba(99,102,241,0.15)" stroke="#6366F1" stroke-width="2"/>
+<text x="350" y="135" text-anchor="middle" fill="#fff" font-size="11" font-weight="800" font-family="DM Sans">Finance</text>
+<text x="350" y="150" text-anchor="middle" fill="rgba(255,255,255,0.4)" font-size="9" font-family="DM Sans">Core Model</text>
+
+<!-- Outer nodes -->
+<circle cx="130" cy="70" r="30" fill="rgba(34,211,238,0.1)" stroke="#22D3EE" stroke-width="1.5"/>
+<text x="130" y="73" text-anchor="middle" fill="#22D3EE" font-size="10" font-weight="700" font-family="DM Sans">Revenue</text>
+
+<circle cx="570" cy="70" r="30" fill="rgba(139,92,246,0.1)" stroke="#8B5CF6" stroke-width="1.5"/>
+<text x="570" y="73" text-anchor="middle" fill="#8B5CF6" font-size="10" font-weight="700" font-family="DM Sans">Workforce</text>
+
+<circle cx="80" cy="200" r="30" fill="rgba(16,185,129,0.1)" stroke="#10B981" stroke-width="1.5"/>
+<text x="80" y="203" text-anchor="middle" fill="#10B981" font-size="10" font-weight="700" font-family="DM Sans">Ops</text>
+
+<circle cx="620" cy="200" r="30" fill="rgba(245,158,11,0.1)" stroke="#F59E0B" stroke-width="1.5"/>
+<text x="620" y="203" text-anchor="middle" fill="#F59E0B" font-size="10" font-weight="700" font-family="DM Sans">Marketing</text>
+
+<circle cx="220" cy="250" r="30" fill="rgba(236,72,153,0.1)" stroke="#EC4899" stroke-width="1.5"/>
+<text x="220" y="253" text-anchor="middle" fill="#EC4899" font-size="10" font-weight="700" font-family="DM Sans">IT</text>
+
+<circle cx="480" cy="250" r="30" fill="rgba(20,184,166,0.1)" stroke="#14B8A6" stroke-width="1.5"/>
+<text x="480" y="253" text-anchor="middle" fill="#14B8A6" font-size="10" font-weight="700" font-family="DM Sans">Supply</text>
+
+<!-- Connecting lines with animation -->
+<line x1="160" y1="80" x2="310" y2="130" stroke="#22D3EE" stroke-width="1" stroke-dasharray="6 4" opacity="0.4"><animate attributeName="stroke-dashoffset" from="200" to="0" dur="3s" repeatCount="indefinite"/></line>
+<line x1="540" y1="80" x2="390" y2="130" stroke="#8B5CF6" stroke-width="1" stroke-dasharray="6 4" opacity="0.4"><animate attributeName="stroke-dashoffset" from="200" to="0" dur="3.5s" repeatCount="indefinite"/></line>
+<line x1="110" y1="190" x2="310" y2="150" stroke="#10B981" stroke-width="1" stroke-dasharray="6 4" opacity="0.4"><animate attributeName="stroke-dashoffset" from="200" to="0" dur="4s" repeatCount="indefinite"/></line>
+<line x1="590" y1="190" x2="390" y2="150" stroke="#F59E0B" stroke-width="1" stroke-dasharray="6 4" opacity="0.4"><animate attributeName="stroke-dashoffset" from="200" to="0" dur="2.8s" repeatCount="indefinite"/></line>
+<line x1="245" y1="240" x2="315" y2="170" stroke="#EC4899" stroke-width="1" stroke-dasharray="6 4" opacity="0.4"><animate attributeName="stroke-dashoffset" from="200" to="0" dur="3.2s" repeatCount="indefinite"/></line>
+<line x1="455" y1="240" x2="385" y2="170" stroke="#14B8A6" stroke-width="1" stroke-dasharray="6 4" opacity="0.4"><animate attributeName="stroke-dashoffset" from="200" to="0" dur="3.8s" repeatCount="indefinite"/></line>
+
+<!-- Pulse circles on center -->
+<circle cx="350" cy="140" r="40" fill="none" stroke="#6366F1" stroke-width="1" opacity="0.3"><animate attributeName="r" from="40" to="65" dur="2s" repeatCount="indefinite"/><animate attributeName="opacity" from="0.3" to="0" dur="2s" repeatCount="indefinite"/></circle>
+</svg>
+</div>
+</section>
+
+<!-- DEPARTMENT TABS SECTION (Planful-inspired) -->
+<section class="section reveal">
+<div class="section-label">Department Planning Modules</div>
+<h2 class="section-title">Tailored for Every Team</h2>
+<p class="section-sub">Like Planful's 7-department tabs — but with AI-native cross-planning that connects them all bidirectionally in real time.</p>
+
+<div class="dept-tabs">
+<button class="dept-tab active" onclick="showDept('finance')"><svg viewBox="0 0 24 24"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>Finance</button>
+<button class="dept-tab" onclick="showDept('ops')"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9"/></svg>Operations</button>
+<button class="dept-tab" onclick="showDept('revenue')"><svg viewBox="0 0 24 24"><polyline points="22,12 18,12 15,21 9,3 6,12 2,12"/></svg>Revenue</button>
+<button class="dept-tab" onclick="showDept('workforce')"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>Workforce</button>
+<button class="dept-tab" onclick="showDept('marketing')"><svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>Marketing</button>
+<button class="dept-tab" onclick="showDept('it')"><svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>IT</button>
+<button class="dept-tab" onclick="showDept('supply')"><svg viewBox="0 0 24 24"><path d="M1 6v16l7-4 8 4 7-4V2l-7 4-8-4-7 4z"/><path d="M8 2v16M16 6v16"/></svg>Supply Chain</button>
+</div>
+
+<div class="dept-panels">
+<!-- FINANCE -->
+<div class="dept-panel active" id="panel-finance">
+<div class="dept-grid">
+<div class="dept-info">
+<h3>Financial Planning & Analysis</h3>
+<div class="dept-desc">The core engine. Revenue forecasting, expense management, cash flow modeling, and multi-entity consolidation — all powered by AI that learns from your historical patterns.</div>
+<div class="dept-kpis">
+<div class="dept-kpi"><div class="kpi-val" style="color:var(--green)">96%</div><div class="kpi-label">Forecast Accuracy</div></div>
+<div class="dept-kpi"><div class="kpi-val" style="color:var(--cyan)">3-Day</div><div class="kpi-label">Month-End Close</div></div>
+<div class="dept-kpi"><div class="kpi-val" style="color:var(--indigo)">$48.6M</div><div class="kpi-label">Platform ARR</div></div>
+<div class="dept-kpi"><div class="kpi-val" style="color:var(--purple)">84.7%</div><div class="kpi-label">Gross Margin</div></div>
+</div>
+</div>
+<div class="dept-mockup">
+<div class="mock-bar"><div class="mock-dot" style="background:#EF4444"></div><div class="mock-dot" style="background:#F59E0B"></div><div class="mock-dot" style="background:#10B981"></div><div class="mock-title">fp&a-dashboard.view</div></div>
+<div class="mock-row"><div class="mock-label">Revenue</div><div class="mock-bar-track"><div class="mock-bar-fill" style="width:82%;background:linear-gradient(90deg,var(--green),var(--cyan))"></div></div><div class="mock-val">$4.2M</div></div>
+<div class="mock-row"><div class="mock-label">COGS</div><div class="mock-bar-track"><div class="mock-bar-fill" style="width:25%;background:var(--amber)"></div></div><div class="mock-val">$643K</div></div>
+<div class="mock-row"><div class="mock-label">OpEx</div><div class="mock-bar-track"><div class="mock-bar-fill" style="width:48%;background:var(--purple)"></div></div><div class="mock-val">$1.98M</div></div>
+<div class="mock-row"><div class="mock-label">EBITDA</div><div class="mock-bar-track"><div class="mock-bar-fill" style="width:38%;background:var(--indigo)"></div></div><div class="mock-val">$1.58M</div></div>
+<div class="mock-row"><div class="mock-label">Cash Flow</div><div class="mock-bar-track"><div class="mock-bar-fill" style="width:62%;background:var(--teal)"></div></div><div class="mock-val">$2.1M</div></div>
+</div>
+</div>
+</div>
+
+<!-- OPERATIONS -->
+<div class="dept-panel" id="panel-ops">
+<div class="dept-grid">
+<div class="dept-info">
+<h3>Operations Planning</h3>
+<div class="dept-desc">Capacity planning, production scheduling, and operational efficiency modeling. Connect operational metrics directly to financial outcomes in real time.</div>
+<div class="dept-kpis">
+<div class="dept-kpi"><div class="kpi-val" style="color:var(--green)">99.9%</div><div class="kpi-label">Uptime SLA</div></div>
+<div class="dept-kpi"><div class="kpi-val" style="color:var(--cyan)">14 Days</div><div class="kpi-label">Avg Implementation</div></div>
+<div class="dept-kpi"><div class="kpi-val" style="color:var(--amber)">3.2x</div><div class="kpi-label">Throughput Gain</div></div>
+<div class="dept-kpi"><div class="kpi-val" style="color:var(--purple)">-40%</div><div class="kpi-label">Waste Reduction</div></div>
+</div>
+</div>
+<div class="dept-mockup">
+<div class="mock-bar"><div class="mock-dot" style="background:#EF4444"></div><div class="mock-dot" style="background:#F59E0B"></div><div class="mock-dot" style="background:#10B981"></div><div class="mock-title">ops-capacity.view</div></div>
+<div class="mock-row"><div class="mock-label">Capacity</div><div class="mock-bar-track"><div class="mock-bar-fill" style="width:78%;background:var(--green)"></div></div><div class="mock-val">78%</div></div>
+<div class="mock-row"><div class="mock-label">Utilization</div><div class="mock-bar-track"><div class="mock-bar-fill" style="width:85%;background:var(--cyan)"></div></div><div class="mock-val">85%</div></div>
+<div class="mock-row"><div class="mock-label">Quality</div><div class="mock-bar-track"><div class="mock-bar-fill" style="width:96%;background:var(--indigo)"></div></div><div class="mock-val">96.2%</div></div>
+<div class="mock-row"><div class="mock-label">Lead Time</div><div class="mock-bar-track"><div class="mock-bar-fill" style="width:42%;background:var(--amber)"></div></div><div class="mock-val">4.2d</div></div>
+</div>
+</div>
+</div>
+
+<!-- REVENUE -->
+<div class="dept-panel" id="panel-revenue">
+<div class="dept-grid">
+<div class="dept-info">
+<h3>Revenue Operations</h3>
+<div class="dept-desc">Pipeline forecasting, win-rate modeling, churn prediction, and expansion revenue planning. Connect CRM data directly to financial plans.</div>
+<div class="dept-kpis">
+<div class="dept-kpi"><div class="kpi-val" style="color:var(--green)">118%</div><div class="kpi-label">Net Dollar Retention</div></div>
+<div class="dept-kpi"><div class="kpi-val" style="color:var(--cyan)">0.8x</div><div class="kpi-label">Burn Multiple</div></div>
+<div class="dept-kpi"><div class="kpi-val" style="color:var(--indigo)">42%</div><div class="kpi-label">Win Rate</div></div>
+<div class="dept-kpi"><div class="kpi-val" style="color:var(--purple)">$18K</div><div class="kpi-label">Avg ACV</div></div>
+</div>
+</div>
+<div class="dept-mockup">
+<div class="mock-bar"><div class="mock-dot" style="background:#EF4444"></div><div class="mock-dot" style="background:#F59E0B"></div><div class="mock-dot" style="background:#10B981"></div><div class="mock-title">revops-pipeline.view</div></div>
+<div class="mock-row"><div class="mock-label">New ARR</div><div class="mock-bar-track"><div class="mock-bar-fill" style="width:72%;background:var(--green)"></div></div><div class="mock-val">$1.8M</div></div>
+<div class="mock-row"><div class="mock-label">Expansion</div><div class="mock-bar-track"><div class="mock-bar-fill" style="width:45%;background:var(--cyan)"></div></div><div class="mock-val">$920K</div></div>
+<div class="mock-row"><div class="mock-label">Churn Risk</div><div class="mock-bar-track"><div class="mock-bar-fill" style="width:12%;background:var(--red)"></div></div><div class="mock-val">2.1%</div></div>
+<div class="mock-row"><div class="mock-label">Pipeline</div><div class="mock-bar-track"><div class="mock-bar-fill" style="width:88%;background:var(--indigo)"></div></div><div class="mock-val">$6.4M</div></div>
+</div>
+</div>
+</div>
+
+<!-- WORKFORCE -->
+<div class="dept-panel" id="panel-workforce">
+<div class="dept-grid">
+<div class="dept-info">
+<h3>Workforce Planning</h3>
+<div class="dept-desc">Headcount planning, compensation modeling, and org design. See the financial impact of every hire before you make it.</div>
+<div class="dept-kpis">
+<div class="dept-kpi"><div class="kpi-val" style="color:var(--purple)">247</div><div class="kpi-label">Planned Headcount</div></div>
+<div class="dept-kpi"><div class="kpi-val" style="color:var(--cyan)">$182K</div><div class="kpi-label">Avg Fully-Loaded</div></div>
+<div class="dept-kpi"><div class="kpi-val" style="color:var(--green)">$198K</div><div class="kpi-label">Rev per Employee</div></div>
+<div class="dept-kpi"><div class="kpi-val" style="color:var(--amber)">32 Days</div><div class="kpi-label">Avg Time-to-Fill</div></div>
+</div>
+</div>
+<div class="dept-mockup">
+<div class="mock-bar"><div class="mock-dot" style="background:#EF4444"></div><div class="mock-dot" style="background:#F59E0B"></div><div class="mock-dot" style="background:#10B981"></div><div class="mock-title">workforce-plan.view</div></div>
+<div class="mock-row"><div class="mock-label">Engineering</div><div class="mock-bar-track"><div class="mock-bar-fill" style="width:65%;background:var(--purple)"></div></div><div class="mock-val">98 FTE</div></div>
+<div class="mock-row"><div class="mock-label">Sales</div><div class="mock-bar-track"><div class="mock-bar-fill" style="width:42%;background:var(--cyan)"></div></div><div class="mock-val">62 FTE</div></div>
+<div class="mock-row"><div class="mock-label">G&A</div><div class="mock-bar-track"><div class="mock-bar-fill" style="width:28%;background:var(--green)"></div></div><div class="mock-val">42 FTE</div></div>
+<div class="mock-row"><div class="mock-label">Open Roles</div><div class="mock-bar-track"><div class="mock-bar-fill" style="width:18%;background:var(--amber)"></div></div><div class="mock-val">28</div></div>
+</div>
+</div>
+</div>
+
+<!-- MARKETING -->
+<div class="dept-panel" id="panel-marketing">
+<div class="dept-grid">
+<div class="dept-info">
+<h3>Marketing Planning</h3>
+<div class="dept-desc">Campaign ROI modeling, budget allocation optimization, and demand gen forecasting. Tie every marketing dollar to pipeline and revenue outcomes.</div>
+<div class="dept-kpis">
+<div class="dept-kpi"><div class="kpi-val" style="color:var(--amber)">$42</div><div class="kpi-label">Cost per MQL</div></div>
+<div class="dept-kpi"><div class="kpi-val" style="color:var(--green)">5.2x</div><div class="kpi-label">Campaign ROI</div></div>
+<div class="dept-kpi"><div class="kpi-val" style="color:var(--cyan)">18%</div><div class="kpi-label">MQL → SQL Rate</div></div>
+<div class="dept-kpi"><div class="kpi-val" style="color:var(--purple)">$1.2M</div><div class="kpi-label">Quarterly Budget</div></div>
+</div>
+</div>
+<div class="dept-mockup">
+<div class="mock-bar"><div class="mock-dot" style="background:#EF4444"></div><div class="mock-dot" style="background:#F59E0B"></div><div class="mock-dot" style="background:#10B981"></div><div class="mock-title">mktg-attribution.view</div></div>
+<div class="mock-row"><div class="mock-label">Paid Search</div><div class="mock-bar-track"><div class="mock-bar-fill" style="width:72%;background:var(--amber)"></div></div><div class="mock-val">$380K</div></div>
+<div class="mock-row"><div class="mock-label">Content</div><div class="mock-bar-track"><div class="mock-bar-fill" style="width:55%;background:var(--green)"></div></div><div class="mock-val">$260K</div></div>
+<div class="mock-row"><div class="mock-label">Events</div><div class="mock-bar-track"><div class="mock-bar-fill" style="width:38%;background:var(--purple)"></div></div><div class="mock-val">$180K</div></div>
+<div class="mock-row"><div class="mock-label">Social</div><div class="mock-bar-track"><div class="mock-bar-fill" style="width:28%;background:var(--cyan)"></div></div><div class="mock-val">$120K</div></div>
+</div>
+</div>
+</div>
+
+<!-- IT -->
+<div class="dept-panel" id="panel-it">
+<div class="dept-grid">
+<div class="dept-info">
+<h3>IT & Infrastructure Planning</h3>
+<div class="dept-desc">Cloud spend optimization, vendor contract management, and technology roadmap planning. Model infrastructure costs against growth projections.</div>
+<div class="dept-kpis">
+<div class="dept-kpi"><div class="kpi-val" style="color:var(--pink)">$420K</div><div class="kpi-label">Monthly Cloud Spend</div></div>
+<div class="dept-kpi"><div class="kpi-val" style="color:var(--green)">-22%</div><div class="kpi-label">Cost Optimization</div></div>
+<div class="dept-kpi"><div class="kpi-val" style="color:var(--cyan)">47</div><div class="kpi-label">SaaS Vendors</div></div>
+<div class="dept-kpi"><div class="kpi-val" style="color:var(--amber)">$8.2K</div><div class="kpi-label">Cost per Employee</div></div>
+</div>
+</div>
+<div class="dept-mockup">
+<div class="mock-bar"><div class="mock-dot" style="background:#EF4444"></div><div class="mock-dot" style="background:#F59E0B"></div><div class="mock-dot" style="background:#10B981"></div><div class="mock-title">it-spend-analysis.view</div></div>
+<div class="mock-row"><div class="mock-label">AWS</div><div class="mock-bar-track"><div class="mock-bar-fill" style="width:62%;background:var(--amber)"></div></div><div class="mock-val">$260K</div></div>
+<div class="mock-row"><div class="mock-label">SaaS Stack</div><div class="mock-bar-track"><div class="mock-bar-fill" style="width:45%;background:var(--pink)"></div></div><div class="mock-val">$188K</div></div>
+<div class="mock-row"><div class="mock-label">Security</div><div class="mock-bar-track"><div class="mock-bar-fill" style="width:22%;background:var(--green)"></div></div><div class="mock-val">$92K</div></div>
+<div class="mock-row"><div class="mock-label">DevOps</div><div class="mock-bar-track"><div class="mock-bar-fill" style="width:18%;background:var(--indigo)"></div></div><div class="mock-val">$76K</div></div>
+</div>
+</div>
+</div>
+
+<!-- SUPPLY CHAIN -->
+<div class="dept-panel" id="panel-supply">
+<div class="dept-grid">
+<div class="dept-info">
+<h3>Supply Chain Planning</h3>
+<div class="dept-desc">Demand forecasting, inventory optimization, and supplier cost modeling. Connect procurement decisions to P&L impact automatically.</div>
+<div class="dept-kpis">
+<div class="dept-kpi"><div class="kpi-val" style="color:var(--teal)">98.4%</div><div class="kpi-label">Fill Rate</div></div>
+<div class="dept-kpi"><div class="kpi-val" style="color:var(--green)">12 Days</div><div class="kpi-label">Avg Lead Time</div></div>
+<div class="dept-kpi"><div class="kpi-val" style="color:var(--amber)">-18%</div><div class="kpi-label">Carrying Cost ↓</div></div>
+<div class="dept-kpi"><div class="kpi-val" style="color:var(--cyan)">$2.4M</div><div class="kpi-label">Quarterly Procurement</div></div>
+</div>
+</div>
+<div class="dept-mockup">
+<div class="mock-bar"><div class="mock-dot" style="background:#EF4444"></div><div class="mock-dot" style="background:#F59E0B"></div><div class="mock-dot" style="background:#10B981"></div><div class="mock-title">supply-chain.view</div></div>
+<div class="mock-row"><div class="mock-label">Inventory</div><div class="mock-bar-track"><div class="mock-bar-fill" style="width:72%;background:var(--teal)"></div></div><div class="mock-val">$4.8M</div></div>
+<div class="mock-row"><div class="mock-label">In Transit</div><div class="mock-bar-track"><div class="mock-bar-fill" style="width:35%;background:var(--cyan)"></div></div><div class="mock-val">$1.2M</div></div>
+<div class="mock-row"><div class="mock-label">Backorder</div><div class="mock-bar-track"><div class="mock-bar-fill" style="width:8%;background:var(--red)"></div></div><div class="mock-val">$180K</div></div>
+<div class="mock-row"><div class="mock-label">Forecast Acc.</div><div class="mock-bar-track"><div class="mock-bar-fill" style="width:91%;background:var(--green)"></div></div><div class="mock-val">91.3%</div></div>
+</div>
+</div>
+</div>
+</div>
+</section>
+
+<!-- HOW xP&A WORKS -->
+<section class="section reveal" style="background:var(--bg);max-width:100%;padding:80px 40px">
+<div style="max-width:1200px;margin:0 auto">
+<div class="section-label">How It Works</div>
+<h2 class="section-title">From Silos to Synergy in 5 Steps</h2>
+<p class="section-sub">Our xP&A engine connects departmental plans bidirectionally so changes propagate instantly across the entire planning model.</p>
+<div class="flow-steps">
+<div class="flow-step">
+<div class="flow-num"><svg viewBox="0 0 24 24" fill="none" stroke="var(--indigo)"><path d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9"/></svg></div>
+<h4>Connect</h4>
+<p>Link your ERP, CRM, HRIS, and all data sources via 200+ pre-built connectors</p>
+</div>
+<div class="flow-step">
+<div class="flow-num"><svg viewBox="0 0 24 24" fill="none" stroke="var(--cyan)"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></div>
+<h4>Model</h4>
+<p>AI auto-builds your planning model with department-specific templates</p>
+</div>
+<div class="flow-step">
+<div class="flow-num"><svg viewBox="0 0 24 24" fill="none" stroke="var(--green)"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg></div>
+<h4>Link</h4>
+<p>xP&A engine creates bidirectional connections between department plans</p>
+</div>
+<div class="flow-step">
+<div class="flow-num"><svg viewBox="0 0 24 24" fill="none" stroke="var(--purple)"><polyline points="22,12 18,12 15,21 9,3 6,12 2,12"/></svg></div>
+<h4>Simulate</h4>
+<p>Run what-if scenarios across departments — see P&L impact in real time</p>
+</div>
+<div class="flow-step">
+<div class="flow-num"><svg viewBox="0 0 24 24" fill="none" stroke="var(--amber)"><path d="M18 20V10M12 20V4M6 20v-6"/></svg></div>
+<h4>Decide</h4>
+<p>AI-generated insights and confidence intervals help you act, not just analyze</p>
+</div>
+</div>
+</div>
+</section>
+
+<!-- BEFORE / AFTER -->
+<section class="section reveal">
+<div class="section-label">The Transformation</div>
+<h2 class="section-title">Before & After xP&A</h2>
+<p class="section-sub">What changes when every department plan is connected to the same financial model.</p>
+<div class="ba-grid">
+<div class="ba-card before">
+<div class="ba-label"><svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="var(--amber)" stroke-width="2"><path d="M8 3v5M8 11v1"/></svg> Without xP&A</div>
+<ul class="ba-list">
+<li><svg viewBox="0 0 14 14" fill="none" stroke="var(--amber)" stroke-width="2"><path d="M3 7h8"/></svg>Departmental plans in separate spreadsheets</li>
+<li><svg viewBox="0 0 14 14" fill="none" stroke="var(--amber)" stroke-width="2"><path d="M3 7h8"/></svg>Finance manually consolidates every cycle</li>
+<li><svg viewBox="0 0 14 14" fill="none" stroke="var(--amber)" stroke-width="2"><path d="M3 7h8"/></svg>Headcount changes take 2 weeks to flow to P&L</li>
+<li><svg viewBox="0 0 14 14" fill="none" stroke="var(--amber)" stroke-width="2"><path d="M3 7h8"/></svg>Revenue team and finance disagree on forecast</li>
+<li><svg viewBox="0 0 14 14" fill="none" stroke="var(--amber)" stroke-width="2"><path d="M3 7h8"/></svg>15-day month-end close</li>
+<li><svg viewBox="0 0 14 14" fill="none" stroke="var(--amber)" stroke-width="2"><path d="M3 7h8"/></svg>"What changed?" meetings every Monday</li>
+</ul>
+</div>
+<div class="ba-arrow">→</div>
+<div class="ba-card after">
+<div class="ba-label"><svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="var(--green)" stroke-width="2.5"><polyline points="3,8 6.5,11.5 13,4.5"/></svg> With FinanceOS xP&A</div>
+<ul class="ba-list">
+<li><svg viewBox="0 0 14 14" fill="none" stroke="var(--green)" stroke-width="2.5"><polyline points="2,7 5.5,10.5 12,3.5"/></svg>Single connected model — all departments, one source</li>
+<li><svg viewBox="0 0 14 14" fill="none" stroke="var(--green)" stroke-width="2.5"><polyline points="2,7 5.5,10.5 12,3.5"/></svg>Auto-consolidation in real time as data flows in</li>
+<li><svg viewBox="0 0 14 14" fill="none" stroke="var(--green)" stroke-width="2.5"><polyline points="2,7 5.5,10.5 12,3.5"/></svg>Headcount → P&L impact visible instantly</li>
+<li><svg viewBox="0 0 14 14" fill="none" stroke="var(--green)" stroke-width="2.5"><polyline points="2,7 5.5,10.5 12,3.5"/></svg>One forecast, one truth — AI reconciles inputs</li>
+<li><svg viewBox="0 0 14 14" fill="none" stroke="var(--green)" stroke-width="2.5"><polyline points="2,7 5.5,10.5 12,3.5"/></svg>3-day month-end close (5x faster)</li>
+<li><svg viewBox="0 0 14 14" fill="none" stroke="var(--green)" stroke-width="2.5"><polyline points="2,7 5.5,10.5 12,3.5"/></svg>AI alerts when something changes — no meetings needed</li>
+</ul>
+</div>
+</div>
+</section>
+
+<!-- BOTTOM CTA -->
+<section class="bottom-cta">
+<h2 style="color:#fff">Ready to break down planning silos?</h2>
+<p>See how xP&A connects your entire organization in a single planning model. 30-minute demo with your own data.</p>
+<div class="cta-row">
+<a href="#" class="cta-primary" style="background:var(--indigo)">Request xP&A Demo</a>
+<a href="FinanceOS-Pricing-Page.html" class="cta-outline" style="border-color:rgba(255,255,255,.15);color:#fff">See Pricing</a>
+</div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="ft-inner">
+    <div class="ft-brand">
+      <a href="FinanceOS-Landing-V3.html" class="logo-link"><span class="ldot"></span>FinanceOS</a>
+      <p>AI-native financial planning & analysis for modern finance teams.</p>
+    </div>
+    <div class="ft-col"><h5>Product</h5><a href="FinanceOS-Landing-V3.html">Platform</a><a href="FinanceOS-Integrations-V3.html">Integrations</a><a href="FinanceOS-Pricing-V3.html">Pricing</a><a href="FinanceOS-Security-Zero-Trust.html">Security</a></div>
+    <div class="ft-col"><h5>Solutions</h5><a href="FinanceOS-Solutions-Digital.html">SaaS</a><a href="FinanceOS-Solutions-Digital.html">E-Commerce</a><a href="FinanceOS-xPA-Planning-V2.html">Cross-Dept Planning</a></div>
+    <div class="ft-col"><h5>Resources</h5><a href="FinanceOS-Resources-V2.html">Resource Library</a><a href="FinanceOS-Whats-New-V2.html">Changelog</a></div>
+    <div class="ft-col"><h5>Company</h5><a href="#">About</a><a href="#">Careers</a><a href="#">Contact</a></div>
+  </div>
+  <div class="ft-bottom">
+    <span>&copy; 2026 FinanceOS, Inc.</span>
+    <div style="display:flex;gap:20px"><a href="FinanceOS-Security-Zero-Trust.html">Privacy</a><a href="#">Terms</a><a href="FinanceOS-Security-Zero-Trust.html">Security</a></div>
+  </div>
+</footer>
+
+<script>
+// Scroll reveal
+const io=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('vis');io.unobserve(e.target)}})},{threshold:.1});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+
+// Department tab switching
+function showDept(id){
+document.querySelectorAll('.dept-tab').forEach(t=>t.classList.remove('active'));
+document.querySelectorAll('.dept-panel').forEach(p=>{p.classList.remove('active');p.style.display='none'});
+event.currentTarget.classList.add('active');
+const panel=document.getElementById('panel-'+id);
+panel.style.display='block';
+setTimeout(()=>panel.classList.add('active'),10);
+}
+</script>
+</body>
+</html>

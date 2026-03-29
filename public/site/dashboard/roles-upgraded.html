@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover">
+<title>FinanceOS — Role Dashboards Section</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════════
+   FINANCEOS — ROLE DASHBOARDS SECTION
+   Premium UI with 3D tilt, staggered animations,
+   gradient glass cards, animated KPI chips
+   ═══════════════════════════════════════════════ */
+
+@property --angle{syntax:'<angle>';initial-value:0deg;inherits:false}
+
+:root{
+  --bg:#f8f9fb;--bg-card:#ffffff;--bg-elevated:#f1f3f7;
+  --border:#e5e7ec;--border-subtle:#eef0f4;
+  --text:#0f1729;--text-sec:#4b5563;--text-muted:#9ca3af;--text-faint:#c2cad6;
+  --blue:#3b82f6;--purple:#8b5cf6;--green:#10b981;--amber:#f59e0b;--rose:#f43f5e;--cyan:#06b6d4;
+  --gradient:linear-gradient(135deg,#3b82f6,#8b5cf6);
+  --sans:'Manrope',system-ui,-apple-system,sans-serif;
+  --mono:'JetBrains Mono',ui-monospace,monospace;
+  --r:12px;--r-lg:16px;--r-xl:20px;--r-2xl:24px;
+  --shadow:0 1px 3px rgba(0,0,0,0.04),0 4px 16px rgba(0,0,0,0.03);
+  --shadow-lg:0 4px 24px rgba(0,0,0,0.06),0 12px 48px rgba(0,0,0,0.04);
+  --shadow-xl:0 8px 40px rgba(0,0,0,0.08),0 20px 60px rgba(0,0,0,0.05);
+}
+
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);-webkit-font-smoothing:antialiased;line-height:1.7;overflow-x:hidden}
+::selection{background:rgba(59,130,246,0.15)}
+
+/* ═══ ANIMATIONS ═══ */
+@keyframes fadeUp{from{opacity:0;transform:translateY(32px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeScale{from{opacity:0;transform:scale(0.92) translateY(20px)}to{opacity:1;transform:scale(1) translateY(0)}}
+@keyframes slideInLeft{from{opacity:0;transform:translateX(-24px)}to{opacity:1;transform:translateX(0)}}
+@keyframes shimmer{0%{background-position:-200% center}100%{background-position:200% center}}
+@keyframes breathe{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.6;transform:scale(.92)}}
+@keyframes pulseGlow{0%,100%{box-shadow:0 0 0 0 rgba(59,130,246,0.15)}50%{box-shadow:0 0 20px 4px rgba(59,130,246,0.08)}}
+@keyframes floatSoft{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+@keyframes spinBorder{from{--angle:0deg}to{--angle:360deg}}
+@keyframes chipReveal{from{opacity:0;transform:translateY(8px) scale(0.9)}to{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes gradientShift{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+@keyframes iconBounce{0%{transform:scale(1)}50%{transform:scale(1.15)}100%{transform:scale(1)}}
+
+.fade-up{animation:fadeUp .8s cubic-bezier(0.22,1,0.36,1) both}
+.fade-scale{animation:fadeScale .8s cubic-bezier(0.22,1,0.36,1) both}
+.fd1{animation-delay:.08s}.fd2{animation-delay:.16s}.fd3{animation-delay:.24s}.fd4{animation-delay:.32s}
+.fd5{animation-delay:.4s}.fd6{animation-delay:.48s}
+
+/* ═══ NAV ═══ */
+.nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,0.88);backdrop-filter:blur(20px) saturate(1.2);border-bottom:1px solid var(--border);transition:all .3s}
+.nav.scrolled{background:rgba(255,255,255,0.95);box-shadow:0 1px 8px rgba(0,0,0,0.04)}
+.nav-inner{display:flex;align-items:center;justify-content:space-between;height:56px;max-width:1100px;margin:0 auto;padding:0 32px}
+.nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+.nav-logomark{width:28px;height:28px;background:var(--gradient);border-radius:7px;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(59,130,246,0.2)}
+.nav-logomark svg{width:16px;height:16px}
+.nav-logotype{font-size:15px;font-weight:900;letter-spacing:-.03em;color:var(--text)}
+.nav-logotype span{color:var(--blue)}
+.nav-badge{font-size:9px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--purple);background:rgba(139,92,246,0.06);border:1px solid rgba(139,92,246,0.1);padding:3px 10px;border-radius:100px}
+
+/* ═══ SECTION HEADER ═══ */
+.container{max-width:1100px;margin:0 auto;padding:0 32px}
+.section{padding:80px 0 64px;position:relative}
+.section::before{content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);width:800px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(59,130,246,0.03) 0%,transparent 65%);pointer-events:none}
+
+.section-badge{display:inline-flex;align-items:center;gap:6px;padding:6px 16px;border-radius:100px;background:rgba(59,130,246,0.04);border:1px solid rgba(59,130,246,0.08);font-size:9px;font-weight:800;color:var(--blue);letter-spacing:.12em;text-transform:uppercase;margin-bottom:16px}
+.section-badge .dot{width:5px;height:5px;border-radius:50%;background:var(--blue);animation:breathe 2s ease-in-out infinite}
+
+.section-title{font-size:clamp(32px,4vw,44px);font-weight:800;letter-spacing:-.04em;line-height:1.08;margin-bottom:12px;color:var(--text)}
+.section-title em{font-style:normal;background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.section-subtitle{font-size:16px;color:var(--text-sec);max-width:560px;margin:0 auto;line-height:1.7}
+
+/* ═══ ROLE GRID ═══ */
+.role-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;margin-top:48px}
+
+/* ═══ ROLE CARD ═══ */
+.role-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--r-2xl);overflow:hidden;position:relative;transform-style:preserve-3d;will-change:transform;transition:all .45s cubic-bezier(0.22,1,0.36,1);cursor:pointer}
+
+/* Gradient accent line on top */
+.role-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--card-gradient);opacity:0;transition:opacity .4s;z-index:3}
+.role-card:hover::before{opacity:1}
+
+/* Subtle glow on hover */
+.role-card::after{content:'';position:absolute;inset:0;border-radius:var(--r-2xl);box-shadow:0 0 0 0 transparent;transition:box-shadow .4s;pointer-events:none;z-index:2}
+.role-card:hover::after{box-shadow:var(--card-hover-shadow)}
+
+.role-card:hover{transform:translateY(-6px);box-shadow:var(--shadow-xl)}
+
+/* ═══ CARD HERO IMAGE ═══ */
+.card-hero{position:relative;height:180px;overflow:hidden;background:var(--card-gradient)}
+
+/* Animated gradient background instead of stock photos */
+.card-hero-bg{position:absolute;inset:0;background:var(--card-gradient);background-size:200% 200%;animation:gradientShift 6s ease-in-out infinite;opacity:0.9}
+
+/* Role icon centered */
+.card-hero-icon{position:absolute;top:50%;left:50%;transform:translate(-50%,-55%);width:64px;height:64px;border-radius:20px;background:rgba(255,255,255,0.15);backdrop-filter:blur(12px);display:flex;align-items:center;justify-content:center;font-size:28px;border:1px solid rgba(255,255,255,0.2);transition:all .4s cubic-bezier(0.22,1,0.36,1);z-index:2}
+.role-card:hover .card-hero-icon{transform:translate(-50%,-55%) scale(1.08);background:rgba(255,255,255,0.22);animation:iconBounce .6s cubic-bezier(0.22,1,0.36,1)}
+
+/* Floating particles in hero */
+.card-particle{position:absolute;border-radius:50%;background:rgba(255,255,255,0.15);pointer-events:none;animation:floatSoft 3s ease-in-out infinite}
+
+/* Fade to card body */
+.card-hero-fade{position:absolute;bottom:0;left:0;right:0;height:60px;background:linear-gradient(transparent,var(--bg-card));z-index:1}
+
+/* Role badge */
+.role-badge{position:absolute;bottom:14px;left:16px;z-index:3;font-size:15px;font-weight:900;color:#fff;letter-spacing:-.02em;text-shadow:0 1px 4px rgba(0,0,0,0.15)}
+
+/* ═══ CARD BODY ═══ */
+.card-body{padding:16px 20px 20px}
+
+/* KPI chips */
+.kpi-chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px}
+.kpi-chip{font-size:9.5px;font-weight:700;padding:4px 10px;border-radius:100px;background:var(--bg-elevated);border:1px solid var(--border-subtle);color:var(--text-sec);letter-spacing:0.01em;transition:all .25s;white-space:nowrap}
+.kpi-chip:hover{border-color:var(--card-color-light);background:var(--card-color-bg);color:var(--card-color)}
+
+/* Focus text */
+.card-focus{font-size:12px;color:var(--text-muted);line-height:1.65;margin-bottom:16px}
+
+/* CTA button */
+.card-cta{display:flex;align-items:center;gap:6px;font-size:11px;font-weight:800;color:var(--card-color);background:none;border:none;cursor:pointer;font-family:var(--sans);padding:0;letter-spacing:0.01em;transition:all .25s}
+.card-cta:hover{gap:10px}
+.card-cta .arrow{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:6px;background:var(--card-color-bg);transition:all .25s}
+.card-cta:hover .arrow{background:var(--card-color);color:#fff;transform:translateX(2px)}
+.card-cta .arrow svg{width:10px;height:10px}
+
+/* ═══ CARD COLOR THEMES ═══ */
+.role-card[data-role="cfo"]{
+  --card-gradient:linear-gradient(135deg,#3b82f6,#2563eb,#6366f1);
+  --card-color:#3b82f6;--card-color-light:rgba(59,130,246,0.2);
+  --card-color-bg:rgba(59,130,246,0.06);
+  --card-hover-shadow:0 0 40px rgba(59,130,246,0.1),0 8px 32px rgba(59,130,246,0.06)}
+.role-card[data-role="ceo"]{
+  --card-gradient:linear-gradient(135deg,#8b5cf6,#7c3aed,#a78bfa);
+  --card-color:#8b5cf6;--card-color-light:rgba(139,92,246,0.2);
+  --card-color-bg:rgba(139,92,246,0.06);
+  --card-hover-shadow:0 0 40px rgba(139,92,246,0.1),0 8px 32px rgba(139,92,246,0.06)}
+.role-card[data-role="controller"]{
+  --card-gradient:linear-gradient(135deg,#10b981,#059669,#34d399);
+  --card-color:#10b981;--card-color-light:rgba(16,185,129,0.2);
+  --card-color-bg:rgba(16,185,129,0.06);
+  --card-hover-shadow:0 0 40px rgba(16,185,129,0.1),0 8px 32px rgba(16,185,129,0.06)}
+.role-card[data-role="fpa"]{
+  --card-gradient:linear-gradient(135deg,#f59e0b,#d97706,#fbbf24);
+  --card-color:#d97706;--card-color-light:rgba(245,158,11,0.2);
+  --card-color-bg:rgba(245,158,11,0.06);
+  --card-hover-shadow:0 0 40px rgba(245,158,11,0.1),0 8px 32px rgba(245,158,11,0.06)}
+
+/* ═══ STAT RIBBON ═══ */
+.stat-ribbon{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);border-radius:var(--r-lg);overflow:hidden;margin-top:40px}
+.stat-ribbon-item{background:var(--bg-card);padding:24px 16px;text-align:center;position:relative}
+.stat-ribbon-value{font-size:28px;font-weight:900;font-family:var(--mono);letter-spacing:-.04em;line-height:1;margin-bottom:4px}
+.stat-ribbon-label{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text-muted)}
+.stat-ribbon-item:nth-child(1) .stat-ribbon-value{color:var(--blue)}
+.stat-ribbon-item:nth-child(2) .stat-ribbon-value{color:var(--purple)}
+.stat-ribbon-item:nth-child(3) .stat-ribbon-value{color:var(--green)}
+.stat-ribbon-item:nth-child(4) .stat-ribbon-value{background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+
+/* ═══ FOOTER ═══ */
+.footer{display:flex;align-items:center;justify-content:space-between;padding:24px 0;margin-top:48px;border-top:1px solid var(--border);font-size:11px;color:var(--text-muted)}
+.footer-version{font-family:var(--mono);font-size:10px;padding:3px 10px;border-radius:100px;background:var(--bg-elevated);border:1px solid var(--border-subtle)}
+
+/* ═══ RESPONSIVE ═══ */
+@media(max-width:900px){
+  .role-grid{grid-template-columns:repeat(2,1fr);gap:16px}
+  .stat-ribbon{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:560px){
+  .role-grid{grid-template-columns:1fr}
+  .stat-ribbon{grid-template-columns:repeat(2,1fr)}
+  .section-title{font-size:28px}
+  .card-hero{height:140px}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav" id="nav">
+  <div class="nav-inner">
+    <a href="https://finance-os.app" class="nav-logo">
+      <div class="nav-logomark">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/>
+        </svg>
+      </div>
+      <span class="nav-logotype">Finance<span>OS</span></span>
+    </a>
+    <span class="nav-badge">Role Dashboards</span>
+  </div>
+</nav>
+
+<div class="container">
+
+<!-- SECTION HEADER -->
+<div class="section" style="text-align:center">
+  <div class="section-badge fade-up"><span class="dot"></span> Tailored to your role</div>
+  <h1 class="section-title fade-up fd1">One platform. <em>Every finance role.</em></h1>
+  <p class="section-subtitle fade-up fd2">Every executive sees the KPIs that matter to them. Personalized dashboards are not an add-on — they are how FinanceOS works.</p>
+
+  <!-- ROLE GRID -->
+  <div class="role-grid">
+
+    <!-- CFO -->
+    <div class="role-card fade-scale fd2" data-role="cfo">
+      <div class="card-hero">
+        <div class="card-hero-bg"></div>
+        <div class="card-hero-icon">📊</div>
+        <div class="card-particle" style="width:6px;height:6px;top:20%;left:15%;animation-delay:0s"></div>
+        <div class="card-particle" style="width:4px;height:4px;top:60%;left:75%;animation-delay:.8s"></div>
+        <div class="card-particle" style="width:8px;height:8px;top:35%;left:85%;animation-delay:1.6s"></div>
+        <div class="card-hero-fade"></div>
+        <div class="role-badge">CFO</div>
+      </div>
+      <div class="card-body">
+        <div class="kpi-chips">
+          <span class="kpi-chip">Revenue</span>
+          <span class="kpi-chip">Margins</span>
+          <span class="kpi-chip">Cash Flow</span>
+          <span class="kpi-chip">ROIC</span>
+          <span class="kpi-chip">EPS</span>
+          <span class="kpi-chip">Board Deck</span>
+        </div>
+        <p class="card-focus">Full P&L visibility with drill-down to cost centers, real-time cash position, and one-click board deck exports.</p>
+        <button class="card-cta">See CFO dashboard <span class="arrow"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 8h10M9 4l4 4-4 4"/></svg></span></button>
+      </div>
+    </div>
+
+    <!-- CEO -->
+    <div class="role-card fade-scale fd3" data-role="ceo">
+      <div class="card-hero">
+        <div class="card-hero-bg"></div>
+        <div class="card-hero-icon">🎯</div>
+        <div class="card-particle" style="width:5px;height:5px;top:25%;left:20%;animation-delay:.3s"></div>
+        <div class="card-particle" style="width:7px;height:7px;top:55%;left:70%;animation-delay:1.1s"></div>
+        <div class="card-particle" style="width:4px;height:4px;top:40%;left:90%;animation-delay:2s"></div>
+        <div class="card-hero-fade"></div>
+        <div class="role-badge">CEO</div>
+      </div>
+      <div class="card-body">
+        <div class="kpi-chips">
+          <span class="kpi-chip">Strategic KPIs</span>
+          <span class="kpi-chip">Segment Growth</span>
+          <span class="kpi-chip">Rule of 40</span>
+          <span class="kpi-chip">Market Position</span>
+          <span class="kpi-chip">Fundraising</span>
+        </div>
+        <p class="card-focus">Bird's-eye view of company health with segment-level growth, competitive positioning, and fundraising readiness scores.</p>
+        <button class="card-cta">See CEO dashboard <span class="arrow"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 8h10M9 4l4 4-4 4"/></svg></span></button>
+      </div>
+    </div>
+
+    <!-- Controller -->
+    <div class="role-card fade-scale fd4" data-role="controller">
+      <div class="card-hero">
+        <div class="card-hero-bg"></div>
+        <div class="card-hero-icon">✅</div>
+        <div class="card-particle" style="width:6px;height:6px;top:30%;left:10%;animation-delay:.5s"></div>
+        <div class="card-particle" style="width:5px;height:5px;top:50%;left:80%;animation-delay:1.3s"></div>
+        <div class="card-particle" style="width:4px;height:4px;top:20%;left:60%;animation-delay:1.8s"></div>
+        <div class="card-hero-fade"></div>
+        <div class="role-badge">Controller</div>
+      </div>
+      <div class="card-body">
+        <div class="kpi-chips">
+          <span class="kpi-chip">Close Progress</span>
+          <span class="kpi-chip">Reconciliation</span>
+          <span class="kpi-chip">GL Summary</span>
+          <span class="kpi-chip">AP/AR Aging</span>
+          <span class="kpi-chip">Compliance</span>
+        </div>
+        <p class="card-focus">Close checklist with live status, automated reconciliation alerts, and aging analysis across all entities.</p>
+        <button class="card-cta">See Controller dashboard <span class="arrow"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 8h10M9 4l4 4-4 4"/></svg></span></button>
+      </div>
+    </div>
+
+    <!-- FP&A Manager -->
+    <div class="role-card fade-scale fd5" data-role="fpa">
+      <div class="card-hero">
+        <div class="card-hero-bg"></div>
+        <div class="card-hero-icon">📈</div>
+        <div class="card-particle" style="width:7px;height:7px;top:20%;left:25%;animation-delay:.7s"></div>
+        <div class="card-particle" style="width:4px;height:4px;top:65%;left:65%;animation-delay:1.5s"></div>
+        <div class="card-particle" style="width:5px;height:5px;top:45%;left:85%;animation-delay:2.2s"></div>
+        <div class="card-hero-fade"></div>
+        <div class="role-badge">FP&A Manager</div>
+      </div>
+      <div class="card-body">
+        <div class="kpi-chips">
+          <span class="kpi-chip">Variance</span>
+          <span class="kpi-chip">Budget vs Actual</span>
+          <span class="kpi-chip">Forecast</span>
+          <span class="kpi-chip">Scenarios</span>
+        </div>
+        <p class="card-focus">Drill into every variance, compare scenarios side-by-side, and track forecast accuracy over rolling periods.</p>
+        <button class="card-cta">See FP&A dashboard <span class="arrow"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 8h10M9 4l4 4-4 4"/></svg></span></button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- STAT RIBBON -->
+  <div class="stat-ribbon fade-up fd5">
+    <div class="stat-ribbon-item">
+      <div class="stat-ribbon-value" data-target="4">0</div>
+      <div class="stat-ribbon-label">Role-Based Views</div>
+    </div>
+    <div class="stat-ribbon-item">
+      <div class="stat-ribbon-value" data-target="48" data-suffix="hr">0</div>
+      <div class="stat-ribbon-label">Deployment Time</div>
+    </div>
+    <div class="stat-ribbon-item">
+      <div class="stat-ribbon-value" data-target="15" data-suffix="+">0</div>
+      <div class="stat-ribbon-label">Modules Per View</div>
+    </div>
+    <div class="stat-ribbon-item">
+      <div class="stat-ribbon-value" data-target="100" data-suffix="%">0</div>
+      <div class="stat-ribbon-label">Customizable</div>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+  <span>FinanceOS — Role Dashboard Showcase</span>
+  <span class="footer-version">v3.0 · March 2026</span>
+</div>
+
+</div>
+
+<!-- ═══ SCRIPTS ═══ -->
+<script>
+// ── Scroll-triggered animation ──
+const obs=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){e.target.style.animationPlayState='running';obs.unobserve(e.target)}
+  });
+},{threshold:0.08});
+document.querySelectorAll('.fade-up,.fade-scale').forEach(el=>{el.style.animationPlayState='paused';obs.observe(el)});
+
+// ── Nav scroll ──
+window.addEventListener('scroll',()=>{document.getElementById('nav').classList.toggle('scrolled',scrollY>60)},{passive:true});
+
+// ── 3D Tilt on role cards ──
+document.querySelectorAll('.role-card').forEach(card=>{
+  card.addEventListener('mousemove',e=>{
+    const r=card.getBoundingClientRect();
+    const x=(e.clientX-r.left)/r.width-.5;
+    const y=(e.clientY-r.top)/r.height-.5;
+    card.style.transform=`perspective(800px) rotateY(${x*6}deg) rotateX(${-y*6}deg) translateY(-6px)`;
+  });
+  card.addEventListener('mouseleave',()=>{
+    card.style.transform='';
+  });
+});
+
+// ── KPI chip stagger on card hover ──
+document.querySelectorAll('.role-card').forEach(card=>{
+  const chips=card.querySelectorAll('.kpi-chip');
+  card.addEventListener('mouseenter',()=>{
+    chips.forEach((chip,i)=>{
+      chip.style.animation=`chipReveal .35s cubic-bezier(0.22,1,0.36,1) ${i*50}ms both`;
+    });
+  });
+  card.addEventListener('mouseleave',()=>{
+    chips.forEach(chip=>{chip.style.animation=''});
+  });
+});
+
+// ── Stat ribbon counter animation ──
+const cObs=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(!e.isIntersecting)return;
+    e.target.querySelectorAll('.stat-ribbon-value').forEach((el,i)=>{
+      const target=parseFloat(el.dataset.target);
+      const suffix=el.dataset.suffix||'';
+      const dur=900;
+      const start=performance.now()+i*120;
+      (function tick(now){
+        const elapsed=now-start;
+        if(elapsed<0){requestAnimationFrame(tick);return}
+        const p=Math.min(elapsed/dur,1);
+        const ease=1-Math.pow(1-p,3);
+        const v=target*ease;
+        el.textContent=Math.round(v)+suffix;
+        if(p<1)requestAnimationFrame(tick);
+      })(performance.now());
+    });
+    cObs.unobserve(e.target);
+  });
+},{threshold:0.3});
+document.querySelectorAll('.stat-ribbon').forEach(el=>cObs.observe(el));
+
+// ── Magnetic CTA buttons ──
+document.querySelectorAll('.card-cta').forEach(btn=>{
+  btn.addEventListener('mousemove',e=>{
+    const r=btn.getBoundingClientRect();
+    const cx=r.left+r.width/2;
+    const cy=r.top+r.height/2;
+    const dx=(e.clientX-cx)*0.08;
+    const dy=(e.clientY-cy)*0.08;
+    btn.style.transform=`translate(${dx}px,${dy}px)`;
+  });
+  btn.addEventListener('mouseleave',()=>{
+    btn.style.transform='';
+  });
+});
+</script>
+</body>
+</html>

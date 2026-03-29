@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>FinanceOS — FP&amp;A Manager Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#f8f7f4;--surface:#ffffff;--surface-2:#faf9f6;--surface-3:#f0eeea;
+  --border:rgba(0,0,0,0.06);--border-hover:rgba(217,119,6,0.25);
+  --text:#1a1a2e;--text-2:#5a5a72;--text-3:#8a8a9e;
+  --shadow-sm:0 1px 3px rgba(0,0,0,0.04),0 1px 2px rgba(0,0,0,0.03);
+  --shadow-md:0 4px 20px rgba(0,0,0,0.06),0 2px 8px rgba(0,0,0,0.04);
+  --shadow-lg:0 12px 40px rgba(0,0,0,0.08),0 4px 12px rgba(0,0,0,0.04);
+  --blue:#2563eb;--blue-soft:#dbeafe;--blue-text:#1e40af;
+  --green:#059669;--green-soft:#d1fae5;--green-text:#065f46;
+  --amber:#d97706;--amber-soft:#fef3c7;--amber-text:#92400e;
+  --rose:#dc2626;--rose-soft:#fee2e2;--rose-text:#991b1b;
+  --purple:#7c3aed;--purple-soft:#ede9fe;--purple-text:#5b21b6;
+  --cyan:#0891b2;--cyan-soft:#cffafe;--cyan-text:#155e75;
+  --radius:20px;--radius-sm:14px;--radius-xs:8px;
+}
+body{background:var(--bg);color:var(--text);font-family:'Manrope',system-ui,sans-serif;line-height:1.6;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+body::before{content:'';position:fixed;top:0;left:0;right:0;bottom:0;background:radial-gradient(ellipse 80% 50% at 50% 0%,rgba(254,243,199,0.5),transparent),radial-gradient(ellipse 60% 40% at 50% 100%,rgba(237,233,254,0.4),transparent);pointer-events:none;z-index:0}
+
+.scroll-progress{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--amber),var(--rose),var(--purple));z-index:999;width:0%;border-radius:0 2px 2px 0}
+
+.dash-header{padding:24px 48px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);backdrop-filter:blur(24px) saturate(1.4);position:sticky;top:0;z-index:90;background:rgba(248,247,244,0.8)}
+.dash-logo{display:flex;align-items:center;gap:14px}
+.dash-logo-icon{width:40px;height:40px;border-radius:12px;background:linear-gradient(135deg,var(--amber),#b45309);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px;color:#fff;box-shadow:0 4px 16px rgba(217,119,6,0.25)}
+.dash-logo-text{font-size:19px;font-weight:800;color:var(--text)}
+.dash-role{font-size:13px;color:var(--text-2);background:var(--surface);padding:8px 18px;border-radius:24px;border:1px solid var(--border);box-shadow:var(--shadow-sm)}
+.dash-role span{color:var(--amber);font-weight:700}
+
+.dash-container{max-width:1400px;margin:0 auto;padding:36px 48px 80px;position:relative;z-index:1}
+.dash-title{font-size:30px;font-weight:800;letter-spacing:-0.02em;margin-bottom:4px}
+.dash-subtitle{color:var(--text-2);font-size:14px;margin-bottom:36px}
+
+/* Variance Summary */
+.var-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin-bottom:28px}
+.var-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:22px;position:relative;overflow:hidden;transition:transform 0.5s cubic-bezier(.23,1,.32,1),box-shadow 0.5s;cursor:default;box-shadow:var(--shadow-sm)}
+.var-card:hover{box-shadow:var(--shadow-lg);transform:translateY(-4px)}
+.var-card::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;border-radius:20px 20px 0 0;opacity:0;transition:opacity 0.3s}
+.var-card:hover::before{opacity:1}
+.var-card:nth-child(1)::before{background:var(--green)}
+.var-card:nth-child(2)::before{background:var(--rose)}
+.var-card:nth-child(3)::before{background:var(--green)}
+.var-card:nth-child(4)::before{background:var(--amber)}
+.var-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--text-3);margin-bottom:8px}
+.var-value{font-size:28px;font-weight:800;margin-bottom:6px;letter-spacing:-0.02em}
+.var-delta{font-size:12px;font-weight:700;display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:20px}
+.var-delta.fav{color:var(--green-text);background:var(--green-soft)}
+.var-delta.unfav{color:var(--rose-text);background:var(--rose-soft)}
+.var-delta.on-track{color:var(--amber-text);background:var(--amber-soft)}
+
+/* BvA */
+.panel{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow-sm);transition:box-shadow 0.3s;margin-bottom:28px}
+.panel:hover{box-shadow:var(--shadow-md)}
+.panel-header{padding:22px 28px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.panel-title{font-size:17px;font-weight:700}
+.panel-badge{font-size:11px;font-weight:700;padding:5px 12px;border-radius:20px}
+.badge-green{color:var(--green-text);background:var(--green-soft)}
+.badge-amber{color:var(--amber-text);background:var(--amber-soft)}
+.badge-blue{color:var(--blue-text);background:var(--blue-soft)}
+.badge-purple{color:var(--purple-text);background:var(--purple-soft)}
+.panel-body{padding:22px 28px 28px}
+.bva-tabs{display:flex;gap:4px}
+.bva-tab{padding:7px 16px;border-radius:20px;font-size:12px;font-weight:700;cursor:pointer;border:none;background:transparent;color:var(--text-3);transition:all 0.2s}
+.bva-tab.active{color:var(--amber-text);background:var(--amber-soft)}
+.bva-row{display:grid;grid-template-columns:1.8fr 1fr 1fr 1fr 120px;gap:8px;padding:12px 0;align-items:center;border-bottom:1px solid var(--border);font-size:14px}
+.bva-row:last-child{border-bottom:none}
+.bva-row.hdr{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--text-3)}
+.bva-row.total{font-weight:800;border-top:2px solid var(--border);padding-top:14px}
+.bva-cat{font-weight:700}
+.bva-val{text-align:right;font-weight:600}
+.bva-var{text-align:right;font-weight:700;font-size:12px}
+.bva-var.fav{color:var(--green)}
+.bva-var.unfav{color:var(--rose)}
+.bva-bar{height:6px;background:var(--surface-3);border-radius:3px;overflow:hidden}
+.bva-fill{height:100%;border-radius:3px;transition:width 1s cubic-bezier(.23,1,.32,1)}
+
+/* Two col */
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:28px}
+
+/* Forecast Accuracy */
+.forecast-score{text-align:center;padding:12px 0 20px}
+.forecast-num{font-size:60px;font-weight:800;background:linear-gradient(135deg,var(--amber),var(--green));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.forecast-sub{color:var(--text-2);font-size:13px}
+.forecast-history{display:flex;gap:8px;justify-content:center;margin-top:16px}
+.forecast-q{background:var(--surface-2);border-radius:var(--radius-xs);padding:10px 14px;text-align:center;flex:1;border:1px solid var(--border)}
+.forecast-q-label{font-size:10px;color:var(--text-3);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:4px;font-weight:700}
+.forecast-q-val{font-size:16px;font-weight:800}
+
+/* Scenarios */
+.scenario-row{display:grid;grid-template-columns:100px 1fr 80px;gap:12px;align-items:center;padding:14px;background:var(--surface-2);border-radius:var(--radius-xs);border:1px solid var(--border);margin-bottom:10px;transition:border-color 0.2s,box-shadow 0.2s}
+.scenario-row:hover{border-color:var(--border-hover);box-shadow:var(--shadow-sm)}
+.scenario-name{font-size:13px;font-weight:700}
+.scenario-bar-outer{height:8px;background:var(--surface-3);border-radius:4px;overflow:hidden;position:relative}
+.scenario-fill{height:100%;border-radius:4px;transition:width 1.2s cubic-bezier(.23,1,.32,1);position:absolute;top:0;left:0}
+.scenario-val{font-size:15px;font-weight:800;text-align:right}
+.scenario-note{margin-top:12px;padding:14px;background:var(--surface-2);border-radius:var(--radius-xs);font-size:12px;color:var(--text-2);border:1px solid var(--border);line-height:1.5}
+
+/* Drill-Down */
+.drill-section{margin-bottom:12px}
+.drill-header{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;background:var(--surface-2);border-radius:var(--radius-xs);cursor:pointer;border:1px solid var(--border);transition:background 0.2s,border-color 0.2s}
+.drill-header:hover{background:var(--surface-3);border-color:var(--border-hover)}
+.drill-left{display:flex;align-items:center;gap:10px}
+.drill-arrow{font-size:12px;color:var(--text-3);transition:transform 0.3s;display:inline-block}
+.drill-arrow.open{transform:rotate(90deg)}
+.drill-dept{font-size:14px;font-weight:700}
+.drill-dept-badge{font-size:12px;font-weight:700;padding:4px 10px;border-radius:12px}
+.drill-content{max-height:0;overflow:hidden;transition:max-height 0.4s cubic-bezier(.23,1,.32,1)}
+.drill-content.open{max-height:500px}
+.drill-items{padding:6px 0 0 30px}
+.drill-item{display:flex;align-items:center;justify-content:space-between;padding:9px 16px;font-size:13px;border-bottom:1px solid var(--border)}
+.drill-item:last-child{border-bottom:none}
+.drill-item-name{color:var(--text-2)}
+.drill-item-val{font-weight:700}
+
+/* Copilot */
+.copilot{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow-sm);margin-bottom:28px}
+.copilot-header{padding:18px 28px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;background:var(--surface-2)}
+.copilot-dot{width:8px;height:8px;border-radius:50%;background:var(--amber);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
+.copilot-title{font-size:14px;font-weight:700}
+.copilot-body{padding:22px 28px}
+.copilot-msg{margin-bottom:18px}
+.copilot-msg.user{text-align:right}
+.copilot-msg.user .copilot-bubble{background:linear-gradient(135deg,var(--amber),#b45309);color:#fff;display:inline-block;text-align:left;box-shadow:0 4px 16px rgba(217,119,6,0.2)}
+.copilot-msg.ai .copilot-bubble{background:var(--surface-2);display:inline-block;border:1px solid var(--border)}
+.copilot-bubble{padding:14px 18px;border-radius:16px;font-size:13px;max-width:85%;line-height:1.6}
+.copilot-input{display:flex;gap:10px;padding:18px 28px;border-top:1px solid var(--border);background:var(--surface-2)}
+.copilot-input input{flex:1;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 16px;color:var(--text);font-size:13px;font-family:inherit;outline:none;transition:border-color 0.2s,box-shadow 0.2s}
+.copilot-input input:focus{border-color:var(--amber);box-shadow:0 0 0 3px rgba(217,119,6,0.1)}
+.copilot-input button{background:linear-gradient(135deg,var(--amber),#b45309);border:none;color:#fff;padding:12px 22px;border-radius:var(--radius-sm);font-weight:700;font-size:13px;cursor:pointer;box-shadow:0 4px 12px rgba(217,119,6,0.2)}
+
+@media(max-width:960px){.var-grid{grid-template-columns:repeat(2,1fr)}.two-col{grid-template-columns:1fr}.dash-header{padding:20px 24px}.dash-container{padding:24px}.bva-row{grid-template-columns:1.4fr 1fr 1fr 1fr;font-size:12px}.bva-row .bva-bar{display:none}}
+@media(max-width:560px){.var-grid{grid-template-columns:1fr}.bva-row{grid-template-columns:1.2fr 1fr 1fr}.forecast-history{flex-wrap:wrap}}
+</style>
+</head>
+<body>
+<div class="scroll-progress" id="scrollProgress"></div>
+
+<header class="dash-header">
+  <div class="dash-logo"><div class="dash-logo-icon">F</div><div class="dash-logo-text">FinanceOS</div></div>
+  <div class="dash-role"><span>FP&amp;A Manager</span>&ensp;Analytics Dashboard</div>
+</header>
+
+<main class="dash-container">
+  <h1 class="dash-title">Variance & Forecast Command Center</h1>
+  <p class="dash-subtitle">Drill into every variance &middot; Real-time budget tracking</p>
+
+  <div class="var-grid">
+    <div class="var-card"><div class="var-label">Revenue Variance</div><div class="var-value" style="color:var(--green)">+$1.2M</div><div class="var-delta fav">&#9650; 3.8% favorable</div></div>
+    <div class="var-card"><div class="var-label">OPEX Variance</div><div class="var-value" style="color:var(--rose)">-$420K</div><div class="var-delta unfav">&#9660; 2.1% unfavorable</div></div>
+    <div class="var-card"><div class="var-label">EBITDA Variance</div><div class="var-value" style="color:var(--green)">+$780K</div><div class="var-delta fav">&#9650; 4.2% favorable</div></div>
+    <div class="var-card"><div class="var-label">Headcount Variance</div><div class="var-value" style="color:var(--amber)">-4 FTE</div><div class="var-delta on-track">Hiring behind plan</div></div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-header"><span class="panel-title">Budget vs Actual — March 2026</span><div class="bva-tabs"><button class="bva-tab active">Monthly</button><button class="bva-tab">QTD</button><button class="bva-tab">YTD</button></div></div>
+    <div class="panel-body">
+      <div class="bva-row hdr"><span>Category</span><span style="text-align:right">Budget</span><span style="text-align:right">Actual</span><span style="text-align:right">Variance</span><span>Attainment</span></div>
+      <div class="bva-row"><span class="bva-cat">Subscription Revenue</span><span class="bva-val">$4.80M</span><span class="bva-val">$5.12M</span><span class="bva-var fav">+6.7%</span><span class="bva-bar"><div class="bva-fill" style="width:0%;background:var(--green)" data-w="100%"></div></span></div>
+      <div class="bva-row"><span class="bva-cat">Services Revenue</span><span class="bva-val">$520K</span><span class="bva-val">$480K</span><span class="bva-var unfav">-7.7%</span><span class="bva-bar"><div class="bva-fill" style="width:0%;background:var(--amber)" data-w="92%"></div></span></div>
+      <div class="bva-row"><span class="bva-cat">COGS</span><span class="bva-val">$820K</span><span class="bva-val">$790K</span><span class="bva-var fav">+3.7%</span><span class="bva-bar"><div class="bva-fill" style="width:0%;background:var(--green)" data-w="96%"></div></span></div>
+      <div class="bva-row"><span class="bva-cat">Engineering</span><span class="bva-val">$1.60M</span><span class="bva-val">$1.52M</span><span class="bva-var fav">+5.0%</span><span class="bva-bar"><div class="bva-fill" style="width:0%;background:var(--green)" data-w="95%"></div></span></div>
+      <div class="bva-row"><span class="bva-cat">Sales &amp; Marketing</span><span class="bva-val">$1.40M</span><span class="bva-val">$1.62M</span><span class="bva-var unfav">-15.7%</span><span class="bva-bar"><div class="bva-fill" style="width:0%;background:var(--rose)" data-w="100%"></div></span></div>
+      <div class="bva-row"><span class="bva-cat">G&amp;A</span><span class="bva-val">$680K</span><span class="bva-val">$710K</span><span class="bva-var unfav">-4.4%</span><span class="bva-bar"><div class="bva-fill" style="width:0%;background:var(--amber)" data-w="100%"></div></span></div>
+      <div class="bva-row total"><span class="bva-cat">EBITDA</span><span class="bva-val">$1.82M</span><span class="bva-val">$2.00M</span><span class="bva-var fav">+9.9%</span><span class="bva-bar"><div class="bva-fill" style="width:0%;background:linear-gradient(90deg,var(--green),var(--cyan))" data-w="100%"></div></span></div>
+    </div>
+  </div>
+
+  <div class="two-col">
+    <div class="panel" style="margin-bottom:0">
+      <div class="panel-header"><span class="panel-title">Forecast Accuracy</span><span class="panel-badge badge-green">96.2%</span></div>
+      <div class="panel-body">
+        <div class="forecast-score"><div class="forecast-num" id="forecastNum">0</div><div class="forecast-sub">Weighted Absolute Percentage Error (WAPE)</div></div>
+        <div class="forecast-history">
+          <div class="forecast-q"><div class="forecast-q-label">Q1 '25</div><div class="forecast-q-val" style="color:var(--amber)">91.4%</div></div>
+          <div class="forecast-q"><div class="forecast-q-label">Q2 '25</div><div class="forecast-q-val" style="color:var(--amber)">93.1%</div></div>
+          <div class="forecast-q"><div class="forecast-q-label">Q3 '25</div><div class="forecast-q-val" style="color:var(--green)">94.8%</div></div>
+          <div class="forecast-q"><div class="forecast-q-label">Q4 '25</div><div class="forecast-q-val" style="color:var(--green)">95.6%</div></div>
+          <div class="forecast-q" style="border-color:var(--amber)"><div class="forecast-q-label">Q1 '26</div><div class="forecast-q-val" style="color:var(--green)">96.2%</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="panel" style="margin-bottom:0">
+      <div class="panel-header"><span class="panel-title">Scenario Comparison</span><span class="panel-badge badge-purple">3 Scenarios</span></div>
+      <div class="panel-body">
+        <div class="scenario-row"><span class="scenario-name" style="color:var(--green)">Bull Case</span><div class="scenario-bar-outer"><div class="scenario-fill" style="width:0%;background:var(--green)" data-w="100%"></div></div><span class="scenario-val">$72.8M</span></div>
+        <div class="scenario-row" style="border-color:var(--amber)"><span class="scenario-name" style="color:var(--amber)">Base Case</span><div class="scenario-bar-outer"><div class="scenario-fill" style="width:0%;background:var(--amber)" data-w="82%"></div></div><span class="scenario-val">$62.4M</span></div>
+        <div class="scenario-row"><span class="scenario-name" style="color:var(--rose)">Bear Case</span><div class="scenario-bar-outer"><div class="scenario-fill" style="width:0%;background:var(--rose)" data-w="68%"></div></div><span class="scenario-val">$54.1M</span></div>
+        <div class="scenario-note"><strong>Key sensitivity:</strong> Enterprise pipeline conversion rate drives $8.4M swing between bull/bear. Each 10% change in win rate = ~$4.2M ARR impact.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-header"><span class="panel-title">Variance Drill-Down by Department</span><span class="panel-badge badge-amber">Click to expand</span></div>
+    <div class="panel-body">
+      <div class="drill-section"><div class="drill-header" onclick="toggleDrill('eng')"><div class="drill-left"><span class="drill-arrow" id="eng-arrow">&#9654;</span><span class="drill-dept">Engineering</span></div><span class="drill-dept-badge" style="color:var(--green-text);background:var(--green-soft)">+$80K favorable</span></div><div class="drill-content" id="eng"><div class="drill-items"><div class="drill-item"><span class="drill-item-name">Salaries & Benefits</span><span class="drill-item-val" style="color:var(--green)">+$120K (2 open roles)</span></div><div class="drill-item"><span class="drill-item-name">Cloud Infrastructure</span><span class="drill-item-val" style="color:var(--rose)">-$28K (usage spike)</span></div><div class="drill-item"><span class="drill-item-name">Software Licenses</span><span class="drill-item-val" style="color:var(--rose)">-$12K (new tools)</span></div></div></div></div>
+      <div class="drill-section"><div class="drill-header" onclick="toggleDrill('sales')"><div class="drill-left"><span class="drill-arrow" id="sales-arrow">&#9654;</span><span class="drill-dept">Sales & Marketing</span></div><span class="drill-dept-badge" style="color:var(--rose-text);background:var(--rose-soft)">-$220K unfavorable</span></div><div class="drill-content" id="sales"><div class="drill-items"><div class="drill-item"><span class="drill-item-name">Digital Advertising</span><span class="drill-item-val" style="color:var(--rose)">-$140K (campaign scale-up)</span></div><div class="drill-item"><span class="drill-item-name">Events & Conferences</span><span class="drill-item-val" style="color:var(--rose)">-$65K (unplanned sponsorship)</span></div><div class="drill-item"><span class="drill-item-name">Sales Commissions</span><span class="drill-item-val" style="color:var(--rose)">-$15K (accelerators hit)</span></div></div></div></div>
+      <div class="drill-section"><div class="drill-header" onclick="toggleDrill('ga')"><div class="drill-left"><span class="drill-arrow" id="ga-arrow">&#9654;</span><span class="drill-dept">G&A</span></div><span class="drill-dept-badge" style="color:var(--rose-text);background:var(--rose-soft)">-$30K unfavorable</span></div><div class="drill-content" id="ga"><div class="drill-items"><div class="drill-item"><span class="drill-item-name">Legal Fees</span><span class="drill-item-val" style="color:var(--rose)">-$22K (contract review)</span></div><div class="drill-item"><span class="drill-item-name">Office & Facilities</span><span class="drill-item-val" style="color:var(--rose)">-$8K (maintenance)</span></div></div></div></div>
+      <div class="drill-section"><div class="drill-header" onclick="toggleDrill('cogs')"><div class="drill-left"><span class="drill-arrow" id="cogs-arrow">&#9654;</span><span class="drill-dept">COGS</span></div><span class="drill-dept-badge" style="color:var(--green-text);background:var(--green-soft)">+$30K favorable</span></div><div class="drill-content" id="cogs"><div class="drill-items"><div class="drill-item"><span class="drill-item-name">Hosting Costs</span><span class="drill-item-val" style="color:var(--green)">+$18K (optimization)</span></div><div class="drill-item"><span class="drill-item-name">Customer Support</span><span class="drill-item-val" style="color:var(--green)">+$12K (under headcount)</span></div></div></div></div>
+    </div>
+  </div>
+
+  <div class="copilot">
+    <div class="copilot-header"><div class="copilot-dot"></div><div class="copilot-title">AI Variance Analyst</div></div>
+    <div class="copilot-body">
+      <div class="copilot-msg user"><div class="copilot-bubble">Why is S&M $220K over budget this month?</div></div>
+      <div class="copilot-msg ai"><div class="copilot-bubble">The S&M overspend breaks into three components: <strong>Digital advertising</strong> is $140K over due to the Q1 pipeline acceleration campaign approved by the CRO on March 3 — generating 42 MQLs at $3.3K/MQL vs. the $4.1K target. <strong>Events</strong> added $65K from the SaaStr sponsorship approved mid-month. <strong>Commissions</strong> are $15K over due to 3 reps hitting accelerator thresholds. Net ROI on the incremental spend projects at 3.2x within 2 quarters.</div></div>
+    </div>
+    <div class="copilot-input"><input type="text" placeholder="Ask about variances, forecasts, or budget scenarios..."><button>Send</button></div>
+  </div>
+</main>
+
+<script>
+window.addEventListener('scroll',()=>{const h=document.documentElement;document.getElementById('scrollProgress').style.width=(h.scrollTop/(h.scrollHeight-h.clientHeight)*100)+'%'});
+
+function animateForecast(){const el=document.getElementById('forecastNum'),dur=1200,start=performance.now();(function tick(now){let p=Math.min((now-start)/dur,1);p=1-Math.pow(1-p,3);el.textContent=(96.2*p).toFixed(1)+'%';if(p<1)requestAnimationFrame(tick)})(performance.now())}
+
+function animateBars(){document.querySelectorAll('[data-w]').forEach(b=>{b.style.width=b.dataset.w})}
+
+function toggleDrill(id){const el=document.getElementById(id),arrow=document.getElementById(id+'-arrow');el.classList.toggle('open');arrow.classList.toggle('open')}
+
+document.querySelectorAll('.var-card,.scenario-row,.drill-header,.forecast-q').forEach(card=>{card.addEventListener('mousemove',e=>{const r=card.getBoundingClientRect(),x=(e.clientX-r.left)/r.width-.5,y=(e.clientY-r.top)/r.height-.5;card.style.transform=`perspective(600px) rotateY(${x*4}deg) rotateX(${-y*4}deg) translateY(-2px)`});card.addEventListener('mouseleave',()=>{card.style.transform=''})});
+
+const obs=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){e.target.style.opacity='1';e.target.style.transform='translateY(0)';obs.unobserve(e.target)}})},{threshold:0.1});
+document.querySelectorAll('.var-card,.panel,.copilot').forEach((el,i)=>{el.style.opacity='0';el.style.transform='translateY(20px)';el.style.transition=`opacity 0.5s ${i*.07}s cubic-bezier(.23,1,.32,1),transform 0.5s ${i*.07}s cubic-bezier(.23,1,.32,1)`;obs.observe(el)});
+
+setTimeout(()=>{animateForecast();animateBars()},400);
+</script>
+</body>
+</html>
