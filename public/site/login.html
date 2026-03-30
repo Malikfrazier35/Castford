@@ -53,11 +53,11 @@ body{font-family:var(--font);background:var(--bg-alt);color:var(--text);min-heig
 .left h1{font-size:clamp(30px,3.5vw,44px);font-weight:700;line-height:1.15;margin-bottom:32px;color:var(--text);letter-spacing:-0.02em}
 .left h1 span{color:var(--green-dark)}
 
-.testimonial-container{position:relative;height:90px;margin-bottom:40px}
-.testimonial{position:absolute;top:0;left:0;right:0;opacity:0;transition:opacity .8s;max-width:440px}
-.testimonial.active{opacity:1}
-.testimonial p{font-size:14px;color:var(--text-secondary);line-height:1.6;font-style:italic;margin-bottom:6px}
-.testimonial .author{font-size:13px;font-weight:600;color:var(--text)}
+.capabilities{display:flex;flex-direction:column;gap:16px;margin-bottom:40px}
+.cap-item{display:flex;align-items:flex-start;gap:12px}
+.cap-icon{width:32px;height:32px;border-radius:8px;background:rgba(16,185,129,0.12);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:16px}
+.cap-item h3{font-size:14px;font-weight:600;color:var(--text);margin-bottom:2px}
+.cap-item p{font-size:13px;color:var(--text-secondary);line-height:1.5}
 
 .left-stats{position:relative;z-index:1;display:flex;gap:28px;padding-top:20px;border-top:1px solid rgba(16,185,129,0.2)}
 .left-stat .val{font-family:var(--mono);font-size:18px;font-weight:700;color:var(--text)}
@@ -115,12 +115,11 @@ body{font-family:var(--font);background:var(--bg-alt);color:var(--text);min-heig
   <div class="left-content">
     <div class="logo"><span class="logo-dot"></span> FinanceOS</div>
     <h1>Plan smarter.<br><span>Close faster.</span></h1>
-    <div class="testimonial-container" id="testimonials">
-      <div class="testimonial active"><p>"FinanceOS cut our monthly close from 12 days to 3. The AI copilot is like having a senior analyst on call 24/7."</p><div class="author">VP Finance, Series C SaaS</div></div>
-      <div class="testimonial"><p>"We replaced three separate tools with FinanceOS. The xP&A planning finally connects our revenue team to finance."</p><div class="author">CFO, E-Commerce Platform</div></div>
-      <div class="testimonial"><p>"The scenario modeling saved us during our Series C. We ran 50 what-if models in an afternoon."</p><div class="author">Head of FP&A, B2B Marketplace</div></div>
+    <div class="capabilities">
+      <div class="cap-item"><div class="cap-icon">&#9889;</div><div><h3>AI-Powered Close</h3><p>Automate monthly close from weeks to days with intelligent reconciliation</p></div></div>
+      <div class="cap-item"><div class="cap-icon">&#128200;</div><div><h3>xP&amp;A Planning</h3><p>Connect revenue, sales, and finance teams in one unified planning model</p></div></div>
+      <div class="cap-item"><div class="cap-icon">&#127919;</div><div><h3>Scenario Modeling</h3><p>Run unlimited what-if analyses with real-time sensitivity controls</p></div></div>
     </div>
-  </div>
   <div class="left-stats">
     <div class="left-stat"><div class="val">$48.6M</div><div class="label">ARR</div></div>
     <div class="left-stat"><div class="val">2,400+</div><div class="label">Teams</div></div>
@@ -174,10 +173,6 @@ const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 supabase.auth.getSession().then(({data:{session}}) => {
   if (session) window.location.href = '/dashboard/command-center';
 });
-
-// Testimonial rotation
-const testimonials = document.querySelectorAll('.testimonial'); let current = 0;
-setInterval(() => { testimonials[current].classList.remove('active'); current = (current + 1) % testimonials.length; testimonials[current].classList.add('active'); }, 5000);
 
 // Password toggle
 const pw = document.getElementById('password'), toggle = document.getElementById('togglePw');
