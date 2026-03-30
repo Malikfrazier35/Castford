@@ -154,11 +154,11 @@ body{font-family:var(--font);background:var(--bg-alt);color:var(--text);min-heig
     <form id="loginForm" novalidate>
       <div class="field"><label for="email">Email</label><input type="email" id="email" placeholder="you@company.com" autocomplete="email"><div class="error-msg" id="emailError">Please enter a valid email address</div></div>
       <div class="field"><label for="password">Password</label><div class="field-input-wrap"><input type="password" id="password" placeholder="••••••••" autocomplete="current-password"><button type="button" class="toggle-pw" id="togglePw">Show</button></div><div class="error-msg" id="pwError">Password must be at least 8 characters</div></div>
-      <div class="forgot-row"><a href="#" onclick="event.preventDefault();showToast('Password reset will be available at launch')">Forgot password?</a></div>
+      <div class="forgot-row"><a href="#" id="forgotPw">Forgot password?</a></div>
       <button type="submit" class="submit-btn">Sign In</button>
     </form>
 
-    <div class="signup-link">Don't have an account? <a href="/pricing">Get Started</a></div>
+    <div class="signup-link">Don't have an account? <a href="#">Get Started</a></div>
     <div class="trust-badges"><span class="trust-badge">SOC 2 Type II</span><span class="trust-badge">·</span><span class="trust-badge">SOX 404</span><span class="trust-badge">·</span><span class="trust-badge">256-bit Encryption</span></div>
   </div>
 </div>
@@ -228,6 +228,59 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
     setTimeout(() => { window.location.href = '/dashboard/command-center'; }, 1000);
   }
 });
+
+// Forgot Password
+document.getElementById('forgotPw').addEventListener('click', async (e) => {
+  e.preventDefault();
+  const emailVal = document.getElementById('email').value;
+  if (!emailVal || !emailVal.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
+    showToast('Enter your email above, then click Forgot password', true);
+    return;
+  }
+  showToast('Sending reset link...');
+  const { error } = await supabase.auth.resetPasswordForEmail(emailVal, {
+    redirectTo: window.location.origin + '/login'
+  });
+  if (error) showToast(error.message, true);
+  else showToast('Check your email for a password reset link');
+});
+
+// Signup toggle
+const signupLink = document.querySelector('.signup-link a');
+const submitBtn = document.querySelector('.submit-btn');
+const formTitle = document.querySelector('.form-container h2');
+const formSub = document.querySelector('.form-container .subtitle');
+let isSignup = false;
+
+signupLink.addEventListener('click', (e) => {
+  e.preventDefault();
+  isSignup = !isSignup;
+  if (isSignup) {
+    formTitle.textContent = 'Create account';
+    formSub.textContent = 'Start your free FinanceOS trial';
+    submitBtn.textContent = 'Create Account';
+    signupLink.parentElement.innerHTML = 'Already have an account? <a href="#" style="color:var(--green-dark);font-weight:600" onclick="location.reload()">Sign In</a>';
+  }
+});
+
+// Override form submit to handle signup
+const origForm = document.getElementById('loginForm');
+origForm.addEventListener('submit', async (e) => {
+  if (!isSignup) return; // let the existing handler run
+  e.preventDefault(); e.stopImmediatePropagation();
+  const email = document.getElementById('email');
+  const emailErr = document.getElementById('emailError');
+  const pwErr = document.getElementById('pwError');
+  let valid = true;
+  if (!email.value.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) { email.classList.add('error'); emailErr.classList.add('show'); valid = false; } else { email.classList.remove('error'); emailErr.classList.remove('show'); }
+  if (pw.value.length < 8) { pw.classList.add('error'); pwErr.classList.add('show'); valid = false; } else { pw.classList.remove('error'); pwErr.classList.remove('show'); }
+  if (!valid) return;
+  submitBtn.textContent = 'Creating account...'; submitBtn.disabled = true;
+  const { data, error } = await supabase.auth.signUp({ email: email.value, password: pw.value });
+  if (error) { showToast(error.message, true); submitBtn.textContent = 'Create Account'; submitBtn.disabled = false; }
+  else { showToast('Check your email to confirm your account!'); submitBtn.textContent = 'Check Your Email'; }
+}, true);
+
 </script>
 
 <footer>
