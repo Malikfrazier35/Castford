@@ -430,6 +430,33 @@ footer { background: #FAFBFC !important; }
 
 /* Global: smoother fonts */
 body { -webkit-font-smoothing: antialiased !important; -moz-osx-font-smoothing: grayscale !important; }
+/* Hero title glow animation */
+@keyframes titleGlow {
+  0%, 100% { text-shadow: 0 0 20px rgba(16,185,129,0), 0 0 40px rgba(16,185,129,0); }
+  50% { text-shadow: 0 0 20px rgba(16,185,129,0.3), 0 0 60px rgba(16,185,129,0.15), 0 0 100px rgba(16,185,129,0.05); }
+}
+@keyframes textShimmer {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+.hero h1 {
+  background: linear-gradient(90deg, #FFFFFF 0%, #FFFFFF 35%, #34D399 50%, #FFFFFF 65%, #FFFFFF 100%) !important;
+  background-size: 200% auto !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  background-clip: text !important;
+  animation: heroIn .7s cubic-bezier(.16,1,.3,1) .2s both, textShimmer 6s ease-in-out infinite 1.5s !important;
+}
+.hero h1::after {
+  content: '';
+  display: block;
+  width: 80px;
+  height: 3px;
+  margin: 16px auto 0;
+  background: linear-gradient(90deg, transparent, #34D399, #10B981, transparent);
+  border-radius: 3px;
+  animation: glow-line 4s ease-in-out infinite;
+}
 </style>
 </head>
 <body>
@@ -655,31 +682,28 @@ body { -webkit-font-smoothing: antialiased !important; -moz-osx-font-smoothing: 
   <button class="btn btn-outline btn-md">View All Integrations →</button>
 </section>
 
-<!-- TESTIMONIALS -->
+<!-- TRUST STRIP -->
 <div class="section-alt">
   <section class="section">
     <div class="section-header">
-      <div class="overline">Customer Stories</div>
-      <h2>Loved by finance leaders</h2>
+      <div class="overline">Built for Scale</div>
+      <h2>Trusted by modern finance teams</h2>
     </div>
-    <div class="testimonials-grid">
-      <div class="test-card fade-in">
-        <div class="test-stars">★★★★★</div>
-        <blockquote>"FinanceOS cut our monthly close from 12 days to 3. The AI copilot is like having a senior analyst on call 24/7."</blockquote>
-        <div class="test-author"></div>
-        <div class="test-role">VP Finance, Series C SaaS ($120M ARR)</div>
+    <div class="testimonials-grid" style="grid-template-columns:repeat(3,1fr);gap:20px">
+      <div class="test-card fade-in" style="text-align:center;padding:32px 24px">
+        <div style="font-size:36px;font-weight:800;color:#10B981;font-family:'JetBrains Mono',monospace;margin-bottom:8px">3 days</div>
+        <div style="font-size:14px;font-weight:600;color:#1E293B;margin-bottom:4px">Average Monthly Close</div>
+        <div style="font-size:13px;color:#64748B">Down from 12+ days with manual processes</div>
       </div>
-      <div class="test-card fade-in">
-        <div class="test-stars">★★★★★</div>
-        <blockquote>"Board deck prep went from 5 days to 5 minutes. We ran 50 what-if scenarios during our Series C and closed oversubscribed."</blockquote>
-        <div class="test-author"></div>
-        <div class="test-role">CFO, E-Commerce Platform</div>
+      <div class="test-card fade-in" style="text-align:center;padding:32px 24px">
+        <div style="font-size:36px;font-weight:800;color:#10B981;font-family:'JetBrains Mono',monospace;margin-bottom:8px">50+</div>
+        <div style="font-size:14px;font-weight:600;color:#1E293B;margin-bottom:4px">What-If Scenarios</div>
+        <div style="font-size:13px;color:#64748B">Run in a single afternoon with AI copilot</div>
       </div>
-      <div class="test-card fade-in">
-        <div class="test-stars">★★★★★</div>
-        <blockquote>"The xP&A module finally connected RevOps to Finance. No more version conflicts. One model, one truth."</blockquote>
-        <div class="test-author"></div>
-        <div class="test-role">Head of FP&A, B2B Marketplace</div>
+      <div class="test-card fade-in" style="text-align:center;padding:32px 24px">
+        <div style="font-size:36px;font-weight:800;color:#10B981;font-family:'JetBrains Mono',monospace;margin-bottom:8px">1 model</div>
+        <div style="font-size:14px;font-weight:600;color:#1E293B;margin-bottom:4px">Unified xP&A</div>
+        <div style="font-size:13px;color:#64748B">Revenue, sales, and finance in one source of truth</div>
       </div>
     </div>
   </section>
