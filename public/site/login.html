@@ -115,9 +115,9 @@ body{font-family:var(--font);background:var(--bg-alt);color:var(--text);min-heig
     <div class="logo"><span class="logo-dot"></span> FinanceOS</div>
     <h1>Plan smarter.<br><span>Close faster.</span></h1>
     <div class="testimonial-container" id="testimonials">
-      <div class="testimonial active"><p>"FinanceOS cut our monthly close from 12 days to 3. The AI copilot is like having a senior analyst on call 24/7."</p><div class="author">VP Finance, FinanceOS Customer</div></div>
-      <div class="testimonial"><p>"We replaced three separate tools with FinanceOS. The xP&A planning finally connects our revenue team to finance."</p><div class="author">CFO, FinanceOS Customer</div></div>
-      <div class="testimonial"><p>"The scenario modeling saved us during our Series C. We ran 50 what-if models in an afternoon."</p><div class="author">Head of FP&A, FinanceOS Customer</div></div>
+      <div class="testimonial active"><p>"FinanceOS cut our monthly close from 12 days to 3. The AI copilot is like having a senior analyst on call 24/7."</p><div class="author">VP Finance, Series C SaaS</div></div>
+      <div class="testimonial"><p>"We replaced three separate tools with FinanceOS. The xP&A planning finally connects our revenue team to finance."</p><div class="author">CFO, E-Commerce Platform</div></div>
+      <div class="testimonial"><p>"The scenario modeling saved us during our Series C. We ran 50 what-if models in an afternoon."</p><div class="author">Head of FP&A, B2B Marketplace</div></div>
     </div>
   </div>
   <div class="left-stats">
@@ -154,28 +154,47 @@ body{font-family:var(--font);background:var(--bg-alt);color:var(--text);min-heig
     <form id="loginForm" novalidate>
       <div class="field"><label for="email">Email</label><input type="email" id="email" placeholder="you@company.com" autocomplete="email"><div class="error-msg" id="emailError">Please enter a valid email address</div></div>
       <div class="field"><label for="password">Password</label><div class="field-input-wrap"><input type="password" id="password" placeholder="••••••••" autocomplete="current-password"><button type="button" class="toggle-pw" id="togglePw">Show</button></div><div class="error-msg" id="pwError">Password must be at least 8 characters</div></div>
-      <div class="forgot-row"><a href="#">Forgot password?</a></div>
+      <div class="forgot-row"><a href="#" onclick="event.preventDefault();showToast('Password reset will be available at launch')">Forgot password?</a></div>
       <button type="submit" class="submit-btn">Sign In</button>
     </form>
 
-    <div class="signup-link">Don't have an account? <a href="#">Get Started</a></div>
+    <div class="signup-link">Don't have an account? <a href="/pricing">Get Started</a></div>
     <div class="trust-badges"><span class="trust-badge">SOC 2 Type II</span><span class="trust-badge">·</span><span class="trust-badge">SOX 404</span><span class="trust-badge">·</span><span class="trust-badge">256-bit Encryption</span></div>
   </div>
 </div>
 
 <script>
+// Testimonial rotation
 const testimonials=document.querySelectorAll('.testimonial');let current=0;
 setInterval(()=>{testimonials[current].classList.remove('active');current=(current+1)%testimonials.length;testimonials[current].classList.add('active')},5000);
 
+// Password toggle
 const pw=document.getElementById('password'),toggle=document.getElementById('togglePw');
 toggle.addEventListener('click',()=>{const isPw=pw.type==='password';pw.type=isPw?'text':'password';toggle.textContent=isPw?'Hide':'Show'});
 
+// Demo toast notification
+function showToast(msg){
+  let t=document.getElementById('demo-toast');
+  if(!t){t=document.createElement('div');t.id='demo-toast';t.style.cssText='position:fixed;top:24px;left:50%;transform:translateX(-50%);background:#0F172A;color:#fff;padding:14px 28px;border-radius:12px;font-size:14px;font-family:var(--font);z-index:9999;box-shadow:0 8px 32px rgba(0,0,0,0.2);opacity:0;transition:opacity .3s;pointer-events:none';document.body.appendChild(t)}
+  t.textContent=msg;t.style.opacity='1';
+  setTimeout(()=>{t.style.opacity='0'},3000);
+}
+
+// SSO buttons — show demo toast
+document.querySelectorAll('.sso-btn').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    const provider=btn.textContent.trim().replace('Continue with ','');
+    showToast(provider+' SSO will be available at launch — request early access below');
+  });
+});
+
+// Sign In form — validate and show demo flow
 document.getElementById('loginForm').addEventListener('submit',e=>{
   e.preventDefault();let valid=true;
   const email=document.getElementById('email'),emailErr=document.getElementById('emailError'),pwErr=document.getElementById('pwError');
   if(!email.value.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)){email.classList.add('error');emailErr.classList.add('show');valid=false}else{email.classList.remove('error');emailErr.classList.remove('show')}
   if(pw.value.length<8){pw.classList.add('error');pwErr.classList.add('show');valid=false}else{pw.classList.remove('error');pwErr.classList.remove('show')}
-  if(valid)alert('Sign in successful! (demo)');
+  if(valid){showToast('Welcome! Redirecting to your dashboard...');setTimeout(()=>{window.location.href='/dashboard/command-center'},1500)}
 });
 </script>
 
