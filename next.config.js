@@ -75,6 +75,7 @@ const nextConfig = {
         { source: "/xpa-planning", destination: `${V3}/xpa-planning.html` },
         { source: "/pain-points", destination: `${V3}/pain-points.html` },
         { source: "/ad-campaign", destination: `${V3}/ad-campaign.html` },
+            { source: "/login", destination: `${V3}/login.html` },
 
         // Dashboard showcase pages
         { source: "/dashboard/standard", destination: `${V3}/dashboard/standard.html` },
