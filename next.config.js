@@ -35,14 +35,14 @@ const nextConfig = {
             key: "Content-Security-Policy",
             value: [
               "default-src 'self'",
-              "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
+              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net",
               "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
               "font-src 'self' https://fonts.gstatic.com data:",
               "img-src 'self' data: blob: https:",
-              "connect-src 'self' https://*.supabase.co https://api.anthropic.com https://fonts.googleapis.com https://accounts.google.com https://appleid.apple.com",
+              "connect-src 'self' https://*.supabase.co https://api.anthropic.com https://fonts.googleapis.com https://accounts.google.com https://appleid.apple.com https://login.microsoftonline.com",
               "frame-ancestors 'none'",
               "base-uri 'self'",
-              "form-action 'self' https://checkout.stripe.com https://*.supabase.co https://accounts.google.com https://appleid.apple.com",
+              "form-action 'self' https://checkout.stripe.com https://*.supabase.co https://accounts.google.com https://appleid.apple.com https://login.microsoftonline.com",
               "upgrade-insecure-requests",
             ].join("; "),
           },
@@ -75,7 +75,7 @@ const nextConfig = {
         { source: "/xpa-planning", destination: `${V3}/xpa-planning.html` },
         { source: "/pain-points", destination: `${V3}/pain-points.html` },
         { source: "/ad-campaign", destination: `${V3}/ad-campaign.html` },
-            { source: "/login", destination: `${V3}/login.html` },
+        { source: "/login", destination: `${V3}/login.html` },
 
         // Dashboard showcase pages
         { source: "/dashboard/standard", destination: `${V3}/dashboard/standard.html` },
