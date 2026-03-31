@@ -351,6 +351,7 @@ const obs=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersec
 document.querySelectorAll('.kpi-card,.panel,.copilot').forEach((el,i)=>{el.style.opacity='0';el.style.transform='translateY(24px)';el.style.transition=`opacity 0.6s ${i*.07}s cubic-bezier(.23,1,.32,1),transform 0.6s ${i*.07}s cubic-bezier(.23,1,.32,1)`;obs.observe(el)});
 
 setTimeout(()=>{animateCounters();animateBars()},400);
+setTimeout(()=>{document.querySelectorAll('.kpi-card,.panel,.copilot').forEach(el=>{el.style.opacity='1';el.style.transform='translateY(0)'})},1500);
 </script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script src="/site/auth-guard.js"></script>
