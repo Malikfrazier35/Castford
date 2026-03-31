@@ -3,8 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Resources — FinanceOS</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<title>Resources -- FinanceOS</title>
+<meta name="description" content="Guides, templates, and educational resources for modern FP&A teams. Learn how to automate financial planning and close faster.">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='14' fill='%2310B981'/%3E%3C/svg%3E">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 /* ===== SHARED NAV ===== */
 nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,0.88);backdrop-filter:blur(16px) saturate(180%);-webkit-backdrop-filter:blur(16px) saturate(180%);border-bottom:1px solid #F1F5F9}
@@ -117,82 +119,198 @@ footer{background:var(--bg-alt);border-top:1px solid var(--border);padding:64px 
 </head>
 <body>
 
-<nav>
-  <div class="nav-inner">
-    <a href="/" class="logo-link"><span class="ldot"></span>FinanceOS</a>
-    <div class="nav-mid">
-      <a href="/solutions">Solutions</a>
-      <a href="/integrations">Integrations</a>
-      <a href="/security">Trust</a>
-      <a href="/pricing">Pricing</a>
-      
-      <a href="/resources">Resources</a>
-    </div>
-    <div class="nav-end">
-      <a href="/login">Sign In</a>
-      <a href="/pricing" class="btn-sub">Subscribe</a>
-    </div>
-  </div>
+<!-- Nav -->
+<nav class="nav">
+<div class="nav-inner">
+<a href="/" class="nav-logo"><span class="logo-dot"></span> FinanceOS</a>
+<div class="nav-mid">
+<a href="/solutions">Solutions</a>
+<a href="/integrations">Integrations</a>
+<a href="/security">Trust</a>
+<a href="/pricing">Pricing</a>
+<a href="/resources">Resources</a>
+</div>
+<div class="nav-end">
+<a href="/login" class="nav-link">Sign In</a>
+<a href="/pricing" class="btn btn-primary btn-sm">Subscribe</a>
+</div>
+</div>
 </nav>
 
-<section class="hero">
-  <span class="badge">Resource Center</span>
-  <h1>Learn, build, and grow<br>with FinanceOS</h1>
-  <p>Guides, case studies, webinars, and templates to help your finance team work smarter.</p>
-  <div class="search-bar"><input type="text" id="searchInput" placeholder="Search resources..."></div>
+<!-- Hero -->
+<section style="padding:120px 24px 60px;text-align:center;max-width:720px;margin:0 auto">
+<h1 style="font-size:clamp(2rem,4vw,3rem);font-weight:800;color:#0F172A;margin-bottom:16px">Resource Library</h1>
+<p style="font-size:18px;color:#64748B;line-height:1.6">Guides, templates, and best practices for modern finance teams. Everything you need to streamline FP&A workflows.</p>
 </section>
 
-<section class="section">
-  <div class="pills" id="pills">
-    <button class="pill active" data-cat="all">All</button><button class="pill" data-cat="guide">Guides</button><button class="pill" data-cat="case-study">Case Studies</button><button class="pill" data-cat="webinar">Webinars</button><button class="pill" data-cat="blog">Blog</button><button class="pill" data-cat="template">Templates</button>
-  </div>
-
-  <div class="featured fade-in"><div><div class="featured-badge">Featured</div><h3>The Complete Guide to AI-Powered Financial Planning</h3><p>How leading finance teams are using AI copilots to cut close time by 60% and improve forecast accuracy to 96%.</p><div class="meta">12 min read · Guide</div><button class="btn-primary">Read Guide →</button></div></div>
-
-  <div class="res-grid" id="resGrid">
-    <div class="res-card fade-in" data-cat="guide" data-title="From Spreadsheets to AI: FP&A Migration Playbook"><span class="res-tag guide">Guide</span><h4>From Spreadsheets to AI: FP&A Migration Playbook</h4><p>Step-by-step guide to moving FP&A workflows from Excel to an AI-native platform.</p><div class="res-card-footer"><span class="time">8 min</span><a href="#" class="link">Read More →</a></div></div>
-    <div class="res-card fade-in" data-cat="case-study" data-title="How a $200M SaaS Company Cut Close from 15 to 3 Days"><span class="res-tag case-study">Case Study</span><h4>$200M SaaS: Close from 15 to 3 Days</h4><p>How automated multi-entity consolidation gave a mid-market SaaS company 12 days back each month.</p><div class="res-card-footer"><span class="time">6 min</span><a href="#" class="link">Read More →</a></div></div>
-    <div class="res-card fade-in" data-cat="webinar" data-title="xP&A in Practice: Breaking Down Planning Silos"><span class="res-tag webinar">Webinar</span><h4>xP&A in Practice: Breaking Planning Silos</h4><p>Three CFOs share how they connected Finance, Revenue, and Workforce planning into one model.</p><div class="res-card-footer"><span class="time">45 min</span><a href="#" class="link">Watch →</a></div></div>
-    <div class="res-card fade-in" data-cat="blog" data-title="Why Consumption-Based Pricing Wins in FP&A"><span class="res-tag blog">Blog</span><h4>Why Consumption-Based Pricing Wins</h4><p>Per-seat pricing penalizes growing teams. Usage-based aligns vendor incentives with success.</p><div class="res-card-footer"><span class="time">5 min</span><a href="#" class="link">Read More →</a></div></div>
-    <div class="res-card fade-in" data-cat="template" data-title="Board-Ready Financial Model Template"><span class="res-tag template">Template</span><h4>Board-Ready Financial Model</h4><p>Pre-built template with P&L, balance sheet, cash flow, and SaaS metrics. Customizable.</p><div class="res-card-footer"><span class="time">Download</span><a href="#" class="link">Get Template →</a></div></div>
-    <div class="res-card fade-in" data-cat="guide" data-title="SOX 404 Compliance Automation Handbook"><span class="res-tag guide">Guide</span><h4>SOX 404 Compliance Automation</h4><p>Replace manual audit evidence with continuous controls monitoring. Includes templates.</p><div class="res-card-footer"><span class="time">10 min</span><a href="#" class="link">Read More →</a></div></div>
-    <div class="res-card fade-in" data-cat="case-study" data-title="Scaling from Seed to Series C with FinanceOS"><span class="res-tag case-study">Case Study</span><h4>Seed to Series C with FinanceOS</h4><p>How an early-stage startup used FinanceOS from day one — 10 to 500 employees, 3 funding rounds.</p><div class="res-card-footer"><span class="time">7 min</span><a href="#" class="link">Read More →</a></div></div>
-    <div class="res-card fade-in" data-cat="webinar" data-title="AI Copilot Deep Dive: Variance Analysis in Seconds"><span class="res-tag webinar">Webinar</span><h4>AI Copilot: Variance Analysis</h4><p>Live demo of AI identifying, explaining, and recommending actions for budget variances.</p><div class="res-card-footer"><span class="time">30 min</span><a href="#" class="link">Watch →</a></div></div>
-    <div class="res-card fade-in" data-cat="blog" data-title="The Death of the Monthly Close"><span class="res-tag blog">Blog</span><h4>The Death of the Monthly Close</h4><p>Continuous close replaces the monthly marathon. Real-time sync and auto-reconciliation.</p><div class="res-card-footer"><span class="time">4 min</span><a href="#" class="link">Read More →</a></div></div>
-    <div class="res-card fade-in" data-cat="template" data-title="SaaS Metrics Dashboard Template"><span class="res-tag template">Template</span><h4>SaaS Metrics Dashboard</h4><p>ARR, MRR, NDR, LTV/CAC, burn multiple, and 15+ KPIs. Connects to live data.</p><div class="res-card-footer"><span class="time">Download</span><a href="#" class="link">Get Template →</a></div></div>
-    <div class="res-card fade-in" data-cat="guide" data-title="200+ Integrations: Getting Started Guide"><span class="res-tag guide">Guide</span><h4>Integrations Getting Started</h4><p>Connect your ERP, CRM, HRIS, and banks in under 5 minutes each. OAuth walkthroughs included.</p><div class="res-card-footer"><span class="time">6 min</span><a href="#" class="link">Read More →</a></div></div>
-    <div class="res-card fade-in" data-cat="case-study" data-title="Multi-Entity Consolidation at Scale"><span class="res-tag case-study">Case Study</span><h4>Multi-Entity Consolidation at Scale</h4><p>50 entities, 12 currencies, 4 ERPs — consolidated in under 8 seconds.</p><div class="res-card-footer"><span class="time">8 min</span><a href="#" class="link">Read More →</a></div></div>
-  </div>
+<!-- Featured -->
+<section style="max-width:1100px;margin:0 auto 48px;padding:0 24px">
+<div style="background:linear-gradient(135deg,#0F172A 0%,#1E293B 100%);border-radius:16px;padding:48px;color:#fff">
+<span style="display:inline-block;background:#10B981;color:#fff;font-size:12px;font-weight:700;padding:4px 12px;border-radius:99px;margin-bottom:16px;text-transform:uppercase;letter-spacing:0.05em">Featured Guide</span>
+<h2 style="font-size:28px;font-weight:700;margin-bottom:12px">The AI-Powered FP&A Playbook</h2>
+<p style="color:#94A3B8;font-size:16px;margin-bottom:8px;max-width:600px">How leading finance teams are using AI copilots to cut close time by 60% and improve forecast accuracy to 96%.</p>
+<p style="color:#64748B;font-size:14px;margin-bottom:24px">12 min read . Guide</p>
+<a href="mailto:resources@finance-os.app?subject=AI%20FP%26A%20Playbook%20Request" style="display:inline-block;background:#10B981;color:#fff;padding:12px 28px;border-radius:8px;font-weight:600;text-decoration:none;font-size:15px">Request Guide</a>
+</div>
 </section>
 
-<section class="newsletter">
-  <h2>Stay ahead of the curve</h2>
-  <p>Weekly insights on AI-powered finance, delivered every Tuesday.</p>
-  <div class="nl-form"><input type="email" placeholder="you@company.com"><button>Subscribe</button></div>
+<!-- Resource Grid -->
+<section style="max-width:1100px;margin:0 auto 80px;padding:0 24px">
+<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:24px">
+
+<!-- Card 1: Guide -->
+<div style="border:1px solid #E2E8F0;border-radius:12px;padding:28px;display:flex;flex-direction:column">
+<span style="display:inline-block;background:#DBEAFE;color:#1D4ED8;font-size:11px;font-weight:700;padding:4px 10px;border-radius:6px;text-transform:uppercase;letter-spacing:0.05em;width:fit-content;margin-bottom:16px">Guide</span>
+<h3 style="font-size:18px;font-weight:700;color:#0F172A;margin-bottom:8px">From Spreadsheets to AI: FP&A Migration Playbook</h3>
+<p style="color:#64748B;font-size:14px;line-height:1.5;flex:1">Step-by-step guide to moving FP&A workflows from Excel to an AI-native platform.</p>
+<div style="display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:16px;border-top:1px solid #F1F5F9">
+<span style="color:#94A3B8;font-size:13px">8 min</span>
+<a href="mailto:resources@finance-os.app?subject=FP%26A%20Migration%20Playbook" style="color:#10B981;font-weight:600;font-size:14px;text-decoration:none">Request Guide</a>
+</div>
+</div>
+
+<!-- Card 2: Guide -->
+<div style="border:1px solid #E2E8F0;border-radius:12px;padding:28px;display:flex;flex-direction:column">
+<span style="display:inline-block;background:#DBEAFE;color:#1D4ED8;font-size:11px;font-weight:700;padding:4px 10px;border-radius:6px;text-transform:uppercase;letter-spacing:0.05em;width:fit-content;margin-bottom:16px">Guide</span>
+<h3 style="font-size:18px;font-weight:700;color:#0F172A;margin-bottom:8px">How to Reduce Your Monthly Close to Under 5 Days</h3>
+<p style="color:#64748B;font-size:14px;line-height:1.5;flex:1">Best practices for automating multi-entity consolidation and eliminating manual reconciliation bottlenecks.</p>
+<div style="display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:16px;border-top:1px solid #F1F5F9">
+<span style="color:#94A3B8;font-size:13px">6 min</span>
+<a href="mailto:resources@finance-os.app?subject=Monthly%20Close%20Guide" style="color:#10B981;font-weight:600;font-size:14px;text-decoration:none">Request Guide</a>
+</div>
+</div>
+
+<!-- Card 3: Guide -->
+<div style="border:1px solid #E2E8F0;border-radius:12px;padding:28px;display:flex;flex-direction:column">
+<span style="display:inline-block;background:#DBEAFE;color:#1D4ED8;font-size:11px;font-weight:700;padding:4px 10px;border-radius:6px;text-transform:uppercase;letter-spacing:0.05em;width:fit-content;margin-bottom:16px">Guide</span>
+<h3 style="font-size:18px;font-weight:700;color:#0F172A;margin-bottom:8px">xP&A in Practice: Breaking Planning Silos</h3>
+<p style="color:#64748B;font-size:14px;line-height:1.5;flex:1">Learn how to connect Finance, Revenue, and Workforce planning into one unified model.</p>
+<div style="display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:16px;border-top:1px solid #F1F5F9">
+<span style="color:#94A3B8;font-size:13px">10 min</span>
+<a href="mailto:resources@finance-os.app?subject=xP%26A%20Guide" style="color:#10B981;font-weight:600;font-size:14px;text-decoration:none">Request Guide</a>
+</div>
+</div>
+
+<!-- Card 4: Blog -->
+<div style="border:1px solid #E2E8F0;border-radius:12px;padding:28px;display:flex;flex-direction:column">
+<span style="display:inline-block;background:#FEF3C7;color:#92400E;font-size:11px;font-weight:700;padding:4px 10px;border-radius:6px;text-transform:uppercase;letter-spacing:0.05em;width:fit-content;margin-bottom:16px">Blog</span>
+<h3 style="font-size:18px;font-weight:700;color:#0F172A;margin-bottom:8px">Why Consumption-Based Pricing Wins</h3>
+<p style="color:#64748B;font-size:14px;line-height:1.5;flex:1">Per-seat pricing penalizes growing teams. Usage-based aligns vendor incentives with success.</p>
+<div style="display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:16px;border-top:1px solid #F1F5F9">
+<span style="color:#94A3B8;font-size:13px">5 min</span>
+<a href="/pricing" style="color:#10B981;font-weight:600;font-size:14px;text-decoration:none">Read More</a>
+</div>
+</div>
+
+<!-- Card 5: Template -->
+<div style="border:1px solid #E2E8F0;border-radius:12px;padding:28px;display:flex;flex-direction:column">
+<span style="display:inline-block;background:#E0E7FF;color:#4338CA;font-size:11px;font-weight:700;padding:4px 10px;border-radius:6px;text-transform:uppercase;letter-spacing:0.05em;width:fit-content;margin-bottom:16px">Template</span>
+<h3 style="font-size:18px;font-weight:700;color:#0F172A;margin-bottom:8px">Board-Ready Financial Model</h3>
+<p style="color:#64748B;font-size:14px;line-height:1.5;flex:1">Pre-built template with P&L, balance sheet, cash flow, and SaaS metrics. Customizable.</p>
+<div style="display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:16px;border-top:1px solid #F1F5F9">
+<span style="color:#94A3B8;font-size:13px">Download</span>
+<a href="mailto:resources@finance-os.app?subject=Financial%20Model%20Template%20Request" style="color:#10B981;font-weight:600;font-size:14px;text-decoration:none">Request Template</a>
+</div>
+</div>
+
+<!-- Card 6: Guide -->
+<div style="border:1px solid #E2E8F0;border-radius:12px;padding:28px;display:flex;flex-direction:column">
+<span style="display:inline-block;background:#DBEAFE;color:#1D4ED8;font-size:11px;font-weight:700;padding:4px 10px;border-radius:6px;text-transform:uppercase;letter-spacing:0.05em;width:fit-content;margin-bottom:16px">Guide</span>
+<h3 style="font-size:18px;font-weight:700;color:#0F172A;margin-bottom:8px">SOX 404 Compliance Automation</h3>
+<p style="color:#64748B;font-size:14px;line-height:1.5;flex:1">Replace manual audit evidence with continuous controls monitoring. Includes templates.</p>
+<div style="display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:16px;border-top:1px solid #F1F5F9">
+<span style="color:#94A3B8;font-size:13px">10 min</span>
+<a href="mailto:resources@finance-os.app?subject=SOX%20404%20Guide" style="color:#10B981;font-weight:600;font-size:14px;text-decoration:none">Request Guide</a>
+</div>
+</div>
+
+<!-- Card 7: Blog -->
+<div style="border:1px solid #E2E8F0;border-radius:12px;padding:28px;display:flex;flex-direction:column">
+<span style="display:inline-block;background:#FEF3C7;color:#92400E;font-size:11px;font-weight:700;padding:4px 10px;border-radius:6px;text-transform:uppercase;letter-spacing:0.05em;width:fit-content;margin-bottom:16px">Blog</span>
+<h3 style="font-size:18px;font-weight:700;color:#0F172A;margin-bottom:8px">The Shift to Continuous Close</h3>
+<p style="color:#64748B;font-size:14px;line-height:1.5;flex:1">Continuous close replaces the monthly marathon. Real-time sync and auto-reconciliation.</p>
+<div style="display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:16px;border-top:1px solid #F1F5F9">
+<span style="color:#94A3B8;font-size:13px">4 min</span>
+<a href="mailto:resources@finance-os.app?subject=Continuous%20Close%20Blog" style="color:#10B981;font-weight:600;font-size:14px;text-decoration:none">Read More</a>
+</div>
+</div>
+
+<!-- Card 8: Template -->
+<div style="border:1px solid #E2E8F0;border-radius:12px;padding:28px;display:flex;flex-direction:column">
+<span style="display:inline-block;background:#E0E7FF;color:#4338CA;font-size:11px;font-weight:700;padding:4px 10px;border-radius:6px;text-transform:uppercase;letter-spacing:0.05em;width:fit-content;margin-bottom:16px">Template</span>
+<h3 style="font-size:18px;font-weight:700;color:#0F172A;margin-bottom:8px">Variance Analysis Checklist</h3>
+<p style="color:#64748B;font-size:14px;line-height:1.5;flex:1">A structured checklist for identifying, explaining, and acting on budget variances each period.</p>
+<div style="display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:16px;border-top:1px solid #F1F5F9">
+<span style="color:#94A3B8;font-size:13px">Download</span>
+<a href="mailto:resources@finance-os.app?subject=Variance%20Analysis%20Checklist" style="color:#10B981;font-weight:600;font-size:14px;text-decoration:none">Request Template</a>
+</div>
+</div>
+
+<!-- Card 9: Guide -->
+<div style="border:1px solid #E2E8F0;border-radius:12px;padding:28px;display:flex;flex-direction:column">
+<span style="display:inline-block;background:#DBEAFE;color:#1D4ED8;font-size:11px;font-weight:700;padding:4px 10px;border-radius:6px;text-transform:uppercase;letter-spacing:0.05em;width:fit-content;margin-bottom:16px">Guide</span>
+<h3 style="font-size:18px;font-weight:700;color:#0F172A;margin-bottom:8px">AI Copilot: Getting Started with Natural Language Queries</h3>
+<p style="color:#64748B;font-size:14px;line-height:1.5;flex:1">Learn how to ask your financial data questions in plain English and get instant, actionable answers.</p>
+<div style="display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:16px;border-top:1px solid #F1F5F9">
+<span style="color:#94A3B8;font-size:13px">7 min</span>
+<a href="mailto:resources@finance-os.app?subject=AI%20Copilot%20Guide" style="color:#10B981;font-weight:600;font-size:14px;text-decoration:none">Request Guide</a>
+</div>
+</div>
+
+</div>
 </section>
 
-<footer>
-  <div class="ft-inner">
-    <div class="ft-brand">
-      <a href="/" class="logo-link"><span class="ldot"></span>FinanceOS</a>
-      <p>AI-native financial planning & analysis for modern finance teams.</p>
-    </div>
-    <div class="ft-col"><h5>Product</h5><a href="/">Platform</a><a href="/integrations">Integrations</a><a href="/pricing">Pricing</a><a href="/security">Security</a></div>
-    <div class="ft-col"><h5>Solutions</h5><a href="/solutions">SaaS</a><a href="/solutions">E-Commerce</a><a href="/xpa-planning">Cross-Dept Planning</a></div>
-    <div class="ft-col"><h5>Resources</h5><a href="/resources">Resource Library</a><a href="/whats-new">Changelog</a></div>
-    <div class="ft-col"><h5>Company</h5><a href="#">About</a><a href="#">Careers</a><a href="#">Contact</a></div>
-  </div>
-  <div class="ft-bottom">
-    <span>&copy; 2026 FinanceOS, Inc.</span>
-    <div style="display:flex;gap:20px"><a href="/security">Privacy</a><a href="#">Terms</a><a href="/security">Security</a></div>
-  </div>
+<!-- CTA -->
+<section style="background:#0F172A;padding:80px 24px;text-align:center">
+<h2 style="font-size:28px;font-weight:700;color:#fff;margin-bottom:12px">Need a custom resource?</h2>
+<p style="color:#94A3B8;font-size:16px;margin-bottom:32px;max-width:480px;margin-left:auto;margin-right:auto">Our team can prepare tailored materials for your finance org. Reach out and we will get you what you need.</p>
+<div style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap">
+<a href="mailto:resources@finance-os.app?subject=Custom%20Resource%20Request" style="display:inline-block;background:#10B981;color:#fff;padding:14px 32px;border-radius:8px;font-weight:600;text-decoration:none;font-size:15px">Contact Us</a>
+<a href="/pricing" style="display:inline-block;background:transparent;color:#fff;padding:14px 32px;border-radius:8px;font-weight:600;text-decoration:none;font-size:15px;border:1px solid #334155">See Pricing</a>
+</div>
+</section>
+
+<!-- Footer -->
+<footer style="background:#0F172A;border-top:1px solid #1E293B;padding:48px 24px 32px">
+<div style="max-width:1100px;margin:0 auto;display:flex;flex-wrap:wrap;justify-content:space-between;gap:40px">
+<div>
+<div style="color:#fff;font-weight:700;font-size:18px;margin-bottom:16px"><span style="color:#10B981">.</span> FinanceOS</div>
+<p style="color:#64748B;font-size:14px;max-width:240px">AI-native financial planning and analysis for modern finance teams.</p>
+</div>
+<div style="display:flex;flex-wrap:wrap;gap:48px">
+<div>
+<h4 style="color:#94A3B8;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:12px">Product</h4>
+<div style="display:flex;flex-direction:column;gap:8px">
+<a href="/integrations" style="color:#64748B;font-size:14px;text-decoration:none">Integrations</a>
+<a href="/pricing" style="color:#64748B;font-size:14px;text-decoration:none">Pricing</a>
+<a href="/security" style="color:#64748B;font-size:14px;text-decoration:none">Security</a>
+</div>
+</div>
+<div>
+<h4 style="color:#94A3B8;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:12px">Resources</h4>
+<div style="display:flex;flex-direction:column;gap:8px">
+<a href="/resources" style="color:#64748B;font-size:14px;text-decoration:none">Resource Library</a>
+<a href="/whats-new" style="color:#64748B;font-size:14px;text-decoration:none">Changelog</a>
+</div>
+</div>
+<div>
+<h4 style="color:#94A3B8;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:12px">Company</h4>
+<div style="display:flex;flex-direction:column;gap:8px">
+<a href="/about" style="color:#64748B;font-size:14px;text-decoration:none">About</a>
+<a href="mailto:hello@finance-os.app" style="color:#64748B;font-size:14px;text-decoration:none">Contact</a>
+</div>
+</div>
+</div>
+</div>
+<div style="max-width:1100px;margin:32px auto 0;padding-top:24px;border-top:1px solid #1E293B;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px">
+<span style="color:#475569;font-size:13px">2026 FinanceOS, Inc. All rights reserved.</span>
+<div style="display:flex;gap:20px">
+<a href="/privacy" style="color:#64748B;font-size:13px;text-decoration:none">Privacy</a>
+<a href="/terms" style="color:#64748B;font-size:13px;text-decoration:none">Terms</a>
+<a href="/security" style="color:#64748B;font-size:13px;text-decoration:none">Security</a>
+</div>
+</div>
 </footer>
 
-<script>
-document.querySelectorAll('.pill').forEach(pill=>{pill.addEventListener('click',()=>{document.querySelectorAll('.pill').forEach(p=>p.classList.remove('active'));pill.classList.add('active');const cat=pill.dataset.cat;document.querySelectorAll('.res-card').forEach(c=>{c.classList.toggle('hidden',cat!=='all'&&c.dataset.cat!==cat)})})});
-document.getElementById('searchInput').addEventListener('input',e=>{const q=e.target.value.toLowerCase();document.querySelectorAll('.res-card').forEach(c=>{c.classList.toggle('hidden',q.length>0&&!c.dataset.title.toLowerCase().includes(q))});if(q.length>0){document.querySelectorAll('.pill').forEach(p=>p.classList.remove('active'));document.querySelector('.pill[data-cat="all"]').classList.add('active')}});
-const obs=new IntersectionObserver(e=>{e.forEach(el=>{if(el.isIntersecting)el.target.classList.add('visible')})},{threshold:0.1});
-document.querySelectorAll('.fade-in').forEach(el=>obs.observe(el));
-</script>
 </body>
 </html>
