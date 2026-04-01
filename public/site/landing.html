@@ -93,11 +93,8 @@ nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,0.88);backdrop
 /* HERO VISUAL */
 .hero-visual{max-width:960px;margin:0 auto;border-radius:var(--radius-xl);overflow:hidden;box-shadow:var(--shadow-xl);border:1px solid var(--border);background:var(--bg)}
 .hv-topbar{display:flex;align-items:center;gap:8px;padding:10px 16px;background:var(--bg-alt);border-bottom:1px solid var(--border)}
-.hv-dots{display:flex;gap:5px}
-.hv-dots span{width:10px;height:10px;border-radius:50%}
-.hv-dots span:nth-child(1){background:#EF4444}
-.hv-dots span:nth-child(2){background:#F59E0B}
-.hv-dots span:nth-child(3){background:#10B981}
+.hv-brand{display:flex;align-items:center;gap:6px;font-size:11px;font-weight:600;letter-spacing:0.5px;color:rgba(255,255,255,0.5)}
+.hv-brand-dot{width:8px;height:8px;background:#22c55e;border-radius:50%}
 .hv-tabs{display:flex;gap:0;margin-left:20px}
 .hv-tab{padding:4px 12px;font-size:11px;font-weight:500;color:var(--muted);border-radius:6px}
 .hv-tab.active{background:var(--bg);color:var(--text);box-shadow:var(--shadow-xs)}
@@ -168,10 +165,7 @@ nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,0.88);backdrop
 
 .ai-terminal{background:#0F172A;border-radius:var(--radius-lg);overflow:hidden;font-family:var(--mono);font-size:12px;box-shadow:var(--shadow-xl)}
 .ai-t-header{padding:10px 16px;background:rgba(0,0,0,0.3);display:flex;align-items:center;gap:6px}
-.ai-t-header span{width:10px;height:10px;border-radius:50%}
-.ai-t-header span:nth-child(1){background:#EF4444}
-.ai-t-header span:nth-child(2){background:#F59E0B}
-.ai-t-header span:nth-child(3){background:#10B981}
+.ai-t-header .ai-brand{font-size:10px;font-weight:600;letter-spacing:0.5px;color:rgba(255,255,255,0.4)}
 .ai-t-header .t-title{margin-left:12px;font-size:11px;color:#475569;font-family:var(--mono)}
 .ai-t-body{padding:20px;line-height:2;color:#94A3B8}
 .ai-t-body .prompt{color:#10B981}
@@ -498,7 +492,7 @@ body { -webkit-font-smoothing: antialiased !important; -moz-osx-font-smoothing: 
 
   <div class="hero-visual">
     <div class="hv-topbar">
-      <div class="hv-dots"><span></span><span></span><span></span></div>
+      <div class="hv-brand"><span class="hv-brand-dot"></span> FINANCEOS</div>
       <div class="hv-tabs">
         <div class="hv-tab active">Dashboard</div>
         <div class="hv-tab">Forecast</div>
@@ -643,7 +637,7 @@ body { -webkit-font-smoothing: antialiased !important; -moz-osx-font-smoothing: 
         </div>
       </div>
       <div class="ai-terminal fade-in">
-        <div class="ai-t-header"><span></span><span></span><span></span><span class="t-title">AI Copilot</span></div>
+        <div class="ai-t-header"><span class="ai-brand">FINANCEOS</span><span class="t-title">AI Copilot</span></div>
         <div class="ai-t-body">
           <div class="prompt">You → Why did OPEX exceed budget by $340K?</div><br>
           <div class="response">Three factors drove the $340K overage:</div><br>
@@ -740,3 +734,4 @@ document.querySelectorAll('.fade-in').forEach(el => obs.observe(el));
 </script>
 </body>
                                  </html>
+
