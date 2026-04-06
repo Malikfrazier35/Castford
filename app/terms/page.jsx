@@ -13,15 +13,15 @@ export default function TermsPage() {
       <div style={{ maxWidth: 720, margin: "0 auto", padding: "60px 24px 100px" }}>
         {/* Header */}
         <div style={{ marginBottom: 40, paddingBottom: 28, borderBottom: "1px solid #1e2230" }}>
-          <a href="/" style={{ display: "inline-flex", alignItems: "center", gap: 8, fontSize: 14, color: "#60a5fa", textDecoration: "none", marginBottom: 20 }}>← Back to FinanceOS</a>
+          <a href="/" style={{ display: "inline-flex", alignItems: "center", gap: 8, fontSize: 14, color: "#60a5fa", textDecoration: "none", marginBottom: 20 }}>← Back to Castford</a>
           <h1 style={{ fontSize: 36, fontWeight: 800, letterSpacing: "-0.03em", marginBottom: 8 }}>Terms of Service</h1>
           <p style={{ fontSize: 13, color: "#3d4558" }}>Effective: {effective} · Financial Holding LLC</p>
         </div>
 
-        <p style={p}>These Terms of Service ("Terms") govern your access to and use of FinanceOS, a cloud-based financial planning and analysis platform operated by Financial Holding LLC ("Company," "we," "us," or "our"). By creating an account or using the Service, you agree to be bound by these Terms.</p>
+        <p style={p}>These Terms of Service ("Terms") govern your access to and use of Castford, a cloud-based financial planning and analysis platform operated by Financial Holding LLC ("Company," "we," "us," or "our"). By creating an account or using the Service, you agree to be bound by these Terms.</p>
 
         <div style={h2}>1. Definitions</div>
-        <p style={p}>"Service" means the FinanceOS web application, APIs, Edge Functions, AI Copilot, and all related services available at finance-os.app. "Customer Data" means all data, files, and information you or your authorized users upload, enter, or transmit through the Service. "Authorized Users" means individuals you authorize to access the Service under your account. "Subscription" means your selected pricing tier and billing arrangement.</p>
+        <p style={p}>"Service" means the Castford web application, APIs, Edge Functions, AI Copilot, and all related services available at castford.com. "Customer Data" means all data, files, and information you or your authorized users upload, enter, or transmit through the Service. "Authorized Users" means individuals you authorize to access the Service under your account. "Subscription" means your selected pricing tier and billing arrangement.</p>
 
         <div style={h2}>2. Account Registration</div>
         <p style={p}>To use the Service, you must create an account with accurate information. You are responsible for maintaining the confidentiality of your credentials and for all activity under your account. You must notify us immediately of any unauthorized access. Accounts are available to individuals 18 years of age or older. By registering, you represent that you have authority to bind your organization to these Terms.</p>
@@ -50,7 +50,7 @@ export default function TermsPage() {
         <p style={p}>Upon account cancellation, your Customer Data remains available for 90 days. After 90 days, Customer Data is permanently deleted from our systems including all backups. You may request immediate deletion by contacting support or using the Account Deletion feature in Settings.</p>
 
         <div style={h3}>4.4 Data Security</div>
-        <p style={p}>We implement industry-standard security measures including AES-256 encryption at rest and in transit, row-level security policies ensuring tenant isolation, HSTS and Content Security Policy headers, and regular security reviews. Our architecture is built to SOC 2 Type II standards. For details, see our Security section at finance-os.app.</p>
+        <p style={p}>We implement industry-standard security measures including AES-256 encryption at rest and in transit, row-level security policies ensuring tenant isolation, HSTS and Content Security Policy headers, and regular security reviews. Our architecture is built to SOC 2 Type II standards. For details, see our Security section at castford.com.</p>
 
         <div style={h2}>5. Acceptable Use</div>
         <p style={p}>You agree not to:</p>
@@ -90,7 +90,7 @@ export default function TermsPage() {
 
         <div style={h2}>14. Contact</div>
         <p style={p}>For questions about these Terms, contact us at:</p>
-        <p style={p}>Financial Holding LLC<br />Email: legal@finance-os.app<br />Website: finance-os.app</p>
+        <p style={p}>Financial Holding LLC<br />Email: legal@castford.com<br />Website: castford.com</p>
 
         {/* Footer */}
         <div style={{ marginTop: 60, paddingTop: 24, borderTop: "1px solid #1e2230", display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: 12, color: "#3d4558" }}>

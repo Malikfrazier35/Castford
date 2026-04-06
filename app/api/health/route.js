@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 
 // ═══════════════════════════════════════════════════════════════
-// FinanceOS — Health Check & System Status
+// Castford — Health Check & System Status
 // Use: Uptime monitoring, load balancer health checks, spike detection
 // GET /api/health → { status, latency, db, timestamp }
 // ═══════════════════════════════════════════════════════════════

@@ -15,12 +15,12 @@ export default function CookiePolicyPage() {
       <div style={{ maxWidth: 720, margin: "0 auto", padding: "60px 24px 100px" }}>
         {/* Header */}
         <div style={{ marginBottom: 40, paddingBottom: 28, borderBottom: "1px solid #1e2230" }}>
-          <a href="/" style={{ display: "inline-flex", alignItems: "center", gap: 8, fontSize: 14, color: "#60a5fa", textDecoration: "none", marginBottom: 20 }}>← Back to FinanceOS</a>
+          <a href="/" style={{ display: "inline-flex", alignItems: "center", gap: 8, fontSize: 14, color: "#60a5fa", textDecoration: "none", marginBottom: 20 }}>← Back to Castford</a>
           <h1 style={{ fontSize: 36, fontWeight: 800, letterSpacing: "-0.03em", marginBottom: 8 }}>Cookie Policy</h1>
           <p style={{ fontSize: 13, color: "#3d4558" }}>Effective: {effective} · Financial Holding LLC</p>
         </div>
 
-        <p style={p}>This Cookie Policy explains how Financial Holding LLC ("Company," "we," "us," or "our") uses cookies and similar tracking technologies when you visit or use FinanceOS at finance-os.app. This policy should be read alongside our <a href="/privacy" style={{ color: "#60a5fa", textDecoration: "none" }}>Privacy Policy</a> and <a href="/terms" style={{ color: "#60a5fa", textDecoration: "none" }}>Terms of Service</a>.</p>
+        <p style={p}>This Cookie Policy explains how Financial Holding LLC ("Company," "we," "us," or "our") uses cookies and similar tracking technologies when you visit or use Castford at castford.com. This policy should be read alongside our <a href="/privacy" style={{ color: "#60a5fa", textDecoration: "none" }}>Privacy Policy</a> and <a href="/terms" style={{ color: "#60a5fa", textDecoration: "none" }}>Terms of Service</a>.</p>
 
         {/* Section 1 */}
         <div style={h2}>1. What Are Cookies</div>
@@ -29,7 +29,7 @@ export default function CookiePolicyPage() {
 
         {/* Section 2 */}
         <div style={h2}>2. Our Approach to Cookies</div>
-        <p style={p}>FinanceOS is built with a privacy-first philosophy. We minimize the use of cookies and tracking technologies wherever possible. Notably:</p>
+        <p style={p}>Castford is built with a privacy-first philosophy. We minimize the use of cookies and tracking technologies wherever possible. Notably:</p>
         <ul>
           <li style={li}><strong style={{ color: "#d1d5e0" }}>No advertising cookies</strong> — We do not use any advertising, retargeting, or behavioral tracking cookies.</li>
           <li style={li}><strong style={{ color: "#d1d5e0" }}>No third-party marketing trackers</strong> — We do not embed Facebook Pixel, Google Ads tags, or similar marketing scripts.</li>
@@ -39,7 +39,7 @@ export default function CookiePolicyPage() {
 
         {/* Section 3 */}
         <div style={h2}>3. Cookies We Use</div>
-        <p style={p}>The following table describes the cookies and similar technologies used on FinanceOS:</p>
+        <p style={p}>The following table describes the cookies and similar technologies used on Castford:</p>
 
         <div style={h3}>3.1 Strictly Necessary Cookies</div>
         <p style={p}>These cookies are essential for the Service to function and cannot be disabled. They are set in response to actions you take, such as logging in or setting your preferences.</p>
@@ -72,9 +72,9 @@ export default function CookiePolicyPage() {
             </tr>
           </thead>
           <tbody>
-            <tr><td style={td}>fos-theme</td><td style={td}>FinanceOS</td><td style={td}>Remembers your dark/light mode preference</td><td style={td}>1 year</td></tr>
-            <tr><td style={td}>fos-sidebar</td><td style={td}>FinanceOS</td><td style={td}>Remembers sidebar collapsed/expanded state</td><td style={td}>1 year</td></tr>
-            <tr><td style={td}>fos-active-view</td><td style={td}>FinanceOS</td><td style={td}>Remembers your last active dashboard view</td><td style={td}>Session</td></tr>
+            <tr><td style={td}>fos-theme</td><td style={td}>Castford</td><td style={td}>Remembers your dark/light mode preference</td><td style={td}>1 year</td></tr>
+            <tr><td style={td}>fos-sidebar</td><td style={td}>Castford</td><td style={td}>Remembers sidebar collapsed/expanded state</td><td style={td}>1 year</td></tr>
+            <tr><td style={td}>fos-active-view</td><td style={td}>Castford</td><td style={td}>Remembers your last active dashboard view</td><td style={td}>Session</td></tr>
           </tbody>
         </table>
 
@@ -121,7 +121,7 @@ export default function CookiePolicyPage() {
         <p style={p}>You can control and manage cookies in several ways:</p>
 
         <div style={h3}>5.1 Browser Settings</div>
-        <p style={p}>Most browsers allow you to view, manage, and delete cookies through their settings. You can configure your browser to block all cookies, block third-party cookies only, or delete cookies when you close the browser. Note that blocking strictly necessary cookies will prevent you from logging in to FinanceOS.</p>
+        <p style={p}>Most browsers allow you to view, manage, and delete cookies through their settings. You can configure your browser to block all cookies, block third-party cookies only, or delete cookies when you close the browser. Note that blocking strictly necessary cookies will prevent you from logging in to Castford.</p>
 
         <div style={h3}>5.2 Device Settings</div>
         <p style={p}>On mobile devices, you can manage cookie settings through your device's browser settings or through the operating system's privacy settings.</p>
@@ -139,7 +139,7 @@ export default function CookiePolicyPage() {
 
         {/* Section 6 */}
         <div style={h2}>6. Cookies We Do NOT Use</div>
-        <p style={p}>For full transparency, the following types of cookies are explicitly not used on FinanceOS:</p>
+        <p style={p}>For full transparency, the following types of cookies are explicitly not used on Castford:</p>
         <ul>
           <li style={li}><strong style={{ color: "#d1d5e0" }}>Advertising / Retargeting Cookies</strong> — No Google Ads, Facebook Pixel, LinkedIn Insight Tag, or similar.</li>
           <li style={li}><strong style={{ color: "#d1d5e0" }}>Cross-Site Tracking Cookies</strong> — We do not track your activity across other websites.</li>
@@ -152,7 +152,7 @@ export default function CookiePolicyPage() {
         <div style={h2}>7. GDPR, CCPA & International Compliance</div>
 
         <div style={h3}>7.1 European Economic Area (GDPR / ePrivacy)</div>
-        <p style={p}>Under the EU ePrivacy Directive and GDPR, strictly necessary cookies do not require consent. Since FinanceOS only uses strictly necessary and functional cookies (no advertising or analytics cookies), and our analytics provider (Plausible) is cookie-free and GDPR-compliant by design, our cookie usage is compatible with EU regulations without a cookie consent banner. Functional cookies that store your preferences (theme, sidebar state) are set in response to your explicit actions and fall under the "strictly necessary" exemption.</p>
+        <p style={p}>Under the EU ePrivacy Directive and GDPR, strictly necessary cookies do not require consent. Since Castford only uses strictly necessary and functional cookies (no advertising or analytics cookies), and our analytics provider (Plausible) is cookie-free and GDPR-compliant by design, our cookie usage is compatible with EU regulations without a cookie consent banner. Functional cookies that store your preferences (theme, sidebar state) are set in response to your explicit actions and fall under the "strictly necessary" exemption.</p>
 
         <div style={h3}>7.2 California (CCPA / CPRA)</div>
         <p style={p}>We do not sell personal information as defined under the California Consumer Privacy Act. We do not share personal information for cross-context behavioral advertising. Our cookie usage does not trigger "sale" or "sharing" obligations under CCPA/CPRA. California residents retain all rights described in our <a href="/privacy" style={{ color: "#60a5fa", textDecoration: "none" }}>Privacy Policy</a>.</p>
@@ -179,15 +179,15 @@ export default function CookiePolicyPage() {
         <p style={p}>If you have questions about this Cookie Policy or our use of cookies, you can reach us at:</p>
         <div style={{ background: "#111318", border: "1px solid #1e2230", borderRadius: 12, padding: 24, marginBottom: 20 }}>
           <p style={{ ...p, marginBottom: 6 }}><strong style={{ color: "#d1d5e0" }}>Financial Holding LLC</strong></p>
-          <p style={{ ...p, marginBottom: 6 }}>Email: privacy@finance-os.app</p>
-          <p style={{ ...p, marginBottom: 0 }}>Website: finance-os.app</p>
+          <p style={{ ...p, marginBottom: 6 }}>Email: privacy@castford.com</p>
+          <p style={{ ...p, marginBottom: 0 }}>Website: castford.com</p>
         </div>
 
         {/* Footer nav */}
         <div style={{ marginTop: 60, paddingTop: 28, borderTop: "1px solid #1e2230", display: "flex", gap: 24, flexWrap: "wrap" }}>
           <a href="/privacy" style={{ fontSize: 13, color: "#60a5fa", textDecoration: "none" }}>Privacy Policy</a>
           <a href="/terms" style={{ fontSize: 13, color: "#60a5fa", textDecoration: "none" }}>Terms of Service</a>
-          <a href="/" style={{ fontSize: 13, color: "#60a5fa", textDecoration: "none" }}>Back to FinanceOS</a>
+          <a href="/" style={{ fontSize: 13, color: "#60a5fa", textDecoration: "none" }}>Back to Castford</a>
         </div>
       </div>
     </div>

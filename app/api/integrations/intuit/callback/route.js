@@ -5,7 +5,7 @@ import { createClient } from "@supabase/supabase-js";
 const TOKEN_URL = "https://oauth.platform.intuit.com/oauth2/v1/tokens/bearer";
 const CLIENT_ID = process.env.INTUIT_CLIENT_ID;
 const CLIENT_SECRET = process.env.INTUIT_CLIENT_SECRET;
-const REDIRECT_URI = process.env.INTUIT_REDIRECT_URI || "https://finance-os.app/api/integrations/intuit/callback";
+const REDIRECT_URI = process.env.INTUIT_REDIRECT_URI || "https://castford.com/api/integrations/intuit/callback";
 
 export async function GET(request) {
   try {
@@ -17,15 +17,15 @@ export async function GET(request) {
 
     // Handle user denial
     if (error) {
-      return NextResponse.redirect("https://finance-os.app/?integration=quickbooks&status=denied");
+      return NextResponse.redirect("https://castford.com/?integration=quickbooks&status=denied");
     }
 
     if (!code || !state || !realmId) {
-      return NextResponse.redirect("https://finance-os.app/?integration=quickbooks&status=error&reason=missing_params");
+      return NextResponse.redirect("https://castford.com/?integration=quickbooks&status=error&reason=missing_params");
     }
 
     if (!CLIENT_ID || !CLIENT_SECRET) {
-      return NextResponse.redirect("https://finance-os.app/?integration=quickbooks&status=error&reason=not_configured");
+      return NextResponse.redirect("https://castford.com/?integration=quickbooks&status=error&reason=not_configured");
     }
 
     const supabaseAdmin = createClient(
@@ -42,7 +42,7 @@ export async function GET(request) {
       .single();
 
     if (!integration || integration.config?.state !== state) {
-      return NextResponse.redirect("https://finance-os.app/?integration=quickbooks&status=error&reason=invalid_state");
+      return NextResponse.redirect("https://castford.com/?integration=quickbooks&status=error&reason=invalid_state");
     }
 
     // Exchange authorization code for tokens
@@ -62,7 +62,7 @@ export async function GET(request) {
     });
 
     if (!tokenRes.ok) {
-      return NextResponse.redirect("https://finance-os.app/?integration=quickbooks&status=error&reason=token_exchange_failed");
+      return NextResponse.redirect("https://castford.com/?integration=quickbooks&status=error&reason=token_exchange_failed");
     }
 
     const tokens = await tokenRes.json();
@@ -89,8 +89,8 @@ export async function GET(request) {
       details: { realm_id: realmId },
     });
 
-    return NextResponse.redirect("https://finance-os.app/?integration=quickbooks&status=connected");
+    return NextResponse.redirect("https://castford.com/?integration=quickbooks&status=connected");
   } catch (err) {
-    return NextResponse.redirect("https://finance-os.app/?integration=quickbooks&status=error&reason=unexpected");
+    return NextResponse.redirect("https://castford.com/?integration=quickbooks&status=error&reason=unexpected");
   }
 }

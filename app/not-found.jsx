@@ -22,7 +22,7 @@ export default function NotFound() {
         fontSize: 14, padding: "12px 24px", borderRadius: 10, textDecoration: "none",
         background: "linear-gradient(135deg, #60a5fa, #a78bfa)", color: "#fff", fontWeight: 700,
         boxShadow: "0 4px 16px rgba(96,165,250,0.25)",
-      }}>Back to FinanceOS</a>
+      }}>Back to Castford</a>
     </div>
   );
 }

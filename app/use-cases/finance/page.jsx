@@ -31,7 +31,7 @@ export default function FinanceUseCasePage() {
 
       <nav style={{position:"sticky",top:0,zIndex:50,borderBottom:`1px solid ${c.b}40`,background:"rgba(6,8,12,.88)",backdropFilter:"blur(24px) saturate(1.4)",WebkitBackdropFilter:"blur(24px) saturate(1.4)"}}>
         <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"12px 48px",maxWidth:1200,margin:"0 auto"}}>
-          <Link href="/" style={{display:"flex",alignItems:"center",gap:10,textDecoration:"none"}}><Logo size={30} /><span style={{fontSize:17,fontWeight:800,color:c.t,letterSpacing:"-0.03em"}}>FinanceOS</span></Link>
+          <Link href="/" style={{display:"flex",alignItems:"center",gap:10,textDecoration:"none"}}><Logo size={30} /><span style={{fontSize:17,fontWeight:800,color:c.t,letterSpacing:"-0.03em"}}>Castford</span></Link>
           <div style={{display:"flex",alignItems:"center",gap:28}}>
             <Link href="/use-cases" className="uc-nav" style={{fontSize:13,color:c.td,textDecoration:"none",fontWeight:500,transition:"color .2s"}}>Solutions</Link>
             <Link href="/use-cases/budget-planning" className="uc-nav" style={{fontSize:13,color:c.td,textDecoration:"none",fontWeight:500,transition:"color .2s"}}>Budget Planning</Link>
@@ -52,7 +52,7 @@ export default function FinanceUseCasePage() {
         <p className="uc-f2" style={{fontSize:17,color:c.td,lineHeight:1.65,maxWidth:560,margin:"0 auto 36px"}}>AI-native variance detection, scenario modeling, and natural language querying — built for modern finance teams who refuse to compromise on speed or accuracy.</p>
         <div className="uc-f3" style={{display:"flex",gap:12,justifyContent:"center"}}>
           <Link href="/" className="uc-btn" style={{fontSize:15,padding:"14px 30px",borderRadius:12,background:`linear-gradient(135deg,${c.ac},${c.pu})`,color:"#fff",textDecoration:"none",fontWeight:700,boxShadow:`0 4px 20px ${c.ac}28`}}>Explore the Demo →</Link>
-          <a href="https://calendly.com/finance-os-support/30min" target="_blank" rel="noopener" className="uc-btn" style={{fontSize:15,padding:"14px 30px",borderRadius:12,border:`1px solid ${c.b}`,background:"transparent",color:c.td,textDecoration:"none",fontWeight:600}}>Join Next Live Demo</a>
+          <a href="https://calendly.com/castford-support/30min" target="_blank" rel="noopener" className="uc-btn" style={{fontSize:15,padding:"14px 30px",borderRadius:12,border:`1px solid ${c.b}`,background:"transparent",color:c.td,textDecoration:"none",fontWeight:600}}>Join Next Live Demo</a>
         </div>
       </section>
 
@@ -63,7 +63,7 @@ export default function FinanceUseCasePage() {
           <img src="https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=400&q=80&fit=crop&crop=faces" alt="Team presenting data" style={{width:"100%",height:"100%",objectFit:"cover"}} loading="lazy" />
           <img src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=400&q=80&fit=crop&crop=faces" alt="Professionals reviewing financials" style={{width:"100%",height:"100%",objectFit:"cover"}} loading="lazy" />
         </div>
-        <div style={{textAlign:"center",marginTop:8,fontSize:9,color:c.tf}}>Finance teams using FinanceOS to make faster, better decisions</div>
+        <div style={{textAlign:"center",marginTop:8,fontSize:9,color:c.tf}}>Finance teams using Castford to make faster, better decisions</div>
       </div>
 
       {/* Trusted By logos */}
@@ -99,19 +99,19 @@ export default function FinanceUseCasePage() {
 
       <section ref={reg("demo")} style={{padding:"60px 48px 80px",maxWidth:1100,margin:"0 auto"}}>
         <div style={{textAlign:"center",marginBottom:40,opacity:show("demo")?1:0,transform:show("demo")?"none":"translateY(16px)",transition:"all .5s ease"}}>
-          <h2 style={{fontSize:36,fontWeight:800,letterSpacing:"-0.03em",marginBottom:10,textTransform:"uppercase"}}>See FinanceOS in action</h2>
-          <p style={{fontSize:15,color:c.td}}>Explore the interactive demo to discover how FinanceOS works.</p>
+          <h2 style={{fontSize:36,fontWeight:800,letterSpacing:"-0.03em",marginBottom:10,textTransform:"uppercase"}}>See Castford in action</h2>
+          <p style={{fontSize:15,color:c.td}}>Explore the interactive demo to discover how Castford works.</p>
         </div>
         <Link href="/" style={{textDecoration:"none"}}>
         <div className="uc-card" style={{borderRadius:20,border:`1px solid ${c.b}`,overflow:"hidden",boxShadow:`0 24px 64px rgba(0,0,0,.45)`,cursor:"pointer"}}>
           <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"12px 20px",background:c.s,borderBottom:`1px solid ${c.b}`}}>
             <div style={{display:"flex",gap:6}}><div style={{width:10,height:10,borderRadius:"50%",background:c.rd}} /><div style={{width:10,height:10,borderRadius:"50%",background:c.am}} /><div style={{width:10,height:10,borderRadius:"50%",background:c.gn}} /></div>
-            <div style={{fontSize:11,color:c.tf,fontFamily:"'JetBrains Mono',monospace",background:`${c.bg}80`,padding:"4px 16px",borderRadius:6}}>finance-os.app/dashboard</div>
+            <div style={{fontSize:11,color:c.tf,fontFamily:"'JetBrains Mono',monospace",background:`${c.bg}80`,padding:"4px 16px",borderRadius:6}}>castford.com/dashboard</div>
             <div style={{width:50}} />
           </div>
           <div style={{display:"grid",gridTemplateColumns:"170px 1fr",background:c.bg}}>
             <div style={{padding:"20px 12px",borderRight:`1px solid ${c.b}`,background:`linear-gradient(180deg,${c.s}cc,${c.bg})`}}>
-              <div style={{display:"flex",alignItems:"center",gap:6,marginBottom:20,padding:"0 4px"}}><Logo size={18} /><span style={{fontSize:10,fontWeight:800,color:c.t}}>FinanceOS</span></div>
+              <div style={{display:"flex",alignItems:"center",gap:6,marginBottom:20,padding:"0 4px"}}><Logo size={18} /><span style={{fontSize:10,fontWeight:800,color:c.t}}>Castford</span></div>
               {["Dashboard","AI Copilot","P&L Statement","Forecast","Consolidation","Scenarios","Close Tasks"].map((item,i)=>(
                 <div key={item} style={{fontSize:10,padding:"6px 10px",marginBottom:2,borderRadius:7,color:i===0?c.t:c.td,fontWeight:i===0?700:400,background:i===0?`${c.ac}10`:"transparent",position:"relative"}}>
                   {i===0&&<div style={{position:"absolute",left:0,top:"20%",bottom:"20%",width:2,borderRadius:1,background:c.ac}} />}{item}
@@ -155,7 +155,7 @@ export default function FinanceUseCasePage() {
 
       <section ref={reg("features")} style={{padding:"80px 48px",maxWidth:960,margin:"0 auto"}}>
         <div style={{textAlign:"center",marginBottom:56,opacity:show("features")?1:0,transform:show("features")?"none":"translateY(16px)",transition:"all .5s ease"}}>
-          <div style={{fontSize:11,fontWeight:700,textTransform:"uppercase",letterSpacing:"0.12em",color:c.gn,marginBottom:10}}>Financial planning in FinanceOS</div>
+          <div style={{fontSize:11,fontWeight:700,textTransform:"uppercase",letterSpacing:"0.12em",color:c.gn,marginBottom:10}}>Financial planning in Castford</div>
           <h2 style={{fontSize:36,fontWeight:800,letterSpacing:"-0.03em"}}>Built for how finance teams actually work</h2>
         </div>
         {[{n:"1",t:"Integrate anything, understand everything",d:"Native connectors for QuickBooks, Xero, NetSuite, Sage, Stripe, and 15+ platforms. CSV import with AI-powered column detection. Go live in minutes, not months.",cl:c.ac},{n:"2",t:"Model any scenario, visualize every impact",d:"Clone your base case and adjust any driver — NDR, pipeline, churn, headcount — with live sensitivity sliders. Bear/base/bull scenarios with 80% confidence intervals.",cl:c.gn},{n:"3",t:"AI Copilot that shows its reasoning",d:"Ask any question in natural language. SHAP feature importance, confidence intervals, and variance drivers. You see exactly why — no black boxes.",cl:c.pu},{n:"4",t:"Multi-entity consolidation with auto-IC",d:"Unlimited entities with automatic intercompany elimination, real-time FX rates (20+ currencies), and one-click period close with full audit trail.",cl:c.am},{n:"5",t:"Close the books in hours, not days",d:"Checklist-driven close workflow with category grouping, owner assignment, burndown tracking, and deadline enforcement. Every task has an owner and a status.",cl:c.ac},{n:"6",t:"Investor-grade reporting on demand",d:"Rule of 40, burn multiple, CAC payback, LTV/CAC, cohort analysis — auto-calculated from your GL data. Board deck-ready in one click.",cl:c.pu}].map((f,i)=>(
@@ -168,13 +168,13 @@ export default function FinanceUseCasePage() {
 
       <section ref={reg("compare")} style={{padding:"80px 48px",maxWidth:960,margin:"0 auto"}}>
         <div style={{textAlign:"center",marginBottom:48,opacity:show("compare")?1:0,transform:show("compare")?"none":"translateY(16px)",transition:"all .5s ease"}}>
-          <h2 style={{fontSize:34,fontWeight:800,letterSpacing:"-0.03em",marginBottom:10}}>FinanceOS vs. legacy FP&A</h2>
+          <h2 style={{fontSize:34,fontWeight:800,letterSpacing:"-0.03em",marginBottom:10}}>Castford vs. legacy FP&A</h2>
           <p style={{fontSize:14,color:c.td}}>How we compare to Pigment, Anaplan, Adaptive Planning, and Planful</p>
         </div>
         <div style={{borderRadius:18,border:`1px solid ${c.b}`,overflow:"hidden",background:c.s}}>
           <div style={{display:"grid",gridTemplateColumns:"2fr 1fr 1fr",borderBottom:`1px solid ${c.b}`}}>
             <div style={{padding:"16px 24px",fontSize:10,fontWeight:800,color:c.tf,textTransform:"uppercase",letterSpacing:".1em"}}>Capability</div>
-            <div style={{padding:"16px 24px",fontSize:10,fontWeight:800,color:c.ac,textTransform:"uppercase",letterSpacing:".1em",textAlign:"center",background:`${c.ac}04`,borderLeft:`1px solid ${c.b}`,borderRight:`1px solid ${c.b}`,display:"flex",alignItems:"center",justifyContent:"center",gap:6}}><Logo size={14} /> FinanceOS</div>
+            <div style={{padding:"16px 24px",fontSize:10,fontWeight:800,color:c.ac,textTransform:"uppercase",letterSpacing:".1em",textAlign:"center",background:`${c.ac}04`,borderLeft:`1px solid ${c.b}`,borderRight:`1px solid ${c.b}`,display:"flex",alignItems:"center",justifyContent:"center",gap:6}}><Logo size={14} /> Castford</div>
             <div style={{padding:"16px 24px",fontSize:10,fontWeight:800,color:c.tf,textTransform:"uppercase",letterSpacing:".1em",textAlign:"center"}}>Legacy FP&A</div>
           </div>
           {[{cap:"Time to value",us:"Same day",them:"3-6 months"},{cap:"AI copilot with visible reasoning",us:"✓ Claude-powered",them:"✕ or basic add-on"},{cap:"Starting price",us:"$499/mo flat",them:"$65K+/yr opaque"},{cap:"Self-serve onboarding",us:"✓ 15 minutes",them:"✕ Requires SI partner"},{cap:"Real-time integrated planning",us:"✓ Single source of truth",them:"Disconnected products"},{cap:"Native scenario planning",us:"✓ Unlimited, one-click",them:"Limited, separate products"},{cap:"Forecast accuracy (MAPE)",us:"3.2% ML ensemble",them:"8-15% basic models"},{cap:"Model maintenance",us:"✓ Business user-friendly",them:"Complex coding required"},{cap:"Scalable ML forecasting",us:"✓ Thousands of series",them:"50 series, 10 min compute"},{cap:"Transparent pricing",us:"✓ Published online",them:"✕ Sales call only"}].map((r,i)=>(
@@ -202,21 +202,21 @@ export default function FinanceUseCasePage() {
 
       <section style={{padding:"80px 48px 100px",textAlign:"center",position:"relative"}}>
         <div style={{position:"absolute",bottom:0,left:"25%",width:500,height:300,borderRadius:"50%",background:`radial-gradient(circle,${c.ac}05,transparent 65%)`,pointerEvents:"none"}} />
-        <div style={{fontSize:11,fontWeight:700,textTransform:"uppercase",letterSpacing:"0.12em",color:c.ac,marginBottom:16}}>See FinanceOS in action</div>
-        <h2 style={{fontSize:38,fontWeight:800,letterSpacing:"-0.04em",marginBottom:14}}>The best way to understand FinanceOS<br/>is to see it in motion.</h2>
+        <div style={{fontSize:11,fontWeight:700,textTransform:"uppercase",letterSpacing:"0.12em",color:c.ac,marginBottom:16}}>See Castford in action</div>
+        <h2 style={{fontSize:38,fontWeight:800,letterSpacing:"-0.04em",marginBottom:14}}>The best way to understand Castford<br/>is to see it in motion.</h2>
         <p style={{fontSize:15,color:c.td,marginBottom:36,maxWidth:460,margin:"0 auto 36px"}}>Join finance teams who replaced 6 tools with one AI-native platform.</p>
         <div style={{display:"flex",gap:14,justifyContent:"center"}}>
           <Link href="/" className="uc-btn" style={{fontSize:16,padding:"16px 36px",borderRadius:12,background:`linear-gradient(135deg,${c.ac},${c.pu})`,color:"#fff",textDecoration:"none",fontWeight:700,boxShadow:`0 6px 28px ${c.ac}25`}}>Explore the Demo →</Link>
-          <a href="https://calendly.com/finance-os-support/30min" target="_blank" rel="noopener" className="uc-btn" style={{fontSize:16,padding:"16px 36px",borderRadius:12,border:`1px solid ${c.b}`,background:"transparent",color:c.t,textDecoration:"none",fontWeight:600}}>Join Next Live Tour</a>
+          <a href="https://calendly.com/castford-support/30min" target="_blank" rel="noopener" className="uc-btn" style={{fontSize:16,padding:"16px 36px",borderRadius:12,border:`1px solid ${c.b}`,background:"transparent",color:c.t,textDecoration:"none",fontWeight:600}}>Join Next Live Tour</a>
         </div>
       </section>
 
       <footer style={{borderTop:`1px solid ${c.b}`,background:c.s}}>
         <div style={{display:"grid",gridTemplateColumns:"1.5fr 1fr 1fr 1fr",gap:40,padding:"48px 48px 40px",maxWidth:1200,margin:"0 auto"}}>
-          <div><div style={{display:"flex",alignItems:"center",gap:8,marginBottom:14}}><Logo size={24} /><span style={{fontSize:15,fontWeight:800,color:c.t}}>FinanceOS</span></div><p style={{fontSize:12,color:c.tf,lineHeight:1.7,maxWidth:240}}>AI-powered financial planning and analysis for modern finance teams. Built by Financial Holding LLC.</p></div>
+          <div><div style={{display:"flex",alignItems:"center",gap:8,marginBottom:14}}><Logo size={24} /><span style={{fontSize:15,fontWeight:800,color:c.t}}>Castford</span></div><p style={{fontSize:12,color:c.tf,lineHeight:1.7,maxWidth:240}}>AI-powered financial planning and analysis for modern finance teams. Built by Financial Holding LLC.</p></div>
           <div><div style={{fontSize:10,fontWeight:800,color:c.tf,textTransform:"uppercase",letterSpacing:".1em",marginBottom:14}}>Product</div>{["Platform","AI Copilot","Integrations","Security","Pricing"].map(l=><Link key={l} href="/" style={{display:"block",fontSize:13,color:c.td,textDecoration:"none",padding:"4px 0"}}>{l}</Link>)}</div>
           <div><div style={{fontSize:10,fontWeight:800,color:c.tf,textTransform:"uppercase",letterSpacing:".1em",marginBottom:14}}>Use Cases</div>{[["Budget Planning","/use-cases/budget-planning"],["Consolidation","/use-cases/consolidation"],["Forecasting","/use-cases/forecasting"],["Close Tasks","/"],["Investor Metrics","/"]].map(([l,h])=><Link key={l} href={h} style={{display:"block",fontSize:13,color:c.td,textDecoration:"none",padding:"4px 0"}}>{l}</Link>)}</div>
-          <div><div style={{fontSize:10,fontWeight:800,color:c.tf,textTransform:"uppercase",letterSpacing:".1em",marginBottom:14}}>Company</div>{[["Privacy","/privacy"],["Terms","/terms"],["Contact","mailto:support@finance-os.app"]].map(([l,h])=><Link key={l} href={h} style={{display:"block",fontSize:13,color:c.td,textDecoration:"none",padding:"4px 0"}}>{l}</Link>)}</div>
+          <div><div style={{fontSize:10,fontWeight:800,color:c.tf,textTransform:"uppercase",letterSpacing:".1em",marginBottom:14}}>Company</div>{[["Privacy","/privacy"],["Terms","/terms"],["Contact","mailto:support@castford.com"]].map(([l,h])=><Link key={l} href={h} style={{display:"block",fontSize:13,color:c.td,textDecoration:"none",padding:"4px 0"}}>{l}</Link>)}</div>
         </div>
         <div style={{borderTop:`1px solid ${c.b}40`,padding:"16px 48px",maxWidth:1200,margin:"0 auto",display:"flex",justifyContent:"space-between",fontSize:11,color:c.tf}}>
           <span>© 2026 Financial Holding LLC. All rights reserved.</span>

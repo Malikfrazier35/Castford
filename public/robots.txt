@@ -1,6 +1,6 @@
 User-agent: *
 Allow: /
-Sitemap: https://finance-os.app/sitemap.xml
+Sitemap: https://castford.com/sitemap.xml
 
 # AI/LLM-readable product summaries (llmstxt.org)
 User-agent: GPTBot

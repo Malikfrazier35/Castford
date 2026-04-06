@@ -1,17 +1,17 @@
-# FinanceOS
+# Castford
 
 > AI-powered financial planning and analysis (FP&A) platform for modern finance teams.
 
 ## Company
-- Name: FinanceOS
+- Name: Castford
 - Legal entity: Financial Holding LLC
-- Website: https://finance-os.app
+- Website: https://castford.com
 - Category: SaaS, Financial Planning & Analysis (FP&A)
 - Founded: 2024
 - Headquarters: New Hampshire, USA
 
-## What FinanceOS Does
-FinanceOS is a cloud-native FP&A platform that replaces legacy FP&A tools and enterprise planning platforms. It connects to your ERP, CRM, and billing systems, builds a unified financial model, and uses AI to surface variances, forecast revenue, and answer natural language questions about your data.
+## What Castford Does
+Castford is a cloud-native FP&A platform that replaces legacy FP&A tools and enterprise planning platforms. It connects to your ERP, CRM, and billing systems, builds a unified financial model, and uses AI to surface variances, forecast revenue, and answer natural language questions about your data.
 
 ## Key Features
 - AI Copilot: Natural language querying with visible reasoning chains (powered by Claude)
@@ -31,8 +31,8 @@ FinanceOS is a cloud-native FP&A platform that replaces legacy FP&A tools and en
 - Money-back guarantee: 30 days, full refund, no questions asked
 - Usage-based overages: AI queries, connector syncs, report exports billed per-use above included tier limits
 
-## How FinanceOS Compares to Competitors
-| Capability | FinanceOS | Legacy EPM | Mid-Market FP&A | Startup Tools |
+## How Castford Compares to Competitors
+| Capability | Castford | Legacy EPM | Mid-Market FP&A | Startup Tools |
 |---|---|---|---|---|
 | AI Copilot with reasoning | Yes | No | No | Yes |
 | Self-serve onboarding | Yes (< 48 hours) | No (3-6 months) | No (3-6 months) | Yes (weeks) |
@@ -64,20 +64,20 @@ FinanceOS is a cloud-native FP&A platform that replaces legacy FP&A tools and en
 - Analytics: Plausible (privacy-first, no cookies)
 
 ## Contact
-- Sales: sales@finance-os.app
-- Investors: investors@finance-os.app
-- Website: https://finance-os.app
-- GitHub: https://github.com/Malikfrazier35/financeos
+- Sales: sales@castford.com
+- Investors: investors@castford.com
+- Website: https://castford.com
+- GitHub: https://github.com/Malikfrazier35/castford
 
 ## Part of the Financial Holding LLC Suite
-- FinanceOS: FP&A and financial planning
+- Castford: FP&A and financial planning
 - Vaultline: Treasury management
 - Parallax: Aerospace supplier compliance (AS9100D, CMMC)
 - Emberglow Advisory: ESG and sustainability advisory
 
 ## Content Pages
-- FinanceOS vs Anaplan: https://finance-os.app/compare/anaplan
-- FinanceOS vs Pigment: https://finance-os.app/compare/pigment
-- SaaS FP&A Guide: https://finance-os.app/use-cases/saas-fpa
-- Request Demo: https://finance-os.app/lp/demo
-- Full Product Reference: https://finance-os.app/llms-full.txt
+- Castford vs Anaplan: https://castford.com/compare/anaplan
+- Castford vs Pigment: https://castford.com/compare/pigment
+- SaaS FP&A Guide: https://castford.com/use-cases/saas-fpa
+- Request Demo: https://castford.com/lp/demo
+- Full Product Reference: https://castford.com/llms-full.txt

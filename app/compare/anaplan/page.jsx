@@ -1,13 +1,13 @@
 export const metadata = {
-  title: "FinanceOS vs Anaplan — FP&A Platform Comparison 2026",
-  description: "Compare FinanceOS and Anaplan for financial planning and analysis. See pricing, features, implementation time, and AI capabilities side-by-side. FinanceOS starts at $499/mo vs Anaplan's $200K+/year.",
-  keywords: ["FinanceOS vs Anaplan", "Anaplan alternative", "FP&A software comparison", "Anaplan pricing", "best FP&A tool", "financial planning software"],
+  title: "Castford vs Anaplan — FP&A Platform Comparison 2026",
+  description: "Compare Castford and Anaplan for financial planning and analysis. See pricing, features, implementation time, and AI capabilities side-by-side. Castford starts at $499/mo vs Anaplan's $200K+/year.",
+  keywords: ["Castford vs Anaplan", "Anaplan alternative", "FP&A software comparison", "Anaplan pricing", "best FP&A tool", "financial planning software"],
   openGraph: {
-    title: "FinanceOS vs Anaplan — FP&A Platform Comparison 2026",
-    description: "Side-by-side comparison of FinanceOS and Anaplan. AI copilot, pricing, implementation time, and more.",
-    url: "https://finance-os.app/compare/anaplan",
+    title: "Castford vs Anaplan — FP&A Platform Comparison 2026",
+    description: "Side-by-side comparison of Castford and Anaplan. AI copilot, pricing, implementation time, and more.",
+    url: "https://castford.com/compare/anaplan",
   },
-  alternates: { canonical: "https://finance-os.app/compare/anaplan" },
+  alternates: { canonical: "https://castford.com/compare/anaplan" },
 };
 
 export default function CompareAnaplan() {
@@ -34,7 +34,7 @@ export default function CompareAnaplan() {
       <div style={{ maxWidth: 900, margin: "0 auto", padding: "60px 24px" }}>
         {/* Breadcrumb */}
         <nav style={{ fontSize: 12, color: "#5a6178", marginBottom: 32 }}>
-          <a href="/" style={{ color: "#60a5fa", textDecoration: "none" }}>FinanceOS</a>
+          <a href="/" style={{ color: "#60a5fa", textDecoration: "none" }}>Castford</a>
           <span style={{ margin: "0 8px" }}>/</span>
           <span>Compare</span>
           <span style={{ margin: "0 8px" }}>/</span>
@@ -43,10 +43,10 @@ export default function CompareAnaplan() {
 
         {/* H1 — concise answer block for AI extraction (40-60 words) */}
         <h1 style={{ fontSize: 36, fontWeight: 800, color: "#f0f2f7", lineHeight: 1.2, marginBottom: 16 }}>
-          FinanceOS vs Anaplan: Which FP&A Platform Is Right for You?
+          Castford vs Anaplan: Which FP&A Platform Is Right for You?
         </h1>
         <p style={{ fontSize: 16, lineHeight: 1.7, color: "#9ea5b8", marginBottom: 40, maxWidth: 700 }}>
-          FinanceOS is a cloud-native FP&A platform that starts at $499/month and deploys in under 48 hours. Anaplan is an enterprise planning platform that starts at $200K+/year and typically takes 3–6 months to implement. FinanceOS includes an AI copilot for natural language financial querying; Anaplan does not offer native AI capabilities.
+          Castford is a cloud-native FP&A platform that starts at $499/month and deploys in under 48 hours. Anaplan is an enterprise planning platform that starts at $200K+/year and typically takes 3–6 months to implement. Castford includes an AI copilot for natural language financial querying; Anaplan does not offer native AI capabilities.
         </p>
 
         {/* Comparison Table */}
@@ -55,7 +55,7 @@ export default function CompareAnaplan() {
             <thead>
               <tr style={{ background: "#111827" }}>
                 <th style={{ padding: "14px 20px", textAlign: "left", fontSize: 12, fontWeight: 700, color: "#5a6178", textTransform: "uppercase", letterSpacing: "0.08em", borderBottom: "2px solid #1e2230" }}>Feature</th>
-                <th style={{ padding: "14px 20px", textAlign: "left", fontSize: 12, fontWeight: 700, color: "#60a5fa", textTransform: "uppercase", letterSpacing: "0.08em", borderBottom: "2px solid #1e2230" }}>FinanceOS</th>
+                <th style={{ padding: "14px 20px", textAlign: "left", fontSize: 12, fontWeight: 700, color: "#60a5fa", textTransform: "uppercase", letterSpacing: "0.08em", borderBottom: "2px solid #1e2230" }}>Castford</th>
                 <th style={{ padding: "14px 20px", textAlign: "left", fontSize: 12, fontWeight: 700, color: "#5a6178", textTransform: "uppercase", letterSpacing: "0.08em", borderBottom: "2px solid #1e2230" }}>Anaplan</th>
               </tr>
             </thead>
@@ -74,7 +74,7 @@ export default function CompareAnaplan() {
         {/* Who should choose which */}
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 24, marginBottom: 48 }}>
           <div style={{ padding: 24, borderRadius: 12, border: "1px solid #60a5fa30", background: "#60a5fa08" }}>
-            <h2 style={{ fontSize: 18, fontWeight: 700, color: "#60a5fa", marginBottom: 12 }}>Choose FinanceOS if you:</h2>
+            <h2 style={{ fontSize: 18, fontWeight: 700, color: "#60a5fa", marginBottom: 12 }}>Choose Castford if you:</h2>
             <ul style={{ fontSize: 14, lineHeight: 1.8, color: "#9ea5b8", paddingLeft: 20 }}>
               <li>Have $5M–$200M ARR</li>
               <li>Need to be live in days, not months</li>
@@ -97,10 +97,10 @@ export default function CompareAnaplan() {
 
         {/* CTA */}
         <div style={{ textAlign: "center", padding: "48px 0", borderTop: "1px solid #1e2230" }}>
-          <h2 style={{ fontSize: 24, fontWeight: 800, color: "#f0f2f7", marginBottom: 12 }}>Ready to see FinanceOS in action?</h2>
+          <h2 style={{ fontSize: 24, fontWeight: 800, color: "#f0f2f7", marginBottom: 12 }}>Ready to see Castford in action?</h2>
           <p style={{ fontSize: 14, color: "#5a6178", marginBottom: 24 }}>Try the full platform free. No credit card required.</p>
           <a href="/?ref=compare-anaplan" style={{ display: "inline-block", padding: "14px 32px", borderRadius: 10, background: "linear-gradient(135deg, #60a5fa, #a78bfa)", color: "#fff", fontWeight: 700, fontSize: 14, textDecoration: "none" }}>
-            Try FinanceOS Free
+            Try Castford Free
           </a>
         </div>
 
@@ -108,9 +108,9 @@ export default function CompareAnaplan() {
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
           "@context": "https://schema.org", "@type": "FAQPage",
           "mainEntity": [
-            { "@type": "Question", "name": "How much does Anaplan cost compared to FinanceOS?", "acceptedAnswer": { "@type": "Answer", "text": "Anaplan typically costs $200,000 or more per year, with custom pricing based on the number of users, models, and data volume. FinanceOS starts at $499 per month (billed annually) with transparent, published pricing for all tiers." }},
-            { "@type": "Question", "name": "Can FinanceOS replace Anaplan?", "acceptedAnswer": { "@type": "Answer", "text": "For SaaS companies with $5M to $200M in ARR, FinanceOS can replace Anaplan at a fraction of the cost. FinanceOS offers AI-powered variance detection, scenario modeling, multi-entity consolidation, and revenue forecasting. However, Fortune 500 companies with complex supply chain planning may still need Anaplan's broader enterprise capabilities." }},
-            { "@type": "Question", "name": "How long does it take to implement FinanceOS vs Anaplan?", "acceptedAnswer": { "@type": "Answer", "text": "FinanceOS can be implemented in under 48 hours through self-serve onboarding. Anaplan typically requires 3 to 6 months of implementation with dedicated consultants and a professional services engagement." }},
+            { "@type": "Question", "name": "How much does Anaplan cost compared to Castford?", "acceptedAnswer": { "@type": "Answer", "text": "Anaplan typically costs $200,000 or more per year, with custom pricing based on the number of users, models, and data volume. Castford starts at $499 per month (billed annually) with transparent, published pricing for all tiers." }},
+            { "@type": "Question", "name": "Can Castford replace Anaplan?", "acceptedAnswer": { "@type": "Answer", "text": "For SaaS companies with $5M to $200M in ARR, Castford can replace Anaplan at a fraction of the cost. Castford offers AI-powered variance detection, scenario modeling, multi-entity consolidation, and revenue forecasting. However, Fortune 500 companies with complex supply chain planning may still need Anaplan's broader enterprise capabilities." }},
+            { "@type": "Question", "name": "How long does it take to implement Castford vs Anaplan?", "acceptedAnswer": { "@type": "Answer", "text": "Castford can be implemented in under 48 hours through self-serve onboarding. Anaplan typically requires 3 to 6 months of implementation with dedicated consultants and a professional services engagement." }},
           ]
         }) }} />
       </div>

@@ -19,7 +19,7 @@ export default function Error({ error, reset }) {
       <div style={{ width: 56, height: 56, borderRadius: 16, background: "linear-gradient(135deg, #60a5fa, #a78bfa)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22, fontWeight: 900, color: "#fff" }}>F</div>
       <h2 style={{ fontSize: 22, fontWeight: 800, letterSpacing: "-0.02em", margin: 0 }}>Something went wrong</h2>
       <p style={{ fontSize: 14, color: "#8b92a5", maxWidth: 440, textAlign: "center", lineHeight: 1.7, margin: 0 }}>
-        FinanceOS hit an unexpected error. Your financial data is safe and encrypted. Try one of the options below to get back to your dashboard.
+        Castford hit an unexpected error. Your financial data is safe and encrypted. Try one of the options below to get back to your dashboard.
       </p>
       <div style={{ display: "flex", gap: 10 }}>
         <button onClick={() => reset()} style={{
@@ -34,7 +34,7 @@ export default function Error({ error, reset }) {
         }}>Clear Cache &amp; Reload</button>
       </div>
       <p style={{ fontSize: 11, color: "#3d4558", maxWidth: 400, textAlign: "center", lineHeight: 1.5, margin: 0 }}>
-        If this keeps happening, clear your browser cache or try an incognito window. Contact support at support@finance-os.app.
+        If this keeps happening, clear your browser cache or try an incognito window. Contact support at support@castford.com.
       </p>
     </div>
   );

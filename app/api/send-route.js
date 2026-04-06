@@ -7,7 +7,7 @@ export async function POST(request) {
     const { to, subject, html } = await request.json();
 
     const { data, error } = await resend.emails.send({
-      from: 'FinanceOS <onboarding@resend.dev>',
+      from: 'Castford <onboarding@resend.dev>',
       to,
       subject,
       html,

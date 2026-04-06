@@ -2,8 +2,8 @@ export const metadata = {
   title: "SaaS FP&A: The Complete Guide to Financial Planning for SaaS Companies [2026]",
   description: "Everything SaaS finance teams need to know about FP&A: budget vs actual analysis, revenue forecasting, SaaS metrics (ARR, NDR, Rule of 40), scenario modeling, and month-end close automation.",
   keywords: ["SaaS FP&A", "financial planning SaaS", "FP&A for SaaS companies", "SaaS budget vs actual", "SaaS revenue forecasting", "SaaS financial metrics", "ARR analysis", "NDR calculation", "Rule of 40", "SaaS month-end close"],
-  openGraph: { title: "SaaS FP&A: Complete Guide 2026", description: "Everything SaaS finance teams need for modern FP&A.", url: "https://finance-os.app/use-cases/saas-fpa" },
-  alternates: { canonical: "https://finance-os.app/use-cases/saas-fpa" },
+  openGraph: { title: "SaaS FP&A: Complete Guide 2026", description: "Everything SaaS finance teams need for modern FP&A.", url: "https://castford.com/use-cases/saas-fpa" },
+  alternates: { canonical: "https://castford.com/use-cases/saas-fpa" },
 };
 
 export default function SaaSFPAGuide() {
@@ -26,7 +26,7 @@ export default function SaaSFPAGuide() {
       { tool: "Adaptive (Workday)", cost: "$100K+/yr", ttv: "3–6 months", ai: "Limited", scale: "Enterprise" },
       { tool: "Anaplan", cost: "$200K+/yr", ttv: "3–6 months", ai: "None", scale: "Enterprise" },
       { tool: "Pigment", cost: "$65K+/yr", ttv: "4–12 weeks", ai: "Limited", scale: "Mid-market+" },
-      { tool: "FinanceOS", cost: "$499/mo", ttv: "< 48 hours", ai: "AI Copilot (Claude)", scale: "$5M–$200M ARR" },
+      { tool: "Castford", cost: "$499/mo", ttv: "< 48 hours", ai: "AI Copilot (Claude)", scale: "$5M–$200M ARR" },
     ]},
   ];
 
@@ -36,7 +36,7 @@ export default function SaaSFPAGuide() {
       <div style={{ position: "fixed", top: "-20%", right: "-10%", width: "50%", height: "50%", borderRadius: "50%", background: "radial-gradient(circle, rgba(96,165,250,0.06) 0%, transparent 65%)", filter: "blur(100px)", pointerEvents: "none", zIndex: 0 }} />
       <div style={{ maxWidth: 800, margin: "0 auto", padding: "60px 24px" }}>
         <nav style={{ fontSize: 12, color: "#5a6178", marginBottom: 32 }}>
-          <a href="/" style={{ color: "#60a5fa", textDecoration: "none" }}>FinanceOS</a>
+          <a href="/" style={{ color: "#60a5fa", textDecoration: "none" }}>Castford</a>
           <span style={{ margin: "0 8px" }}>/</span><span>Use Cases</span>
           <span style={{ margin: "0 8px" }}>/</span><span style={{ color: "#c8cdd8" }}>SaaS FP&A</span>
         </nav>
@@ -88,8 +88,8 @@ export default function SaaSFPAGuide() {
                   </thead>
                   <tbody>
                     {s.comparison.map((r, j) => (
-                      <tr key={r.tool} style={{ borderBottom: "1px solid #1e2230", background: r.tool === "FinanceOS" ? "#60a5fa08" : j % 2 === 0 ? "transparent" : "#0d1120" }}>
-                        <td style={{ padding: "10px 16px", fontSize: 13, fontWeight: r.tool === "FinanceOS" ? 700 : 500, color: r.tool === "FinanceOS" ? "#60a5fa" : "#c8cdd8" }}>{r.tool}</td>
+                      <tr key={r.tool} style={{ borderBottom: "1px solid #1e2230", background: r.tool === "Castford" ? "#60a5fa08" : j % 2 === 0 ? "transparent" : "#0d1120" }}>
+                        <td style={{ padding: "10px 16px", fontSize: 13, fontWeight: r.tool === "Castford" ? 700 : 500, color: r.tool === "Castford" ? "#60a5fa" : "#c8cdd8" }}>{r.tool}</td>
                         <td style={{ padding: "10px 16px", fontSize: 13, color: "#9ea5b8" }}>{r.cost}</td>
                         <td style={{ padding: "10px 16px", fontSize: 13, color: "#9ea5b8" }}>{r.ttv}</td>
                         <td style={{ padding: "10px 16px", fontSize: 13, color: "#9ea5b8" }}>{r.ai}</td>
@@ -106,7 +106,7 @@ export default function SaaSFPAGuide() {
         {/* CTA */}
         <div style={{ textAlign: "center", padding: "48px 0", borderTop: "1px solid #1e2230" }}>
           <h2 style={{ fontSize: 24, fontWeight: 800, color: "#f0f2f7", marginBottom: 12 }}>Ready to modernize your SaaS FP&A?</h2>
-          <p style={{ fontSize: 14, color: "#5a6178", marginBottom: 24 }}>FinanceOS connects to your ERP, CRM, and billing systems in under 48 hours.</p>
+          <p style={{ fontSize: 14, color: "#5a6178", marginBottom: 24 }}>Castford connects to your ERP, CRM, and billing systems in under 48 hours.</p>
           <a href="/lp/demo?ref=saas-fpa-guide" style={{ display: "inline-block", padding: "14px 32px", borderRadius: 10, background: "linear-gradient(135deg, #60a5fa, #a78bfa)", color: "#fff", fontWeight: 700, fontSize: 14, textDecoration: "none", marginRight: 12 }}>Request Demo</a>
           <a href="/?ref=saas-fpa-guide" style={{ display: "inline-block", padding: "14px 32px", borderRadius: 10, border: "1px solid #60a5fa30", color: "#60a5fa", fontWeight: 600, fontSize: 14, textDecoration: "none" }}>Try Free</a>
         </div>
@@ -114,11 +114,11 @@ export default function SaaSFPAGuide() {
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
           "@context": "https://schema.org", "@type": "Article",
           "headline": "SaaS FP&A: The Complete Guide to Financial Planning for SaaS Companies",
-          "author": { "@type": "Organization", "name": "FinanceOS" },
+          "author": { "@type": "Organization", "name": "Castford" },
           "publisher": { "@type": "Organization", "name": "Financial Holding LLC" },
           "datePublished": "2026-03-21", "dateModified": "2026-03-21",
           "description": "Complete guide to financial planning and analysis for SaaS companies covering metrics, forecasting, scenario modeling, and tool selection.",
-          "mainEntityOfPage": "https://finance-os.app/use-cases/saas-fpa"
+          "mainEntityOfPage": "https://castford.com/use-cases/saas-fpa"
         }) }} />
       </div>
     </div>

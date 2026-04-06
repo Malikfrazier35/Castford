@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 
 // ═══════════════════════════════════════════════════════════════
-// FinanceOS — Lead Onboarding Drip Pipeline
+// Castford — Lead Onboarding Drip Pipeline
 // 5-email automated sequence over 14 days
 // Routes: Enterprise → sales call | Starter/Growth → self-serve Stripe
 // Tracks lead lifecycle: new → nurturing → qualified → converted
@@ -11,8 +11,8 @@ import { createClient } from "@supabase/supabase-js";
 const RESEND_API_KEY = process.env.RESEND_API_KEY;
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
-const FROM_ADDRESS = "FinanceOS <onboarding@finance-os.app>";
-const SITE_URL = "https://finance-os.app";
+const FROM_ADDRESS = "Castford <onboarding@castford.com>";
+const SITE_URL = "https://castford.com";
 
 // ── Drip Schedule ────────────────────────────────────────────
 // Day 0: Welcome + value prop
@@ -107,8 +107,8 @@ function emailShell(step, totalSteps, content) {
   </div>
   <div class="bd">${content}</div>
   <div class="ftr">
-    <p>FinanceOS · <a href="${SITE_URL}">finance-os.app</a></p>
-    <p class="unsub">You're receiving this because you signed up at finance-os.app.<br/><a href="${SITE_URL}?unsubscribe=true" style="color:#3d4558;">Unsubscribe</a></p>
+    <p>Castford · <a href="${SITE_URL}">castford.com</a></p>
+    <p class="unsub">You're receiving this because you signed up at castford.com.<br/><a href="${SITE_URL}?unsubscribe=true" style="color:#3d4558;">Unsubscribe</a></p>
   </div>
 </div></div>
 </body></html>`;
@@ -123,7 +123,7 @@ function buildDripEmail(step, lead) {
     (lead.source || "").includes("enterprise");
 
   // CTA routing: Enterprise → sales call, others → self-serve
-  const enterpriseCTA = `mailto:sales@finance-os.app?subject=FinanceOS%20Enterprise%20—%20${encodeURIComponent(lead.company || "Demo")}&body=Hi%20FinanceOS%20team,%0A%0AI'd%20like%20to%20schedule%20a%20call%20to%20discuss%20enterprise%20pricing.%0A%0ABest,%0A${encodeURIComponent(firstName)}`;
+  const enterpriseCTA = `mailto:sales@castford.com?subject=Castford%20Enterprise%20—%20${encodeURIComponent(lead.company || "Demo")}&body=Hi%20Castford%20team,%0A%0AI'd%20like%20to%20schedule%20a%20call%20to%20discuss%20enterprise%20pricing.%0A%0ABest,%0A${encodeURIComponent(firstName)}`;
   const selfServeCTA = `${SITE_URL}/#pricing`;
   const primaryCTA = isEnterprise ? enterpriseCTA : selfServeCTA;
   const primaryCTAText = isEnterprise ? "Schedule a Call" : "View Plans & Subscribe";
@@ -131,11 +131,11 @@ function buildDripEmail(step, lead) {
   switch (step) {
     case 1: // Day 0 — Welcome + Value Prop
       return {
-        subject: `Welcome to FinanceOS, ${firstName} — here's what's next`,
+        subject: `Welcome to Castford, ${firstName} — here's what's next`,
         html: emailShell(1, 5, `
           <h2>Welcome aboard, ${firstName}.</h2>
-          <p class="sub">Thanks for your interest in FinanceOS. You're joining 500+ finance teams who are replacing spreadsheets and legacy FP&A tools with a unified, AI-powered platform.</p>
-          <p class="sub">Here's what FinanceOS does in 30 seconds:</p>
+          <p class="sub">Thanks for your interest in Castford. You're joining 500+ finance teams who are replacing spreadsheets and legacy FP&A tools with a unified, AI-powered platform.</p>
+          <p class="sub">Here's what Castford does in 30 seconds:</p>
           <div class="feature-card">
             <div class="feature-title">Connects to your stack</div>
             <div class="feature-desc">ERP, CRM, HRIS, billing — one unified financial model, live.</div>
@@ -162,10 +162,10 @@ function buildDripEmail(step, lead) {
 
     case 2: // Day 2 — Feature Deep-Dive
       return {
-        subject: `${firstName}, here's how FinanceOS replaces 5 tools with 1`,
+        subject: `${firstName}, here's how Castford replaces 5 tools with 1`,
         html: emailShell(2, 5, `
           <h2>One platform. Five capabilities.</h2>
-          <p class="sub">Most mid-market finance teams juggle spreadsheets, a planning tool, a reporting tool, maybe a BI layer, and Slack for alerts. FinanceOS consolidates all of it.</p>
+          <p class="sub">Most mid-market finance teams juggle spreadsheets, a planning tool, a reporting tool, maybe a BI layer, and Slack for alerts. Castford consolidates all of it.</p>
           <div class="feature-card">
             <div class="feature-title">📊 Financial Planning & Analysis</div>
             <div class="feature-desc">Budget vs actuals, driver-based forecasting, rolling forecasts, and what-if scenarios — all in one workspace.</div>
@@ -198,7 +198,7 @@ function buildDripEmail(step, lead) {
         subject: `How Meridian SaaS cut their close from 15 days to 3`,
         html: emailShell(3, 5, `
           <h2>Real results from real teams.</h2>
-          <p class="sub">${firstName}, the ROI isn't theoretical — here's what finance teams are seeing after switching to FinanceOS.</p>
+          <p class="sub">${firstName}, the ROI isn't theoretical — here's what finance teams are seeing after switching to Castford.</p>
           <div class="stat-grid">
             <div class="stat-box"><div class="stat-num">85%</div><div class="stat-lbl">Less manual work</div></div>
             <div class="stat-box"><div class="stat-num">3 days</div><div class="stat-lbl">Avg close time</div></div>
@@ -209,7 +209,7 @@ function buildDripEmail(step, lead) {
             <div class="quote-attr">— VP Finance, Meridian SaaS ($45M ARR)</div>
           </div>
           <div class="quote-box">
-            <div class="quote-text">"We cancelled Adaptive Insights and saved $180K/year. FinanceOS does everything it did — plus AI, plus better integrations."</div>
+            <div class="quote-text">"We cancelled Adaptive Insights and saved $180K/year. Castford does everything it did — plus AI, plus better integrations."</div>
             <div class="quote-attr">— CFO, NovaBridge ($28M ARR)</div>
           </div>
           <div class="divider"></div>
@@ -222,37 +222,37 @@ function buildDripEmail(step, lead) {
 
     case 4: // Day 9 — Head-to-Head Comparison vs Legacy
       return {
-        subject: `FinanceOS vs the $200K FP&A tools — honest comparison`,
+        subject: `Castford vs the $200K FP&A tools — honest comparison`,
         html: emailShell(4, 5, `
           <h2>Same power. Fraction of the cost.</h2>
-          <p class="sub">${firstName}, we get it — switching platforms is a big decision. Here's how FinanceOS honestly compares to the tools you might be evaluating.</p>
+          <p class="sub">${firstName}, we get it — switching platforms is a big decision. Here's how Castford honestly compares to the tools you might be evaluating.</p>
 
           <div style="font-size:10px;font-weight:700;color:#636d84;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px;">Implementation Time</div>
           <div class="vs-row">
             <div class="vs-cell vs-them">Legacy: 3–6 months</div>
-            <div class="vs-cell vs-us">FinanceOS: 48 hours</div>
+            <div class="vs-cell vs-us">Castford: 48 hours</div>
           </div>
 
           <div style="font-size:10px;font-weight:700;color:#636d84;text-transform:uppercase;letter-spacing:0.08em;margin:12px 0 8px;">Annual Cost (Mid-Market)</div>
           <div class="vs-row">
             <div class="vs-cell vs-them">Legacy: $65K–$200K+</div>
-            <div class="vs-cell vs-us">FinanceOS: $6K–$18K</div>
+            <div class="vs-cell vs-us">Castford: $6K–$18K</div>
           </div>
 
           <div style="font-size:10px;font-weight:700;color:#636d84;text-transform:uppercase;letter-spacing:0.08em;margin:12px 0 8px;">AI Capabilities</div>
           <div class="vs-row">
             <div class="vs-cell vs-them">Legacy: Add-on / Limited</div>
-            <div class="vs-cell vs-us">FinanceOS: Built-in with reasoning</div>
+            <div class="vs-cell vs-us">Castford: Built-in with reasoning</div>
           </div>
 
           <div style="font-size:10px;font-weight:700;color:#636d84;text-transform:uppercase;letter-spacing:0.08em;margin:12px 0 8px;">Pricing Transparency</div>
           <div class="vs-row">
             <div class="vs-cell vs-them">Legacy: "Contact sales"</div>
-            <div class="vs-cell vs-us">FinanceOS: Published pricing</div>
+            <div class="vs-cell vs-us">Castford: Published pricing</div>
           </div>
 
           <div class="divider"></div>
-          <p class="sub" style="text-align:center;">We built FinanceOS because mid-market finance teams deserve enterprise-grade tools without enterprise-grade budgets.</p>
+          <p class="sub" style="text-align:center;">We built Castford because mid-market finance teams deserve enterprise-grade tools without enterprise-grade budgets.</p>
           <div class="cta-wrap">
             <a href="${SITE_URL}/compare/adaptive" class="cta">See Full Comparison</a>
             <a href="${primaryCTA}" class="cta-secondary">${primaryCTAText}</a>
@@ -262,7 +262,7 @@ function buildDripEmail(step, lead) {
 
     case 5: // Day 14 — Final Offer + Urgency
       return {
-        subject: `${firstName}, your FinanceOS trial access expires soon`,
+        subject: `${firstName}, your Castford trial access expires soon`,
         html: emailShell(5, 5, `
           ${isEnterprise ? `<div class="urgency">Enterprise Priority Access — Expires in 48 Hours</div>` : `<div class="urgency">Limited Time — 30-Day Money-Back Guarantee</div>`}
           <h2>${isEnterprise ? `${firstName}, let's get you set up.` : `Ready to transform your FP&A, ${firstName}?`}</h2>
@@ -303,7 +303,7 @@ function buildDripEmail(step, lead) {
             <a href="${primaryCTA}" class="cta" style="${isEnterprise ? "background:linear-gradient(135deg,#34d399,#60a5fa);" : ""}">${isEnterprise ? "Schedule Enterprise Call" : "Subscribe Now — 30-Day MBG"}</a>
           </div>
           <div class="divider"></div>
-          <p class="sub" style="text-align:center;font-size:12px;">Questions? Reply to this email or reach us at <a href="mailto:sales@finance-os.app" style="color:#60a5fa;text-decoration:none;">sales@finance-os.app</a></p>
+          <p class="sub" style="text-align:center;font-size:12px;">Questions? Reply to this email or reach us at <a href="mailto:sales@castford.com" style="color:#60a5fa;text-decoration:none;">sales@castford.com</a></p>
         `),
       };
 
@@ -327,7 +327,7 @@ async function sendEmail({ to, subject, html, replyTo }) {
       to: Array.isArray(to) ? to : [to],
       subject,
       html,
-      reply_to: replyTo || "sales@finance-os.app",
+      reply_to: replyTo || "sales@castford.com",
     }),
   });
   if (!res.ok) {
@@ -663,7 +663,7 @@ export async function GET(request) {
   }
 
   return NextResponse.json({
-    service: "FinanceOS Lead Drip Pipeline",
+    service: "Castford Lead Drip Pipeline",
     status: "active",
     schedule: DRIP_SCHEDULE,
     routing: "Enterprise → sales call | Others → self-serve Stripe",

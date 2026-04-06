@@ -1,9 +1,9 @@
 export const metadata = {
-  title: "FinanceOS vs Pigment — FP&A Platform Comparison 2026",
-  description: "Compare FinanceOS and Pigment for financial planning. FinanceOS starts at $499/mo with AI copilot and same-day setup. Pigment starts at $65K+/year with longer implementation cycles.",
-  keywords: ["FinanceOS vs Pigment", "Pigment alternative", "FP&A software comparison", "Pigment pricing", "best FP&A platform 2026"],
-  openGraph: { title: "FinanceOS vs Pigment — FP&A Comparison 2026", url: "https://finance-os.app/compare/pigment" },
-  alternates: { canonical: "https://finance-os.app/compare/pigment" },
+  title: "Castford vs Pigment — FP&A Platform Comparison 2026",
+  description: "Compare Castford and Pigment for financial planning. Castford starts at $499/mo with AI copilot and same-day setup. Pigment starts at $65K+/year with longer implementation cycles.",
+  keywords: ["Castford vs Pigment", "Pigment alternative", "FP&A software comparison", "Pigment pricing", "best FP&A platform 2026"],
+  openGraph: { title: "Castford vs Pigment — FP&A Comparison 2026", url: "https://castford.com/compare/pigment" },
+  alternates: { canonical: "https://castford.com/compare/pigment" },
 };
 
 import Link from "next/link";
@@ -33,7 +33,7 @@ export default function ComparePigment() {
       <nav style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "16px 48px", maxWidth: 1200, margin: "0 auto", borderBottom: `1px solid ${BD}50` }}>
         <Link href="/" style={{ display: "flex", alignItems: "center", gap: 8, textDecoration: "none" }}>
           <svg width="28" height="28" viewBox="0 0 32 32" fill="none"><defs><linearGradient id="lg" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse"><stop offset="0%" stopColor={AC} /><stop offset="100%" stopColor={PU} /></linearGradient></defs><rect width="32" height="32" rx="8" fill="url(#lg)" /><path d="M8 10h16M8 16h12M8 22h8" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" /><circle cx="24" cy="22" r="3" fill={GN} /></svg>
-          <span style={{ fontSize: 16, fontWeight: 800, color: T }}>FinanceOS</span>
+          <span style={{ fontSize: 16, fontWeight: 800, color: T }}>Castford</span>
         </Link>
         <div style={{ display: "flex", gap: 20, alignItems: "center" }}>
           <Link href="/use-cases/finance" style={{ fontSize: 13, color: TD, textDecoration: "none" }}>Use Cases</Link>
@@ -43,14 +43,14 @@ export default function ComparePigment() {
 
       <div style={{ maxWidth: 960, margin: "0 auto", padding: "60px 48px" }}>
         <nav style={{ fontSize: 12, color: TF, marginBottom: 32 }}>
-          <Link href="/" style={{ color: AC, textDecoration: "none" }}>FinanceOS</Link>
+          <Link href="/" style={{ color: AC, textDecoration: "none" }}>Castford</Link>
           <span style={{ margin: "0 8px" }}>/</span><span>Compare</span>
           <span style={{ margin: "0 8px" }}>/</span><span style={{ color: T }}>Pigment</span>
         </nav>
 
-        <h1 style={{ fontSize: 42, fontWeight: 800, lineHeight: 1.1, letterSpacing: "-0.04em", marginBottom: 20 }}>FinanceOS vs Pigment</h1>
+        <h1 style={{ fontSize: 42, fontWeight: 800, lineHeight: 1.1, letterSpacing: "-0.04em", marginBottom: 20 }}>Castford vs Pigment</h1>
         <p style={{ fontSize: 16, lineHeight: 1.7, color: TD, marginBottom: 40, maxWidth: 720 }}>
-          FinanceOS is an AI-native FP&A platform starting at $499/month that deploys the same day. Pigment is an enterprise business planning platform starting at $65K+/year with 4–12 week implementations. Both offer strong scenario modeling — FinanceOS adds ML-powered forecasting and visible AI reasoning at a fraction of the cost.
+          Castford is an AI-native FP&A platform starting at $499/month that deploys the same day. Pigment is an enterprise business planning platform starting at $65K+/year with 4–12 week implementations. Both offer strong scenario modeling — Castford adds ML-powered forecasting and visible AI reasoning at a fraction of the cost.
         </p>
 
         {/* Quick metrics */}
@@ -73,7 +73,7 @@ export default function ComparePigment() {
         <div style={{ borderRadius: 18, border: `1px solid ${BD}`, overflow: "hidden", background: S, marginBottom: 48 }}>
           <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr 1fr", borderBottom: `1px solid ${BD}` }}>
             <div style={{ padding: "16px 24px", fontSize: 10, fontWeight: 800, color: TF, textTransform: "uppercase", letterSpacing: ".1em" }}>Feature</div>
-            <div style={{ padding: "16px 24px", fontSize: 10, fontWeight: 800, color: AC, textTransform: "uppercase", letterSpacing: ".1em", textAlign: "center", background: `${AC}04`, borderLeft: `1px solid ${BD}`, borderRight: `1px solid ${BD}` }}>FinanceOS</div>
+            <div style={{ padding: "16px 24px", fontSize: 10, fontWeight: 800, color: AC, textTransform: "uppercase", letterSpacing: ".1em", textAlign: "center", background: `${AC}04`, borderLeft: `1px solid ${BD}`, borderRight: `1px solid ${BD}` }}>Castford</div>
             <div style={{ padding: "16px 24px", fontSize: 10, fontWeight: 800, color: TF, textTransform: "uppercase", letterSpacing: ".1em", textAlign: "center" }}>Pigment</div>
           </div>
           {rows.map((r, i) => (
@@ -88,7 +88,7 @@ export default function ComparePigment() {
         {/* When to choose */}
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 48 }}>
           <div style={{ padding: "28px 24px", borderRadius: 16, background: `${AC}04`, border: `1px solid ${AC}15` }}>
-            <h3 style={{ fontSize: 16, fontWeight: 800, color: T, marginBottom: 12 }}>Choose FinanceOS when you need</h3>
+            <h3 style={{ fontSize: 16, fontWeight: 800, color: T, marginBottom: 12 }}>Choose Castford when you need</h3>
             {["Same-day deployment, no consultants", "ML-powered forecasting with 3.2% MAPE", "AI copilot with visible reasoning (SHAP)", "Transparent pricing starting at $499/mo", "Self-serve onboarding in 15 minutes"].map(p => (
               <div key={p} style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13, color: TD, marginBottom: 6 }}>
                 <span style={{ color: GN, fontWeight: 700 }}>✓</span> {p}
@@ -107,20 +107,20 @@ export default function ComparePigment() {
 
         {/* CTA */}
         <div style={{ textAlign: "center", padding: "48px 0", borderTop: `1px solid ${BD}` }}>
-          <h2 style={{ fontSize: 28, fontWeight: 800, marginBottom: 12 }}>See why teams are switching to FinanceOS</h2>
+          <h2 style={{ fontSize: 28, fontWeight: 800, marginBottom: 12 }}>See why teams are switching to Castford</h2>
           <p style={{ fontSize: 14, color: TD, marginBottom: 28 }}>Try the full platform. No credit card, no sales call required.</p>
           <div style={{ display: "flex", gap: 14, justifyContent: "center" }}>
-            <Link href="/" style={{ padding: "14px 32px", borderRadius: 12, background: `linear-gradient(135deg,${AC},${PU})`, color: "#fff", fontWeight: 700, fontSize: 15, textDecoration: "none" }}>Try FinanceOS Free →</Link>
-            <a href="https://calendly.com/finance-os-support/30min" target="_blank" rel="noopener" style={{ padding: "14px 32px", borderRadius: 12, border: `1px solid ${BD}`, color: T, fontWeight: 600, fontSize: 15, textDecoration: "none" }}>Book a Demo</a>
+            <Link href="/" style={{ padding: "14px 32px", borderRadius: 12, background: `linear-gradient(135deg,${AC},${PU})`, color: "#fff", fontWeight: 700, fontSize: 15, textDecoration: "none" }}>Try Castford Free →</Link>
+            <a href="https://calendly.com/castford-support/30min" target="_blank" rel="noopener" style={{ padding: "14px 32px", borderRadius: 12, border: `1px solid ${BD}`, color: T, fontWeight: 600, fontSize: 15, textDecoration: "none" }}>Book a Demo</a>
           </div>
         </div>
 
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
           "@context": "https://schema.org", "@type": "FAQPage",
           "mainEntity": [
-            { "@type": "Question", "name": "Is FinanceOS cheaper than Pigment?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. FinanceOS starts at $499 per month. Pigment typically starts at $65,000 or more per year, making FinanceOS roughly 90% less expensive." }},
-            { "@type": "Question", "name": "Can FinanceOS replace Pigment?", "acceptedAnswer": { "@type": "Answer", "text": "FinanceOS covers core FP&A: P&L analysis, scenario modeling, multi-entity consolidation, ML forecasting, and month-end close. Pigment has stronger headcount planning and more native integrations. FinanceOS has a stronger AI copilot with visible reasoning." }},
-            { "@type": "Question", "name": "Does FinanceOS have AI like Pigment?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. FinanceOS uses Claude AI for its copilot with visible reasoning, SHAP feature importance, and confidence intervals. Pigment offers Analyst and Modeler agents." }},
+            { "@type": "Question", "name": "Is Castford cheaper than Pigment?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. Castford starts at $499 per month. Pigment typically starts at $65,000 or more per year, making Castford roughly 90% less expensive." }},
+            { "@type": "Question", "name": "Can Castford replace Pigment?", "acceptedAnswer": { "@type": "Answer", "text": "Castford covers core FP&A: P&L analysis, scenario modeling, multi-entity consolidation, ML forecasting, and month-end close. Pigment has stronger headcount planning and more native integrations. Castford has a stronger AI copilot with visible reasoning." }},
+            { "@type": "Question", "name": "Does Castford have AI like Pigment?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. Castford uses Claude AI for its copilot with visible reasoning, SHAP feature importance, and confidence intervals. Pigment offers Analyst and Modeler agents." }},
           ]
         }) }} />
       </div>

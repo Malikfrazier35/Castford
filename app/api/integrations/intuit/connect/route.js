@@ -6,7 +6,7 @@ import { createClient } from "@supabase/supabase-js";
 
 const INTUIT_AUTH_URL = "https://appcenter.intuit.com/connect/oauth2";
 const CLIENT_ID = process.env.INTUIT_CLIENT_ID;
-const REDIRECT_URI = process.env.INTUIT_REDIRECT_URI || "https://finance-os.app/api/integrations/intuit/callback";
+const REDIRECT_URI = process.env.INTUIT_REDIRECT_URI || "https://castford.com/api/integrations/intuit/callback";
 const SCOPES = "com.intuit.quickbooks.accounting";
 
 export async function GET(request) {

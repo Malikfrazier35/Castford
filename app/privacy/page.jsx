@@ -15,12 +15,12 @@ export default function PrivacyPage() {
       <div style={{ maxWidth: 720, margin: "0 auto", padding: "60px 24px 100px" }}>
         {/* Header */}
         <div style={{ marginBottom: 40, paddingBottom: 28, borderBottom: "1px solid #1e2230" }}>
-          <a href="/" style={{ display: "inline-flex", alignItems: "center", gap: 8, fontSize: 14, color: "#60a5fa", textDecoration: "none", marginBottom: 20 }}>← Back to FinanceOS</a>
+          <a href="/" style={{ display: "inline-flex", alignItems: "center", gap: 8, fontSize: 14, color: "#60a5fa", textDecoration: "none", marginBottom: 20 }}>← Back to Castford</a>
           <h1 style={{ fontSize: 36, fontWeight: 800, letterSpacing: "-0.03em", marginBottom: 8 }}>Privacy Policy</h1>
           <p style={{ fontSize: 13, color: "#3d4558" }}>Effective: {effective} · Financial Holding LLC</p>
         </div>
 
-        <p style={p}>Financial Holding LLC ("Company," "we," "us," or "our") operates FinanceOS, a cloud-based financial planning and analysis platform. This Privacy Policy explains how we collect, use, store, and protect your information when you use our Service at finance-os.app.</p>
+        <p style={p}>Financial Holding LLC ("Company," "we," "us," or "our") operates Castford, a cloud-based financial planning and analysis platform. This Privacy Policy explains how we collect, use, store, and protect your information when you use our Service at castford.com.</p>
 
         <div style={h2}>1. Information We Collect</div>
 
@@ -111,13 +111,13 @@ export default function PrivacyPage() {
           <li style={li}><strong style={{ color: "#f0f2f5" }}>Data Portability:</strong> Export your data in CSV format from any financial view using the Export function.</li>
           <li style={li}><strong style={{ color: "#f0f2f5" }}>Objection:</strong> Object to processing of your personal data for direct marketing (we do not engage in direct marketing using Customer Data).</li>
         </ul>
-        <p style={p}>To exercise any of these rights, contact us at privacy@finance-os.app. We will respond within 30 days.</p>
+        <p style={p}>To exercise any of these rights, contact us at privacy@castford.com. We will respond within 30 days.</p>
 
         <div style={h2}>7. California Residents (CCPA)</div>
-        <p style={p}>If you are a California resident, you have the right to: (a) know what personal information we collect about you; (b) request deletion of your personal information; (c) opt out of the sale of personal information — we do not sell personal information; (d) non-discrimination for exercising your CCPA rights. To exercise these rights, email privacy@finance-os.app with the subject line "CCPA Request."</p>
+        <p style={p}>If you are a California resident, you have the right to: (a) know what personal information we collect about you; (b) request deletion of your personal information; (c) opt out of the sale of personal information — we do not sell personal information; (d) non-discrimination for exercising your CCPA rights. To exercise these rights, email privacy@castford.com with the subject line "CCPA Request."</p>
 
         <div style={h2}>8. Cookies</div>
-        <p style={p}>FinanceOS uses strictly necessary cookies for authentication (Supabase auth session tokens) and user preferences (theme mode, sidebar state). We do not use advertising cookies, tracking cookies, or third-party marketing cookies. Our analytics provider (Plausible) is cookieless. You can manage cookie preferences through our cookie consent banner on first visit.</p>
+        <p style={p}>Castford uses strictly necessary cookies for authentication (Supabase auth session tokens) and user preferences (theme mode, sidebar state). We do not use advertising cookies, tracking cookies, or third-party marketing cookies. Our analytics provider (Plausible) is cookieless. You can manage cookie preferences through our cookie consent banner on first visit.</p>
 
         <div style={h2}>9. Children's Privacy</div>
         <p style={p}>The Service is not directed to individuals under 18 years of age. We do not knowingly collect personal information from children. If we become aware that we have collected data from a child, we will delete it promptly.</p>
@@ -130,8 +130,8 @@ export default function PrivacyPage() {
 
         <div style={h2}>12. Contact Us</div>
         <p style={p}>For questions about this Privacy Policy or to exercise your data rights:</p>
-        <p style={p}>Financial Holding LLC<br />Email: privacy@finance-os.app<br />Website: finance-os.app</p>
-        <p style={p}>For security-related concerns, contact security@finance-os.app.</p>
+        <p style={p}>Financial Holding LLC<br />Email: privacy@castford.com<br />Website: castford.com</p>
+        <p style={p}>For security-related concerns, contact security@castford.com.</p>
 
         {/* Footer */}
         <div style={{ marginTop: 60, paddingTop: 24, borderTop: "1px solid #1e2230", display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: 12, color: "#3d4558" }}>

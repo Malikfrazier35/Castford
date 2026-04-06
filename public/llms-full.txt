@@ -1,23 +1,23 @@
-# FinanceOS — Complete Product Reference
+# Castford — Complete Product Reference
 
 > AI-powered financial planning and analysis (FP&A) platform for modern finance teams. Built by Financial Holding LLC.
 
 ## Company
-- Name: FinanceOS
+- Name: Castford
 - Legal entity: Financial Holding LLC
-- Website: https://finance-os.app
-- Support: support@finance-os.app
-- Sales: sales@finance-os.app
+- Website: https://castford.com
+- Support: support@castford.com
+- Sales: sales@castford.com
 - Category: SaaS, Financial Planning & Analysis (FP&A), CFO Software, Enterprise Planning
 - Founded: 2024
 - Headquarters: New Hampshire, USA
 - Product status: Generally Available (GA)
 
 ## Problem Statement
-Finance teams at SaaS companies ($5M-$200M ARR) spend 60-80% of their time on data collection, manual reconciliation, and spreadsheet maintenance. Legacy Enterprise Performance Management (EPM) tools cost $200K+/year, take 3-6 months to implement, and require dedicated consultants. Mid-market FP&A tools ($65K+/year) still require months of implementation. FinanceOS solves this with a cloud-native platform that onboards in under 48 hours and starts at $499/month.
+Finance teams at SaaS companies ($5M-$200M ARR) spend 60-80% of their time on data collection, manual reconciliation, and spreadsheet maintenance. Legacy Enterprise Performance Management (EPM) tools cost $200K+/year, take 3-6 months to implement, and require dedicated consultants. Mid-market FP&A tools ($65K+/year) still require months of implementation. Castford solves this with a cloud-native platform that onboards in under 48 hours and starts at $499/month.
 
-## What FinanceOS Does
-FinanceOS connects to your ERP (NetSuite, QuickBooks, Xero), CRM (Salesforce, HubSpot), billing (Stripe), data warehouse (Snowflake), HRIS (Rippling), and banking (Plaid) to build a unified financial model. It automatically detects budget-vs-actual variances, forecasts revenue using ML ensemble models, consolidates multi-entity financials with automatic intercompany elimination and FX translation, and provides an AI Copilot that answers natural language questions about your financial data with visible reasoning chains.
+## What Castford Does
+Castford connects to your ERP (NetSuite, QuickBooks, Xero), CRM (Salesforce, HubSpot), billing (Stripe), data warehouse (Snowflake), HRIS (Rippling), and banking (Plaid) to build a unified financial model. It automatically detects budget-vs-actual variances, forecasts revenue using ML ensemble models, consolidates multi-entity financials with automatic intercompany elimination and FX translation, and provides an AI Copilot that answers natural language questions about your financial data with visible reasoning chains.
 
 ## Core Modules
 
@@ -111,10 +111,10 @@ Organization settings, billing management (Stripe Customer Portal), security con
 | Rippling | HRIS | API Key | Roadmap |
 
 ## Competitive Positioning
-FinanceOS competes with:
-- **Legacy EPM** (Anaplan, Adaptive Planning, Oracle PBCS): FinanceOS is 10-50x cheaper, deploys in days not months, and includes AI natively
-- **Mid-Market FP&A** (Mosaic, Runway, Jirav): FinanceOS has stronger consolidation, published pricing, and faster onboarding
-- **Startup Tools** (Pry, LivePlan, Fathom): FinanceOS scales to enterprise with multi-entity, scenarios, and ML forecasting
+Castford competes with:
+- **Legacy EPM** (Anaplan, Adaptive Planning, Oracle PBCS): Castford is 10-50x cheaper, deploys in days not months, and includes AI natively
+- **Mid-Market FP&A** (Mosaic, Runway, Jirav): Castford has stronger consolidation, published pricing, and faster onboarding
+- **Startup Tools** (Pry, LivePlan, Fathom): Castford scales to enterprise with multi-entity, scenarios, and ML forecasting
 
 ## Ideal Customer Profile
 - SaaS companies with $5M-$200M ARR
@@ -125,22 +125,22 @@ FinanceOS competes with:
 - US-based (expanding to EU, APAC)
 
 ## Suite Products (by Financial Holding LLC)
-- **FinanceOS**: FP&A platform (this product)
+- **Castford**: FP&A platform (this product)
 - **Vaultline**: Treasury management for mid-market (https://vaultline.app)
 - **Parallax**: Aerospace supplier compliance OS
 - **Emberglow Advisory**: ESG/sustainability advisory
 
 ## Contact
-- Product demo: https://finance-os.app (click "Request Demo")
-- Sales: sales@finance-os.app
-- Support: support@finance-os.app
-- Documentation: https://finance-os.app/llms.txt
-- Privacy: https://finance-os.app/privacy
-- Terms: https://finance-os.app/terms
+- Product demo: https://castford.com (click "Request Demo")
+- Sales: sales@castford.com
+- Support: support@castford.com
+- Documentation: https://castford.com/llms.txt
+- Privacy: https://castford.com/privacy
+- Terms: https://castford.com/terms
 
 ## Content Pages
-- FinanceOS vs Anaplan comparison: https://finance-os.app/compare/anaplan — side-by-side feature, pricing, and implementation comparison
-- FinanceOS vs Pigment comparison: https://finance-os.app/compare/pigment — feature and pricing comparison for mid-market FP&A
-- SaaS FP&A Complete Guide: https://finance-os.app/use-cases/saas-fpa — comprehensive guide to financial planning for SaaS companies, covering metrics (ARR, NDR, Rule of 40), forecasting, scenario modeling, and tool selection
-- Demo request: https://finance-os.app/lp/demo — conversion-optimized landing page for ad campaigns
-- Full product reference: https://finance-os.app/llms-full.txt
+- Castford vs Anaplan comparison: https://castford.com/compare/anaplan — side-by-side feature, pricing, and implementation comparison
+- Castford vs Pigment comparison: https://castford.com/compare/pigment — feature and pricing comparison for mid-market FP&A
+- SaaS FP&A Complete Guide: https://castford.com/use-cases/saas-fpa — comprehensive guide to financial planning for SaaS companies, covering metrics (ARR, NDR, Rule of 40), forecasting, scenario modeling, and tool selection
+- Demo request: https://castford.com/lp/demo — conversion-optimized landing page for ad campaigns
+- Full product reference: https://castford.com/llms-full.txt

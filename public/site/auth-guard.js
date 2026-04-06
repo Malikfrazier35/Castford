@@ -1,5 +1,5 @@
 /**
- * FinanceOS Auth Guard
+ * Castford Auth Guard
  * Include this script on any protected page (dashboard, workspace, etc.)
  * It checks for a valid Supabase session and redirects to /login if none exists.
  * Also exposes the session and user object for the page to use.

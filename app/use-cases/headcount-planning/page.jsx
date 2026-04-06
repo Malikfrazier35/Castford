@@ -7,7 +7,7 @@ export default function HeadcountPlanningPage() {
     <div style={{ background:c.bg,color:c.t,fontFamily:"'Manrope',system-ui,sans-serif",minHeight:"100vh" }}>
       <style>{`.uc-btn{transition:all .25s cubic-bezier(.4,0,.2,1)}.uc-btn:hover{transform:translateY(-2px)}`}</style>
       <nav style={{ display:"flex",justifyContent:"space-between",alignItems:"center",padding:"14px 48px",maxWidth:1200,margin:"0 auto",borderBottom:`1px solid ${c.b}50`,background:"rgba(6,8,12,.88)",backdropFilter:"blur(20px)" }}>
-        <Link href="/" style={{ display:"flex",alignItems:"center",gap:10,textDecoration:"none" }}><Logo size={28} /><span style={{ fontSize:16,fontWeight:800,color:c.t }}>FinanceOS</span></Link>
+        <Link href="/" style={{ display:"flex",alignItems:"center",gap:10,textDecoration:"none" }}><Logo size={28} /><span style={{ fontSize:16,fontWeight:800,color:c.t }}>Castford</span></Link>
         <div style={{ display:"flex",gap:20,alignItems:"center" }}><Link href="/use-cases" style={{ fontSize:13,color:c.td,textDecoration:"none" }}>Solutions</Link><Link href="/" className="uc-btn" style={{ fontSize:13,padding:"9px 20px",borderRadius:10,background:`linear-gradient(135deg,${c.ac},${c.pu})`,color:"#fff",textDecoration:"none",fontWeight:700 }}>Try Demo →</Link></div>
       </nav>
       <div style={{ display:"grid",gridTemplateColumns:"1fr 1fr",maxWidth:1100,margin:"0 auto",minHeight:400 }}>
@@ -19,7 +19,7 @@ export default function HeadcountPlanningPage() {
           <p style={{ fontSize:16,color:c.td,lineHeight:1.7,maxWidth:480,marginBottom:32 }}>Align with HR on budgeted vs actual headcount. Understand the P&L impact of every hire, see compensation cost trends, and adjust plans as your team grows.</p>
           <div style={{ display:"flex",gap:12 }}>
             <Link href="/" className="uc-btn" style={{ fontSize:14,padding:"13px 28px",borderRadius:12,background:`linear-gradient(135deg,${c.ac},${c.pu})`,color:"#fff",textDecoration:"none",fontWeight:700 }}>Explore Current Platform →</Link>
-            <a href="https://calendly.com/finance-os-support/30min" target="_blank" rel="noopener" className="uc-btn" style={{ fontSize:14,padding:"13px 28px",borderRadius:12,border:`1px solid ${c.b}`,color:c.td,textDecoration:"none",fontWeight:600 }}>Discuss Roadmap</a>
+            <a href="https://calendly.com/castford-support/30min" target="_blank" rel="noopener" className="uc-btn" style={{ fontSize:14,padding:"13px 28px",borderRadius:12,border:`1px solid ${c.b}`,color:c.td,textDecoration:"none",fontWeight:600 }}>Discuss Roadmap</a>
           </div>
         </div>
         <div style={{ position:"relative",overflow:"hidden" }}>
@@ -52,15 +52,15 @@ export default function HeadcountPlanningPage() {
         ))}
       </section>
       <section style={{ padding:"60px 48px 80px",textAlign:"center" }}>
-        <h2 style={{ fontSize:32,fontWeight:800,letterSpacing:"-0.03em",marginBottom:14 }}>Headcount planning is coming to FinanceOS</h2>
+        <h2 style={{ fontSize:32,fontWeight:800,letterSpacing:"-0.03em",marginBottom:14 }}>Headcount planning is coming to Castford</h2>
         <p style={{ fontSize:15,color:c.td,marginBottom:32,maxWidth:440,margin:"0 auto 32px" }}>Join the waitlist to be first in line when HRIS connectors launch.</p>
         <div style={{ display:"flex",gap:12,justifyContent:"center" }}>
           <Link href="/" className="uc-btn" style={{ fontSize:15,padding:"14px 32px",borderRadius:12,background:`linear-gradient(135deg,${c.ac},${c.pu})`,color:"#fff",textDecoration:"none",fontWeight:700 }}>Try Current Platform →</Link>
-          <a href="https://calendly.com/finance-os-support/30min" target="_blank" rel="noopener" className="uc-btn" style={{ fontSize:15,padding:"14px 32px",borderRadius:12,border:`1px solid ${c.b}`,color:c.t,textDecoration:"none",fontWeight:600 }}>Talk to Us</a>
+          <a href="https://calendly.com/castford-support/30min" target="_blank" rel="noopener" className="uc-btn" style={{ fontSize:15,padding:"14px 32px",borderRadius:12,border:`1px solid ${c.b}`,color:c.t,textDecoration:"none",fontWeight:600 }}>Talk to Us</a>
         </div>
       </section>
       <footer style={{ padding:"32px 48px",borderTop:`1px solid ${c.b}`,maxWidth:1200,margin:"0 auto",display:"flex",justifyContent:"space-between",fontSize:11,color:c.tf }}>
-        <div style={{ display:"flex",alignItems:"center",gap:6 }}><Logo size={18} /><span style={{ fontWeight:700 }}>FinanceOS</span></div>
+        <div style={{ display:"flex",alignItems:"center",gap:6 }}><Logo size={18} /><span style={{ fontWeight:700 }}>Castford</span></div>
         <div style={{ display:"flex",gap:20 }}><Link href="/use-cases" style={{ color:c.tf,textDecoration:"none" }}>Use Cases</Link><Link href="/" style={{ color:c.tf,textDecoration:"none" }}>Platform</Link></div>
         <span>© 2026 Financial Holding LLC</span>
       </footer>

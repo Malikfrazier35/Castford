@@ -2,17 +2,17 @@ import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 
 // ═══════════════════════════════════════════════════════════════
-// FinanceOS — Smart Notification Pipeline
+// Castford — Smart Notification Pipeline
 // Handles: demo_request, waitlist, investor_inquiry, sales_inquiry
-// Sends formatted HTML emails via Resend to sales@finance-os.app
-// FROM: noreply@finance-os.app (no-reply sender)
+// Sends formatted HTML emails via Resend to sales@castford.com
+// FROM: noreply@castford.com (no-reply sender)
 // ═══════════════════════════════════════════════════════════════
 
 const RESEND_API_KEY = process.env.RESEND_API_KEY;
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
-const NOTIFY_TO = "sales@finance-os.app";
-const NOTIFY_FROM = "FinanceOS Alerts <noreply@finance-os.app>";
+const NOTIFY_TO = "sales@castford.com";
+const NOTIFY_FROM = "Castford Alerts <noreply@castford.com>";
 
 // ── Email Templates ──────────────────────────────────────────
 
@@ -75,7 +75,7 @@ function buildEmailHTML({ type, subject, badge, badgeClass, fields, ctaText, cta
     ${ctaText ? `<div style="text-align:center;margin-top:20px;"><a href="${ctaUrl}" class="cta-btn accent-bg">${ctaText}</a></div>` : ""}
   </div>
   <div class="footer">
-    <p>FinanceOS Smart Notifications · finance-os.app</p>
+    <p>Castford Smart Notifications · castford.com</p>
     <p style="margin-top:4px;">This alert was generated automatically. Do not reply to this email.</p>
   </div>
 </div>
@@ -87,7 +87,7 @@ function buildEmailHTML({ type, subject, badge, badgeClass, fields, ctaText, cta
 
 function demoRequestEmail(data) {
   return {
-    subject: `[Demo Request] ${data.full_name || "Unknown"} — FinanceOS`,
+    subject: `[Demo Request] ${data.full_name || "Unknown"} — Castford`,
     html: buildEmailHTML({
       type: "demo_request",
       subject: "New Demo Request",
@@ -105,14 +105,14 @@ function demoRequestEmail(data) {
         { label: "Source", value: data.source || "homepage_modal" },
       ],
       ctaText: `Reply to ${data.email}`,
-      ctaUrl: `mailto:${data.email}?subject=Your%20FinanceOS%20Demo%20Request&body=Hi%20${encodeURIComponent(data.full_name || "")},%0A%0AThanks%20for%20requesting%20a%20demo%20of%20FinanceOS.%20`,
+      ctaUrl: `mailto:${data.email}?subject=Your%20Castford%20Demo%20Request&body=Hi%20${encodeURIComponent(data.full_name || "")},%0A%0AThanks%20for%20requesting%20a%20demo%20of%20Castford.%20`,
     }),
   };
 }
 
 function waitlistEmail(data) {
   return {
-    subject: `[${data.interest_type === "demo" ? "Demo Signup" : "Waitlist"}] ${data.email || "Unknown"} — FinanceOS`,
+    subject: `[${data.interest_type === "demo" ? "Demo Signup" : "Waitlist"}] ${data.email || "Unknown"} — Castford`,
     html: buildEmailHTML({
       type: "waitlist",
       subject: data.interest_type === "demo" ? "Demo Signup" : "New Waitlist Signup",
@@ -129,14 +129,14 @@ function waitlistEmail(data) {
         { label: "Plan Interest", value: data.plan_interest },
       ],
       ctaText: data.email ? `Reply to ${data.email}` : null,
-      ctaUrl: data.email ? `mailto:${data.email}?subject=Welcome%20to%20FinanceOS` : null,
+      ctaUrl: data.email ? `mailto:${data.email}?subject=Welcome%20to%20Castford` : null,
     }),
   };
 }
 
 function investorEmail(data) {
   return {
-    subject: `[Investor Inquiry] ${data.name || data.email || "Unknown"} — FinanceOS`,
+    subject: `[Investor Inquiry] ${data.name || data.email || "Unknown"} — Castford`,
     html: buildEmailHTML({
       type: "investor_inquiry",
       subject: "Investor Deck Request",
@@ -151,14 +151,14 @@ function investorEmail(data) {
         { label: "Source", value: data.source || "investor_cta" },
       ],
       ctaText: data.email ? `Reply to Investor` : null,
-      ctaUrl: data.email ? `mailto:${data.email}?subject=FinanceOS%20—%20Investor%20Deck` : null,
+      ctaUrl: data.email ? `mailto:${data.email}?subject=Castford%20—%20Investor%20Deck` : null,
     }),
   };
 }
 
 function salesEmail(data) {
   return {
-    subject: `[Enterprise Lead] ${data.company || data.email || "Unknown"} — FinanceOS`,
+    subject: `[Enterprise Lead] ${data.company || data.email || "Unknown"} — Castford`,
     html: buildEmailHTML({
       type: "sales_inquiry",
       subject: "Enterprise Sales Inquiry",
@@ -175,7 +175,7 @@ function salesEmail(data) {
         { label: "Source", value: data.source || "sales_cta" },
       ],
       ctaText: data.email ? `Reply to ${data.email}` : null,
-      ctaUrl: data.email ? `mailto:${data.email}?subject=FinanceOS%20Enterprise%20Inquiry` : null,
+      ctaUrl: data.email ? `mailto:${data.email}?subject=Castford%20Enterprise%20Inquiry` : null,
     }),
   };
 }
@@ -223,7 +223,7 @@ async function logNotification(supabase, { type, email, data, status, error }) {
       created_at: new Date().toISOString(),
     });
   } catch (e) {
-    console.warn("[FinanceOS Notify] Failed to log notification:", e?.message);
+    console.warn("[Castford Notify] Failed to log notification:", e?.message);
   }
 }
 
@@ -283,7 +283,7 @@ export async function POST(request) {
           metadata: JSON.stringify({ ...data, notification_sent: true }),
         }, { onConflict: "email" });
       } catch (e) {
-        console.warn("[FinanceOS Notify] Waitlist upsert failed:", e?.message);
+        console.warn("[Castford Notify] Waitlist upsert failed:", e?.message);
       }
     }
 
@@ -300,7 +300,7 @@ export async function POST(request) {
         await logNotification(supabase, { type, email: NOTIFY_TO, data, status: "sent" });
         return NextResponse.json({ ok: true, status: "sent" });
       } catch (e) {
-        console.error("[FinanceOS Notify] Resend error:", e?.message);
+        console.error("[Castford Notify] Resend error:", e?.message);
         await logNotification(supabase, { type, email: NOTIFY_TO, data, status: "failed", error: e?.message });
         // Fall through — still return 200 so the form doesn't error for the user
         return NextResponse.json({ ok: true, status: "queued", note: "Email delivery pending" });
@@ -311,7 +311,7 @@ export async function POST(request) {
       return NextResponse.json({ ok: true, status: "logged", note: "RESEND_API_KEY not configured — notification logged only" });
     }
   } catch (e) {
-    console.error("[FinanceOS Notify] Error:", e);
+    console.error("[Castford Notify] Error:", e);
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }
@@ -319,7 +319,7 @@ export async function POST(request) {
 // Health check
 export async function GET() {
   return NextResponse.json({
-    service: "FinanceOS Smart Notifications",
+    service: "Castford Smart Notifications",
     status: "active",
     types: ["demo_request", "waitlist", "investor_inquiry", "sales_inquiry"],
     destination: NOTIFY_TO,

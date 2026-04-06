@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * FinanceOS — Shared Template Build System (Option A)
+ * Castford — Shared Template Build System (Option A)
  *
  * Injects consistent navigation, footer, and shared CSS variables
  * across all HTML marketing pages from a single source of truth.
@@ -49,42 +49,42 @@ nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,0.88);backdrop
 const NAV_HTML = `
 <nav>
   <div class="nav-inner">
-    <a href="FinanceOS-Landing-V3.html" class="logo"><span class="logo-dot"></span>FinanceOS</a>
+    <a href="Castford-Landing-V3.html" class="logo"><span class="logo-dot"></span>Castford</a>
     <div class="nav-links">
       <div class="nav-dropdown">
         <span>Solutions <svg class="nav-arrow" viewBox="0 0 12 12"><polyline points="3,4.5 6,7.5 9,4.5"/></svg></span>
         <div class="dd-menu">
-          <a href="FinanceOS-Solutions-Digital.html">Digital Business</a>
-          <a href="FinanceOS-xPA-Planning-V2.html">Cross-Department Planning</a>
-          <a href="FinanceOS-Pain-Points-Solutions.html">Pain Points &amp; Solutions</a>
+          <a href="Castford-Solutions-Digital.html">Digital Business</a>
+          <a href="Castford-xPA-Planning-V2.html">Cross-Department Planning</a>
+          <a href="Castford-Pain-Points-Solutions.html">Pain Points &amp; Solutions</a>
         </div>
       </div>
-      <a href="FinanceOS-Integrations-V3.html">Integrations</a>
+      <a href="Castford-Integrations-V3.html">Integrations</a>
       <div class="nav-dropdown">
         <span>Trust <svg class="nav-arrow" viewBox="0 0 12 12"><polyline points="3,4.5 6,7.5 9,4.5"/></svg></span>
         <div class="dd-menu">
-          <a href="FinanceOS-Security-Zero-Trust.html">Security &amp; Privacy</a>
+          <a href="Castford-Security-Zero-Trust.html">Security &amp; Privacy</a>
         </div>
       </div>
-      <a href="FinanceOS-Pricing-V3.html">Pricing</a>
+      <a href="Castford-Pricing-V3.html">Pricing</a>
       <div class="nav-dropdown">
         <span>Compare <svg class="nav-arrow" viewBox="0 0 12 12"><polyline points="3,4.5 6,7.5 9,4.5"/></svg></span>
         <div class="dd-menu">
-          <a href="FinanceOS-vs-Competitors-V2.html">vs Competitors</a>
-          <a href="FinanceOS-V3-vs-Current-Comparison.html">V3 Improvements</a>
+          <a href="Castford-vs-Competitors-V2.html">vs Competitors</a>
+          <a href="Castford-V3-vs-Current-Comparison.html">V3 Improvements</a>
         </div>
       </div>
       <div class="nav-dropdown">
         <span>Resources <svg class="nav-arrow" viewBox="0 0 12 12"><polyline points="3,4.5 6,7.5 9,4.5"/></svg></span>
         <div class="dd-menu">
-          <a href="FinanceOS-Resources-V2.html">Resource Library</a>
-          <a href="FinanceOS-Whats-New-V2.html">What's New</a>
+          <a href="Castford-Resources-V2.html">Resource Library</a>
+          <a href="Castford-Whats-New-V2.html">What's New</a>
         </div>
       </div>
     </div>
     <div class="nav-right">
-      <a href="FinanceOS-Login-V2.html">Sign In</a>
-      <a href="FinanceOS-Pricing-V3.html" class="btn-nav btn-nav-primary">Subscribe</a>
+      <a href="Castford-Login-V2.html">Sign In</a>
+      <a href="Castford-Pricing-V3.html" class="btn-nav btn-nav-primary">Subscribe</a>
     </div>
   </div>
 </nav>
@@ -114,44 +114,44 @@ const FOOTER_HTML = `
 <footer>
   <div class="footer-inner">
     <div class="footer-brand">
-      <a href="FinanceOS-Landing-V3.html" class="logo"><span class="logo-dot"></span>FinanceOS</a>
+      <a href="Castford-Landing-V3.html" class="logo"><span class="logo-dot"></span>Castford</a>
       <p>AI-native financial planning & analysis for modern finance teams.</p>
     </div>
     <div class="footer-col">
       <h5>Product</h5>
-      <a href="FinanceOS-Landing-V3.html">Platform</a>
-      <a href="FinanceOS-xPA-Planning-V2.html">AI Copilot</a>
-      <a href="FinanceOS-Integrations-V3.html">Integrations</a>
-      <a href="FinanceOS-Pricing-V3.html">Pricing</a>
-      <a href="FinanceOS-Security-Zero-Trust.html">Security</a>
+      <a href="Castford-Landing-V3.html">Platform</a>
+      <a href="Castford-xPA-Planning-V2.html">AI Copilot</a>
+      <a href="Castford-Integrations-V3.html">Integrations</a>
+      <a href="Castford-Pricing-V3.html">Pricing</a>
+      <a href="Castford-Security-Zero-Trust.html">Security</a>
     </div>
     <div class="footer-col">
       <h5>Solutions</h5>
-      <a href="FinanceOS-Solutions-Digital.html">SaaS</a>
-      <a href="FinanceOS-Solutions-Digital.html">E-Commerce</a>
-      <a href="FinanceOS-Solutions-Digital.html">Enterprise</a>
-      <a href="FinanceOS-Solutions-Digital.html">Startups</a>
+      <a href="Castford-Solutions-Digital.html">SaaS</a>
+      <a href="Castford-Solutions-Digital.html">E-Commerce</a>
+      <a href="Castford-Solutions-Digital.html">Enterprise</a>
+      <a href="Castford-Solutions-Digital.html">Startups</a>
     </div>
     <div class="footer-col">
       <h5>Resources</h5>
-      <a href="FinanceOS-Resources-V2.html">Resource Library</a>
-      <a href="FinanceOS-Whats-New-V2.html">Changelog</a>
-      <a href="FinanceOS-Resources-V2.html">Blog</a>
+      <a href="Castford-Resources-V2.html">Resource Library</a>
+      <a href="Castford-Whats-New-V2.html">Changelog</a>
+      <a href="Castford-Resources-V2.html">Blog</a>
     </div>
     <div class="footer-col">
       <h5>Company</h5>
       <a href="#">About</a>
       <a href="#">Careers</a>
       <a href="#">Contact</a>
-      <a href="FinanceOS-Security-Zero-Trust.html">Privacy</a>
+      <a href="Castford-Security-Zero-Trust.html">Privacy</a>
     </div>
   </div>
   <div class="footer-bottom">
-    <span>&copy; 2026 FinanceOS, Inc.</span>
+    <span>&copy; 2026 Castford, Inc.</span>
     <div class="footer-bottom-links">
-      <a href="FinanceOS-Security-Zero-Trust.html">Privacy</a>
+      <a href="Castford-Security-Zero-Trust.html">Privacy</a>
       <a href="#">Terms</a>
-      <a href="FinanceOS-Security-Zero-Trust.html">Security</a>
+      <a href="Castford-Security-Zero-Trust.html">Security</a>
     </div>
   </div>
 </footer>
@@ -180,21 +180,21 @@ const SHARED_VARS = `
 // FILES TO PROCESS
 // ═══════════════════════════════════════════════════
 const TARGET_FILES = [
-  'FinanceOS-Landing-V3.html',
-  'FinanceOS-Integrations-V3.html',
-  'FinanceOS-Solutions-Digital.html',
-  'FinanceOS-Pain-Points-Solutions.html',
-  'FinanceOS-Whats-New-V2.html',
-  'FinanceOS-Login-V2.html',
-  'FinanceOS-Resources-V2.html',
-  'FinanceOS-Security-Zero-Trust.html',
-  'FinanceOS-V3-vs-Current-Comparison.html',
-  'FinanceOS-Build-Inventory.html',
-  'FinanceOS-Pricing-V3.html',
-  'FinanceOS-vs-Competitors-V2.html',
-  'FinanceOS-xPA-Planning-V2.html',
-  'FinanceOS-Enterprise-Pricing-Model.html',
-  'FinanceOS-Ad-Campaign-V2.html',
+  'Castford-Landing-V3.html',
+  'Castford-Integrations-V3.html',
+  'Castford-Solutions-Digital.html',
+  'Castford-Pain-Points-Solutions.html',
+  'Castford-Whats-New-V2.html',
+  'Castford-Login-V2.html',
+  'Castford-Resources-V2.html',
+  'Castford-Security-Zero-Trust.html',
+  'Castford-V3-vs-Current-Comparison.html',
+  'Castford-Build-Inventory.html',
+  'Castford-Pricing-V3.html',
+  'Castford-vs-Competitors-V2.html',
+  'Castford-xPA-Planning-V2.html',
+  'Castford-Enterprise-Pricing-Model.html',
+  'Castford-Ad-Campaign-V2.html',
 ];
 
 // ═══════════════════════════════════════════════════
@@ -263,7 +263,7 @@ function processFile(filename) {
 // ═══════════════════════════════════════════════════
 // RUN
 // ═══════════════════════════════════════════════════
-console.log('FinanceOS Build System — Applying shared templates\n');
+console.log('Castford Build System — Applying shared templates\n');
 console.log(`Processing ${TARGET_FILES.length} files...\n`);
 
 let updated = 0;

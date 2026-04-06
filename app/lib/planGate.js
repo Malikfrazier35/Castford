@@ -146,15 +146,15 @@ export async function fetchPlanCheckpoint(email) {
  */
 export const UPGRADE_URLS = {
   starter: {
-    monthly: "https://finance-os.app/api/checkout?plan=starter&interval=month",
-    annual: "https://finance-os.app/api/checkout?plan=starter&interval=year",
+    monthly: "https://castford.com/api/checkout?plan=starter&interval=month",
+    annual: "https://castford.com/api/checkout?plan=starter&interval=year",
   },
   growth: {
-    monthly: "https://finance-os.app/api/checkout?plan=growth&interval=month",
-    annual: "https://finance-os.app/api/checkout?plan=growth&interval=year",
+    monthly: "https://castford.com/api/checkout?plan=growth&interval=month",
+    annual: "https://castford.com/api/checkout?plan=growth&interval=year",
   },
   business: {
-    monthly: "https://finance-os.app/api/checkout?plan=business&interval=month",
-    annual: "https://finance-os.app/api/checkout?plan=business&interval=year",
+    monthly: "https://castford.com/api/checkout?plan=business&interval=month",
+    annual: "https://castford.com/api/checkout?plan=business&interval=year",
   },
 };

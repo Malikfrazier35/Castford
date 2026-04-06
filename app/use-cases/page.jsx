@@ -39,9 +39,9 @@ export default function UseCasesIndex() {
       <style>{`@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}.uc-card{transition:all .25s cubic-bezier(.4,0,.2,1)}.uc-card:hover{transform:translateY(-4px);border-color:rgba(91,156,245,.2)!important}`}</style>
 
       <nav style={{ display:"flex",justifyContent:"space-between",alignItems:"center",padding:"14px 48px",maxWidth:1200,margin:"0 auto",borderBottom:`1px solid ${c.b}50` }}>
-        <Link href="/" style={{ display:"flex",alignItems:"center",gap:10,textDecoration:"none" }}><Logo size={28} /><span style={{ fontSize:16,fontWeight:800,color:c.t,letterSpacing:"-0.02em" }}>FinanceOS</span></Link>
+        <Link href="/" style={{ display:"flex",alignItems:"center",gap:10,textDecoration:"none" }}><Logo size={28} /><span style={{ fontSize:16,fontWeight:800,color:c.t,letterSpacing:"-0.02em" }}>Castford</span></Link>
         <div style={{ display:"flex",gap:20,alignItems:"center" }}>
-          <Link href="/compare/financeos-vs-pigment" style={{ fontSize:13,color:c.td,textDecoration:"none" }}>Compare</Link>
+          <Link href="/compare/castford-vs-pigment" style={{ fontSize:13,color:c.td,textDecoration:"none" }}>Compare</Link>
           <Link href="/" style={{ fontSize:13,padding:"9px 20px",borderRadius:10,background:`linear-gradient(135deg,${c.ac},${c.pu})`,color:"#fff",textDecoration:"none",fontWeight:700 }}>Try Demo →</Link>
         </div>
       </nav>
@@ -55,7 +55,7 @@ export default function UseCasesIndex() {
           <span style={{ background:`linear-gradient(135deg,${c.ac},${c.pu})`,WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent" }}>Be the next.</span>
         </h1>
         <p style={{ fontSize:17,color:c.td,lineHeight:1.7,maxWidth:600,margin:"0 auto 32px" }}>
-          Organizations around the world rely on FinanceOS to plan, forecast, and report with AI-powered accuracy. From budgeting to board decks — one connected platform.
+          Organizations around the world rely on Castford to plan, forecast, and report with AI-powered accuracy. From budgeting to board decks — one connected platform.
         </p>
       </div>
 
@@ -95,7 +95,7 @@ export default function UseCasesIndex() {
         <div style={{ maxWidth:1100,margin:"0 auto",padding:"0 48px 60px" }}>
           <div style={{ textAlign:"center",marginBottom:32 }}>
             <h2 style={{ fontSize:28,fontWeight:800,letterSpacing:"-0.03em",marginBottom:8 }}>Built for your industry</h2>
-            <p style={{ fontSize:15,color:c.td }}>FinanceOS adapts to your business model with industry-specific KPIs, templates, and benchmarks.</p>
+            <p style={{ fontSize:15,color:c.td }}>Castford adapts to your business model with industry-specific KPIs, templates, and benchmarks.</p>
           </div>
           <div style={{ display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(260px,1fr))",gap:18 }}>
             {industries.map((ind,i) => (
@@ -134,7 +134,7 @@ export default function UseCasesIndex() {
             ))}
           </div>
           <div style={{ textAlign:"center",marginTop:32 }}>
-            <a href="https://calendly.com/finance-os-support/30min" target="_blank" rel="noopener" style={{ fontSize:14,padding:"12px 28px",borderRadius:12,border:`1px solid ${c.b}`,color:c.t,textDecoration:"none",fontWeight:700,display:"inline-block",marginRight:12 }}>Book a Demo</a>
+            <a href="https://calendly.com/castford-support/30min" target="_blank" rel="noopener" style={{ fontSize:14,padding:"12px 28px",borderRadius:12,border:`1px solid ${c.b}`,color:c.t,textDecoration:"none",fontWeight:700,display:"inline-block",marginRight:12 }}>Book a Demo</a>
             <Link href="/" style={{ fontSize:14,padding:"12px 28px",borderRadius:12,background:`linear-gradient(135deg,${c.ac},${c.pu})`,color:"#fff",textDecoration:"none",fontWeight:700,display:"inline-block" }}>Try It Free →</Link>
           </div>
         </div>
@@ -153,12 +153,12 @@ export default function UseCasesIndex() {
       </div>
 
       <footer style={{ padding:"32px 48px",borderTop:`1px solid ${c.b}`,maxWidth:1200,margin:"0 auto",display:"flex",justifyContent:"space-between",alignItems:"center",fontSize:11,color:c.tf }}>
-        <div style={{ display:"flex",alignItems:"center",gap:6 }}><Logo size={18} /><span style={{ fontWeight:700,color:c.td }}>FinanceOS</span></div>
+        <div style={{ display:"flex",alignItems:"center",gap:6 }}><Logo size={18} /><span style={{ fontWeight:700,color:c.td }}>Castford</span></div>
         <div style={{ display:"flex",gap:20 }}>
           <Link href="/" style={{ color:c.tf,textDecoration:"none" }}>Platform</Link>
-          <Link href="/compare/financeos-vs-pigment" style={{ color:c.tf,textDecoration:"none" }}>vs Pigment</Link>
-          <Link href="/compare/financeos-vs-anaplan" style={{ color:c.tf,textDecoration:"none" }}>vs Anaplan</Link>
-          <a href="https://calendly.com/finance-os-support/30min" target="_blank" rel="noopener" style={{ color:c.tf,textDecoration:"none" }}>Book Demo</a>
+          <Link href="/compare/castford-vs-pigment" style={{ color:c.tf,textDecoration:"none" }}>vs Pigment</Link>
+          <Link href="/compare/castford-vs-anaplan" style={{ color:c.tf,textDecoration:"none" }}>vs Anaplan</Link>
+          <a href="https://calendly.com/castford-support/30min" target="_blank" rel="noopener" style={{ color:c.tf,textDecoration:"none" }}>Book Demo</a>
         </div>
         <span>© 2026 Financial Holding LLC</span>
       </footer>

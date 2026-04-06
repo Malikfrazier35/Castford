@@ -59,7 +59,7 @@ export default function DemoLanding() {
       <header style={{ padding: "20px 32px", display: "flex", alignItems: "center", borderBottom: "1px solid #1e2230" }}>
         <a href="/" style={{ textDecoration: "none", display: "flex", alignItems: "center", gap: 8 }}>
           <div style={{ width: 28, height: 28, borderRadius: 8, background: "linear-gradient(135deg, #60a5fa, #a78bfa)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12, fontWeight: 900, color: "#fff" }}>F</div>
-          <span style={{ fontSize: 16, fontWeight: 700, color: "#f0f2f7", letterSpacing: "-0.02em" }}>FinanceOS</span>
+          <span style={{ fontSize: 16, fontWeight: 700, color: "#f0f2f7", letterSpacing: "-0.02em" }}>Castford</span>
         </a>
       </header>
 
@@ -108,7 +108,7 @@ export default function DemoLanding() {
           <div style={{ background: "#111827", border: "1px solid #1e2230", borderRadius: 16, padding: 32 }}>
             {!submitted ? (
               <>
-                <h2 style={{ fontSize: 22, fontWeight: 700, color: "#f0f2f7", marginBottom: 4 }}>See FinanceOS in action</h2>
+                <h2 style={{ fontSize: 22, fontWeight: 700, color: "#f0f2f7", marginBottom: 4 }}>See Castford in action</h2>
                 <p style={{ fontSize: 13, color: "#5a6178", marginBottom: 24 }}>Get a personalized demo for your finance team.</p>
                 <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
                   <input value={name} onChange={e => setName(e.target.value)} placeholder="Full name" style={{ width: "100%", padding: "12px 14px", borderRadius: 8, border: "1px solid #1e2230", background: "#0a0e1a", color: "#f0f2f7", fontSize: 14, fontFamily: "inherit", outline: "none", boxSizing: "border-box" }} />
@@ -127,7 +127,7 @@ export default function DemoLanding() {
                 <h2 style={{ fontSize: 22, fontWeight: 700, color: "#f0f2f7", marginBottom: 8 }}>Demo requested</h2>
                 <p style={{ fontSize: 14, color: "#9ea5b8", marginBottom: 24 }}>We'll reach out within 24 hours to schedule your personalized walkthrough.</p>
                 <a href="/" style={{ display: "inline-block", padding: "12px 24px", borderRadius: 8, background: "#60a5fa15", color: "#60a5fa", fontWeight: 600, fontSize: 13, textDecoration: "none", border: "1px solid #60a5fa30" }}>
-                  Explore FinanceOS →
+                  Explore Castford →
                 </a>
               </div>
             )}

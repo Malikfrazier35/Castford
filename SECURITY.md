@@ -1,4 +1,4 @@
-# FinanceOS Security Architecture
+# Castford Security Architecture
 
 ## Infrastructure
 - **Hosting**: Vercel (us-east-1, SOC 2 compliant)
@@ -48,4 +48,4 @@ All 5 Edge Functions require JWT authentication (`verify_jwt: true`):
 1. Enable leaked password protection: Supabase → Auth → Security
 2. Set STRIPE_SECRET_KEY + STRIPE_WEBHOOK_SECRET in Edge Function secrets
 3. Set ANTHROPIC_API_KEY in copilot Edge Function secrets
-4. Connect finance-os.app DNS (A: 76.76.21.21, CNAME: www → cname.vercel-dns.com)
+4. Connect castford.com DNS (A: 76.76.21.21, CNAME: www → cname.vercel-dns.com)

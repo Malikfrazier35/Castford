@@ -12,7 +12,7 @@ export default function BudgetPlanningPage() {
       <style>{`.uc-btn{transition:all .25s cubic-bezier(.4,0,.2,1)}.uc-btn:hover{transform:translateY(-2px)}.uc-card{transition:all .3s cubic-bezier(.4,0,.2,1)}.uc-card:hover{transform:translateY(-3px);border-color:rgba(91,156,245,.2)!important}`}</style>
 
       <nav style={{ display:"flex",justifyContent:"space-between",alignItems:"center",padding:"14px 48px",maxWidth:1200,margin:"0 auto",borderBottom:`1px solid ${c.b}50`,background:"rgba(6,8,12,.88)",backdropFilter:"blur(20px)" }}>
-        <Link href="/" style={{ display:"flex",alignItems:"center",gap:10,textDecoration:"none" }}><Logo size={28} /><span style={{ fontSize:16,fontWeight:800,color:c.t,letterSpacing:"-0.03em" }}>FinanceOS</span></Link>
+        <Link href="/" style={{ display:"flex",alignItems:"center",gap:10,textDecoration:"none" }}><Logo size={28} /><span style={{ fontSize:16,fontWeight:800,color:c.t,letterSpacing:"-0.03em" }}>Castford</span></Link>
         <div style={{ display:"flex",gap:20,alignItems:"center" }}>
           <Link href="/use-cases" style={{ fontSize:13,color:c.td,textDecoration:"none" }}>Solutions</Link>
           <Link href="/use-cases/finance" style={{ fontSize:13,color:c.td,textDecoration:"none" }}>For Finance Teams</Link>
@@ -30,7 +30,7 @@ export default function BudgetPlanningPage() {
           <p style={{ fontSize:16,color:c.td,lineHeight:1.7,maxWidth:480,marginBottom:32 }}>Driver-based budgeting with rolling forecasts, ML-powered accuracy, and instant what-if analysis. Build your operating plan in days, not months.</p>
           <div style={{ display:"flex",gap:12 }}>
             <Link href="/" className="uc-btn" style={{ fontSize:14,padding:"13px 28px",borderRadius:12,background:`linear-gradient(135deg,${c.ac},${c.pu})`,color:"#fff",textDecoration:"none",fontWeight:700,boxShadow:`0 4px 20px ${c.ac}25` }}>Explore the Demo →</Link>
-            <a href="https://calendly.com/finance-os-support/30min" target="_blank" rel="noopener" className="uc-btn" style={{ fontSize:14,padding:"13px 28px",borderRadius:12,border:`1px solid ${c.b}`,color:c.td,textDecoration:"none",fontWeight:600 }}>Book a Demo</a>
+            <a href="https://calendly.com/castford-support/30min" target="_blank" rel="noopener" className="uc-btn" style={{ fontSize:14,padding:"13px 28px",borderRadius:12,border:`1px solid ${c.b}`,color:c.td,textDecoration:"none",fontWeight:600 }}>Book a Demo</a>
           </div>
         </div>
         <div style={{ position:"relative",overflow:"hidden" }}>
@@ -56,7 +56,7 @@ export default function BudgetPlanningPage() {
       {/* Features */}
       <section style={{ padding:"60px 48px",maxWidth:960,margin:"0 auto" }}>
         <div style={{ textAlign:"center",marginBottom:48 }}>
-          <h2 style={{ fontSize:32,fontWeight:800,letterSpacing:"-0.03em" }}>How budget planning works in FinanceOS</h2>
+          <h2 style={{ fontSize:32,fontWeight:800,letterSpacing:"-0.03em" }}>How budget planning works in Castford</h2>
         </div>
         {[
           { n:"1",t:"Driver-based modeling",d:"Build your plan from business drivers — headcount, pipeline, NDR, ACV — not static line items. Every assumption is linked, traceable, and auditable. Change one driver and see the full P&L impact instantly.",cl:c.ac },
@@ -93,13 +93,13 @@ export default function BudgetPlanningPage() {
         <p style={{ fontSize:15,color:c.td,marginBottom:32,maxWidth:440,margin:"0 auto 32px" }}>No implementation consultants. No 6-month timelines. Connect your data and go.</p>
         <div style={{ display:"flex",gap:12,justifyContent:"center" }}>
           <Link href="/" className="uc-btn" style={{ fontSize:15,padding:"14px 32px",borderRadius:12,background:`linear-gradient(135deg,${c.ac},${c.pu})`,color:"#fff",textDecoration:"none",fontWeight:700 }}>Launch Demo →</Link>
-          <a href="https://calendly.com/finance-os-support/30min" target="_blank" rel="noopener" className="uc-btn" style={{ fontSize:15,padding:"14px 32px",borderRadius:12,border:`1px solid ${c.b}`,color:c.t,textDecoration:"none",fontWeight:600 }}>Book a Call</a>
+          <a href="https://calendly.com/castford-support/30min" target="_blank" rel="noopener" className="uc-btn" style={{ fontSize:15,padding:"14px 32px",borderRadius:12,border:`1px solid ${c.b}`,color:c.t,textDecoration:"none",fontWeight:600 }}>Book a Call</a>
         </div>
       </section>
 
       {/* Footer */}
       <footer style={{ padding:"32px 48px",borderTop:`1px solid ${c.b}`,maxWidth:1200,margin:"0 auto",display:"flex",justifyContent:"space-between",alignItems:"center",fontSize:11,color:c.tf }}>
-        <div style={{ display:"flex",alignItems:"center",gap:6 }}><Logo size={18} /><span style={{ fontWeight:700 }}>FinanceOS</span></div>
+        <div style={{ display:"flex",alignItems:"center",gap:6 }}><Logo size={18} /><span style={{ fontWeight:700 }}>Castford</span></div>
         <div style={{ display:"flex",gap:20 }}>
           <Link href="/use-cases" style={{ color:c.tf,textDecoration:"none" }}>Use Cases</Link>
           <Link href="/use-cases/finance" style={{ color:c.tf,textDecoration:"none" }}>For Finance Teams</Link>

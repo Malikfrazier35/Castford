@@ -7,7 +7,7 @@ export default function PlausibleAnalytics() {
       try {
         const { default: Plausible } = await import("plausible-tracker");
         const plausible = Plausible({
-          domain: "finance-os.app",
+          domain: "castford.com",
           trackLocalhost: false,
           apiHost: "https://plausible.io",
         });

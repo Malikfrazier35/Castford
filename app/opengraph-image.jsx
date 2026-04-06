@@ -1,7 +1,7 @@
 import { ImageResponse } from "next/og";
 
 export const runtime = "edge";
-export const alt = "FinanceOS — AI-Powered FP&A Platform";
+export const alt = "Castford — AI-Powered FP&A Platform";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -82,7 +82,7 @@ export default function Image() {
           fontSize: 14, color: "#3d4558", fontWeight: 600,
           letterSpacing: "0.04em",
         }}>
-          finance-os.app
+          castford.com
         </div>
       </div>
     ),
