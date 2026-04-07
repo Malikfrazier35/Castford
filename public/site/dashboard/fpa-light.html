@@ -246,18 +246,22 @@ setTimeout(()=>{animateForecast();animateBars()},400);
 document.addEventListener('DOMContentLoaded', async function() {
   if (window.CastfordData) {
     var cd = await CastfordData.init();
-    // Fetch live data from dashboard-summary API
+    // Fetch live data from dashboard-summary API using auth-guard's session
     try {
-      var token = (await window.supabase.createClient('https://crecesswagluelvkesul.supabase.co','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNyZWNlc3N3YWdsdWVsdmtlc3VsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM4MTI5NzYsImV4cCI6MjA4OTM4ODk3Nn0.IGEEYDStt-eH9Mf2G_DzqCPfruDjN8m_ORtAcmtSAZg').auth.getSession()).data?.session?.access_token;
+      var sb = window.__fos_supabase;
+      if (!sb) { console.warn('Auth guard not loaded'); return; }
+      var session = window.__fos_session || (await sb.auth.getSession()).data?.session;
+      var token = session?.access_token;
       if (token) {
         var resp = await fetch('https://crecesswagluelvkesul.supabase.co/functions/v1/dashboard-summary?view=summary', {headers:{'Authorization':'Bearer '+token,'Content-Type':'application/json'}});
         var apiData = await resp.json();
         if (window.CastfordCharts) CastfordCharts.render(apiData);
         console.log('Castford: Live charts rendered', apiData.kpis);
-      }
+      } else { console.warn('No auth session — charts in demo mode'); }
     } catch(e) { console.warn('Chart data fetch failed:', e); }
   }
 });
 </script>
+<script src="/site/copilot-ui.js" defer></script>
 </body>
 </html>

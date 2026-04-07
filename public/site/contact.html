@@ -163,5 +163,35 @@ document.getElementById('themeToggle').addEventListener('click',()=>{const h=doc
 const _o=new IntersectionObserver(e=>{e.forEach(el=>{if(el.isIntersecting){el.target.classList.add('v');el.target.classList.add('vis');el.target.classList.add('visible')}})},{threshold:0.08});
 document.querySelectorAll('.cf-fin,.fade-in,.reveal').forEach(el=>_o.observe(el));
 </script>
+<script>
+// Wire demo request form to edge function
+document.querySelector('.btn-submit').addEventListener('click', async function(e) {
+  e.preventDefault();
+  var btn = this;
+  var inputs = document.querySelectorAll('.form-card input, .form-card select, .form-card textarea');
+  var firstName = inputs[0]?.value?.trim() || '';
+  var lastName = inputs[1]?.value?.trim() || '';
+  var email = inputs[2]?.value?.trim() || '';
+  var company = inputs[3]?.value?.trim() || '';
+  var title = inputs[4]?.value || '';
+  var companySize = inputs[5]?.value || '';
+  var useCase = inputs[6]?.value?.trim() || '';
+
+  if (!email || !email.includes('@')) { alert('Please enter a valid email address.'); return; }
+
+  btn.disabled = true; btn.textContent = 'Submitting...';
+  try {
+    var res = await fetch('https://crecesswagluelvkesul.supabase.co/functions/v1/request-demo', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: email, full_name: (firstName + ' ' + lastName).trim(), company: company, title: title, company_size: companySize, use_case: useCase }),
+    });
+    var data = await res.json();
+    if (data.success) {
+      btn.textContent = 'Demo Requested!'; btn.style.background = '#16a34a';
+      document.querySelector('.form-note').textContent = 'We\'ll be in touch within 4 hours. Check your email for next steps.';
+    } else { btn.disabled = false; btn.textContent = 'Request Demo'; alert(data.error || 'Something went wrong.'); }
+  } catch (err) { btn.disabled = false; btn.textContent = 'Request Demo'; alert('Connection error. Please try again.'); }
+});
+</script>
 </body>
 </html>
