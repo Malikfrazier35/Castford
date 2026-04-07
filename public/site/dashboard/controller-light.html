@@ -15,7 +15,7 @@
   --shadow-md:0 4px 20px rgba(0,0,0,0.06),0 2px 8px rgba(0,0,0,0.04);
   --shadow-lg:0 12px 40px rgba(0,0,0,0.08),0 4px 12px rgba(0,0,0,0.04);
   --blue:#2563eb;--blue-soft:#dbeafe;--blue-text:#1e40af;
-  --green:#059669;--green-soft:#d1fae5;--green-text:#065f46;
+  --green:#1A3F7A;--green-soft:#d1fae5;--green-text:#065f46;
   --amber:#d97706;--amber-soft:#fef3c7;--amber-text:#92400e;
   --rose:#dc2626;--rose-soft:#fee2e2;--rose-text:#991b1b;
   --purple:#7c3aed;--purple-soft:#ede9fe;--purple-text:#5b21b6;
@@ -29,7 +29,7 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;bottom:0;background:
 
 .dash-header{padding:24px 48px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);backdrop-filter:blur(24px) saturate(1.4);position:sticky;top:0;z-index:90;background:rgba(248,247,244,0.8)}
 .dash-logo{display:flex;align-items:center;gap:14px}
-.dash-logo-icon{width:40px;height:40px;border-radius:12px;background:linear-gradient(135deg,var(--green),#047857);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px;color:#fff;box-shadow:0 4px 16px rgba(5,150,105,0.25)}
+.dash-logo-icon{width:40px;height:40px;border-radius:12px;background:linear-gradient(135deg,var(--green),#0F2B5C);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px;color:#fff;box-shadow:0 4px 16px rgba(5,150,105,0.25)}
 .dash-logo-text{font-size:19px;font-weight:800;color:var(--text)}
 .dash-role{font-size:13px;color:var(--text-2);background:var(--surface);padding:8px 18px;border-radius:24px;border:1px solid var(--border);box-shadow:var(--shadow-sm)}
 .dash-role span{color:var(--green);font-weight:700}
@@ -128,19 +128,21 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;bottom:0;background:
 .copilot-body{padding:22px 28px}
 .copilot-msg{margin-bottom:18px}
 .copilot-msg.user{text-align:right}
-.copilot-msg.user .copilot-bubble{background:linear-gradient(135deg,var(--green),#047857);color:#fff;display:inline-block;text-align:left;box-shadow:0 4px 16px rgba(5,150,105,0.2)}
+.copilot-msg.user .copilot-bubble{background:linear-gradient(135deg,var(--green),#0F2B5C);color:#fff;display:inline-block;text-align:left;box-shadow:0 4px 16px rgba(5,150,105,0.2)}
 .copilot-msg.ai .copilot-bubble{background:var(--surface-2);display:inline-block;border:1px solid var(--border)}
 .copilot-bubble{padding:14px 18px;border-radius:16px;font-size:13px;max-width:85%;line-height:1.6}
 .copilot-input{display:flex;gap:10px;padding:18px 28px;border-top:1px solid var(--border);background:var(--surface-2)}
 .copilot-input input{flex:1;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 16px;color:var(--text);font-size:13px;font-family:inherit;outline:none;transition:border-color 0.2s,box-shadow 0.2s}
 .copilot-input input:focus{border-color:var(--green);box-shadow:0 0 0 3px rgba(5,150,105,0.1)}
-.copilot-input button{background:linear-gradient(135deg,var(--green),#047857);border:none;color:#fff;padding:12px 22px;border-radius:var(--radius-sm);font-weight:700;font-size:13px;cursor:pointer;box-shadow:0 4px 12px rgba(5,150,105,0.2)}
+.copilot-input button{background:linear-gradient(135deg,var(--green),#0F2B5C);border:none;color:#fff;padding:12px 22px;border-radius:var(--radius-sm);font-weight:700;font-size:13px;cursor:pointer;box-shadow:0 4px 12px rgba(5,150,105,0.2)}
 
 @media(max-width:960px){.two-col{grid-template-columns:1fr}.close-steps{grid-template-columns:repeat(2,1fr)}.dash-header{padding:20px 24px}.dash-container{padding:24px}.aging-buckets{grid-template-columns:repeat(3,1fr)}}
 @media(max-width:560px){.close-steps{grid-template-columns:1fr}.recon-grid{grid-template-columns:1fr}.compliance-grid{grid-template-columns:1fr}.aging-buckets{grid-template-columns:repeat(2,1fr)}}
 </style>
 <script src="/site/castford-shell.js" defer></script>
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="/site/dashboard-data.js"></script>
 </head>
 <body>
 <div class="scroll-progress" id="scrollProgress"></div>

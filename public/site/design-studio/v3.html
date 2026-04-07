@@ -139,7 +139,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--t1);-webkit-font-s
 /* ═══ CUSTOMIZE BAR (floating) ═══ */
 .cbar{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);z-index:200;background:rgba(15,23,42,0.94);backdrop-filter:blur(24px) saturate(1.5);border-radius:14px;padding:8px 16px;display:flex;align-items:center;gap:10px;box-shadow:0 8px 40px rgba(0,0,0,0.2),0 0 0 1px rgba(255,255,255,0.05);color:#fff;animation:slideUp 0.5s var(--ease);}
 @keyframes slideUp{from{transform:translateX(-50%) translateY(30px);opacity:0;}to{transform:translateX(-50%) translateY(0);opacity:1;}}
-.cbar-icon{width:26px;height:26px;border-radius:7px;background:linear-gradient(135deg,#06B6D4,#8B5CF6);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:12px;}
+.cbar-icon{width:26px;height:26px;border-radius:7px;background:linear-gradient(135deg,#06B6D4,#9B8AFF);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:12px;}
 .cbar-title{font-size:12px;font-weight:700;white-space:nowrap;}
 .cbar-sep{width:1px;height:22px;background:rgba(255,255,255,0.08);}
 .cbar-lbl{font-size:8px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:rgba(255,255,255,0.3);white-space:nowrap;}
@@ -148,7 +148,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--t1);-webkit-font-s
 .cbar-btn{padding:5px 10px;border-radius:6px;font-size:10px;font-weight:600;border:1px solid rgba(255,255,255,0.08);background:rgba(255,255,255,0.04);color:rgba(255,255,255,0.6);cursor:pointer;transition:all 0.12s;white-space:nowrap;}
 .cbar-btn:hover{background:rgba(255,255,255,0.1);color:#fff;}
 .cbar-btn.active{background:rgba(6,182,212,0.2);border-color:rgba(6,182,212,0.4);color:#67E8F9;}
-.cbar-studio{padding:6px 14px;border-radius:8px;font-size:11px;font-weight:700;border:none;background:linear-gradient(135deg,#06B6D4,#8B5CF6);color:#fff;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;gap:5px;}
+.cbar-studio{padding:6px 14px;border-radius:8px;font-size:11px;font-weight:700;border:none;background:linear-gradient(135deg,#06B6D4,#9B8AFF);color:#fff;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;gap:5px;}
 .cbar-studio:hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(6,182,212,0.3);}
 
 /* ═══ DESIGN STUDIO MODAL ═══ */
@@ -220,21 +220,23 @@ body{font-family:var(--font);background:var(--bg);color:var(--t1);-webkit-font-s
 </style>
 <script src="/site/castford-shell.js" defer></script>
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="/site/dashboard-data.js"></script>
 </head>
 <body>
 
 <!-- Top Bar -->
 <div class="topbar">
   <div class="topbar-logo">
-    <svg viewBox="0 0 32 32" fill="none"><defs><linearGradient id="lg" x1="0" y1="0" x2="32" y2="32"><stop stop-color="#3B82F6"/><stop offset="1" stop-color="#8B5CF6"/></linearGradient></defs><rect width="32" height="32" rx="8" fill="url(#lg)"/><path d="M8 12h16M8 16h12M8 20h8" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>
+    <svg viewBox="0 0 32 32" fill="none"><defs><linearGradient id="lg" x1="0" y1="0" x2="32" y2="32"><stop stop-color="#3B82F6"/><stop offset="1" stop-color="#9B8AFF"/></linearGradient></defs><rect width="32" height="32" rx="8" fill="url(#lg)"/><path d="M8 12h16M8 16h12M8 20h8" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>
     <span class="name">Castford</span>
     <span class="plan-badge" id="planBadge" style="background:var(--green-dim);color:var(--green);">GROWTH</span>
   </div>
 
   <div class="topbar-controls">
     <button class="role-btn active" data-role="cfo" onclick="setRole('cfo',this)"><span class="rdot" style="background:#3B82F6;"></span> CFO</button>
-    <button class="role-btn" data-role="ceo" onclick="setRole('ceo',this)"><span class="rdot" style="background:#8B5CF6;"></span> CEO</button>
-    <button class="role-btn" data-role="controller" onclick="setRole('controller',this)"><span class="rdot" style="background:#10B981;"></span> Controller</button>
+    <button class="role-btn" data-role="ceo" onclick="setRole('ceo',this)"><span class="rdot" style="background:#9B8AFF;"></span> CEO</button>
+    <button class="role-btn" data-role="controller" onclick="setRole('controller',this)"><span class="rdot" style="background:#1A3F7A;"></span> Controller</button>
     <span style="width:1px;height:24px;background:var(--border);margin:0 4px;"></span>
     <button class="tier-btn tier-starter" data-tier="starter" onclick="setTier('starter',this)">Starter</button>
     <button class="tier-btn tier-growth active" data-tier="growth" onclick="setTier('growth',this)">Growth</button>
@@ -371,16 +373,16 @@ const TIERS = {
 const DESIGNS = [
   {id:'arctic',name:'Arctic Light',desc:'Clean white surfaces with blue accents. Professional and modern.',cats:['light'],tags:[{l:'DEFAULT',c:'var(--accent)'},{l:'LIGHT',c:'var(--t4)'}],feats:['Glass blur','Clean type','White surfaces'],
    bg:'#F3F4F8',sidebar:'#fff',topbar:'#fff',kpi:'#fff',accent:'#3B82F6',text:'#0F172A',border:'rgba(15,23,42,0.08)',bars:[45,58,65,52,75,68,82,74,88,80,62,55]},
-  {id:'midnight',name:'Midnight',desc:'Deep navy with cyan glow. The signature Castford dark aesthetic.',cats:['dark'],tags:[{l:'DARK',c:'#818CF8'},{l:'POPULAR',c:'#34D399'}],feats:['Glow effects','Cyan palette','Glass blur'],
-   bg:'#030711',sidebar:'#070D19',topbar:'#030711',kpi:'#0C1323',accent:'#22D3EE',text:'#F1F5F9',border:'rgba(30,48,80,0.4)',bars:[35,42,50,32,55,38,45,28,52,30,48,40]},
+  {id:'midnight',name:'Midnight',desc:'Deep navy with cyan glow. The signature Castford dark aesthetic.',cats:['dark'],tags:[{l:'DARK',c:'#818CF8'},{l:'POPULAR',c:'#2D5BA0'}],feats:['Glow effects','Cyan palette','Glass blur'],
+   bg:'#030711',sidebar:'#070D19',topbar:'#030711',kpi:'#0C1323',accent:'#5B7FCC',text:'#F1F5F9',border:'rgba(30,48,80,0.4)',bars:[35,42,50,32,55,38,45,28,52,30,48,40]},
   {id:'warm',name:'Warm Sand',desc:'Soft cream tones with amber data accents. Elegant and sophisticated.',cats:['light','new'],tags:[{l:'LIGHT',c:'#D97706'},{l:'NEW',c:'#EC4899'}],feats:['Warm palette','Amber accents','Cream surfaces'],
    bg:'#FFFBF5',sidebar:'#FFF8EE',topbar:'#FFFBF5',kpi:'#fff',accent:'#D97706',text:'#1C1410',border:'rgba(180,140,100,0.12)',bars:[60,55,70,48,65,72,58,80,62,75,68,85]},
-  {id:'forest',name:'Forest',desc:'Deep emerald with green data accents. Nature-inspired and focused.',cats:['dark'],tags:[{l:'DARK',c:'#34D399'}],feats:['Emerald palette','Green data viz','Deep surfaces'],
-   bg:'#040D0A',sidebar:'#040D0A',topbar:'#040D0A',kpi:'#0A1A14',accent:'#34D399',text:'#D1FAE5',border:'rgba(52,211,153,0.08)',bars:[40,52,48,65,58,72,55,68,78,62,85,70]},
+  {id:'forest',name:'Forest',desc:'Deep emerald with green data accents. Nature-inspired and focused.',cats:['dark'],tags:[{l:'DARK',c:'#2D5BA0'}],feats:['Emerald palette','Green data viz','Deep surfaces'],
+   bg:'#040D0A',sidebar:'#040D0A',topbar:'#040D0A',kpi:'#0A1A14',accent:'#2D5BA0',text:'rgba(26,63,122,0.08)',border:'rgba(52,211,153,0.08)',bars:[40,52,48,65,58,72,55,68,78,62,85,70]},
   {id:'executive',name:'Executive',desc:'Deep violet with purple accents. Board-ready for investor meetings.',cats:['dark','new'],tags:[{l:'DARK',c:'#818CF8'},{l:'NEW',c:'#FBBF24'}],feats:['Purple palette','Board-ready','Premium feel'],
    bg:'#0C0A1A',sidebar:'#0C0A1A',topbar:'#0C0A1A',kpi:'#14102A',accent:'#818CF8',text:'#E2E0F0',border:'rgba(129,140,248,0.12)',bars:[50,62,55,70,65,78,72,82,75,88,80,92]},
-  {id:'terminal',name:'Terminal',desc:'Pure black with monospace type and cyan matrix effects. Power users.',cats:['dark'],tags:[{l:'DARK',c:'#22D3EE'},{l:'HACKER',c:'#34D399'}],feats:['Monospace fonts','Matrix aesthetic','Keyboard-first'],
-   bg:'#0a0a0a',sidebar:'#0a0a0a',topbar:'#0a0a0a',kpi:'#111',accent:'#22D3EE',text:'#E0E0E0',border:'rgba(34,211,238,0.06)',bars:[30,45,38,52,42,58,35,62,48,55,65,40]}
+  {id:'terminal',name:'Terminal',desc:'Pure black with monospace type and cyan matrix effects. Power users.',cats:['dark'],tags:[{l:'DARK',c:'#5B7FCC'},{l:'HACKER',c:'#2D5BA0'}],feats:['Monospace fonts','Matrix aesthetic','Keyboard-first'],
+   bg:'#0a0a0a',sidebar:'#0a0a0a',topbar:'#0a0a0a',kpi:'#111',accent:'#5B7FCC',text:'#E0E0E0',border:'rgba(34,211,238,0.06)',bars:[30,45,38,52,42,58,35,62,48,55,65,40]}
 ];
 
 // ═══════════════════════════════════════════════════════════════
@@ -541,9 +543,9 @@ function renderMain(){
     h+=`<h3 style="font-size:13px;font-weight:700;margin:16px 0 10px;">Team Active</h3>
     <div class="team-grid">
       <div class="team-card"><div class="avatar" style="background:linear-gradient(135deg,#3B82F6,#2563EB);">SC</div><div class="name">Sarah C.</div><div class="role">CFO</div></div>
-      <div class="team-card"><div class="avatar" style="background:linear-gradient(135deg,#10B981,#059669);">JR</div><div class="name">James R.</div><div class="role">FP&A</div></div>
+      <div class="team-card"><div class="avatar" style="background:linear-gradient(135deg,#1A3F7A,#1A3F7A);">JR</div><div class="name">James R.</div><div class="role">FP&A</div></div>
       <div class="team-card"><div class="avatar" style="background:linear-gradient(135deg,#F59E0B,#D97706);">PP</div><div class="name">Priya P.</div><div class="role">Controller</div></div>
-      <div class="team-card"><div class="avatar" style="background:linear-gradient(135deg,#8B5CF6,#7C3AED);">DK</div><div class="name">David K.</div><div class="role">RevOps</div></div>
+      <div class="team-card"><div class="avatar" style="background:linear-gradient(135deg,#9B8AFF,#7C3AED);">DK</div><div class="name">David K.</div><div class="role">RevOps</div></div>
     </div>`;
   } else {
     h+=`<div class="lock-wrap" style="min-height:100px;">
@@ -585,7 +587,7 @@ function renderStudio(cat){
       <div class="check">✓</div>
       <div class="studio-preview" style="background:${d.bg};">
         <div class="sp-sidebar" style="background:${d.sidebar};border-color:${d.border};">
-          <div class="sp-logo" style="background:linear-gradient(135deg,${d.accent},#8B5CF6);"></div>
+          <div class="sp-logo" style="background:linear-gradient(135deg,${d.accent},#9B8AFF);"></div>
           <div class="sp-dot active" style="background:${d.accent};"></div>
           <div class="sp-dot" style="background:${d.border};"></div>
           <div class="sp-dot" style="background:${d.border};"></div>

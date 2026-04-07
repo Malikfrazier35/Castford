@@ -24,7 +24,7 @@
       --indigo: #2563EB;
       --indigo-dark: #1E40AF;
       --purple: #7C3AED;
-      --green: #10B981;
+      --green: #1A3F7A;
       --red: #EF4444;
       --amber: #F59E0B;
       --blue: #3B82F6;
@@ -805,6 +805,8 @@
   </style>
 <script src="/site/castford-shell.js" defer></script>
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="/site/dashboard-data.js"></script>
 </head>
 <body>
   <div class="scroll-progress" id="scrollProgress"></div>
@@ -834,7 +836,7 @@
       { name: 'Sarah Chen', role: 'CFO', shortRole: 'CFO', photo: 'SC', status: 'online', department: 'Finance', kpiFocus: 'Revenue', gradient: 'linear-gradient(135deg, #3b82f6, #6366f1)' },
       { name: 'James Wilson', role: 'VP Finance', shortRole: 'VP Fin', photo: 'JW', status: 'online', department: 'Finance', kpiFocus: 'Margins', gradient: 'linear-gradient(135deg, #8b5cf6, #a78bfa)' },
       { name: 'Maria Rodriguez', role: 'Controller', shortRole: 'Ctrl', photo: 'MR', status: 'away', department: 'Accounting', kpiFocus: 'Cash Flow', gradient: 'linear-gradient(135deg, #06b6d4, #3b82f6)' },
-      { name: 'David Kim', role: 'FP&A Manager', shortRole: 'FP&A', photo: 'DK', status: 'offline', department: 'Planning', kpiFocus: 'Growth', gradient: 'linear-gradient(135deg, #10b981, #059669)' }
+      { name: 'David Kim', role: 'FP&A Manager', shortRole: 'FP&A', photo: 'DK', status: 'offline', department: 'Planning', kpiFocus: 'Growth', gradient: 'linear-gradient(135deg, #10b981, #1A3F7A)' }
     ];
 
     const tasks = [
@@ -901,7 +903,7 @@
     }
 
     function avatarGradient(initials) {
-      const map = { SC: '#3b82f6,#6366f1', JW: '#8b5cf6,#a78bfa', MR: '#06b6d4,#3b82f6', DK: '#10b981,#059669' };
+      const map = { SC: '#3b82f6,#6366f1', JW: '#8b5cf6,#a78bfa', MR: '#06b6d4,#3b82f6', DK: '#10b981,#1A3F7A' };
       return map[initials] || '#6b7a94,#9ca7b8';
     }
 
