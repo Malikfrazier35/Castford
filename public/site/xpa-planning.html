@@ -1,14 +1,15 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="day">
 <head>
-<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Castford xP&A | Cross-Departmental Planning Platform</title>
-<meta name="description" content="Connect Finance, Operations, Revenue, Workforce, Marketing, IT, and Supply Chain in a single AI-powered planning model. Break down silos with Castford xP&A."/>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700;9..40,800;9..40,900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=Instrument+Sans:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/site/theme.css">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{--bg:#F8FAFC;--green:#10B981;--cyan:#22D3EE;--purple:#8B5CF6;--blue:#3B82F6;--amber:#F59E0B;--red:#EF4444;--indigo:#6366F1;--pink:#EC4899;--teal:#14B8A6;--t1:#0F172A;--t2:#334155;--t3:#64748B;--t4:#94A3B8;--border:#E2E8F0;--font:'DM Sans',system-ui,sans-serif;--mono:'JetBrains Mono',monospace;--ease:cubic-bezier(.16,1,.3,1)}
-body{font-family:var(--font);color:var(--t1);-webkit-font-smoothing:antialiased;background:#fff;overflow-x:hidden}
+
 @keyframes gradShift{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
 @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
@@ -19,47 +20,29 @@ body{font-family:var(--font);color:var(--t1);-webkit-font-smoothing:antialiased;
 /* NAV */
 
 /* ===== NAVIGATION (light) ===== */
-nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,0.88);backdrop-filter:blur(16px) saturate(180%);-webkit-backdrop-filter:blur(16px) saturate(180%);border-bottom:1px solid #F1F5F9}
-.nav-inner{max-width:1200px;margin:0 auto;padding:0 24px;height:60px;display:flex;align-items:center;justify-content:space-between}
-.logo-link{display:flex;align-items:center;gap:8px;font-weight:800;font-size:17px;color:#0F172A;text-decoration:none;letter-spacing:-0.01em}
-.logo-link .ldot{width:9px;height:9px;background:#10B981;border-radius:50%}
-.nav-mid{display:flex;gap:4px;font-size:14px;font-weight:500;align-items:center}
-.nav-mid a{color:#64748B;padding:8px 12px;border-radius:8px;text-decoration:none;transition:color .15s}
-.nav-mid a:hover{color:#0F172A;background:rgba(0,0,0,0.03)}
-.nav-end{display:flex;align-items:center;gap:10px}
-.nav-end a{font-size:14px;font-weight:500;color:#64748B;padding:8px 12px;text-decoration:none;transition:color .15s}
-.nav-end a:hover{color:#0F172A}
-.btn-sub{display:inline-flex;align-items:center;padding:8px 18px;border-radius:8px;font-weight:600;font-size:13px;background:#10B981;color:#fff;text-decoration:none;border:none;cursor:pointer;transition:all .15s}
-.btn-sub:hover{background:#059669;box-shadow:0 2px 12px rgba(16,185,129,0.25)}
-@media(max-width:900px){.nav-mid{display:none}}
 
+.nav-mid a:hover{color:var(--ink);background:rgba(0,0,0,0.03)}
+
+.nav-end a:hover{color:var(--ink)}
+
+@media(max-width:900px){}
 
 /* ===== FOOTER (light) ===== */
-footer{background:#F8FAFC;border-top:1px solid #E2E8F0;padding:56px 24px 24px}
-.ft-inner{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:1.5fr repeat(4,1fr);gap:40px;margin-bottom:40px}
-.ft-brand p{font-size:13px;color:#64748B;line-height:1.6;max-width:240px;margin-top:10px}
-.ft-col{display:flex;flex-direction:column;gap:8px}
-.ft-col h5{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;color:#0F172A;margin-bottom:4px}
-.ft-col a{font-size:13px;color:#64748B;text-decoration:none;transition:color .15s}
-.ft-col a:hover{color:#0F172A}
-.ft-bottom{max-width:1200px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;padding-top:20px;border-top:1px solid #E2E8F0;font-size:12px;color:#64748B}
-.ft-bottom a{color:#64748B;text-decoration:none;transition:color .15s}
-.ft-bottom a:hover{color:#0F172A}
-@media(max-width:768px){.ft-inner{grid-template-columns:1fr 1fr;gap:24px}}
 
+@media(max-width:768px){}
 
 /* HERO */
 .hero{padding:100px 40px 60px;background:linear-gradient(180deg,#EEF2FF 0%,#fff 80%);text-align:center;position:relative;overflow:hidden}
 .hero::before{content:'';position:absolute;top:-200px;left:50%;transform:translateX(-50%);width:800px;height:800px;border-radius:50%;background:radial-gradient(circle,rgba(99,102,241,.04),transparent 60%);pointer-events:none}
 .hero-badge{display:inline-flex;align-items:center;gap:8px;padding:6px 16px;border-radius:20px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;background:rgba(99,102,241,.06);border:1px solid rgba(99,102,241,.15);color:var(--indigo);margin-bottom:20px}
 .hero-badge .dot{width:8px;height:8px;border-radius:50%;background:var(--indigo);animation:pulse 2s ease infinite}
-.hero h1{font-size:clamp(36px,5.5vw,56px);font-weight:900;letter-spacing:-.04em;line-height:1.1;margin-bottom:16px;color:#0F172A}
+.hero h1{font-size:clamp(36px,5.5vw,56px);font-weight:900;letter-spacing:-.04em;line-height:1.1;margin-bottom:16px;color:var(--ink)}
 .hero h1 .accent{background:linear-gradient(135deg,var(--indigo),var(--cyan),var(--green));background-size:300% 300%;animation:gradShift 6s ease infinite;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-.hero p{font-size:18px;color:#334155;max-width:640px;margin:0 auto 32px;line-height:1.65}
-.hero-cta{display:inline-flex;gap:12px;flex-wrap:wrap;justify-content:center}
-.hero-cta a{padding:14px 32px;border-radius:12px;font-size:15px;font-weight:700;text-decoration:none;transition:all .25s var(--ease)}
+.hero p{font-size:18px;color:var(--t1);max-width:640px;margin:0 auto 32px;line-height:1.65}
+.hero-ct
+.hero-cta 
 .cta-primary{background:var(--indigo);color:#fff}.cta-primary:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(99,102,241,.3)}
-.cta-outline{border:1px solid #E2E8F0;color:#0F172A}.cta-outline:hover{background:#F8FAFC}
+.cta-outline{border:1px solid var(--bdr);color:var(--ink)}.cta-outline:hover{background:var(--bg)}
 
 /* ANIMATED SVG PLANNING MODEL */
 .hero-visual{max-width:700px;margin:50px auto 0;position:relative}
@@ -91,7 +74,7 @@ footer{background:#F8FAFC;border-top:1px solid #E2E8F0;padding:56px 24px 24px}
 .dept-kpi{padding:16px;border-radius:12px;background:var(--bg);border:1px solid var(--border)}
 .dept-kpi .kpi-val{font-size:24px;font-weight:900;font-family:var(--mono);letter-spacing:-.03em}
 .dept-kpi .kpi-label{font-size:11px;color:var(--t3);margin-top:2px}
-.dept-mockup{padding:24px;background:#0F172A;border-radius:20px;border:1px solid rgba(255,255,255,.06);color:#fff}
+.dept-mockup{padding:24px;background:var(--ink);border-radius:20px;border:1px solid rgba(255,255,255,.06);color:#fff}
 .mock-bar{display:flex;align-items:center;gap:8px;margin-bottom:16px}
 .mock-dot{width:8px;height:8px;border-radius:50%}
 .mock-title{font-size:12px;font-weight:700;color:rgba(255,255,255,.5);margin-left:auto;font-family:var(--mono)}
@@ -126,19 +109,14 @@ footer{background:#F8FAFC;border-top:1px solid #E2E8F0;padding:56px 24px 24px}
 .ba-arrow{display:flex;align-items:center;justify-content:center;font-size:32px;color:var(--indigo)}
 
 /* CTA */
-.bottom-cta{padding:80px 40px;text-align:center;background:linear-gradient(135deg,#030711,#1a1145)}
+.bottom-ct
 .bottom-cta h2{font-size:clamp(28px,4vw,44px);font-weight:900;letter-spacing:-.03em;margin-bottom:14px;color:#fff}
 .bottom-cta p{font-size:16px;color:rgba(255,255,255,.45);max-width:520px;margin:0 auto 32px;line-height:1.6}
 .bottom-cta .cta-row{display:inline-flex;gap:12px}
-.bottom-cta .cta-row a{padding:14px 32px;border-radius:12px;font-size:15px;font-weight:700;text-decoration:none;transition:all .25s var(--ease)}
+.bottom-cta .cta-row 
 
 /* FOOTER */
-.footer{padding:60px 40px 30px;border-top:1px solid var(--border);max-width:1100px;margin:0 auto}
-.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px;margin-bottom:40px}
-.footer-brand p{font-size:13px;color:var(--t3);line-height:1.6;margin-top:12px;max-width:260px}
-.footer-col h4{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--t4);margin-bottom:14px}
-.footer-col a{display:block;font-size:13px;font-weight:500;color:var(--t3);text-decoration:none;padding:4px 0;transition:color .2s}.footer-col a:hover{color:var(--t1)}
-.footer-bottom{display:flex;justify-content:space-between;align-items:center;padding-top:20px;border-top:1px solid var(--border);font-size:12px;color:var(--t4)}
+.
 
 @media(max-width:768px){
 .nav-links{display:none}
@@ -146,29 +124,31 @@ footer{background:#F8FAFC;border-top:1px solid #E2E8F0;padding:56px 24px 24px}
 .dept-grid,.ba-grid{grid-template-columns:1fr}
 .ba-arrow{transform:rotate(90deg)}
 .flow-steps{grid-template-columns:1fr 1fr}.flow-steps::before{display:none}
-.footer-grid{grid-template-columns:1fr 1fr}
+
 }
 </style>
 </head>
 <body>
 
-<nav>
-  <div class="nav-inner">
-    <a href="/" class="logo-link"><span class="ldot"></span>Castford</a>
-    <div class="nav-mid">
-      <a href="/solutions">Solutions</a>
-      <a href="/integrations">Integrations</a>
-      <a href="/security">Trust</a>
-      <a href="/pricing">Pricing</a>
-      
-      <a href="/resources">Resources</a>
-    </div>
-    <div class="nav-end">
-      <a href="/login">Sign In</a>
-      <a href="/pricing" class="btn-sub">Subscribe</a>
-    </div>
+<nav class="cf-nav"><div class="cf-nav-in">
+  <a href="/" class="cf-nav-logo">
+    <svg class="cf-logo" viewBox="0 0 100 100" width="26" height="26">
+      <path d="M50 5 L90 27 L90 73 L50 95 L10 73 L10 27 Z" fill="none" stroke="var(--logo-main)" stroke-width="0.8" style="opacity:var(--logo-outer-o)"/>
+      <path d="M50 10 L85 30 L85 70 L50 90 L15 70 L15 30 Z" fill="none" stroke="var(--logo-main)" stroke-width="1.2" style="opacity:var(--logo-mid-o)"/>
+      <path d="M50 16 L80 33 L80 67 L50 84 L20 67 L20 33 Z" fill="none" stroke="var(--logo-main)" stroke-width="2.5"/>
+      <path d="M36 47 L50 39 L64 47 L64 57 L50 65 L36 57 Z" fill="var(--logo-inner)" style="opacity:var(--logo-inner-fill)"/>
+      <path d="M36 47 L50 39 L64 47 L64 57 L50 65 L36 57 Z" fill="none" stroke="var(--logo-inner)" stroke-width="1.5"/>
+      <circle cx="50" cy="52" r="3" fill="var(--logo-core)"/>
+    </svg>
+    <span class="cf-nav-name">Castford</span>
+  </a>
+  <div class="cf-nav-links"><a href="/solutions">Solutions</a><a href="/integrations">Integrations</a><a href="/security">Trust</a><a href="/pricing">Pricing</a><a href="/resources">Resources</a></div>
+  <div class="cf-nav-right">
+    <div class="cf-toggle" id="themeToggle" title="Toggle day/night"></div>
+    <a href="/login" class="cf-nav-sign">Sign in</a>
+    <button class="cf-nav-cta" onclick="window.location='/pricing'">Get started</button>
   </div>
-</nav>
+</div></nav>
 
 <!-- HERO -->
 <section class="hero">
@@ -195,8 +175,8 @@ footer{background:#F8FAFC;border-top:1px solid #E2E8F0;padding:56px 24px 24px}
 <circle cx="570" cy="70" r="30" fill="rgba(139,92,246,0.1)" stroke="#8B5CF6" stroke-width="1.5"/>
 <text x="570" y="73" text-anchor="middle" fill="#8B5CF6" font-size="10" font-weight="700" font-family="DM Sans">Workforce</text>
 
-<circle cx="80" cy="200" r="30" fill="rgba(16,185,129,0.1)" stroke="#10B981" stroke-width="1.5"/>
-<text x="80" y="203" text-anchor="middle" fill="#10B981" font-size="10" font-weight="700" font-family="DM Sans">Ops</text>
+<circle cx="80" cy="200" r="30" fill="rgba(16,185,129,0.1)" stroke="var(--prime)" stroke-width="1.5"/>
+<text x="80" y="203" text-anchor="middle" fill="var(--prime)" font-size="10" font-weight="700" font-family="DM Sans">Ops</text>
 
 <circle cx="620" cy="200" r="30" fill="rgba(245,158,11,0.1)" stroke="#F59E0B" stroke-width="1.5"/>
 <text x="620" y="203" text-anchor="middle" fill="#F59E0B" font-size="10" font-weight="700" font-family="DM Sans">Marketing</text>
@@ -210,7 +190,7 @@ footer{background:#F8FAFC;border-top:1px solid #E2E8F0;padding:56px 24px 24px}
 <!-- Connecting lines with animation -->
 <line x1="160" y1="80" x2="310" y2="130" stroke="#22D3EE" stroke-width="1" stroke-dasharray="6 4" opacity="0.4"><animate attributeName="stroke-dashoffset" from="200" to="0" dur="3s" repeatCount="indefinite"/></line>
 <line x1="540" y1="80" x2="390" y2="130" stroke="#8B5CF6" stroke-width="1" stroke-dasharray="6 4" opacity="0.4"><animate attributeName="stroke-dashoffset" from="200" to="0" dur="3.5s" repeatCount="indefinite"/></line>
-<line x1="110" y1="190" x2="310" y2="150" stroke="#10B981" stroke-width="1" stroke-dasharray="6 4" opacity="0.4"><animate attributeName="stroke-dashoffset" from="200" to="0" dur="4s" repeatCount="indefinite"/></line>
+<line x1="110" y1="190" x2="310" y2="150" stroke="var(--prime)" stroke-width="1" stroke-dasharray="6 4" opacity="0.4"><animate attributeName="stroke-dashoffset" from="200" to="0" dur="4s" repeatCount="indefinite"/></line>
 <line x1="590" y1="190" x2="390" y2="150" stroke="#F59E0B" stroke-width="1" stroke-dasharray="6 4" opacity="0.4"><animate attributeName="stroke-dashoffset" from="200" to="0" dur="2.8s" repeatCount="indefinite"/></line>
 <line x1="245" y1="240" x2="315" y2="170" stroke="#EC4899" stroke-width="1" stroke-dasharray="6 4" opacity="0.4"><animate attributeName="stroke-dashoffset" from="200" to="0" dur="3.2s" repeatCount="indefinite"/></line>
 <line x1="455" y1="240" x2="385" y2="170" stroke="#14B8A6" stroke-width="1" stroke-dasharray="6 4" opacity="0.4"><animate attributeName="stroke-dashoffset" from="200" to="0" dur="3.8s" repeatCount="indefinite"/></line>
@@ -481,38 +461,28 @@ footer{background:#F8FAFC;border-top:1px solid #E2E8F0;padding:56px 24px 24px}
 </section>
 
 <!-- FOOTER -->
-<footer>
-  <div class="ft-inner">
-    <div class="ft-brand">
-      <a href="/" class="logo-link"><span class="ldot"></span>Castford</a>
+
+<footer class="cf-footer"><div class="w">
+  <div class="cf-ft-grid">
+    <div class="cf-ft-brand">
+      <div class="cf-nav-logo" style="margin-bottom:0">
+        <svg viewBox="0 0 100 100" width="22" height="22"><path d="M50 10 L85 30 L85 70 L50 90 L15 70 L15 30 Z" fill="none" stroke="var(--logo-main)" stroke-width="1.2" style="opacity:var(--logo-mid-o)"/><path d="M50 16 L80 33 L80 67 L50 84 L20 67 L20 33 Z" fill="none" stroke="var(--logo-main)" stroke-width="2.5"/><path d="M36 47 L50 39 L64 47 L64 57 L50 65 L36 57 Z" fill="none" stroke="var(--logo-inner)" stroke-width="1.5"/><circle cx="50" cy="52" r="3" fill="var(--logo-core)"/></svg>
+        <span style="font-family:var(--d);font-size:15px;font-weight:600">Castford</span>
+      </div>
       <p>AI-native financial planning & analysis for modern finance teams.</p>
     </div>
-    <div class="ft-col"><h5>Product</h5><a href="/">Platform</a><a href="/integrations">Integrations</a><a href="/pricing">Pricing</a><a href="/security">Security</a></div>
-    <div class="ft-col"><h5>Solutions</h5><a href="/solutions">SaaS</a><a href="/solutions">E-Commerce</a><a href="/xpa-planning">Cross-Dept Planning</a></div>
-    <div class="ft-col"><h5>Resources</h5><a href="/resources">Resource Library</a><a href="/whats-new">Changelog</a></div>
-    <div class="ft-col"><h5>Company</h5><a href="#">About</a><a href="#">Careers</a><a href="#">Contact</a></div>
+    <div class="cf-ft-col"><h5>Product</h5><a href="/">Platform</a><a href="/integrations">Integrations</a><a href="/pricing">Pricing</a><a href="/security">Security</a></div>
+    <div class="cf-ft-col"><h5>Solutions</h5><a href="/solutions">SaaS</a><a href="/solutions">E-Commerce</a><a href="/xpa-planning">Cross-Dept</a></div>
+    <div class="cf-ft-col"><h5>Resources</h5><a href="/resources">Library</a><a href="/whats-new">Changelog</a></div>
+    <div class="cf-ft-col"><h5>Company</h5><a href="/about">About</a><a href="#">Careers</a><a href="/contact">Contact</a></div>
   </div>
-  <div class="ft-bottom">
-    <span>&copy; 2026 Castford, Inc.</span>
-    <div style="display:flex;gap:20px"><a href="/security">Privacy</a><a href="#">Terms</a><a href="/security">Security</a></div>
-  </div>
-</footer>
+  <div class="cf-ft-bottom"><span>&copy; 2026 Castford, Inc.</span><div style="display:flex;gap:16px"><a href="/privacy" style="color:var(--t3)">Privacy</a><a href="/terms" style="color:var(--t3)">Terms</a><a href="/security" style="color:var(--t3)">Security</a></div></div>
+</div></footer>
 
 <script>
-// Scroll reveal
-const io=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('vis');io.unobserve(e.target)}})},{threshold:.1});
-document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
-
-// Department tab switching
-function showDept(id){
-document.querySelectorAll('.dept-tab').forEach(t=>t.classList.remove('active'));
-document.querySelectorAll('.dept-panel').forEach(p=>{p.classList.remove('active');p.style.display='none'});
-event.currentTarget.classList.add('active');
-const panel=document.getElementById('panel-'+id);
-panel.style.display='block';
-setTimeout(()=>panel.classList.add('active'),10);
-}
+document.getElementById('themeToggle').addEventListener('click',()=>{const h=document.documentElement;h.dataset.theme=h.dataset.theme==='day'?'night':'day'});
+const _o=new IntersectionObserver(e=>{e.forEach(el=>{if(el.isIntersecting)el.target.classList.add('v')})},{threshold:0.08});
+document.querySelectorAll('.cf-fin').forEach(el=>_o.observe(el));
 </script>
 </body>
 </html>
-

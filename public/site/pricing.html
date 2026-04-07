@@ -1,47 +1,30 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="day">
 <head>
-<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Castford Pricing | Simple, Transparent Pricing</title>
-<meta name="description" content="Predictable base fee. Pay-per-use overages only when you exceed included limits. Starter, Growth, Business, and Enterprise plans."/>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700;9..40,800;9..40,900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=Instrument+Sans:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/site/theme.css">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{--bg:#F8FAFC;--green:#10B981;--cyan:#22D3EE;--purple:#8B5CF6;--blue:#3B82F6;--amber:#F59E0B;--red:#EF4444;--indigo:#6366F1;--t1:#0F172A;--t2:#334155;--t3:#64748B;--t4:#94A3B8;--border:#E2E8F0;--font:'DM Sans',system-ui,sans-serif;--mono:'JetBrains Mono',monospace;--ease:cubic-bezier(.16,1,.3,1)}
-body{font-family:var(--font);color:var(--t1);-webkit-font-smoothing:antialiased;background:#fff;overflow-x:hidden}
+
 .reveal{opacity:0;transform:translateY(24px);transition:all .6s var(--ease)}.reveal.vis{opacity:1;transform:none}
 
 /* NAV */
 
 /* ===== NAVIGATION (light) ===== */
-nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,0.88);backdrop-filter:blur(16px) saturate(180%);-webkit-backdrop-filter:blur(16px) saturate(180%);border-bottom:1px solid #F1F5F9}
-.nav-inner{max-width:1200px;margin:0 auto;padding:0 24px;height:60px;display:flex;align-items:center;justify-content:space-between}
-.logo-link{display:flex;align-items:center;gap:8px;font-weight:800;font-size:17px;color:#0F172A;text-decoration:none;letter-spacing:-0.01em}
-.logo-link .ldot{width:9px;height:9px;background:#10B981;border-radius:50%}
-.nav-mid{display:flex;gap:4px;font-size:14px;font-weight:500;align-items:center}
-.nav-mid a{color:#64748B;padding:8px 12px;border-radius:8px;text-decoration:none;transition:color .15s}
-.nav-mid a:hover{color:#0F172A;background:rgba(0,0,0,0.03)}
-.nav-end{display:flex;align-items:center;gap:10px}
-.nav-end a{font-size:14px;font-weight:500;color:#64748B;padding:8px 12px;text-decoration:none;transition:color .15s}
-.nav-end a:hover{color:#0F172A}
-.btn-sub{display:inline-flex;align-items:center;padding:8px 18px;border-radius:8px;font-weight:600;font-size:13px;background:#10B981;color:#fff;text-decoration:none;border:none;cursor:pointer;transition:all .15s}
-.btn-sub:hover{background:#059669;box-shadow:0 2px 12px rgba(16,185,129,0.25)}
-@media(max-width:900px){.nav-mid{display:none}}
 
+.nav-mid a:hover{color:var(--ink);background:rgba(0,0,0,0.03)}
+
+.nav-end a:hover{color:var(--ink)}
+
+@media(max-width:900px){}
 
 /* ===== FOOTER (light) ===== */
-footer{background:#F8FAFC;border-top:1px solid #E2E8F0;padding:56px 24px 24px}
-.ft-inner{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:1.5fr repeat(4,1fr);gap:40px;margin-bottom:40px}
-.ft-brand p{font-size:13px;color:#64748B;line-height:1.6;max-width:240px;margin-top:10px}
-.ft-col{display:flex;flex-direction:column;gap:8px}
-.ft-col h5{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;color:#0F172A;margin-bottom:4px}
-.ft-col a{font-size:13px;color:#64748B;text-decoration:none;transition:color .15s}
-.ft-col a:hover{color:#0F172A}
-.ft-bottom{max-width:1200px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;padding-top:20px;border-top:1px solid #E2E8F0;font-size:12px;color:#64748B}
-.ft-bottom a{color:#64748B;text-decoration:none;transition:color .15s}
-.ft-bottom a:hover{color:#0F172A}
-@media(max-width:768px){.ft-inner{grid-template-columns:1fr 1fr;gap:24px}}
 
+@media(max-width:768px){}
 
 /* HERO */
 .hero{padding:80px 40px 40px;text-align:center;background:linear-gradient(180deg,#F0FDF9 0%,#fff 100%)}
@@ -62,7 +45,7 @@ footer{background:#F8FAFC;border-top:1px solid #E2E8F0;padding:56px 24px 24px}
 .pricing-card:hover{box-shadow:0 12px 40px rgba(0,0,0,.06)}
 .pricing-card.featured{border-color:var(--green);box-shadow:0 8px 30px rgba(16,185,129,.08)}
 .pricing-card.featured::before{content:'MOST POPULAR';position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:var(--green);color:#fff;font-size:10px;font-weight:800;letter-spacing:.04em;padding:5px 16px;border-radius:8px;white-space:nowrap}
-.pricing-card.enterprise{background:#F8FAFC;border-color:var(--border)}
+.pricing-card.enterprise{background:var(--bg);border-color:var(--border)}
 .plan-name{font-size:18px;font-weight:900;letter-spacing:-.02em;margin-bottom:12px}
 .plan-price{display:flex;align-items:baseline;gap:2px;margin-bottom:4px}
 .plan-price .dollar{font-size:16px;font-weight:700;color:var(--t1);align-self:flex-start;margin-top:8px}
@@ -100,7 +83,7 @@ footer{background:#F8FAFC;border-top:1px solid #E2E8F0;padding:56px 24px 24px}
 .calc-modal{background:#fff;border-radius:24px;width:95%;max-width:680px;max-height:90vh;overflow-y:auto;padding:36px 32px;box-shadow:0 24px 80px rgba(0,0,0,.18);position:relative;transform:translateY(12px);animation:calcIn .35s var(--ease) forwards}
 @keyframes calcIn{to{transform:translateY(0)}}
 .calc-close{position:absolute;top:16px;right:16px;width:36px;height:36px;border-radius:10px;border:1px solid var(--border);background:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s}
-.calc-close:hover{background:#F1F5F9}
+.calc-close:hover{background:var(--bdr)}
 .calc-close svg{width:18px;height:18px;stroke:var(--t3);stroke-width:2}
 .calc-title{font-size:22px;font-weight:900;letter-spacing:-.03em;margin-bottom:4px}
 .calc-subtitle{font-size:14px;color:var(--t3);margin-bottom:28px}
@@ -113,7 +96,7 @@ footer{background:#F8FAFC;border-top:1px solid #E2E8F0;padding:56px 24px 24px}
 .calc-slider-label span:first-child{font-size:13px;font-weight:600;color:var(--t2)}
 .calc-slider-label .calc-val{font-size:14px;font-weight:800;font-family:var(--mono);color:var(--t1)}
 .calc-slider-label .calc-included{font-size:11px;color:var(--t4);font-weight:500}
-.calc-slider{-webkit-appearance:none;appearance:none;width:100%;height:6px;border-radius:3px;background:#E2E8F0;outline:none;cursor:pointer}
+.calc-slider{-webkit-appearance:none;appearance:none;width:100%;height:6px;border-radius:3px;background:var(--bdr);outline:none;cursor:pointer}
 .calc-slider::-webkit-slider-thumb{-webkit-appearance:none;width:20px;height:20px;border-radius:50%;background:var(--green);border:3px solid #fff;box-shadow:0 2px 8px rgba(16,185,129,.3);cursor:pointer}
 .calc-slider::-moz-range-thumb{width:20px;height:20px;border-radius:50%;background:var(--green);border:3px solid #fff;box-shadow:0 2px 8px rgba(16,185,129,.3);cursor:pointer}
 .calc-divider{height:1px;background:var(--border);margin:24px 0}
@@ -125,7 +108,7 @@ footer{background:#F8FAFC;border-top:1px solid #E2E8F0;padding:56px 24px 24px}
 .calc-result-row.total{border-top:1px solid rgba(16,185,129,.15);margin-top:8px;padding-top:14px}
 .calc-result-row.total .cr-label{font-size:15px;font-weight:800;color:var(--t1)}
 .calc-result-row.total .cr-val{font-size:22px;font-weight:900;color:var(--green)}
-.calc-cta{display:block;width:100%;margin-top:20px;padding:14px;border-radius:12px;background:var(--green);color:#fff;font-size:15px;font-weight:700;text-align:center;text-decoration:none;border:none;cursor:pointer;transition:all .25s var(--ease)}
+.calc-ct
 .calc-cta:hover{box-shadow:0 8px 30px rgba(16,185,129,.3);transform:translateY(-2px)}
 
 /* COMPETITOR STRIP */
@@ -165,50 +148,47 @@ footer{background:#F8FAFC;border-top:1px solid #E2E8F0;padding:56px 24px 24px}
 .faq-q:hover{color:var(--green)}
 .faq-q svg{width:20px;height:20px;stroke:var(--t4);fill:none;stroke-width:2;transition:transform .3s var(--ease);flex-shrink:0}
 .faq-item.open .faq-q svg{transform:rotate(180deg)}
-.faq-a{max-height:0;overflow:hidden;transition:max-height .4s var(--ease)}
-.faq-item.open .faq-a{max-height:300px}
+.faq-
+.faq-item.open .faq-
 .faq-a p{padding:0 0 20px;font-size:14px;color:var(--t3);line-height:1.7}
 
 /* CTA */
-.bottom-cta{padding:80px 40px;text-align:center;background:linear-gradient(135deg,#030711,#1E1B4B)}
+.bottom-ct
 .bottom-cta h2{font-size:clamp(28px,4vw,42px);font-weight:900;letter-spacing:-.03em;margin-bottom:14px;color:#fff}
 .bottom-cta p{font-size:16px;color:rgba(255,255,255,.45);max-width:520px;margin:0 auto 32px;line-height:1.6}
 .bottom-cta .cta-row{display:inline-flex;gap:12px}
-.bottom-cta .cta-row a{padding:14px 32px;border-radius:12px;font-size:15px;font-weight:700;text-decoration:none;transition:all .25s var(--ease)}
+.bottom-cta .cta-row 
 .cta-green{background:var(--green);color:#fff}.cta-green:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(16,185,129,.3)}
 .cta-outline-w{border:1px solid rgba(255,255,255,.15);color:#fff}.cta-outline-w:hover{background:rgba(255,255,255,.05)}
 
 /* FOOTER */
-.footer{padding:60px 40px 30px;border-top:1px solid var(--border);max-width:1100px;margin:0 auto}
-.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px;margin-bottom:40px}
-.footer-brand p{font-size:13px;color:var(--t3);line-height:1.6;margin-top:12px;max-width:260px}
-.footer-col h4{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--t4);margin-bottom:14px}
-.footer-col a{display:block;font-size:13px;font-weight:500;color:var(--t3);text-decoration:none;padding:4px 0;transition:color .2s}.footer-col a:hover{color:var(--t1)}
-.footer-bottom{display:flex;justify-content:space-between;align-items:center;padding-top:20px;border-top:1px solid var(--border);font-size:12px;color:var(--t4)}
+.
 
 @media(max-width:1024px){.pricing-grid{grid-template-columns:1fr 1fr}}
-@media(max-width:600px){.pricing-grid,.comp-strip-grid{grid-template-columns:1fr}.nav-links{display:none}.cs-card{flex-direction:column}.cs-tiers{flex-direction:column}.footer-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:600px){.pricing-grid,.comp-strip-grid{grid-template-columns:1fr}.nav-links{display:none}.cs-card{flex-direction:column}.cs-tiers{flex-direction:column}}
 </style>
 </head>
 <body>
 
-<nav>
-  <div class="nav-inner">
-    <a href="/" class="logo-link"><span class="ldot"></span>Castford</a>
-    <div class="nav-mid">
-      <a href="/solutions">Solutions</a>
-      <a href="/integrations">Integrations</a>
-      <a href="/security">Trust</a>
-      <a href="/pricing">Pricing</a>
-      
-      <a href="/resources">Resources</a>
-    </div>
-    <div class="nav-end">
-      <a href="/login">Sign In</a>
-      <a href="/pricing" class="btn-sub">Subscribe</a>
-    </div>
+<nav class="cf-nav"><div class="cf-nav-in">
+  <a href="/" class="cf-nav-logo">
+    <svg class="cf-logo" viewBox="0 0 100 100" width="26" height="26">
+      <path d="M50 5 L90 27 L90 73 L50 95 L10 73 L10 27 Z" fill="none" stroke="var(--logo-main)" stroke-width="0.8" style="opacity:var(--logo-outer-o)"/>
+      <path d="M50 10 L85 30 L85 70 L50 90 L15 70 L15 30 Z" fill="none" stroke="var(--logo-main)" stroke-width="1.2" style="opacity:var(--logo-mid-o)"/>
+      <path d="M50 16 L80 33 L80 67 L50 84 L20 67 L20 33 Z" fill="none" stroke="var(--logo-main)" stroke-width="2.5"/>
+      <path d="M36 47 L50 39 L64 47 L64 57 L50 65 L36 57 Z" fill="var(--logo-inner)" style="opacity:var(--logo-inner-fill)"/>
+      <path d="M36 47 L50 39 L64 47 L64 57 L50 65 L36 57 Z" fill="none" stroke="var(--logo-inner)" stroke-width="1.5"/>
+      <circle cx="50" cy="52" r="3" fill="var(--logo-core)"/>
+    </svg>
+    <span class="cf-nav-name">Castford</span>
+  </a>
+  <div class="cf-nav-links"><a href="/solutions">Solutions</a><a href="/integrations">Integrations</a><a href="/security">Trust</a><a href="/pricing">Pricing</a><a href="/resources">Resources</a></div>
+  <div class="cf-nav-right">
+    <div class="cf-toggle" id="themeToggle" title="Toggle day/night"></div>
+    <a href="/login" class="cf-nav-sign">Sign in</a>
+    <button class="cf-nav-cta" onclick="window.location='/pricing'">Get started</button>
   </div>
-</nav>
+</div></nav>
 
 <!-- HERO -->
 <section class="hero">
@@ -425,37 +405,28 @@ footer{background:#F8FAFC;border-top:1px solid #E2E8F0;padding:56px 24px 24px}
 </section>
 
 <!-- FOOTER -->
-<footer>
-  <div class="ft-inner">
-    <div class="ft-brand">
-      <a href="/" class="logo-link"><span class="ldot"></span>Castford</a>
+
+<footer class="cf-footer"><div class="w">
+  <div class="cf-ft-grid">
+    <div class="cf-ft-brand">
+      <div class="cf-nav-logo" style="margin-bottom:0">
+        <svg viewBox="0 0 100 100" width="22" height="22"><path d="M50 10 L85 30 L85 70 L50 90 L15 70 L15 30 Z" fill="none" stroke="var(--logo-main)" stroke-width="1.2" style="opacity:var(--logo-mid-o)"/><path d="M50 16 L80 33 L80 67 L50 84 L20 67 L20 33 Z" fill="none" stroke="var(--logo-main)" stroke-width="2.5"/><path d="M36 47 L50 39 L64 47 L64 57 L50 65 L36 57 Z" fill="none" stroke="var(--logo-inner)" stroke-width="1.5"/><circle cx="50" cy="52" r="3" fill="var(--logo-core)"/></svg>
+        <span style="font-family:var(--d);font-size:15px;font-weight:600">Castford</span>
+      </div>
       <p>AI-native financial planning & analysis for modern finance teams.</p>
     </div>
-    <div class="ft-col"><h5>Product</h5><a href="/">Platform</a><a href="/integrations">Integrations</a><a href="/pricing">Pricing</a><a href="/security">Security</a></div>
-    <div class="ft-col"><h5>Solutions</h5><a href="/solutions">SaaS</a><a href="/solutions">E-Commerce</a><a href="/xpa-planning">Cross-Dept Planning</a></div>
-    <div class="ft-col"><h5>Resources</h5><a href="/resources">Resource Library</a><a href="/whats-new">Changelog</a></div>
-    <div class="ft-col"><h5>Company</h5><a href="#">About</a><a href="#">Careers</a><a href="#">Contact</a></div>
+    <div class="cf-ft-col"><h5>Product</h5><a href="/">Platform</a><a href="/integrations">Integrations</a><a href="/pricing">Pricing</a><a href="/security">Security</a></div>
+    <div class="cf-ft-col"><h5>Solutions</h5><a href="/solutions">SaaS</a><a href="/solutions">E-Commerce</a><a href="/xpa-planning">Cross-Dept</a></div>
+    <div class="cf-ft-col"><h5>Resources</h5><a href="/resources">Library</a><a href="/whats-new">Changelog</a></div>
+    <div class="cf-ft-col"><h5>Company</h5><a href="/about">About</a><a href="#">Careers</a><a href="/contact">Contact</a></div>
   </div>
-  <div class="ft-bottom">
-    <span>&copy; 2026 Castford, Inc.</span>
-    <div style="display:flex;gap:20px"><a href="/security">Privacy</a><a href="/terms">Terms</a><a href="/security">Security</a></div>
-  </div>
-</footer>
+  <div class="cf-ft-bottom"><span>&copy; 2026 Castford, Inc.</span><div style="display:flex;gap:16px"><a href="/privacy" style="color:var(--t3)">Privacy</a><a href="/terms" style="color:var(--t3)">Terms</a><a href="/security" style="color:var(--t3)">Security</a></div></div>
+</div></footer>
 
-
-<!-- COST CALCULATOR MODAL -->
-<div class="calc-overlay" id="calcOverlay" onclick="if(event.target===this)closeCalc()"><div class="calc-modal"><button class="calc-close" onclick="closeCalc()"><svg viewBox="0 0 24 24" fill="none"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button><div class="calc-title">Calculate Your Cost</div><div class="calc-subtitle">Estimate your monthly spend based on expected usage.</div><div class="calc-plan-row"><button class="calc-plan-btn" data-plan="starter" onclick="setPlan('starter')">Starter</button><button class="calc-plan-btn active" data-plan="growth" onclick="setPlan('growth')">Growth</button><button class="calc-plan-btn" data-plan="business" onclick="setPlan('business')">Business</button></div><div class="calc-slider-group"><div class="calc-slider-label"><span>AI Copilot Queries</span><span class="calc-included" id="aiInc"></span><span class="calc-val" id="aiVal">0</span></div><input type="range" class="calc-slider" id="aiSlider" min="0" max="25000" step="50" value="0" oninput="recalc()"></div><div class="calc-slider-group"><div class="calc-slider-label"><span>Connector Syncs</span><span class="calc-included" id="syncInc"></span><span class="calc-val" id="syncVal">0</span></div><input type="range" class="calc-slider" id="syncSlider" min="0" max="50000" step="100" value="0" oninput="recalc()"></div><div class="calc-slider-group"><div class="calc-slider-label"><span>Report Exports</span><span class="calc-included" id="reportInc"></span><span class="calc-val" id="reportVal">0</span></div><input type="range" class="calc-slider" id="reportSlider" min="0" max="5000" step="10" value="0" oninput="recalc()"></div><div class="calc-slider-group"><div class="calc-slider-label"><span>Scenario Runs</span><span class="calc-included" id="scenarioInc"></span><span class="calc-val" id="scenarioVal">0</span></div><input type="range" class="calc-slider" id="scenarioSlider" min="0" max="5000" step="10" value="0" oninput="recalc()"></div><div class="calc-slider-group"><div class="calc-slider-label"><span>API Calls</span><span class="calc-included" id="apiInc"></span><span class="calc-val" id="apiVal">0</span></div><input type="range" class="calc-slider" id="apiSlider" min="0" max="50000" step="100" value="0" oninput="recalc()"></div><div class="calc-divider"></div><div class="calc-result"><div class="calc-result-row"><span class="cr-label">Base plan (<span id="resPlan">Growth</span>)</span><span class="cr-val" id="resBase">$2,079</span></div><div class="calc-result-row overage"><span class="cr-label">Estimated overages</span><span class="cr-val" id="resOverage">$0</span></div><div class="calc-result-row total"><span class="cr-label">Estimated Monthly Total</span><span class="cr-val" id="resTotal">$2,079</span></div></div><a class="calc-cta" id="calcCta" href="https://buy.stripe.com/00gcN59552ci6fw00ddwc0H">Subscribe to Growth \u2192</a></div></div>
 <script>
-const io=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('vis');io.unobserve(e.target)}})},{threshold:.1});document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
-let billing='annual';
-function setBilling(mode){billing=mode;document.getElementById('tog-monthly').classList.toggle('active',mode==='monthly');document.getElementById('tog-annual').classList.toggle('active',mode==='annual');document.querySelectorAll('.amount').forEach(el=>{el.textContent=Number(el.dataset[mode]).toLocaleString()});document.querySelectorAll('.plan-save').forEach(el=>{el.textContent=el.dataset['save'+mode.charAt(0).toUpperCase()+mode.slice(1)]||''});}
-var plans={starter:{name:'Starter',monthly:799,annual:665,inc:{ai:100,sync:500,report:50,scenario:10,api:0},link:'https://buy.stripe.com/7sY7sL4OPeZ4gUaaERdwc0G'},growth:{name:'Growth',monthly:2499,annual:2079,inc:{ai:1000,sync:5000,report:500,scenario:100,api:5000},link:'https://buy.stripe.com/00gcN59552ci6fw00ddwc0H'},business:{name:'Business',monthly:5999,annual:4999,inc:{ai:10000,sync:999999,report:999999,scenario:1000,api:999999},link:'https://buy.stripe.com/9B600j4OPg38eM228ldwc0I'}};
-var overageRates={ai:0.10,sync:0.01,report:0.50,scenario:1.00,api:0.02};var currentPlan='growth';
-function openCalc(){document.getElementById('calcOverlay').classList.add('open');document.body.style.overflow='hidden';setPlan('growth');}
-function closeCalc(){document.getElementById('calcOverlay').classList.remove('open');document.body.style.overflow='';}
-function setPlan(p){currentPlan=p;document.querySelectorAll('.calc-plan-btn').forEach(function(b){b.classList.toggle('active',b.dataset.plan===p)});var plan=plans[p];document.getElementById('aiInc').textContent=plan.inc.ai>0?plan.inc.ai.toLocaleString()+' included':'Not included';document.getElementById('syncInc').textContent=plan.inc.sync>=999999?'Unlimited':plan.inc.sync.toLocaleString()+' included';document.getElementById('reportInc').textContent=plan.inc.report>=999999?'Unlimited':plan.inc.report.toLocaleString()+' included';document.getElementById('scenarioInc').textContent=plan.inc.scenario.toLocaleString()+' included';document.getElementById('apiInc').textContent=plan.inc.api>=999999?'Unlimited':(plan.inc.api>0?plan.inc.api.toLocaleString()+' included':'Not included');recalc();}
-function recalc(){var plan=plans[currentPlan];var base=billing==='annual'?plan.annual:plan.monthly;var usage={ai:Number(document.getElementById('aiSlider').value),sync:Number(document.getElementById('syncSlider').value),report:Number(document.getElementById('reportSlider').value),scenario:Number(document.getElementById('scenarioSlider').value),api:Number(document.getElementById('apiSlider').value)};document.getElementById('aiVal').textContent=usage.ai.toLocaleString();document.getElementById('syncVal').textContent=usage.sync.toLocaleString();document.getElementById('reportVal').textContent=usage.report.toLocaleString();document.getElementById('scenarioVal').textContent=usage.scenario.toLocaleString();document.getElementById('apiVal').textContent=usage.api.toLocaleString();var overage=0;var keys=['ai','sync','report','scenario','api'];for(var i=0;i<keys.length;i++){var k=keys[i];var inc=plan.inc[k];if(inc>=999999)continue;overage+=Math.max(0,usage[k]-inc)*overageRates[k];}var total=base+overage;document.getElementById('resPlan').textContent=plan.name;document.getElementById('resBase').textContent='$'+base.toLocaleString();document.getElementById('resOverage').textContent=overage>0?'+$'+overage.toLocaleString(undefined,{minimumFractionDigits:0,maximumFractionDigits:0}):'$0';document.getElementById('resTotal').textContent='$'+total.toLocaleString(undefined,{minimumFractionDigits:0,maximumFractionDigits:0})+'/mo';document.getElementById('calcCta').href=plan.link;document.getElementById('calcCta').textContent='Subscribe to '+plan.name+' \u2192';}
-document.addEventListener('keydown',function(e){if(e.key==='Escape')closeCalc()});
+document.getElementById('themeToggle').addEventListener('click',()=>{const h=document.documentElement;h.dataset.theme=h.dataset.theme==='day'?'night':'day'});
+const _o=new IntersectionObserver(e=>{e.forEach(el=>{if(el.isIntersecting)el.target.classList.add('v')})},{threshold:0.08});
+document.querySelectorAll('.cf-fin').forEach(el=>_o.observe(el));
 </script>
 </body>
 </html>

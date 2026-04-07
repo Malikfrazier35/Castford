@@ -1,23 +1,25 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="day">
 <head>
-<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Castford - Request a Demo</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700;9..40,800;9..40,900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=Instrument+Sans:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/site/theme.css">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-:root{--bg:#F8FAFC;--green:#10B981;--cyan:#22D3EE;--purple:#8B5CF6;--blue:#3B82F6;--amber:#F59E0B;--t1:#0F172A;--t2:#334155;--t3:#64748B;--t4:#94A3B8;--border:#E2E8F0;--radius:16px;--font:'DM Sans',system-ui,sans-serif;--mono:'JetBrains Mono',monospace;--ease:cubic-bezier(0.16,1,0.3,1);}
-body{font-family:var(--font);color:var(--t1);-webkit-font-smoothing:antialiased;background:#fff;overflow-x:hidden;}
+
 @keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
 .reveal{opacity:0;transform:translateY(24px);transition:all 0.6s var(--ease);}.reveal.vis{opacity:1;transform:none;}
 
 /* NAV */
-.nav{position:sticky;top:0;z-index:100;padding:0 40px;height:64px;display:flex;align-items:center;background:rgba(3,7,17,0.95);backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,0.05);}
+.
 .nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none;}
 .nav-logo svg{width:32px;height:32px;}
 .nav-logo span{font-size:17px;font-weight:800;color:#fff;letter-spacing:-0.03em;}
 .nav-links{display:flex;gap:28px;margin-left:50px;}
-.nav-links a{font-size:13px;font-weight:500;color:rgba(255,255,255,0.5);text-decoration:none;transition:color 0.2s;}.nav-links a:hover{color:#fff;}
+.nav-links .nav-links a:hover{color:#fff;}
 .nav-right{margin-left:auto;display:flex;align-items:center;gap:10px;}
 .btn-ghost{padding:8px 18px;border-radius:8px;font-size:13px;font-weight:600;border:1px solid rgba(255,255,255,0.12);background:transparent;color:rgba(255,255,255,0.7);cursor:pointer;transition:all 0.2s;text-decoration:none;}.btn-ghost:hover{color:#fff;}
 .btn-primary{padding:8px 22px;border-radius:8px;font-size:13px;font-weight:700;border:none;background:var(--green);color:#fff;cursor:pointer;transition:all 0.25s var(--ease);text-decoration:none;}.btn-primary:hover{transform:translateY(-2px);box-shadow:0 4px 16px rgba(16,185,129,0.25);}
@@ -44,7 +46,7 @@ body{font-family:var(--font);color:var(--t1);-webkit-font-smoothing:antialiased;
 .form-card .fsub{font-size:13px;color:var(--t3);margin-bottom:28px;}
 .form-group{margin-bottom:14px;}
 .form-group label{display:block;font-size:12px;font-weight:600;color:var(--t3);margin-bottom:5px;}
-.form-group input,.form-group select,.form-group textarea{width:100%;padding:11px 14px;border-radius:10px;border:1px solid var(--border);font-size:13px;font-family:var(--font);color:var(--t1);outline:none;transition:all 0.3s;background:#fff;resize:vertical;}
+.form-group input,.form-group select,.form-group textare
 .form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:var(--green);box-shadow:0 0 0 3px rgba(16,185,129,0.1);}
 .form-row{display:flex;gap:12px;}
 .form-row .form-group{flex:1;}
@@ -62,18 +64,32 @@ body{font-family:var(--font);color:var(--t1);-webkit-font-smoothing:antialiased;
 .step p{font-size:13px;color:var(--t3);line-height:1.5;max-width:240px;margin:0 auto;}
 
 /* FOOTER */
-.footer{padding:40px;background:#030711;text-align:center;font-size:12px;color:rgba(255,255,255,0.25);}
+.
 
 @media(max-width:768px){.hero{grid-template-columns:1fr;}.hero-left{padding:40px;}.hero-right{padding:30px;}.steps-grid{grid-template-columns:1fr;}.steps-grid::before{display:none;}.nav-links{display:none;}}
 </style>
 </head>
 <body>
 
-<nav class="nav">
-  <a class="nav-logo" href="/"><svg viewBox="0 0 32 32" fill="none"><defs><linearGradient id="lg" x1="0" y1="0" x2="32" y2="32"><stop stop-color="#22D3EE"/><stop offset="1" stop-color="#8B5CF6"/></linearGradient></defs><rect width="32" height="32" rx="8" fill="url(#lg)"/><path d="M8 12h16M8 16h12M8 20h8" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg><span>Castford</span></a>
-  <div class="nav-links"><a href="/">Solutions</a><a href="/pricing">Pricing</a><a href="/resources">Resources</a></div>
-  <div class="nav-right"><a class="btn-ghost" href="/login">Sign In</a><a class="btn-primary" href="#">Subscribe</a></div>
-</nav>
+<nav class="cf-nav"><div class="cf-nav-in">
+  <a href="/" class="cf-nav-logo">
+    <svg class="cf-logo" viewBox="0 0 100 100" width="26" height="26">
+      <path d="M50 5 L90 27 L90 73 L50 95 L10 73 L10 27 Z" fill="none" stroke="var(--logo-main)" stroke-width="0.8" style="opacity:var(--logo-outer-o)"/>
+      <path d="M50 10 L85 30 L85 70 L50 90 L15 70 L15 30 Z" fill="none" stroke="var(--logo-main)" stroke-width="1.2" style="opacity:var(--logo-mid-o)"/>
+      <path d="M50 16 L80 33 L80 67 L50 84 L20 67 L20 33 Z" fill="none" stroke="var(--logo-main)" stroke-width="2.5"/>
+      <path d="M36 47 L50 39 L64 47 L64 57 L50 65 L36 57 Z" fill="var(--logo-inner)" style="opacity:var(--logo-inner-fill)"/>
+      <path d="M36 47 L50 39 L64 47 L64 57 L50 65 L36 57 Z" fill="none" stroke="var(--logo-inner)" stroke-width="1.5"/>
+      <circle cx="50" cy="52" r="3" fill="var(--logo-core)"/>
+    </svg>
+    <span class="cf-nav-name">Castford</span>
+  </a>
+  <div class="cf-nav-links"><a href="/solutions">Solutions</a><a href="/integrations">Integrations</a><a href="/security">Trust</a><a href="/pricing">Pricing</a><a href="/resources">Resources</a></div>
+  <div class="cf-nav-right">
+    <div class="cf-toggle" id="themeToggle" title="Toggle day/night"></div>
+    <a href="/login" class="cf-nav-sign">Sign in</a>
+    <button class="cf-nav-cta" onclick="window.location='/pricing'">Get started</button>
+  </div>
+</div></nav>
 
 <section class="hero">
   <div class="hero-left">
@@ -121,11 +137,27 @@ body{font-family:var(--font);color:var(--t1);-webkit-font-smoothing:antialiased;
   </div>
 </section>
 
-<footer class="footer">2026 Castford, Inc. All rights reserved. | SOC 2 Type II Certified | GDPR Compliant</footer>
+<footer class="cf-footer"><div class="w">
+  <div class="cf-ft-grid">
+    <div class="cf-ft-brand">
+      <div class="cf-nav-logo" style="margin-bottom:0">
+        <svg viewBox="0 0 100 100" width="22" height="22"><path d="M50 10 L85 30 L85 70 L50 90 L15 70 L15 30 Z" fill="none" stroke="var(--logo-main)" stroke-width="1.2" style="opacity:var(--logo-mid-o)"/><path d="M50 16 L80 33 L80 67 L50 84 L20 67 L20 33 Z" fill="none" stroke="var(--logo-main)" stroke-width="2.5"/><path d="M36 47 L50 39 L64 47 L64 57 L50 65 L36 57 Z" fill="none" stroke="var(--logo-inner)" stroke-width="1.5"/><circle cx="50" cy="52" r="3" fill="var(--logo-core)"/></svg>
+        <span style="font-family:var(--d);font-size:15px;font-weight:600">Castford</span>
+      </div>
+      <p>AI-native financial planning & analysis for modern finance teams.</p>
+    </div>
+    <div class="cf-ft-col"><h5>Product</h5><a href="/">Platform</a><a href="/integrations">Integrations</a><a href="/pricing">Pricing</a><a href="/security">Security</a></div>
+    <div class="cf-ft-col"><h5>Solutions</h5><a href="/solutions">SaaS</a><a href="/solutions">E-Commerce</a><a href="/xpa-planning">Cross-Dept</a></div>
+    <div class="cf-ft-col"><h5>Resources</h5><a href="/resources">Library</a><a href="/whats-new">Changelog</a></div>
+    <div class="cf-ft-col"><h5>Company</h5><a href="/about">About</a><a href="#">Careers</a><a href="/contact">Contact</a></div>
+  </div>
+  <div class="cf-ft-bottom"><span>&copy; 2026 Castford, Inc.</span><div style="display:flex;gap:16px"><a href="/privacy" style="color:var(--t3)">Privacy</a><a href="/terms" style="color:var(--t3)">Terms</a><a href="/security" style="color:var(--t3)">Security</a></div></div>
+</div></footer>
 
 <script>
-const obs=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('vis');obs.unobserve(e.target);}});},{threshold:0.1});
-document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+document.getElementById('themeToggle').addEventListener('click',()=>{const h=document.documentElement;h.dataset.theme=h.dataset.theme==='day'?'night':'day'});
+const _o=new IntersectionObserver(e=>{e.forEach(el=>{if(el.isIntersecting)el.target.classList.add('v')})},{threshold:0.08});
+document.querySelectorAll('.cf-fin').forEach(el=>_o.observe(el));
 </script>
 </body>
 </html>

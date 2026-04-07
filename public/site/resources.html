@@ -1,29 +1,25 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="day">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Resources -- Castford</title>
-<meta name="description" content="Guides, templates, and educational resources for modern FP&A teams.">
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='14' fill='%2310B981'/%3E%3C/svg%3E">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=Instrument+Sans:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/site/theme.css">
 <style>
-*{margin:0;padding:0;box-sizing:border-box}
-body{font-family:'Inter',system-ui,sans-serif;background:#fff;color:#0F172A;-webkit-font-smoothing:antialiased}
-a{text-decoration:none;color:inherit}
-.nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(255,255,255,0.95);backdrop-filter:blur(12px);border-bottom:1px solid #E2E8F0}
-.nav-inner{max-width:1200px;margin:0 auto;padding:0 24px;height:64px;display:flex;align-items:center;justify-content:space-between}
-.nav-logo{font-weight:800;font-size:18px;color:#0F172A;display:flex;align-items:center;gap:8px}
-.logo-dot{width:10px;height:10px;border-radius:50%;background:#10B981;display:inline-block}
-.nav-mid{display:flex;gap:32px}
-.nav-mid a{font-size:14px;font-weight:500;color:#475569}
-.nav-mid a:hover{color:#0F172A}
-.nav-end{display:flex;align-items:center;gap:16px}
+.
+
+.nav-logo{font-weight:800;font-size:18px;color:var(--ink);display:flex;align-items:center;gap:8px}
+.logo-dot{width:10px;height:10px;border-radius:50%;background:var(--prime);display:inline-block}
+
+.nav-mid a:hover{color:var(--ink)}
+
 .nav-link{font-size:14px;font-weight:500;color:#475569}
 .btn{display:inline-block;padding:8px 20px;border-radius:8px;font-weight:600;font-size:14px;cursor:pointer;border:none}
-.btn-primary{background:#10B981;color:#fff}
+.btn-primary{background:var(--prime);color:#fff}
 .btn-sm{padding:8px 16px;font-size:13px}
-.res-card{border:1px solid #E2E8F0;border-radius:12px;padding:28px;display:flex;flex-direction:column}
+.res-card{border:1px solid var(--bdr);border-radius:12px;padding:28px;display:flex;flex-direction:column}
 .res-tag{display:inline-block;font-size:11px;font-weight:700;padding:4px 10px;border-radius:6px;text-transform:uppercase;letter-spacing:0.05em;width:fit-content;margin-bottom:16px}
 .tag-guide{background:#DBEAFE;color:#1D4ED8}
 .tag-blog{background:#FEF3C7;color:#92400E}
@@ -31,143 +27,146 @@ a{text-decoration:none;color:inherit}
 </style>
 </head>
 <body>
-<nav class="nav"><div class="nav-inner">
-<a href="/" class="nav-logo"><span class="logo-dot"></span> Castford</a>
-<div class="nav-mid">
-<a href="/solutions">Solutions</a>
-<a href="/integrations">Integrations</a>
-<a href="/security">Trust</a>
-<a href="/pricing">Pricing</a>
-<a href="/resources">Resources</a>
-</div>
-<div class="nav-end">
-<a href="/login" class="nav-link">Sign In</a>
-<a href="/pricing" class="btn btn-primary btn-sm">Subscribe</a>
-</div>
+
+<nav class="cf-nav"><div class="cf-nav-in">
+  <a href="/" class="cf-nav-logo">
+    <svg class="cf-logo" viewBox="0 0 100 100" width="26" height="26">
+      <path d="M50 5 L90 27 L90 73 L50 95 L10 73 L10 27 Z" fill="none" stroke="var(--logo-main)" stroke-width="0.8" style="opacity:var(--logo-outer-o)"/>
+      <path d="M50 10 L85 30 L85 70 L50 90 L15 70 L15 30 Z" fill="none" stroke="var(--logo-main)" stroke-width="1.2" style="opacity:var(--logo-mid-o)"/>
+      <path d="M50 16 L80 33 L80 67 L50 84 L20 67 L20 33 Z" fill="none" stroke="var(--logo-main)" stroke-width="2.5"/>
+      <path d="M36 47 L50 39 L64 47 L64 57 L50 65 L36 57 Z" fill="var(--logo-inner)" style="opacity:var(--logo-inner-fill)"/>
+      <path d="M36 47 L50 39 L64 47 L64 57 L50 65 L36 57 Z" fill="none" stroke="var(--logo-inner)" stroke-width="1.5"/>
+      <circle cx="50" cy="52" r="3" fill="var(--logo-core)"/>
+    </svg>
+    <span class="cf-nav-name">Castford</span>
+  </a>
+  <div class="cf-nav-links"><a href="/solutions">Solutions</a><a href="/integrations">Integrations</a><a href="/security">Trust</a><a href="/pricing">Pricing</a><a href="/resources">Resources</a></div>
+  <div class="cf-nav-right">
+    <div class="cf-toggle" id="themeToggle" title="Toggle day/night"></div>
+    <a href="/login" class="cf-nav-sign">Sign in</a>
+    <button class="cf-nav-cta" onclick="window.location='/pricing'">Get started</button>
+  </div>
 </div></nav>
 
 <section style="padding:120px 24px 60px;text-align:center;max-width:720px;margin:0 auto">
-<h1 style="font-size:clamp(2rem,4vw,3rem);font-weight:800;color:#0F172A;margin-bottom:16px">Resource Library</h1>
-<p style="font-size:18px;color:#64748B;line-height:1.6">Guides, templates, and best practices for modern finance teams. Everything you need to streamline FP&A workflows.</p>
+<h1 style="font-size:clamp(2rem,4vw,3rem);font-weight:800;color:var(--ink);margin-bottom:16px">Resource Library</h1>
+<p style="font-size:18px;color:var(--t2);line-height:1.6">Guides, templates, and best practices for modern finance teams. Everything you need to streamline FP&A workflows.</p>
 </section>
 
 <section style="max-width:1100px;margin:0 auto 48px;padding:0 24px">
-<div style="background:linear-gradient(135deg,#0F172A 0%,#1E293B 100%);border-radius:16px;padding:48px;color:#fff">
-<span class="res-tag" style="background:#10B981;color:#fff;margin-bottom:16px">Featured Guide</span>
+<div style="background:linear-gradient(135deg,var(--ink) 0%,#1E293B 100%);border-radius:16px;padding:48px;color:#fff">
+<span class="res-tag" style="background:var(--prime);color:#fff;margin-bottom:16px">Featured Guide</span>
 <h2 style="font-size:28px;font-weight:700;margin-bottom:12px">The AI-Powered FP&A Playbook</h2>
-<p style="color:#94A3B8;font-size:16px;margin-bottom:8px;max-width:600px">How finance teams are using AI copilots to cut close time and improve forecast accuracy.</p>
-<p style="color:#64748B;font-size:14px;margin-bottom:24px">12 min read</p>
-<a href="mailto:resources@castford.com?subject=AI%20FP%26A%20Playbook%20Request" style="display:inline-block;background:#10B981;color:#fff;padding:12px 28px;border-radius:8px;font-weight:600;text-decoration:none;font-size:15px">Request Guide</a>
+<p style="color:var(--t3);font-size:16px;margin-bottom:8px;max-width:600px">How finance teams are using AI copilots to cut close time and improve forecast accuracy.</p>
+<p style="color:var(--t2);font-size:14px;margin-bottom:24px">12 min read</p>
+<a href="mailto:resources@castford.com?subject=AI%20FP%26A%20Playbook%20Request" style="display:inline-block;background:var(--prime);color:#fff;padding:12px 28px;border-radius:8px;font-weight:600;text-decoration:none;font-size:15px">Request Guide</a>
 </div>
 </section>
 
 <section style="max-width:1100px;margin:0 auto 80px;padding:0 24px">
 <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:24px"><div class="res-card">
 <span class="res-tag tag-guide">Guide</span>
-<h3 style="font-size:18px;font-weight:700;color:#0F172A;margin-bottom:8px">From Spreadsheets to AI: FP&A Migration Playbook</h3>
-<p style="color:#64748B;font-size:14px;line-height:1.5;flex:1">Step-by-step guide to moving FP&A workflows from Excel to an AI-native platform.</p>
-<div style="display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:16px;border-top:1px solid #F1F5F9">
-<span style="color:#94A3B8;font-size:13px">8 min</span>
-<a href="mailto:resources@castford.com?subject=FP%26A%20Migration%20Playbook" style="color:#10B981;font-weight:600;font-size:14px;text-decoration:none">Request Guide</a>
+<h3 style="font-size:18px;font-weight:700;color:var(--ink);margin-bottom:8px">From Spreadsheets to AI: FP&A Migration Playbook</h3>
+<p style="color:var(--t2);font-size:14px;line-height:1.5;flex:1">Step-by-step guide to moving FP&A workflows from Excel to an AI-native platform.</p>
+<div style="display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:16px;border-top:1px solid var(--bdr)">
+<span style="color:var(--t3);font-size:13px">8 min</span>
+<a href="mailto:resources@castford.com?subject=FP%26A%20Migration%20Playbook" style="color:var(--prime);font-weight:600;font-size:14px;text-decoration:none">Request Guide</a>
 </div></div>
 <div class="res-card">
 <span class="res-tag tag-guide">Guide</span>
-<h3 style="font-size:18px;font-weight:700;color:#0F172A;margin-bottom:8px">How to Reduce Your Monthly Close to Under 5 Days</h3>
-<p style="color:#64748B;font-size:14px;line-height:1.5;flex:1">Best practices for automating multi-entity consolidation and eliminating manual reconciliation bottlenecks.</p>
-<div style="display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:16px;border-top:1px solid #F1F5F9">
-<span style="color:#94A3B8;font-size:13px">6 min</span>
-<a href="mailto:resources@castford.com?subject=Monthly%20Close%20Guide" style="color:#10B981;font-weight:600;font-size:14px;text-decoration:none">Request Guide</a>
+<h3 style="font-size:18px;font-weight:700;color:var(--ink);margin-bottom:8px">How to Reduce Your Monthly Close to Under 5 Days</h3>
+<p style="color:var(--t2);font-size:14px;line-height:1.5;flex:1">Best practices for automating multi-entity consolidation and eliminating manual reconciliation bottlenecks.</p>
+<div style="display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:16px;border-top:1px solid var(--bdr)">
+<span style="color:var(--t3);font-size:13px">6 min</span>
+<a href="mailto:resources@castford.com?subject=Monthly%20Close%20Guide" style="color:var(--prime);font-weight:600;font-size:14px;text-decoration:none">Request Guide</a>
 </div></div>
 <div class="res-card">
 <span class="res-tag tag-guide">Guide</span>
-<h3 style="font-size:18px;font-weight:700;color:#0F172A;margin-bottom:8px">xP&A in Practice: Breaking Planning Silos</h3>
-<p style="color:#64748B;font-size:14px;line-height:1.5;flex:1">Learn how to connect Finance, Revenue, and Workforce planning into one unified model.</p>
-<div style="display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:16px;border-top:1px solid #F1F5F9">
-<span style="color:#94A3B8;font-size:13px">10 min</span>
-<a href="mailto:resources@castford.com?subject=xP%26A%20Guide" style="color:#10B981;font-weight:600;font-size:14px;text-decoration:none">Request Guide</a>
+<h3 style="font-size:18px;font-weight:700;color:var(--ink);margin-bottom:8px">xP&A in Practice: Breaking Planning Silos</h3>
+<p style="color:var(--t2);font-size:14px;line-height:1.5;flex:1">Learn how to connect Finance, Revenue, and Workforce planning into one unified model.</p>
+<div style="display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:16px;border-top:1px solid var(--bdr)">
+<span style="color:var(--t3);font-size:13px">10 min</span>
+<a href="mailto:resources@castford.com?subject=xP%26A%20Guide" style="color:var(--prime);font-weight:600;font-size:14px;text-decoration:none">Request Guide</a>
 </div></div>
 <div class="res-card">
 <span class="res-tag tag-blog">Blog</span>
-<h3 style="font-size:18px;font-weight:700;color:#0F172A;margin-bottom:8px">Why Consumption-Based Pricing Wins</h3>
-<p style="color:#64748B;font-size:14px;line-height:1.5;flex:1">Per-seat pricing penalizes growing teams. Usage-based aligns vendor incentives with success.</p>
-<div style="display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:16px;border-top:1px solid #F1F5F9">
-<span style="color:#94A3B8;font-size:13px">5 min</span>
-<a href="/pricing" style="color:#10B981;font-weight:600;font-size:14px;text-decoration:none">Read More</a>
+<h3 style="font-size:18px;font-weight:700;color:var(--ink);margin-bottom:8px">Why Consumption-Based Pricing Wins</h3>
+<p style="color:var(--t2);font-size:14px;line-height:1.5;flex:1">Per-seat pricing penalizes growing teams. Usage-based aligns vendor incentives with success.</p>
+<div style="display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:16px;border-top:1px solid var(--bdr)">
+<span style="color:var(--t3);font-size:13px">5 min</span>
+<a href="/pricing" style="color:var(--prime);font-weight:600;font-size:14px;text-decoration:none">Read More</a>
 </div></div>
 <div class="res-card">
 <span class="res-tag tag-template">Template</span>
-<h3 style="font-size:18px;font-weight:700;color:#0F172A;margin-bottom:8px">Board-Ready Financial Model</h3>
-<p style="color:#64748B;font-size:14px;line-height:1.5;flex:1">Pre-built template with P&L, balance sheet, cash flow, and SaaS metrics. Customizable.</p>
-<div style="display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:16px;border-top:1px solid #F1F5F9">
-<span style="color:#94A3B8;font-size:13px">Download</span>
-<a href="mailto:resources@castford.com?subject=Financial%20Model%20Template" style="color:#10B981;font-weight:600;font-size:14px;text-decoration:none">Request Template</a>
+<h3 style="font-size:18px;font-weight:700;color:var(--ink);margin-bottom:8px">Board-Ready Financial Model</h3>
+<p style="color:var(--t2);font-size:14px;line-height:1.5;flex:1">Pre-built template with P&L, balance sheet, cash flow, and SaaS metrics. Customizable.</p>
+<div style="display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:16px;border-top:1px solid var(--bdr)">
+<span style="color:var(--t3);font-size:13px">Download</span>
+<a href="mailto:resources@castford.com?subject=Financial%20Model%20Template" style="color:var(--prime);font-weight:600;font-size:14px;text-decoration:none">Request Template</a>
 </div></div>
 <div class="res-card">
 <span class="res-tag tag-guide">Guide</span>
-<h3 style="font-size:18px;font-weight:700;color:#0F172A;margin-bottom:8px">SOX 404 Compliance Automation</h3>
-<p style="color:#64748B;font-size:14px;line-height:1.5;flex:1">Replace manual audit evidence with continuous controls monitoring. Includes templates.</p>
-<div style="display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:16px;border-top:1px solid #F1F5F9">
-<span style="color:#94A3B8;font-size:13px">10 min</span>
-<a href="mailto:resources@castford.com?subject=SOX%20404%20Guide" style="color:#10B981;font-weight:600;font-size:14px;text-decoration:none">Request Guide</a>
+<h3 style="font-size:18px;font-weight:700;color:var(--ink);margin-bottom:8px">SOX 404 Compliance Automation</h3>
+<p style="color:var(--t2);font-size:14px;line-height:1.5;flex:1">Replace manual audit evidence with continuous controls monitoring. Includes templates.</p>
+<div style="display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:16px;border-top:1px solid var(--bdr)">
+<span style="color:var(--t3);font-size:13px">10 min</span>
+<a href="mailto:resources@castford.com?subject=SOX%20404%20Guide" style="color:var(--prime);font-weight:600;font-size:14px;text-decoration:none">Request Guide</a>
 </div></div>
 <div class="res-card">
 <span class="res-tag tag-blog">Blog</span>
-<h3 style="font-size:18px;font-weight:700;color:#0F172A;margin-bottom:8px">The Shift to Continuous Close</h3>
-<p style="color:#64748B;font-size:14px;line-height:1.5;flex:1">Continuous close replaces the monthly marathon. Real-time sync and auto-reconciliation.</p>
-<div style="display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:16px;border-top:1px solid #F1F5F9">
-<span style="color:#94A3B8;font-size:13px">4 min</span>
-<a href="mailto:resources@castford.com?subject=Continuous%20Close%20Blog" style="color:#10B981;font-weight:600;font-size:14px;text-decoration:none">Read More</a>
+<h3 style="font-size:18px;font-weight:700;color:var(--ink);margin-bottom:8px">The Shift to Continuous Close</h3>
+<p style="color:var(--t2);font-size:14px;line-height:1.5;flex:1">Continuous close replaces the monthly marathon. Real-time sync and auto-reconciliation.</p>
+<div style="display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:16px;border-top:1px solid var(--bdr)">
+<span style="color:var(--t3);font-size:13px">4 min</span>
+<a href="mailto:resources@castford.com?subject=Continuous%20Close%20Blog" style="color:var(--prime);font-weight:600;font-size:14px;text-decoration:none">Read More</a>
 </div></div>
 <div class="res-card">
 <span class="res-tag tag-template">Template</span>
-<h3 style="font-size:18px;font-weight:700;color:#0F172A;margin-bottom:8px">Variance Analysis Checklist</h3>
-<p style="color:#64748B;font-size:14px;line-height:1.5;flex:1">A structured checklist for identifying, explaining, and acting on budget variances each period.</p>
-<div style="display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:16px;border-top:1px solid #F1F5F9">
-<span style="color:#94A3B8;font-size:13px">Download</span>
-<a href="mailto:resources@castford.com?subject=Variance%20Analysis%20Checklist" style="color:#10B981;font-weight:600;font-size:14px;text-decoration:none">Request Template</a>
+<h3 style="font-size:18px;font-weight:700;color:var(--ink);margin-bottom:8px">Variance Analysis Checklist</h3>
+<p style="color:var(--t2);font-size:14px;line-height:1.5;flex:1">A structured checklist for identifying, explaining, and acting on budget variances each period.</p>
+<div style="display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:16px;border-top:1px solid var(--bdr)">
+<span style="color:var(--t3);font-size:13px">Download</span>
+<a href="mailto:resources@castford.com?subject=Variance%20Analysis%20Checklist" style="color:var(--prime);font-weight:600;font-size:14px;text-decoration:none">Request Template</a>
 </div></div>
 <div class="res-card">
 <span class="res-tag tag-guide">Guide</span>
-<h3 style="font-size:18px;font-weight:700;color:#0F172A;margin-bottom:8px">AI Copilot: Getting Started with Natural Language Queries</h3>
-<p style="color:#64748B;font-size:14px;line-height:1.5;flex:1">Learn how to ask your financial data questions in plain English and get instant answers.</p>
-<div style="display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:16px;border-top:1px solid #F1F5F9">
-<span style="color:#94A3B8;font-size:13px">7 min</span>
-<a href="mailto:resources@castford.com?subject=AI%20Copilot%20Guide" style="color:#10B981;font-weight:600;font-size:14px;text-decoration:none">Request Guide</a>
+<h3 style="font-size:18px;font-weight:700;color:var(--ink);margin-bottom:8px">AI Copilot: Getting Started with Natural Language Queries</h3>
+<p style="color:var(--t2);font-size:14px;line-height:1.5;flex:1">Learn how to ask your financial data questions in plain English and get instant answers.</p>
+<div style="display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:16px;border-top:1px solid var(--bdr)">
+<span style="color:var(--t3);font-size:13px">7 min</span>
+<a href="mailto:resources@castford.com?subject=AI%20Copilot%20Guide" style="color:var(--prime);font-weight:600;font-size:14px;text-decoration:none">Request Guide</a>
 </div></div>
 </div></section>
 
-<section style="background:#0F172A;padding:80px 24px;text-align:center">
+<section style="background:var(--ink);padding:80px 24px;text-align:center">
 <h2 style="font-size:28px;font-weight:700;color:#fff;margin-bottom:12px">Need a custom resource?</h2>
-<p style="color:#94A3B8;font-size:16px;margin-bottom:32px;max-width:480px;margin-left:auto;margin-right:auto">Our team can prepare tailored materials for your finance org.</p>
+<p style="color:var(--t3);font-size:16px;margin-bottom:32px;max-width:480px;margin-left:auto;margin-right:auto">Our team can prepare tailored materials for your finance org.</p>
 <div style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap">
-<a href="mailto:resources@castford.com?subject=Custom%20Resource%20Request" style="display:inline-block;background:#10B981;color:#fff;padding:14px 32px;border-radius:8px;font-weight:600;text-decoration:none;font-size:15px">Contact Us</a>
-<a href="/pricing" style="display:inline-block;background:transparent;color:#fff;padding:14px 32px;border-radius:8px;font-weight:600;text-decoration:none;font-size:15px;border:1px solid #334155">See Pricing</a>
+<a href="mailto:resources@castford.com?subject=Custom%20Resource%20Request" style="display:inline-block;background:var(--prime);color:#fff;padding:14px 32px;border-radius:8px;font-weight:600;text-decoration:none;font-size:15px">Contact Us</a>
+<a href="/pricing" style="display:inline-block;background:transparent;color:#fff;padding:14px 32px;border-radius:8px;font-weight:600;text-decoration:none;font-size:15px;border:1px solid var(--t1)">See Pricing</a>
 </div></section>
 
-<footer style="background:#0F172A;border-top:1px solid #1E293B;padding:48px 24px 32px">
-<div style="max-width:1100px;margin:0 auto;display:flex;flex-wrap:wrap;justify-content:space-between;gap:40px">
-<div><div style="color:#fff;font-weight:700;font-size:18px;margin-bottom:16px"><span style="color:#10B981">.</span> Castford</div>
-<p style="color:#64748B;font-size:14px;max-width:240px">AI-native financial planning and analysis for modern finance teams.</p></div>
-<div style="display:flex;flex-wrap:wrap;gap:48px">
-<div><h4 style="color:#94A3B8;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:12px">Product</h4>
-<div style="display:flex;flex-direction:column;gap:8px">
-<a href="/integrations" style="color:#64748B;font-size:14px;text-decoration:none">Integrations</a>
-<a href="/pricing" style="color:#64748B;font-size:14px;text-decoration:none">Pricing</a>
-<a href="/security" style="color:#64748B;font-size:14px;text-decoration:none">Security</a></div></div>
-<div><h4 style="color:#94A3B8;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:12px">Resources</h4>
-<div style="display:flex;flex-direction:column;gap:8px">
-<a href="/resources" style="color:#64748B;font-size:14px;text-decoration:none">Resource Library</a>
-<a href="/whats-new" style="color:#64748B;font-size:14px;text-decoration:none">Changelog</a></div></div>
-<div><h4 style="color:#94A3B8;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:12px">Company</h4>
-<div style="display:flex;flex-direction:column;gap:8px">
-<a href="/about" style="color:#64748B;font-size:14px;text-decoration:none">About</a>
-<a href="mailto:hello@castford.com" style="color:#64748B;font-size:14px;text-decoration:none">Contact</a></div></div>
-</div></div>
-<div style="max-width:1100px;margin:32px auto 0;padding-top:24px;border-top:1px solid #1E293B;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px">
-<span style="color:#475569;font-size:13px">2026 Castford, Inc. All rights reserved.</span>
-<div style="display:flex;gap:20px">
-<a href="/privacy" style="color:#64748B;font-size:13px;text-decoration:none">Privacy</a>
-<a href="/terms" style="color:#64748B;font-size:13px;text-decoration:none">Terms</a>
-<a href="/security" style="color:#64748B;font-size:13px;text-decoration:none">Security</a>
-</div></div></footer>
-</body></html>
+<footer class="cf-footer"><div class="w">
+  <div class="cf-ft-grid">
+    <div class="cf-ft-brand">
+      <div class="cf-nav-logo" style="margin-bottom:0">
+        <svg viewBox="0 0 100 100" width="22" height="22"><path d="M50 10 L85 30 L85 70 L50 90 L15 70 L15 30 Z" fill="none" stroke="var(--logo-main)" stroke-width="1.2" style="opacity:var(--logo-mid-o)"/><path d="M50 16 L80 33 L80 67 L50 84 L20 67 L20 33 Z" fill="none" stroke="var(--logo-main)" stroke-width="2.5"/><path d="M36 47 L50 39 L64 47 L64 57 L50 65 L36 57 Z" fill="none" stroke="var(--logo-inner)" stroke-width="1.5"/><circle cx="50" cy="52" r="3" fill="var(--logo-core)"/></svg>
+        <span style="font-family:var(--d);font-size:15px;font-weight:600">Castford</span>
+      </div>
+      <p>AI-native financial planning & analysis for modern finance teams.</p>
+    </div>
+    <div class="cf-ft-col"><h5>Product</h5><a href="/">Platform</a><a href="/integrations">Integrations</a><a href="/pricing">Pricing</a><a href="/security">Security</a></div>
+    <div class="cf-ft-col"><h5>Solutions</h5><a href="/solutions">SaaS</a><a href="/solutions">E-Commerce</a><a href="/xpa-planning">Cross-Dept</a></div>
+    <div class="cf-ft-col"><h5>Resources</h5><a href="/resources">Library</a><a href="/whats-new">Changelog</a></div>
+    <div class="cf-ft-col"><h5>Company</h5><a href="/about">About</a><a href="#">Careers</a><a href="/contact">Contact</a></div>
+  </div>
+  <div class="cf-ft-bottom"><span>&copy; 2026 Castford, Inc.</span><div style="display:flex;gap:16px"><a href="/privacy" style="color:var(--t3)">Privacy</a><a href="/terms" style="color:var(--t3)">Terms</a><a href="/security" style="color:var(--t3)">Security</a></div></div>
+</div></footer>
+
+<script>
+document.getElementById('themeToggle').addEventListener('click',()=>{const h=document.documentElement;h.dataset.theme=h.dataset.theme==='day'?'night':'day'});
+const _o=new IntersectionObserver(e=>{e.forEach(el=>{if(el.isIntersecting)el.target.classList.add('v')})},{threshold:0.08});
+document.querySelectorAll('.cf-fin').forEach(el=>_o.observe(el));
+</script>
+</body>
+</html>

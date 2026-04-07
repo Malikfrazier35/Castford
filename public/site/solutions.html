@@ -1,61 +1,29 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="day">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Castford for Digital Businesses — Solutions</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=Instrument+Sans:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/site/theme.css">
 <style>
-/* ===== SHARED NAV ===== */
-nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,0.88);backdrop-filter:blur(16px) saturate(180%);-webkit-backdrop-filter:blur(16px) saturate(180%);border-bottom:1px solid #F1F5F9}
-.nav-inner{max-width:1200px;margin:0 auto;padding:0 24px;height:60px;display:flex;align-items:center;justify-content:space-between}
-.logo-link{display:flex;align-items:center;gap:8px;font-weight:800;font-size:17px;color:#0F172A;text-decoration:none;letter-spacing:-0.01em}
-.logo-link .ldot{width:9px;height:9px;background:#10B981;border-radius:50%}
-.nav-mid{display:flex;gap:4px;font-size:14px;font-weight:500;align-items:center}
-.nav-mid a{color:#64748B;padding:8px 12px;border-radius:8px;text-decoration:none;transition:color .15s}
-.nav-mid a:hover{color:#0F172A;background:rgba(0,0,0,0.03)}
-.nav-end{display:flex;align-items:center;gap:10px}
-.nav-end a{font-size:14px;font-weight:500;color:#64748B;padding:8px 12px;text-decoration:none;transition:color .15s}
-.nav-end a:hover{color:#0F172A}
-.btn-sub{display:inline-flex;align-items:center;padding:8px 18px;border-radius:8px;font-weight:600;font-size:13px;background:#10B981;color:#fff!important;text-decoration:none;border:none;cursor:pointer;transition:all .15s}
-.btn-sub:hover{background:#059669;box-shadow:0 2px 12px rgba(16,185,129,0.25)}
-@media(max-width:900px){.nav-mid{display:none}}
-
-/* ===== SHARED FOOTER ===== */
-footer{background:#F8FAFC;border-top:1px solid #E2E8F0;padding:56px 24px 24px}
-.ft-inner{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:1.5fr repeat(4,1fr);gap:40px;margin-bottom:40px}
-.ft-brand p{font-size:13px;color:#64748B;line-height:1.6;max-width:240px;margin-top:10px}
-.ft-col{display:flex;flex-direction:column;gap:8px}
-.ft-col h5{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;color:#0F172A;margin-bottom:4px}
-.ft-col a{font-size:13px;color:#64748B;text-decoration:none;transition:color .15s}
-.ft-col a:hover{color:#0F172A}
-.ft-bottom{max-width:1200px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;padding-top:20px;border-top:1px solid #E2E8F0;font-size:12px;color:#64748B}
-.ft-bottom a{color:#64748B;text-decoration:none;transition:color .15s}
-.ft-bottom a:hover{color:#0F172A}
-@media(max-width:768px){.ft-inner{grid-template-columns:1fr 1fr;gap:24px}}
-
-:root{--green:#10B981;--green-light:#D1FAE5;--green-dark:#059669;--cyan:#0891B2;--purple:#7C3AED;--blue:#2563EB;--amber:#D97706;--bg:#FFFFFF;--bg-alt:#F8FAFC;--bg-card:#FFFFFF;--text:#1E293B;--text-secondary:#475569;--muted:#64748B;--border:#E2E8F0;--border-light:#F1F5F9;--shadow:0 1px 3px rgba(0,0,0,0.08),0 1px 2px rgba(0,0,0,0.04);--shadow-md:0 4px 6px -1px rgba(0,0,0,0.08),0 2px 4px -2px rgba(0,0,0,0.04);--shadow-lg:0 10px 15px -3px rgba(0,0,0,0.08),0 4px 6px -4px rgba(0,0,0,0.04);--font:'DM Sans',system-ui,-apple-system,sans-serif;--mono:'JetBrains Mono',monospace;--radius:12px}
-*{margin:0;padding:0;box-sizing:border-box}
-html{scroll-behavior:smooth}
-body{font-family:var(--font);background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased;line-height:1.6}
-a{color:inherit;text-decoration:none}
 img{max-width:100%;display:block}
 
 /* NAV */
-nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,0.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--border)}
-.nav-inner{max-width:1200px;margin:0 auto;padding:0 24px;height:64px;display:flex;align-items:center;justify-content:space-between}
+
 .logo{display:flex;align-items:center;gap:8px;font-weight:700;font-size:18px;color:var(--text)}
 .logo-dot{width:10px;height:10px;background:var(--green);border-radius:50%}
 .nav-links{display:flex;gap:28px;font-size:14px;font-weight:500}
-.nav-links a{color:var(--muted);transition:color .2s}
+.nav-links 
 .nav-links a:hover,.nav-links a.active{color:var(--text)}
 .nav-right{display:flex;align-items:center;gap:12px;font-size:14px}
-.nav-right a{color:var(--muted);font-weight:500}
+.nav-right 
 .btn{display:inline-flex;align-items:center;gap:6px;padding:9px 20px;border-radius:8px;font-weight:600;font-size:14px;border:none;cursor:pointer;font-family:var(--font);transition:all .15s}
 .btn-primary{background:var(--green);color:#fff}
 .btn-primary:hover{background:var(--green-dark);box-shadow:0 2px 8px rgba(16,185,129,0.25)}
 .btn-outline{border:1px solid var(--border);background:var(--bg);color:var(--text)}
-.btn-outline:hover{border-color:#CBD5E1;background:var(--bg-alt)}
+.btn-outline:hover{border-color:var(--bdr);background:var(--bg-alt)}
 .btn-lg{padding:12px 28px;font-size:15px;border-radius:10px}
 
 /* HERO */
@@ -67,12 +35,7 @@ nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,0.92);backdrop
 .hero-buttons{display:flex;gap:12px;flex-wrap:wrap}
 .hero-visual{background:var(--bg-card);border:1px solid var(--border);border-radius:16px;box-shadow:var(--shadow-lg);overflow:hidden}
 
-
-
-
-
-
-.hero-visual-body{padding:24px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+.hero-visual-
 .mini-card{background:var(--bg-alt);border:1px solid var(--border-light);border-radius:10px;padding:16px}
 .mini-card .mc-label{font-size:11px;color:var(--muted);margin-bottom:4px;text-transform:uppercase;letter-spacing:0.04em}
 .mini-card .mc-val{font-family:var(--mono);font-size:22px;font-weight:700;color:var(--text)}
@@ -86,7 +49,7 @@ nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,0.92);backdrop
 .trust-inner{max-width:1200px;margin:0 auto;text-align:center}
 .trust p{font-size:13px;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em;font-weight:500;margin-bottom:20px}
 .trust-logos{display:flex;justify-content:center;gap:40px;flex-wrap:wrap;align-items:center}
-.trust-logo{font-size:15px;font-weight:600;color:#94A3B8;letter-spacing:0.01em}
+.trust-logo{font-size:15px;font-weight:600;color:var(--t3);letter-spacing:0.01em}
 
 /* SECTION COMMON */
 .section{max-width:1200px;margin:0 auto;padding:80px 24px}
@@ -99,7 +62,7 @@ nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,0.92);backdrop
 /* INDUSTRY SEGMENTS */
 .segments{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
 .segment-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:28px;transition:all .2s;position:relative;overflow:hidden}
-.segment-card:hover{box-shadow:var(--shadow-md);border-color:#CBD5E1;transform:translateY(-2px)}
+.segment-card:hover{box-shadow:var(--shadow-md);border-color:var(--bdr);transform:translateY(-2px)}
 .segment-icon{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:16px}
 .segment-card h3{font-size:17px;font-weight:600;margin-bottom:8px}
 .segment-card p{font-size:14px;color:var(--text-secondary);line-height:1.55;margin-bottom:16px}
@@ -132,7 +95,7 @@ nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,0.92);backdrop
 .metrics{background:var(--text);padding:56px 24px;color:#fff}
 .metrics-inner{max-width:1000px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr);gap:32px;text-align:center}
 .metric-val{font-family:var(--mono);font-size:clamp(28px,3vw,40px);font-weight:700;color:var(--green);margin-bottom:4px}
-.metric-label{font-size:13px;color:#94A3B8}
+.metric-label{font-size:13px;color:var(--t3)}
 
 /* TESTIMONIALS */
 .testimonials{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
@@ -149,11 +112,11 @@ nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,0.92);backdrop
 .comp-table td{padding:14px 16px;border-bottom:1px solid var(--border-light)}
 .comp-table tr:hover td{background:var(--bg-alt)}
 .comp-table .check{color:var(--green);font-weight:700}
-.comp-table .dash{color:#CBD5E1}
+.comp-table .dash{color:var(--bdr)}
 .comp-table .highlight-col{background:rgba(16,185,129,0.04)}
 
 /* PRICING PROMO */
-.promo{background:linear-gradient(135deg,#F0FDF4,#ECFDF5);border:1px solid rgba(16,185,129,0.15);border-radius:16px;padding:48px;display:grid;grid-template-columns:1fr auto;gap:32px;align-items:center}
+.promo{background:linear-gradient(135deg,#F0FDF4,var(--prime-bg));border:1px solid rgba(16,185,129,0.15);border-radius:16px;padding:48px;display:grid;grid-template-columns:1fr auto;gap:32px;align-items:center}
 .promo h3{font-size:24px;font-weight:700;margin-bottom:8px}
 .promo p{font-size:15px;color:var(--text-secondary);line-height:1.6;max-width:520px}
 .promo-price{text-align:center}
@@ -168,12 +131,6 @@ nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,0.92);backdrop
 .cta-buttons{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
 
 /* FOOTER */
-footer{background:var(--bg-alt);border-top:1px solid var(--border);padding:64px 24px 32px}
-.footer-inner{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr);gap:40px;margin-bottom:48px}
-.footer-col h5{font-size:12px;font-weight:600;color:var(--text);margin-bottom:14px;text-transform:uppercase;letter-spacing:0.06em}
-.footer-col a{display:block;font-size:13px;color:var(--muted);margin-bottom:10px;transition:color .15s}
-.footer-col a:hover{color:var(--green)}
-.footer-bottom{max-width:1200px;margin:0 auto;text-align:center;font-size:12px;color:#94A3B8;padding-top:24px;border-top:1px solid var(--border)}
 
 /* RESPONSIVE */
 @media(max-width:900px){
@@ -188,12 +145,12 @@ footer{background:var(--bg-alt);border-top:1px solid var(--border);padding:64px 
 @media(max-width:768px){
   .nav-links{display:none}
   .metrics-inner{grid-template-columns:repeat(2,1fr)}
-  .footer-inner{grid-template-columns:repeat(2,1fr)}
+  
 }
 @media(max-width:480px){
   .metrics-inner{grid-template-columns:1fr}
-  .footer-inner{grid-template-columns:1fr}
-  .hero-visual-body{grid-template-columns:1fr}
+  
+  .hero-visual-
 }
 
 .fade-in{opacity:0;transform:translateY(16px);transition:opacity .5s,transform .5s}
@@ -202,23 +159,25 @@ footer{background:var(--bg-alt);border-top:1px solid var(--border);padding:64px 
 </head>
 <body>
 
-<nav>
-  <div class="nav-inner">
-    <a href="/" class="logo-link"><span class="ldot"></span>Castford</a>
-    <div class="nav-mid">
-      <a href="/solutions">Solutions</a>
-      <a href="/integrations">Integrations</a>
-      <a href="/security">Trust</a>
-      <a href="/pricing">Pricing</a>
-      
-      <a href="/resources">Resources</a>
-    </div>
-    <div class="nav-end">
-      <a href="/login">Sign In</a>
-      <a href="/pricing" class="btn-sub">Subscribe</a>
-    </div>
+<nav class="cf-nav"><div class="cf-nav-in">
+  <a href="/" class="cf-nav-logo">
+    <svg class="cf-logo" viewBox="0 0 100 100" width="26" height="26">
+      <path d="M50 5 L90 27 L90 73 L50 95 L10 73 L10 27 Z" fill="none" stroke="var(--logo-main)" stroke-width="0.8" style="opacity:var(--logo-outer-o)"/>
+      <path d="M50 10 L85 30 L85 70 L50 90 L15 70 L15 30 Z" fill="none" stroke="var(--logo-main)" stroke-width="1.2" style="opacity:var(--logo-mid-o)"/>
+      <path d="M50 16 L80 33 L80 67 L50 84 L20 67 L20 33 Z" fill="none" stroke="var(--logo-main)" stroke-width="2.5"/>
+      <path d="M36 47 L50 39 L64 47 L64 57 L50 65 L36 57 Z" fill="var(--logo-inner)" style="opacity:var(--logo-inner-fill)"/>
+      <path d="M36 47 L50 39 L64 47 L64 57 L50 65 L36 57 Z" fill="none" stroke="var(--logo-inner)" stroke-width="1.5"/>
+      <circle cx="50" cy="52" r="3" fill="var(--logo-core)"/>
+    </svg>
+    <span class="cf-nav-name">Castford</span>
+  </a>
+  <div class="cf-nav-links"><a href="/solutions">Solutions</a><a href="/integrations">Integrations</a><a href="/security">Trust</a><a href="/pricing">Pricing</a><a href="/resources">Resources</a></div>
+  <div class="cf-nav-right">
+    <div class="cf-toggle" id="themeToggle" title="Toggle day/night"></div>
+    <a href="/login" class="cf-nav-sign">Sign in</a>
+    <button class="cf-nav-cta" onclick="window.location='/pricing'">Get started</button>
   </div>
-</nav>
+</div></nav>
 
 <!-- HERO -->
 <section class="hero">
@@ -277,9 +236,9 @@ footer{background:var(--bg-alt);border-top:1px solid var(--border);padding:64px 
 </div>
 
 <!-- INDUSTRY SEGMENTS -->
-<section class="section">
-  <div class="section-header">
-    <div class="overline">Industry Solutions</div>
+<section class="cf-sect">
+  <div class="cf-sh">
+    <div class="cf-over">Industry Solutions</div>
     <h2>Purpose-built for digital business models</h2>
     <p>Castford understands the financial nuances of subscription, usage-based, and marketplace businesses.</p>
   </div>
@@ -303,7 +262,7 @@ footer{background:var(--bg-alt);border-top:1px solid var(--border);padding:64px 
       <a href="/login" class="segment-link">Explore marketplace solution →</a>
     </div>
     <div class="segment-card fade-in">
-      <div class="segment-icon" style="background:#ECFDF5">⚡</div>
+      <div class="segment-icon" style="background:var(--prime-bg)">⚡</div>
       <h3>Usage-Based & API</h3>
       <p>Consumption-based revenue recognition, metered billing forecasting, infrastructure cost modeling, and per-unit economics. Built for companies charging per API call, seat, or compute hour.</p>
       <a href="/login" class="segment-link">Explore usage-based solution →</a>
@@ -325,9 +284,9 @@ footer{background:var(--bg-alt);border-top:1px solid var(--border);padding:64px 
 
 <!-- PAIN → SOLUTION -->
 <div class="section-alt">
-  <section class="section">
-    <div class="section-header">
-      <div class="overline">Why Legacy Tools Fail</div>
+  <section class="cf-sect">
+    <div class="cf-sh">
+      <div class="cf-over">Why Legacy Tools Fail</div>
       <h2>Built for manufacturing, not for you</h2>
       <p>Traditional FP&A tools were designed for brick-and-mortar businesses. Digital companies need a financial platform that speaks their language.</p>
     </div>
@@ -386,14 +345,14 @@ footer{background:var(--bg-alt);border-top:1px solid var(--border);padding:64px 
 </div>
 
 <!-- KEY FEATURES -->
-<section class="section">
-  <div class="section-header">
-    <div class="overline">Platform Capabilities</div>
+<section class="cf-sect">
+  <div class="cf-sh">
+    <div class="cf-over">Platform Capabilities</div>
     <h2>Everything digital finance teams need</h2>
   </div>
   <div class="features-grid">
     <div class="feature-card fade-in">
-      <div class="feature-icon" style="background:#ECFDF5">📊</div>
+      <div class="feature-icon" style="background:var(--prime-bg)">📊</div>
       <div><h4>AI Copilot</h4><p>Ask questions in plain English. "Why did churn spike in March?" gets an instant, sourced variance analysis with drill-down.</p></div>
     </div>
     <div class="feature-card fade-in">
@@ -430,9 +389,9 @@ footer{background:var(--bg-alt);border-top:1px solid var(--border);padding:64px 
 </section>
 
 <!-- COMPARISON TABLE -->
-<section class="section">
-  <div class="section-header">
-    <div class="overline">How We Compare</div>
+<section class="cf-sect">
+  <div class="cf-sh">
+    <div class="cf-over">How We Compare</div>
     <h2>Castford vs. legacy alternatives</h2>
   </div>
   <div class="comp-table-wrap">
@@ -462,9 +421,9 @@ footer{background:var(--bg-alt);border-top:1px solid var(--border);padding:64px 
 
 <!-- TESTIMONIALS -->
 <div class="section-alt">
-  <section class="section">
-    <div class="section-header">
-      <div class="overline">Customer Stories</div>
+  <section class="cf-sect">
+    <div class="cf-sh">
+      <div class="cf-over">Customer Stories</div>
       <h2>Trusted by digital-first CFOs</h2>
     </div>
     <div class="testimonials">
@@ -491,7 +450,7 @@ footer{background:var(--bg-alt);border-top:1px solid var(--border);padding:64px 
 </div>
 
 <!-- PRICING PROMO -->
-<section class="section">
+<section class="cf-sect">
   <div class="promo fade-in">
     <div>
       <h3>Start with what you use, scale as you grow</h3>
@@ -519,28 +478,27 @@ footer{background:var(--bg-alt);border-top:1px solid var(--border);padding:64px 
   </div>
 </section>
 
-<footer>
-  <div class="ft-inner">
-    <div class="ft-brand">
-      <a href="/" class="logo-link"><span class="ldot"></span>Castford</a>
+<footer class="cf-footer"><div class="w">
+  <div class="cf-ft-grid">
+    <div class="cf-ft-brand">
+      <div class="cf-nav-logo" style="margin-bottom:0">
+        <svg viewBox="0 0 100 100" width="22" height="22"><path d="M50 10 L85 30 L85 70 L50 90 L15 70 L15 30 Z" fill="none" stroke="var(--logo-main)" stroke-width="1.2" style="opacity:var(--logo-mid-o)"/><path d="M50 16 L80 33 L80 67 L50 84 L20 67 L20 33 Z" fill="none" stroke="var(--logo-main)" stroke-width="2.5"/><path d="M36 47 L50 39 L64 47 L64 57 L50 65 L36 57 Z" fill="none" stroke="var(--logo-inner)" stroke-width="1.5"/><circle cx="50" cy="52" r="3" fill="var(--logo-core)"/></svg>
+        <span style="font-family:var(--d);font-size:15px;font-weight:600">Castford</span>
+      </div>
       <p>AI-native financial planning & analysis for modern finance teams.</p>
     </div>
-    <div class="ft-col"><h5>Product</h5><a href="/">Platform</a><a href="/integrations">Integrations</a><a href="/pricing">Pricing</a><a href="/security">Security</a></div>
-    <div class="ft-col"><h5>Solutions</h5><a href="/solutions">SaaS</a><a href="/solutions">E-Commerce</a><a href="/xpa-planning">Cross-Dept Planning</a></div>
-    <div class="ft-col"><h5>Resources</h5><a href="/resources">Resource Library</a><a href="/whats-new">Changelog</a></div>
-    <div class="ft-col"><h5>Company</h5><a href="/about">About</a><a href="#">Careers</a><a href="#">Contact</a></div>
+    <div class="cf-ft-col"><h5>Product</h5><a href="/">Platform</a><a href="/integrations">Integrations</a><a href="/pricing">Pricing</a><a href="/security">Security</a></div>
+    <div class="cf-ft-col"><h5>Solutions</h5><a href="/solutions">SaaS</a><a href="/solutions">E-Commerce</a><a href="/xpa-planning">Cross-Dept</a></div>
+    <div class="cf-ft-col"><h5>Resources</h5><a href="/resources">Library</a><a href="/whats-new">Changelog</a></div>
+    <div class="cf-ft-col"><h5>Company</h5><a href="/about">About</a><a href="#">Careers</a><a href="/contact">Contact</a></div>
   </div>
-  <div class="ft-bottom">
-    <span>&copy; 2026 Castford, Inc.</span>
-    <div style="display:flex;gap:20px"><a href="/security">Privacy</a><a href="/terms">Terms</a><a href="/security">Security</a></div>
-  </div>
-</footer>
+  <div class="cf-ft-bottom"><span>&copy; 2026 Castford, Inc.</span><div style="display:flex;gap:16px"><a href="/privacy" style="color:var(--t3)">Privacy</a><a href="/terms" style="color:var(--t3)">Terms</a><a href="/security" style="color:var(--t3)">Security</a></div></div>
+</div></footer>
 
 <script>
-const obs = new IntersectionObserver((entries) => {
-  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
-}, { threshold: 0.08 });
-document.querySelectorAll('.fade-in').forEach(el => obs.observe(el));
+document.getElementById('themeToggle').addEventListener('click',()=>{const h=document.documentElement;h.dataset.theme=h.dataset.theme==='day'?'night':'day'});
+const _o=new IntersectionObserver(e=>{e.forEach(el=>{if(el.isIntersecting)el.target.classList.add('v')})},{threshold:0.08});
+document.querySelectorAll('.cf-fin').forEach(el=>_o.observe(el));
 </script>
 </body>
 </html>

@@ -1,20 +1,17 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="day">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Sign In — Castford</title>
-<link rel="icon" type="image/svg+xml" href="/site/logo.svg">
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=Instrument+Sans:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/site/theme.css">
 <style>
-:root{--green:#10B981;--green-light:#D1FAE5;--green-dark:#059669;--bg:#FFFFFF;--bg-alt:#F8FAFC;--text:#1E293B;--text-secondary:#475569;--muted:#64748B;--border:#E2E8F0;--font:'DM Sans',system-ui,sans-serif;--mono:'JetBrains Mono',monospace}
-*{margin:0;padding:0;box-sizing:border-box}
-html{height:100%}
-body{font-family:var(--font);background:var(--bg-alt);color:var(--text);min-height:100vh;-webkit-font-smoothing:antialiased;display:flex;flex-direction:column}
 .login-wrapper{flex:1;display:grid;grid-template-columns:1.1fr 0.9fr;min-height:0}
 
 /* LEFT */
-.left{position:relative;padding:48px;display:flex;flex-direction:column;justify-content:space-between;background:linear-gradient(135deg,#F0FDF4 0%,#ECFDF5 40%,#D1FAE5 100%);overflow:hidden}
+.left{position:relative;padding:48px;display:flex;flex-direction:column;justify-content:space-between;background:linear-gradient(135deg,#F0FDF4 0%,var(--prime-bg) 40%,var(--prime-bg) 100%);overflow:hidden}
 .left-bg{position:absolute;inset:0;z-index:0;overflow:hidden}
 .orb{position:absolute;border-radius:50%;filter:blur(60px);opacity:0.25;animation:float 12s ease-in-out infinite}
 .orb.o1{width:350px;height:350px;background:var(--green);top:10%;left:-8%}
@@ -46,7 +43,7 @@ body{font-family:var(--font);background:var(--bg-alt);color:var(--text);min-heig
 .form-container h2{font-size:26px;font-weight:700;margin-bottom:4px}
 .form-container .subtitle{color:var(--muted);font-size:14px;margin-bottom:28px}
 .sso-btn{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:11px;border-radius:10px;border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:14px;font-weight:500;font-family:var(--font);cursor:pointer;transition:all .15s;margin-bottom:8px}
-.sso-btn:hover{border-color:#CBD5E1;background:var(--bg-alt)}
+.sso-btn:hover{border-color:var(--bdr);background:var(--bg-alt)}
 .sso-btn:active{transform:scale(0.98)}
 .sso-btn:disabled{opacity:0.6;pointer-events:none}
 .sso-btn svg{flex-shrink:0}
@@ -56,7 +53,7 @@ body{font-family:var(--font);background:var(--bg-alt);color:var(--text);min-heig
 @keyframes spin{to{transform:rotate(360deg)}}
 .divider{display:flex;align-items:center;gap:14px;margin:20px 0}
 .divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--border)}
-.divider span{font-size:12px;color:#94A3B8;text-transform:uppercase}
+.divider span{font-size:12px;color:var(--t3);text-transform:uppercase}
 .field{margin-bottom:14px}
 .field label{display:block;font-size:13px;font-weight:500;margin-bottom:5px;color:var(--text-secondary)}
 .field-input-wrap{position:relative}
@@ -68,20 +65,20 @@ body{font-family:var(--font);background:var(--bg-alt);color:var(--text);min-heig
 .toggle-pw{position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--muted);font-size:12px;cursor:pointer;font-family:var(--font);padding:4px 8px}
 .toggle-pw:hover{color:var(--text)}
 .forgot-row{text-align:right;margin-bottom:20px}
-.forgot-row a{font-size:13px;color:var(--green-dark);font-weight:500;text-decoration:none;cursor:pointer}
+.forgot-row 
 .forgot-row a:hover{text-decoration:underline}
 .submit-btn{width:100%;padding:12px;border-radius:10px;background:var(--green);color:#fff;font-size:15px;font-weight:600;font-family:var(--font);border:none;cursor:pointer;transition:all .15s}
 .submit-btn:hover{background:var(--green-dark);box-shadow:0 2px 8px rgba(16,185,129,0.25)}
 .submit-btn:disabled{opacity:0.6;cursor:not-allowed}
 .signup-link{text-align:center;margin-top:20px;font-size:13px;color:var(--muted)}
-.signup-link a{color:var(--green-dark);font-weight:600;text-decoration:none;cursor:pointer}
+.signup-link 
 .signup-link a:hover{text-decoration:underline}
 .trust-badges{display:flex;justify-content:center;gap:16px;margin-top:32px;padding-top:20px;border-top:1px solid var(--border)}
-.trust-badge{font-size:11px;color:#94A3B8;font-weight:500}
+.trust-badge{font-size:11px;color:var(--t3);font-weight:500}
 .auth-msg{border-radius:10px;padding:10px 14px;font-size:13px;margin-bottom:16px;display:none;line-height:1.5}
 .auth-msg.show{display:block}
 .auth-msg.error{background:#FEF2F2;border:1px solid #FECACA;color:#991B1B}
-.auth-msg.success{background:#ECFDF5;border:1px solid #A7F3D0;color:#065F46}
+.auth-msg.success{background:var(--prime-bg);border:1px solid #A7F3D0;color:#065F46}
 .auth-msg.info{background:#EFF6FF;border:1px solid #BFDBFE;color:#1E40AF}
 .rate-limit-bar{height:3px;background:transparent;border-radius:2px;margin-top:8px;overflow:hidden;transition:all 0.3s}
 .rate-limit-bar.warning{background:rgba(245,158,11,0.2)}
@@ -118,24 +115,33 @@ body{font-family:var(--font);background:var(--bg-alt);color:var(--text);min-heig
 .sso-prov strong{color:var(--text)}
 
 /* FOOTER */
-footer{background:#F8FAFC;border-top:1px solid #E2E8F0;padding:56px 24px 24px}
-.ft-inner{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:1.5fr repeat(4,1fr);gap:40px;margin-bottom:40px}
-.ft-brand{display:flex;flex-direction:column;gap:10px}
-.ft-brand p{font-size:13px;color:#64748B;line-height:1.6;max-width:240px}
-.ft-col{display:flex;flex-direction:column;gap:8px}
-.ft-col h5{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;color:#0F172A;margin-bottom:4px}
-.ft-col a{font-size:13px;color:#64748B;text-decoration:none;transition:color .15s}
-.ft-col a:hover{color:#0F172A}
-.ft-bottom{max-width:1200px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;padding-top:20px;border-top:1px solid #E2E8F0;font-size:12px;color:#64748B}
-.ft-bottom a{color:#64748B;text-decoration:none;transition:color .15s}
-.ft-bottom a:hover{color:#0F172A}
-.logo-link{display:flex;align-items:center;gap:8px;font-weight:800;font-size:17px;color:#0F172A;text-decoration:none;letter-spacing:-0.01em}
-.logo-link .ldot{width:9px;height:9px;background:#10B981;border-radius:50%}
 
 @media(max-width:900px){.login-wrapper{grid-template-columns:1fr}.left{display:none}.right{border-left:none;min-height:100vh}}
-@media(max-width:768px){.ft-inner{grid-template-columns:1fr 1fr;gap:24px}.ft-bottom{flex-direction:column;gap:10px;text-align:center}}
+@media(max-width:768px){}
 </style>
 </head>
+<body>
+
+<nav class="cf-nav"><div class="cf-nav-in">
+  <a href="/" class="cf-nav-logo">
+    <svg class="cf-logo" viewBox="0 0 100 100" width="26" height="26">
+      <path d="M50 5 L90 27 L90 73 L50 95 L10 73 L10 27 Z" fill="none" stroke="var(--logo-main)" stroke-width="0.8" style="opacity:var(--logo-outer-o)"/>
+      <path d="M50 10 L85 30 L85 70 L50 90 L15 70 L15 30 Z" fill="none" stroke="var(--logo-main)" stroke-width="1.2" style="opacity:var(--logo-mid-o)"/>
+      <path d="M50 16 L80 33 L80 67 L50 84 L20 67 L20 33 Z" fill="none" stroke="var(--logo-main)" stroke-width="2.5"/>
+      <path d="M36 47 L50 39 L64 47 L64 57 L50 65 L36 57 Z" fill="var(--logo-inner)" style="opacity:var(--logo-inner-fill)"/>
+      <path d="M36 47 L50 39 L64 47 L64 57 L50 65 L36 57 Z" fill="none" stroke="var(--logo-inner)" stroke-width="1.5"/>
+      <circle cx="50" cy="52" r="3" fill="var(--logo-core)"/>
+    </svg>
+    <span class="cf-nav-name">Castford</span>
+  </a>
+  <div class="cf-nav-links"><a href="/solutions">Solutions</a><a href="/integrations">Integrations</a><a href="/security">Trust</a><a href="/pricing">Pricing</a><a href="/resources">Resources</a></div>
+  <div class="cf-nav-right">
+    <div class="cf-toggle" id="themeToggle" title="Toggle day/night"></div>
+    <a href="/login" class="cf-nav-sign">Sign in</a>
+    <button class="cf-nav-cta" onclick="window.location='/pricing'">Get started</button>
+  </div>
+</div></nav>
+
 <body>
 
 <div class="login-wrapper">
@@ -146,7 +152,7 @@ footer{background:#F8FAFC;border-top:1px solid #E2E8F0;padding:56px 24px 24px}
     <h1>Plan smarter.<br><span>Close faster.</span></h1>
     <div class="feature-list">
       <div class="feature-item">
-        <div class="feature-icon" style="background:#ECFDF5"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2" stroke-linecap="round"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4"/></svg></div>
+        <div class="feature-icon" style="background:var(--prime-bg)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--prime)" stroke-width="2" stroke-linecap="round"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4"/></svg></div>
         <div><h4>AI-Powered Close</h4><p>Automate monthly close from weeks to days with intelligent reconciliation</p></div>
       </div>
       <div class="feature-item">
@@ -190,7 +196,7 @@ footer{background:#F8FAFC;border-top:1px solid #E2E8F0;padding:56px 24px 24px}
     </button>
     <button class="sso-btn" id="btn-sso" type="button">
       <div class="spinner"></div>
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#64748B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--t2)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
       <span class="btn-label">Continue with SSO / SAML</span>
     </button>
 
@@ -253,356 +259,27 @@ footer{background:#F8FAFC;border-top:1px solid #E2E8F0;padding:56px 24px 24px}
   </div>
 </div>
 
-<footer>
-  <div class="ft-inner">
-    <div class="ft-brand">
-      <a href="/" class="logo-link"><img src="/site/logo.svg" alt="Castford" width="24" height="24" style="border-radius:5px;vertical-align:middle;margin-right:8px"><span class="ldot"></span>Castford</a>
+<footer class="cf-footer"><div class="w">
+  <div class="cf-ft-grid">
+    <div class="cf-ft-brand">
+      <div class="cf-nav-logo" style="margin-bottom:0">
+        <svg viewBox="0 0 100 100" width="22" height="22"><path d="M50 10 L85 30 L85 70 L50 90 L15 70 L15 30 Z" fill="none" stroke="var(--logo-main)" stroke-width="1.2" style="opacity:var(--logo-mid-o)"/><path d="M50 16 L80 33 L80 67 L50 84 L20 67 L20 33 Z" fill="none" stroke="var(--logo-main)" stroke-width="2.5"/><path d="M36 47 L50 39 L64 47 L64 57 L50 65 L36 57 Z" fill="none" stroke="var(--logo-inner)" stroke-width="1.5"/><circle cx="50" cy="52" r="3" fill="var(--logo-core)"/></svg>
+        <span style="font-family:var(--d);font-size:15px;font-weight:600">Castford</span>
+      </div>
       <p>AI-native financial planning & analysis for modern finance teams.</p>
     </div>
-    <div class="ft-col"><h5>Product</h5><a href="/">Platform</a><a href="/integrations">Integrations</a><a href="/pricing">Pricing</a><a href="/security">Security</a></div>
-    <div class="ft-col"><h5>Solutions</h5><a href="/solutions">SaaS</a><a href="/solutions">E-Commerce</a><a href="/xpa-planning">Cross-Dept Planning</a></div>
-    <div class="ft-col"><h5>Resources</h5><a href="/resources">Resource Library</a><a href="/whats-new">Changelog</a></div>
-    <div class="ft-col"><h5>Company</h5><a href="/about">About</a><a href="/about">Careers</a><a href="/contact">Contact</a></div>
+    <div class="cf-ft-col"><h5>Product</h5><a href="/">Platform</a><a href="/integrations">Integrations</a><a href="/pricing">Pricing</a><a href="/security">Security</a></div>
+    <div class="cf-ft-col"><h5>Solutions</h5><a href="/solutions">SaaS</a><a href="/solutions">E-Commerce</a><a href="/xpa-planning">Cross-Dept</a></div>
+    <div class="cf-ft-col"><h5>Resources</h5><a href="/resources">Library</a><a href="/whats-new">Changelog</a></div>
+    <div class="cf-ft-col"><h5>Company</h5><a href="/about">About</a><a href="#">Careers</a><a href="/contact">Contact</a></div>
   </div>
-  <div class="ft-bottom">
-    <span>&copy; 2026 Castford, Inc.</span>
-    <div style="display:flex;gap:20px"><a href="/privacy">Privacy</a><a href="/terms">Terms</a><a href="/security">Security</a></div>
-  </div>
-</footer>
+  <div class="cf-ft-bottom"><span>&copy; 2026 Castford, Inc.</span><div style="display:flex;gap:16px"><a href="/privacy" style="color:var(--t3)">Privacy</a><a href="/terms" style="color:var(--t3)">Terms</a><a href="/security" style="color:var(--t3)">Security</a></div></div>
+</div></footer>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script>
-(function(){
-  'use strict';
-
-  // ═══════════════════════════════════════════
-  // SUPABASE INIT — PKCE FLOW (secure)
-  // ═══════════════════════════════════════════
-  var SUPABASE_URL='https://crecesswagluelvkesul.supabase.co';
-  var SUPABASE_ANON='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNyZWNlc3N3YWdsdWVsdmtlc3VsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM4MTI5NzYsImV4cCI6MjA4OTM4ODk3Nn0.IGEEYDStt-eH9Mf2G_DzqCPfruDjN8m_ORtAcmtSAZg';
-  var sb;
-  try{
-    sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON,{
-      auth:{
-        flowType:'pkce',
-        autoRefreshToken:true,
-        persistSession:true,
-        detectSessionInUrl:true
-      }
-    });
-  }catch(e){console.error('Supabase init failed:',e);}
-
-  // ═══════════════════════════════════════════
-  // RATE LIMITER
-  // ═══════════════════════════════════════════
-  var attempts=0,maxAttempts=5,lockoutUntil=0;
-  var rlBar=document.getElementById('rateLimitBar');
-  var rlFill=document.getElementById('rateLimitFill');
-
-  function rlCheck(){
-    if(Date.now()<lockoutUntil){
-      var s=Math.ceil((lockoutUntil-Date.now())/1000);
-      showMsg('Too many attempts. Wait '+s+' seconds.','error');
-      return false;
-    }
-    if(attempts>=maxAttempts){
-      lockoutUntil=Date.now()+30000;
-      attempts=0;
-      rlUpdate();
-      showMsg('Account temporarily locked. Wait 30 seconds or use SSO.','error');
-      return false;
-    }
-    return true;
-  }
-  function rlUpdate(){
-    if(attempts===0&&Date.now()>=lockoutUntil){rlBar.className='rate-limit-bar';rlFill.style.width='0%';return;}
-    var p=(attempts/maxAttempts)*100;
-    if(Date.now()<lockoutUntil){rlBar.className='rate-limit-bar blocked';rlFill.style.width='100%';}
-    else if(attempts>=3){rlBar.className='rate-limit-bar warning';rlFill.style.width=p+'%';}
-    else{rlBar.className='rate-limit-bar';rlFill.style.width='0%';}
-  }
-
-  // ═══════════════════════════════════════════
-  // UI REFS
-  // ═══════════════════════════════════════════
-  var emailIn=document.getElementById('email');
-  var pwIn=document.getElementById('password');
-  var emailErr=document.getElementById('emailError');
-  var pwErr=document.getElementById('pwError');
-  var authMsg=document.getElementById('authMsg');
-  var submitBtn=document.getElementById('submitBtn');
-  var togglePw=document.getElementById('togglePw');
-  var formTitle=document.getElementById('formTitle');
-  var formSubtitle=document.getElementById('formSubtitle');
-  var isSignup=false;
-  var isRecovery=false;
-
-  function showMsg(m,t){
-    authMsg.textContent=m;
-    authMsg.className='auth-msg show '+(t||'error');
-    if(t!=='info')setTimeout(function(){authMsg.className='auth-msg';},10000);
-  }
-  function clearMsg(){authMsg.className='auth-msg';}
-
-  // ═══════════════════════════════════════════
-  // TESTIMONIALS
-  // ═══════════════════════════════════════════
-  var tSlides=document.querySelectorAll('.testimonial'),tIdx=0;
-  if(tSlides.length>1)setInterval(function(){tSlides[tIdx].classList.remove('active');tIdx=(tIdx+1)%tSlides.length;tSlides[tIdx].classList.add('active');},5000);
-
-  // ═══════════════════════════════════════════
-  // PASSWORD TOGGLE
-  // ═══════════════════════════════════════════
-  togglePw.addEventListener('click',function(e){
-    e.preventDefault();e.stopPropagation();
-    var isPw=pwIn.type==='password';
-    pwIn.type=isPw?'text':'password';
-    togglePw.textContent=isPw?'Hide':'Show';
-    pwIn.focus();
-  });
-
-  // ═══════════════════════════════════════════
-  // SESSION CHECK + PKCE CALLBACK
-  // ═══════════════════════════════════════════
-  if(sb){
-    // Handle PKCE code exchange from URL
-    var params=new URLSearchParams(window.location.search);
-    var code=params.get('code');
-    if(code){
-      showMsg('Completing sign in...','info');
-      sb.auth.exchangeCodeForSession(code).then(function(r){
-        if(r.error){showMsg('Auth error: '+r.error.message,'error');window.history.replaceState({},'',window.location.pathname);}
-        else{window.location.href='/dashboard';}
-      }).catch(function(){showMsg('Connection error. Please try again.','error');window.history.replaceState({},'',window.location.pathname);});
-    }
-
-    // Handle hash fragments (for password recovery tokens)
-    if(window.location.hash){
-      var hashParams=new URLSearchParams(window.location.hash.substring(1));
-      var accessToken=hashParams.get('access_token');
-      var type=hashParams.get('type');
-      if(accessToken&&type==='recovery'){
-        sb.auth.setSession({access_token:accessToken,refresh_token:hashParams.get('refresh_token')||''}).then(function(){
-          isRecovery=true;
-          formTitle.textContent='Set new password';
-          formSubtitle.textContent='Enter your new password below';
-          submitBtn.textContent='Update Password';
-          document.querySelector('.forgot-row').style.display='none';
-          showMsg('Enter your new password below.','info');
-          window.history.replaceState({},'',window.location.pathname);
-        });
-      }
-    }
-
-    // Check existing session
-    sb.auth.getSession().then(function(r){
-      if(r.data&&r.data.session&&!isRecovery)window.location.href='/dashboard';
-    });
-
-    // Auth state listener
-    sb.auth.onAuthStateChange(function(ev,session){
-      if(ev==='SIGNED_IN'&&session&&!isRecovery)window.location.href='/dashboard';
-      if(ev==='PASSWORD_RECOVERY'){
-        isRecovery=true;
-        formTitle.textContent='Set new password';
-        formSubtitle.textContent='Enter your new password below';
-        submitBtn.textContent='Update Password';
-        document.querySelector('.forgot-row').style.display='none';
-        showMsg('Enter your new password below.','info');
-      }
-    });
-  }
-
-  // ═══════════════════════════════════════════
-  // OAUTH (Google, Microsoft, Apple)
-  // ═══════════════════════════════════════════
-  function oauthClick(provider,btnId){
-    return function(e){
-      e.preventDefault();
-      if(!sb){showMsg('Auth service unavailable.','error');return;}
-      var btn=document.getElementById(btnId);
-      btn.classList.add('loading');btn.disabled=true;
-
-      var opts={redirectTo:window.location.origin+'/login'};
-      if(provider==='google')opts.queryParams={access_type:'offline',prompt:'consent'};
-
-      sb.auth.signInWithOAuth({provider:provider,options:opts}).then(function(r){
-        if(r.error){showMsg('Auth error: '+r.error.message,'error');btn.classList.remove('loading');btn.disabled=false;}
-      }).catch(function(){showMsg('Connection error. Try again.','error');btn.classList.remove('loading');btn.disabled=false;});
-    };
-  }
-
-  document.getElementById('btn-google').addEventListener('click',oauthClick('google','btn-google'));
-  document.getElementById('btn-microsoft').addEventListener('click',oauthClick('azure','btn-microsoft'));
-  document.getElementById('btn-apple').addEventListener('click',oauthClick('apple','btn-apple'));
-
-  // ═══════════════════════════════════════════
-  // SSO MODAL (replaces browser prompt)
-  // ═══════════════════════════════════════════
-  document.getElementById('btn-sso').addEventListener('click',function(e){
-    e.preventDefault();
-    document.getElementById('ssoModal').classList.add('open');
-    setTimeout(function(){document.getElementById('ssoInput').focus();},100);
-  });
-
-  window.closeSsoModal=function(){
-    document.getElementById('ssoModal').classList.remove('open');
-    document.getElementById('ssoInput').value='';
-    document.getElementById('ssoErr').className='mmsg err';
-  };
-
-  window.submitSso=function(){
-    var domain=document.getElementById('ssoInput').value.trim();
-    var errEl=document.getElementById('ssoErr');
-    var btn=document.getElementById('ssoGoBtn');
-
-    if(!domain){errEl.textContent='Please enter a domain (e.g. castford.com)';errEl.className='mmsg err show';return;}
-    domain=domain.replace(/^https?:\/\//,'').replace(/\/.*$/,'').replace(/^www\./,'');
-    if(!domain.match(/^[a-zA-Z0-9][a-zA-Z0-9.-]*\.[a-zA-Z]{2,}$/)){errEl.textContent='Invalid domain. Example: castford.com';errEl.className='mmsg err show';return;}
-
-    btn.disabled=true;btn.textContent='Connecting...';
-
-    sb.auth.signInWithSSO({domain:domain}).then(function(r){
-      if(r.error){errEl.textContent='SSO not configured for this domain. Contact your admin.';errEl.className='mmsg err show';btn.disabled=false;btn.textContent='Continue with SSO';}
-      else if(r.data&&r.data.url){window.location.href=r.data.url;}
-    }).catch(function(){errEl.textContent='Connection error. Try again.';errEl.className='mmsg err show';btn.disabled=false;btn.textContent='Continue with SSO';});
-  };
-
-  document.getElementById('ssoInput').addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();submitSso();}});
-  document.getElementById('ssoModal').addEventListener('click',function(e){if(e.target===this)closeSsoModal();});
-
-  // ═══════════════════════════════════════════
-  // FORGOT PASSWORD MODAL (real Supabase reset)
-  // ═══════════════════════════════════════════
-  document.getElementById('forgotLink').addEventListener('click',function(e){
-    e.preventDefault();
-    document.getElementById('forgotModal').classList.add('open');
-    var fEmail=document.getElementById('forgotEmail');
-    if(emailIn.value.trim())fEmail.value=emailIn.value.trim();
-    setTimeout(function(){fEmail.focus();},100);
-  });
-
-  window.closeForgotModal=function(){
-    document.getElementById('forgotModal').classList.remove('open');
-    document.getElementById('forgotEmail').value='';
-    document.getElementById('forgotMsg').className='mmsg';
-  };
-
-  window.submitForgot=function(){
-    var email=document.getElementById('forgotEmail').value.trim();
-    var msgEl=document.getElementById('forgotMsg');
-    var btn=document.getElementById('forgotGoBtn');
-
-    if(!email||!email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)){
-      msgEl.textContent='Please enter a valid email address.';
-      msgEl.className='mmsg err show';
-      return;
-    }
-
-    btn.disabled=true;btn.textContent='Sending...';
-
-    sb.auth.resetPasswordForEmail(email,{
-      redirectTo:window.location.origin+'/login'
-    }).then(function(r){
-      if(r.error){msgEl.textContent='Error: '+r.error.message;msgEl.className='mmsg err show';}
-      else{msgEl.textContent='Reset link sent! Check your inbox (and spam).';msgEl.className='mmsg ok show';
-        setTimeout(function(){closeForgotModal();showMsg('Password reset email sent to '+email,'success');},3000);
-      }
-      btn.disabled=false;btn.textContent='Send Reset Link';
-    }).catch(function(){
-      msgEl.textContent='Connection error. Try again.';msgEl.className='mmsg err show';
-      btn.disabled=false;btn.textContent='Send Reset Link';
-    });
-  };
-
-  document.getElementById('forgotEmail').addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();submitForgot();}});
-  document.getElementById('forgotModal').addEventListener('click',function(e){if(e.target===this)closeForgotModal();});
-
-  // ═══════════════════════════════════════════
-  // LOGIN / SIGNUP FORM
-  // ═══════════════════════════════════════════
-  document.getElementById('loginForm').addEventListener('submit',function(e){
-    e.preventDefault();
-    clearMsg();
-    if(!rlCheck())return;
-
-    var valid=true;
-    var em=emailIn.value.trim(),pw=pwIn.value;
-
-    if(!em.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)){emailIn.classList.add('error');emailErr.classList.add('show');valid=false;}
-    else{emailIn.classList.remove('error');emailErr.classList.remove('show');}
-    if(pw.length<8){pwIn.classList.add('error');pwErr.classList.add('show');valid=false;}
-    else{pwIn.classList.remove('error');pwErr.classList.remove('show');}
-    if(!valid)return;
-    if(!sb){showMsg('Auth service unavailable.','error');return;}
-
-    // Password recovery mode
-    if(isRecovery){
-      submitBtn.textContent='Updating...';submitBtn.disabled=true;
-      sb.auth.updateUser({password:pw}).then(function(r){
-        if(r.error){showMsg('Error: '+r.error.message,'error');submitBtn.textContent='Update Password';submitBtn.disabled=false;}
-        else{showMsg('Password updated! Redirecting...','success');setTimeout(function(){window.location.href='/dashboard';},1500);}
-      });
-      return;
-    }
-
-    submitBtn.textContent=isSignup?'Creating account...':'Signing in...';
-    submitBtn.disabled=true;
-
-    if(isSignup){
-      sb.auth.signUp({email:em,password:pw,options:{emailRedirectTo:window.location.origin+'/login'}}).then(function(r){
-        submitBtn.disabled=false;submitBtn.textContent='Create Account';
-        if(r.error)showMsg(r.error.message,'error');
-        else showMsg('Account created! Check your email for a confirmation link.','success');
-      }).catch(function(){submitBtn.textContent='Create Account';submitBtn.disabled=false;showMsg('Connection error.','error');});
-    }else{
-      sb.auth.signInWithPassword({email:em,password:pw}).then(function(r){
-        if(r.error){
-          attempts++;rlUpdate();submitBtn.textContent='Sign In';submitBtn.disabled=false;
-          if(r.error.message.indexOf('Invalid login')!==-1)showMsg('Invalid email or password.','error');
-          else if(r.error.message.indexOf('Email not confirmed')!==-1)showMsg('Confirm your email first. Check inbox.','error');
-          else showMsg(r.error.message,'error');
-        }else{
-          attempts=0;rlUpdate();showMsg('Signed in! Redirecting...','success');
-          setTimeout(function(){window.location.href='/dashboard';},500);
-        }
-      }).catch(function(){submitBtn.textContent='Sign In';submitBtn.disabled=false;showMsg('Connection error.','error');});
-    }
-  });
-
-  // ═══════════════════════════════════════════
-  // SIGNUP TOGGLE
-  // ═══════════════════════════════════════════
-  function attachSignupToggle(){
-    var link=document.getElementById('signupLink');
-    if(!link)return;
-    link.addEventListener('click',function(e){
-      e.preventDefault();
-      isSignup=!isSignup;
-      if(isSignup){
-        formTitle.textContent='Create your account';
-        formSubtitle.textContent='Get started with Castford';
-        submitBtn.textContent='Create Account';
-        link.parentElement.innerHTML='Already have an account? <a id="signupLink">Sign In</a>';
-      }else{
-        formTitle.textContent='Welcome back';
-        formSubtitle.textContent='Sign in to your Castford account';
-        submitBtn.textContent='Sign In';
-        link.parentElement.innerHTML='Don\'t have an account? <a id="signupLink">Get Started</a>';
-      }
-      attachSignupToggle();
-    });
-  }
-  attachSignupToggle();
-
-  // ═══════════════════════════════════════════
-  // CLEAR ERRORS + KEYBOARD SHORTCUTS
-  // ═══════════════════════════════════════════
-  emailIn.addEventListener('input',function(){emailIn.classList.remove('error');emailErr.classList.remove('show');});
-  pwIn.addEventListener('input',function(){pwIn.classList.remove('error');pwErr.classList.remove('show');});
-  document.addEventListener('keydown',function(e){if(e.key==='Escape'){closeSsoModal();closeForgotModal();}});
-
-})();
+document.getElementById('themeToggle').addEventListener('click',()=>{const h=document.documentElement;h.dataset.theme=h.dataset.theme==='day'?'night':'day'});
+const _o=new IntersectionObserver(e=>{e.forEach(el=>{if(el.isIntersecting)el.target.classList.add('v')})},{threshold:0.08});
+document.querySelectorAll('.cf-fin').forEach(el=>_o.observe(el));
 </script>
 </body>
 </html>

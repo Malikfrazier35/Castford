@@ -1,24 +1,19 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="day">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Castford - About Us</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=Instrument+Sans:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/site/theme.css">
 <style>
-:root{
-  --bg:#0a0a0a;--bg-alt:#111;--text:#fff;--text-muted:rgba(255,255,255,0.6);
-  --border:rgba(255,255,255,0.08);--green:#22c55e;--green-dark:#16a34a;
-  --radius:12px;--shadow:0 2px 8px rgba(0,0,0,0.2)
-}
-*{margin:0;padding:0;box-sizing:border-box}
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text);line-height:1.6}
-nav{display:flex;align-items:center;justify-content:space-between;padding:16px 40px;border-bottom:1px solid var(--border)}
 .logo{font-size:18px;font-weight:700;letter-spacing:-0.5px;color:var(--text);text-decoration:none}
 .logo span{color:var(--green)}
 .nav-links{display:flex;gap:24px;align-items:center}
-.nav-links a{color:var(--text-muted);text-decoration:none;font-size:14px;transition:color 0.2s}
+.nav-links 
 .nav-links a:hover{color:var(--text)}
-.nav-cta{background:var(--green);color:#000;padding:8px 16px;border-radius:8px;font-weight:600;font-size:14px;text-decoration:none}
+.nav-ct
 .nav-cta:hover{background:var(--green-dark);color:#000}
 .hero{text-align:center;padding:80px 40px 60px;background:linear-gradient(180deg,rgba(34,197,94,0.06) 0%,transparent 100%)}
 .hero h1{font-size:48px;font-weight:700;letter-spacing:-1.5px;line-height:1.1;margin-bottom:16px}
@@ -44,26 +39,35 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:16px 4
 .cta-section p{color:var(--text-muted);font-size:16px;margin-bottom:24px}
 .cta-btn{display:inline-block;background:var(--green);color:#000;padding:12px 28px;border-radius:8px;font-weight:600;font-size:16px;text-decoration:none}
 .cta-btn:hover{background:var(--green-dark);color:#000}
-footer{padding:24px 40px;border-top:1px solid var(--border);text-align:center;color:rgba(255,255,255,0.3);font-size:13px}
 </style>
 </head>
 <body>
-<nav>
-  <a href="/" class="logo">Finance<span>OS</span></a>
-  <div class="nav-links">
-    <a href="/solutions">Solutions</a>
-    <a href="/pricing">Pricing</a>
-    <a href="/integrations">Integrations</a>
-    <a href="/security">Security</a>
-    <a href="/resources">Resources</a>
-    <a href="/contact" class="nav-cta">Get a Demo</a>
+
+<nav class="cf-nav"><div class="cf-nav-in">
+  <a href="/" class="cf-nav-logo">
+    <svg class="cf-logo" viewBox="0 0 100 100" width="26" height="26">
+      <path d="M50 5 L90 27 L90 73 L50 95 L10 73 L10 27 Z" fill="none" stroke="var(--logo-main)" stroke-width="0.8" style="opacity:var(--logo-outer-o)"/>
+      <path d="M50 10 L85 30 L85 70 L50 90 L15 70 L15 30 Z" fill="none" stroke="var(--logo-main)" stroke-width="1.2" style="opacity:var(--logo-mid-o)"/>
+      <path d="M50 16 L80 33 L80 67 L50 84 L20 67 L20 33 Z" fill="none" stroke="var(--logo-main)" stroke-width="2.5"/>
+      <path d="M36 47 L50 39 L64 47 L64 57 L50 65 L36 57 Z" fill="var(--logo-inner)" style="opacity:var(--logo-inner-fill)"/>
+      <path d="M36 47 L50 39 L64 47 L64 57 L50 65 L36 57 Z" fill="none" stroke="var(--logo-inner)" stroke-width="1.5"/>
+      <circle cx="50" cy="52" r="3" fill="var(--logo-core)"/>
+    </svg>
+    <span class="cf-nav-name">Castford</span>
+  </a>
+  <div class="cf-nav-links"><a href="/solutions">Solutions</a><a href="/integrations">Integrations</a><a href="/security">Trust</a><a href="/pricing">Pricing</a><a href="/resources">Resources</a></div>
+  <div class="cf-nav-right">
+    <div class="cf-toggle" id="themeToggle" title="Toggle day/night"></div>
+    <a href="/login" class="cf-nav-sign">Sign in</a>
+    <button class="cf-nav-cta" onclick="window.location='/pricing'">Get started</button>
   </div>
-</nav>
+</div></nav>
+
 <div class="hero">
   <h1>Modern finance teams deserve modern tools</h1>
   <p>Castford is an AI-native FP&A platform that helps finance teams close faster, forecast with confidence, and stay audit-ready -- without the six-figure price tag of legacy EPM software.</p>
 </div>
-<div class="section">
+<div class="cf-sect">
   <h2>Problems we solve</h2>
   <p class="section-sub">Finance teams face the same bottlenecks every month. Castford was built to eliminate them.</p>
   <div class="problems">
@@ -93,7 +97,7 @@ footer{padding:24px 40px;border-top:1px solid var(--border);text-align:center;co
     </div>
   </div>
 </div>
-<div class="section">
+<div class="cf-sect">
   <h2>How it works</h2>
   <p class="section-sub">From onboarding to daily use, Castford is designed to deliver value quickly.</p>
   <div class="how-grid">
@@ -119,7 +123,7 @@ footer{padding:24px 40px;border-top:1px solid var(--border);text-align:center;co
     </div>
   </div>
 </div>
-<div class="section">
+<div class="cf-sect">
   <h2>What we stand for</h2>
   <div class="values">
     <div class="value-card">
@@ -145,6 +149,28 @@ footer{padding:24px 40px;border-top:1px solid var(--border);text-align:center;co
   <p>See how Castford can help your team close faster and plan smarter.</p>
   <a href="/contact" class="cta-btn">Get a Demo</a>
 </div>
-<footer>2024 Castford. All rights reserved.</footer>
+
+<footer class="cf-footer"><div class="w">
+  <div class="cf-ft-grid">
+    <div class="cf-ft-brand">
+      <div class="cf-nav-logo" style="margin-bottom:0">
+        <svg viewBox="0 0 100 100" width="22" height="22"><path d="M50 10 L85 30 L85 70 L50 90 L15 70 L15 30 Z" fill="none" stroke="var(--logo-main)" stroke-width="1.2" style="opacity:var(--logo-mid-o)"/><path d="M50 16 L80 33 L80 67 L50 84 L20 67 L20 33 Z" fill="none" stroke="var(--logo-main)" stroke-width="2.5"/><path d="M36 47 L50 39 L64 47 L64 57 L50 65 L36 57 Z" fill="none" stroke="var(--logo-inner)" stroke-width="1.5"/><circle cx="50" cy="52" r="3" fill="var(--logo-core)"/></svg>
+        <span style="font-family:var(--d);font-size:15px;font-weight:600">Castford</span>
+      </div>
+      <p>AI-native financial planning & analysis for modern finance teams.</p>
+    </div>
+    <div class="cf-ft-col"><h5>Product</h5><a href="/">Platform</a><a href="/integrations">Integrations</a><a href="/pricing">Pricing</a><a href="/security">Security</a></div>
+    <div class="cf-ft-col"><h5>Solutions</h5><a href="/solutions">SaaS</a><a href="/solutions">E-Commerce</a><a href="/xpa-planning">Cross-Dept</a></div>
+    <div class="cf-ft-col"><h5>Resources</h5><a href="/resources">Library</a><a href="/whats-new">Changelog</a></div>
+    <div class="cf-ft-col"><h5>Company</h5><a href="/about">About</a><a href="#">Careers</a><a href="/contact">Contact</a></div>
+  </div>
+  <div class="cf-ft-bottom"><span>&copy; 2026 Castford, Inc.</span><div style="display:flex;gap:16px"><a href="/privacy" style="color:var(--t3)">Privacy</a><a href="/terms" style="color:var(--t3)">Terms</a><a href="/security" style="color:var(--t3)">Security</a></div></div>
+</div></footer>
+
+<script>
+document.getElementById('themeToggle').addEventListener('click',()=>{const h=document.documentElement;h.dataset.theme=h.dataset.theme==='day'?'night':'day'});
+const _o=new IntersectionObserver(e=>{e.forEach(el=>{if(el.isIntersecting)el.target.classList.add('v')})},{threshold:0.08});
+document.querySelectorAll('.cf-fin').forEach(el=>_o.observe(el));
+</script>
 </body>
 </html>

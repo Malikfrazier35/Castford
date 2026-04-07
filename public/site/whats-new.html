@@ -1,54 +1,20 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="day">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>What's New — Castford</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=Instrument+Sans:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/site/theme.css">
 <style>
-/* ===== SHARED NAV ===== */
-nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,0.88);backdrop-filter:blur(16px) saturate(180%);-webkit-backdrop-filter:blur(16px) saturate(180%);border-bottom:1px solid #F1F5F9}
-.nav-inner{max-width:1200px;margin:0 auto;padding:0 24px;height:60px;display:flex;align-items:center;justify-content:space-between}
-.logo-link{display:flex;align-items:center;gap:8px;font-weight:800;font-size:17px;color:#0F172A;text-decoration:none;letter-spacing:-0.01em}
-.logo-link .ldot{width:9px;height:9px;background:#10B981;border-radius:50%}
-.nav-mid{display:flex;gap:4px;font-size:14px;font-weight:500;align-items:center}
-.nav-mid a{color:#64748B;padding:8px 12px;border-radius:8px;text-decoration:none;transition:color .15s}
-.nav-mid a:hover{color:#0F172A;background:rgba(0,0,0,0.03)}
-.nav-end{display:flex;align-items:center;gap:10px}
-.nav-end a{font-size:14px;font-weight:500;color:#64748B;padding:8px 12px;text-decoration:none;transition:color .15s}
-.nav-end a:hover{color:#0F172A}
-.btn-sub{display:inline-flex;align-items:center;padding:8px 18px;border-radius:8px;font-weight:600;font-size:13px;background:#10B981;color:#fff!important;text-decoration:none;border:none;cursor:pointer;transition:all .15s}
-.btn-sub:hover{background:#059669;box-shadow:0 2px 12px rgba(16,185,129,0.25)}
-@media(max-width:900px){.nav-mid{display:none}}
-
-/* ===== SHARED FOOTER ===== */
-footer{background:#F8FAFC;border-top:1px solid #E2E8F0;padding:56px 24px 24px}
-.ft-inner{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:1.5fr repeat(4,1fr);gap:40px;margin-bottom:40px}
-.ft-brand p{font-size:13px;color:#64748B;line-height:1.6;max-width:240px;margin-top:10px}
-.ft-col{display:flex;flex-direction:column;gap:8px}
-.ft-col h5{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;color:#0F172A;margin-bottom:4px}
-.ft-col a{font-size:13px;color:#64748B;text-decoration:none;transition:color .15s}
-.ft-col a:hover{color:#0F172A}
-.ft-bottom{max-width:1200px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;padding-top:20px;border-top:1px solid #E2E8F0;font-size:12px;color:#64748B}
-.ft-bottom a{color:#64748B;text-decoration:none;transition:color .15s}
-.ft-bottom a:hover{color:#0F172A}
-@media(max-width:768px){.ft-inner{grid-template-columns:1fr 1fr;gap:24px}}
-
-:root{--green:#10B981;--green-light:#D1FAE5;--green-dark:#059669;--cyan:#0891B2;--purple:#7C3AED;--blue:#2563EB;--amber:#D97706;--bg:#FFFFFF;--bg-alt:#F8FAFC;--text:#1E293B;--text-secondary:#475569;--muted:#64748B;--border:#E2E8F0;--shadow:0 1px 3px rgba(0,0,0,0.08);--font:'DM Sans',system-ui,sans-serif;--mono:'JetBrains Mono',monospace;--radius:12px}
-*{margin:0;padding:0;box-sizing:border-box}
-html{scroll-behavior:smooth}
-body{font-family:var(--font);background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased;line-height:1.6}
-a{color:inherit;text-decoration:none}
-
-nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,0.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--border)}
-.nav-inner{max-width:1200px;margin:0 auto;padding:0 24px;height:64px;display:flex;align-items:center;justify-content:space-between}
 .logo{display:flex;align-items:center;gap:8px;font-weight:700;font-size:18px}
 .logo-dot{width:10px;height:10px;background:var(--green);border-radius:50%}
 .nav-links{display:flex;gap:28px;font-size:14px;font-weight:500}
-.nav-links a{color:var(--muted);transition:color .2s}
+.nav-links 
 .nav-links a:hover{color:var(--text)}
 .nav-right{display:flex;align-items:center;gap:12px;font-size:14px}
-.nav-right a{color:var(--muted);font-weight:500}
+.nav-right 
 .btn-primary{background:var(--green);color:#fff;padding:9px 20px;border-radius:8px;font-weight:600;font-size:14px;border:none;cursor:pointer;font-family:var(--font);transition:all .15s}
 .btn-primary:hover{background:var(--green-dark)}
 
@@ -69,7 +35,7 @@ nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,0.92);backdrop
 
 .t-entry{background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);padding:20px;margin-bottom:12px;opacity:0;transform:translateY(12px);transition:all .4s}
 .t-entry.visible{opacity:1;transform:translateY(0)}
-.t-entry:hover{box-shadow:var(--shadow);border-color:#CBD5E1}
+.t-entry:hover{box-shadow:var(--shadow);border-color:var(--bdr)}
 .t-entry-header{display:flex;align-items:center;gap:8px;margin-bottom:8px;flex-wrap:wrap}
 .t-tag{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;padding:3px 8px;border-radius:100px}
 .t-tag.feature{background:var(--green-light);color:var(--green-dark)}
@@ -88,38 +54,33 @@ nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,0.92);backdrop
 .sub-form input:focus{border-color:var(--green);box-shadow:0 0 0 3px rgba(16,185,129,0.1)}
 .sub-form button{padding:11px 20px;border-radius:10px;background:var(--green);color:#fff;font-weight:600;border:none;cursor:pointer;font-size:14px;white-space:nowrap;font-family:var(--font);transition:all .15s}
 .sub-form button:hover{background:var(--green-dark)}
-.sub-note{font-size:12px;color:#94A3B8;margin-top:10px}
+.sub-note{font-size:12px;color:var(--t3);margin-top:10px}
 
-footer{background:var(--bg-alt);border-top:1px solid var(--border);padding:64px 24px 32px}
-.footer-inner{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr);gap:40px;margin-bottom:48px}
-.footer-col h5{font-size:12px;font-weight:600;margin-bottom:14px;text-transform:uppercase;letter-spacing:0.06em}
-.footer-col a{display:block;font-size:13px;color:var(--muted);margin-bottom:10px;transition:color .15s}
-.footer-col a:hover{color:var(--green)}
-.footer-bottom{max-width:1200px;margin:0 auto;text-align:center;font-size:12px;color:#94A3B8;padding-top:24px;border-top:1px solid var(--border)}
-
-@media(max-width:768px){.nav-links{display:none}.footer-inner{grid-template-columns:repeat(2,1fr)}.sub-form{flex-direction:column}}
-@media(max-width:480px){.footer-inner{grid-template-columns:1fr}}
+@media(max-width:768px){.nav-links{display:none}.sub-form{flex-direction:column}}
+@media(max-width:480px){}
 </style>
 </head>
 <body>
 
-<nav>
-  <div class="nav-inner">
-    <a href="/" class="logo-link"><span class="ldot"></span>Castford</a>
-    <div class="nav-mid">
-      <a href="/solutions">Solutions</a>
-      <a href="/integrations">Integrations</a>
-      <a href="/security">Trust</a>
-      <a href="/pricing">Pricing</a>
-      
-      <a href="/resources">Resources</a>
-    </div>
-    <div class="nav-end">
-      <a href="/login">Sign In</a>
-      <a href="/pricing" class="btn-sub">Subscribe</a>
-    </div>
+<nav class="cf-nav"><div class="cf-nav-in">
+  <a href="/" class="cf-nav-logo">
+    <svg class="cf-logo" viewBox="0 0 100 100" width="26" height="26">
+      <path d="M50 5 L90 27 L90 73 L50 95 L10 73 L10 27 Z" fill="none" stroke="var(--logo-main)" stroke-width="0.8" style="opacity:var(--logo-outer-o)"/>
+      <path d="M50 10 L85 30 L85 70 L50 90 L15 70 L15 30 Z" fill="none" stroke="var(--logo-main)" stroke-width="1.2" style="opacity:var(--logo-mid-o)"/>
+      <path d="M50 16 L80 33 L80 67 L50 84 L20 67 L20 33 Z" fill="none" stroke="var(--logo-main)" stroke-width="2.5"/>
+      <path d="M36 47 L50 39 L64 47 L64 57 L50 65 L36 57 Z" fill="var(--logo-inner)" style="opacity:var(--logo-inner-fill)"/>
+      <path d="M36 47 L50 39 L64 47 L64 57 L50 65 L36 57 Z" fill="none" stroke="var(--logo-inner)" stroke-width="1.5"/>
+      <circle cx="50" cy="52" r="3" fill="var(--logo-core)"/>
+    </svg>
+    <span class="cf-nav-name">Castford</span>
+  </a>
+  <div class="cf-nav-links"><a href="/solutions">Solutions</a><a href="/integrations">Integrations</a><a href="/security">Trust</a><a href="/pricing">Pricing</a><a href="/resources">Resources</a></div>
+  <div class="cf-nav-right">
+    <div class="cf-toggle" id="themeToggle" title="Toggle day/night"></div>
+    <a href="/login" class="cf-nav-sign">Sign in</a>
+    <button class="cf-nav-cta" onclick="window.location='/pricing'">Get started</button>
   </div>
-</nav>
+</div></nav>
 
 <section class="hero">
   <span class="badge">Changelog</span>
@@ -170,26 +131,27 @@ footer{background:var(--bg-alt);border-top:1px solid var(--border);padding:64px 
   <p class="sub-note">Or follow @Castford for real-time updates</p>
 </section>
 
-<footer>
-  <div class="ft-inner">
-    <div class="ft-brand">
-      <a href="/" class="logo-link"><span class="ldot"></span>Castford</a>
+<footer class="cf-footer"><div class="w">
+  <div class="cf-ft-grid">
+    <div class="cf-ft-brand">
+      <div class="cf-nav-logo" style="margin-bottom:0">
+        <svg viewBox="0 0 100 100" width="22" height="22"><path d="M50 10 L85 30 L85 70 L50 90 L15 70 L15 30 Z" fill="none" stroke="var(--logo-main)" stroke-width="1.2" style="opacity:var(--logo-mid-o)"/><path d="M50 16 L80 33 L80 67 L50 84 L20 67 L20 33 Z" fill="none" stroke="var(--logo-main)" stroke-width="2.5"/><path d="M36 47 L50 39 L64 47 L64 57 L50 65 L36 57 Z" fill="none" stroke="var(--logo-inner)" stroke-width="1.5"/><circle cx="50" cy="52" r="3" fill="var(--logo-core)"/></svg>
+        <span style="font-family:var(--d);font-size:15px;font-weight:600">Castford</span>
+      </div>
       <p>AI-native financial planning & analysis for modern finance teams.</p>
     </div>
-    <div class="ft-col"><h5>Product</h5><a href="/">Platform</a><a href="/integrations">Integrations</a><a href="/pricing">Pricing</a><a href="/security">Security</a></div>
-    <div class="ft-col"><h5>Solutions</h5><a href="/solutions">SaaS</a><a href="/solutions">E-Commerce</a><a href="/xpa-planning">Cross-Dept Planning</a></div>
-    <div class="ft-col"><h5>Resources</h5><a href="/resources">Resource Library</a><a href="/whats-new">Changelog</a></div>
-    <div class="ft-col"><h5>Company</h5><a href="#">About</a><a href="#">Careers</a><a href="#">Contact</a></div>
+    <div class="cf-ft-col"><h5>Product</h5><a href="/">Platform</a><a href="/integrations">Integrations</a><a href="/pricing">Pricing</a><a href="/security">Security</a></div>
+    <div class="cf-ft-col"><h5>Solutions</h5><a href="/solutions">SaaS</a><a href="/solutions">E-Commerce</a><a href="/xpa-planning">Cross-Dept</a></div>
+    <div class="cf-ft-col"><h5>Resources</h5><a href="/resources">Library</a><a href="/whats-new">Changelog</a></div>
+    <div class="cf-ft-col"><h5>Company</h5><a href="/about">About</a><a href="#">Careers</a><a href="/contact">Contact</a></div>
   </div>
-  <div class="ft-bottom">
-    <span>&copy; 2026 Castford, Inc.</span>
-    <div style="display:flex;gap:20px"><a href="/security">Privacy</a><a href="#">Terms</a><a href="/security">Security</a></div>
-  </div>
-</footer>
+  <div class="cf-ft-bottom"><span>&copy; 2026 Castford, Inc.</span><div style="display:flex;gap:16px"><a href="/privacy" style="color:var(--t3)">Privacy</a><a href="/terms" style="color:var(--t3)">Terms</a><a href="/security" style="color:var(--t3)">Security</a></div></div>
+</div></footer>
 
 <script>
-const obs=new IntersectionObserver(e=>{e.forEach((el,i)=>{if(el.isIntersecting)setTimeout(()=>el.target.classList.add('visible'),i*60)})},{threshold:0.1});
-document.querySelectorAll('.t-entry').forEach(el=>obs.observe(el));
+document.getElementById('themeToggle').addEventListener('click',()=>{const h=document.documentElement;h.dataset.theme=h.dataset.theme==='day'?'night':'day'});
+const _o=new IntersectionObserver(e=>{e.forEach(el=>{if(el.isIntersecting)el.target.classList.add('v')})},{threshold:0.08});
+document.querySelectorAll('.cf-fin').forEach(el=>_o.observe(el));
 </script>
 </body>
 </html>
