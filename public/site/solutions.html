@@ -3,6 +3,7 @@
 <head>
 <script>((d)=>{const t=localStorage.getItem("cf-theme");if(t)d.dataset.theme=t})(document.documentElement)</script>
 <meta charset="UTF-8">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Castford for Digital Businesses — Solutions</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -498,8 +499,8 @@ img{max-width:100%;display:block}
 
 <script>
 document.getElementById('themeToggle').addEventListener('click',()=>{const h=document.documentElement;h.dataset.theme=h.dataset.theme==='day'?'night':'day';localStorage.setItem('cf-theme',h.dataset.theme)});
-const _o=new IntersectionObserver(e=>{e.forEach(el=>{if(el.isIntersecting){el.target.classList.add('v');el.target.classList.add('visible')}})},{threshold:0.08});
-document.querySelectorAll('.cf-fin,.fade-in').forEach(el=>_o.observe(el));
+const _o=new IntersectionObserver(e=>{e.forEach(el=>{if(el.isIntersecting){el.target.classList.add('v');el.target.classList.add('vis');el.target.classList.add('visible')}})},{threshold:0.08});
+document.querySelectorAll('.cf-fin,.fade-in,.reveal').forEach(el=>_o.observe(el));
 </script>
 </body>
 </html>

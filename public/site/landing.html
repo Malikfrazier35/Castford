@@ -48,9 +48,9 @@ nav{position:sticky;top:0;z-index:100;background:var(--nav-bg);backdrop-filter:b
 /* Aurora sweep bands */
 .aurora-field{position:absolute;inset:0;z-index:0;pointer-events:none;overflow:hidden}
 .aurora-band{position:absolute;width:200%;height:200%;will-change:transform}
-.ab1{background:linear-gradient(135deg,transparent 30%,rgba(26,63,122,0.05) 40%,rgba(26,63,122,0.10) 45%,rgba(26,63,122,0.05) 50%,transparent 60%);animation:auroraA 14s ease-in-out infinite}
-.ab2{background:linear-gradient(225deg,transparent 25%,rgba(45,98,184,0.04) 38%,rgba(45,98,184,0.08) 43%,rgba(45,98,184,0.04) 48%,transparent 58%);animation:auroraB 18s ease-in-out infinite}
-.ab3{background:linear-gradient(160deg,transparent 35%,rgba(196,136,74,0.03) 45%,rgba(196,136,74,0.06) 48%,rgba(196,136,74,0.03) 52%,transparent 62%);animation:auroraC 22s ease-in-out infinite}
+.ab1{background:linear-gradient(135deg,transparent 30%,rgba(26,63,122,0.08) 40%,rgba(26,63,122,0.16) 45%,rgba(26,63,122,0.08) 50%,transparent 60%);animation:auroraA 14s ease-in-out infinite}
+.ab2{background:linear-gradient(225deg,transparent 25%,rgba(45,98,184,0.07) 38%,rgba(45,98,184,0.14) 43%,rgba(45,98,184,0.07) 48%,transparent 58%);animation:auroraB 18s ease-in-out infinite}
+.ab3{background:linear-gradient(160deg,transparent 35%,rgba(196,136,74,0.05) 45%,rgba(196,136,74,0.10) 48%,rgba(196,136,74,0.05) 52%,transparent 62%);animation:auroraC 22s ease-in-out infinite}
 [data-theme="night"] .ab1{background:linear-gradient(135deg,transparent 30%,rgba(155,138,255,0.08) 40%,rgba(155,138,255,0.16) 45%,rgba(155,138,255,0.08) 50%,transparent 60%)}
 [data-theme="night"] .ab2{background:linear-gradient(225deg,transparent 25%,rgba(196,184,255,0.06) 38%,rgba(196,184,255,0.12) 43%,rgba(196,184,255,0.06) 48%,transparent 58%)}
 [data-theme="night"] .ab3{background:linear-gradient(160deg,transparent 35%,rgba(212,165,116,0.04) 45%,rgba(212,165,116,0.08) 48%,rgba(212,165,116,0.04) 52%,transparent 62%)}
@@ -63,6 +63,26 @@ nav{position:sticky;top:0;z-index:100;background:var(--nav-bg);backdrop-filter:b
 .hero-hex svg{width:100%;height:100%}
 @keyframes hexBreathe{0%,100%{opacity:var(--o-lo);transform:scale(1)}50%{opacity:var(--o-hi);transform:scale(1.03)}}
 .hero-hex{animation:hexBreathe var(--dur) ease-in-out infinite;animation-delay:var(--del)}
+
+/* Night-only: Orbital hex rings + constellation pulse network */
+.orbitals{position:absolute;top:50%;left:50%;transform:translate(-50%,-48%);width:700px;height:700px;z-index:0;pointer-events:none;display:none}
+.orbitals svg{width:100%;height:100%;overflow:visible}
+[data-theme="night"] .orbitals{display:block}
+.orbit-ring{fill:none;stroke:var(--prime);stroke-width:0.6;transform-origin:center}
+@keyframes orbitA{to{transform:rotate(360deg)}}
+@keyframes orbitB{to{transform:rotate(-360deg)}}
+.or1{opacity:0.06;animation:orbitA 120s linear infinite}
+.or2{opacity:0.05;animation:orbitB 90s linear infinite}
+.or3{opacity:0.04;animation:orbitA 150s linear infinite}
+
+.constellation{position:absolute;inset:0;z-index:0;pointer-events:none;display:none}
+.constellation svg{width:100%;height:100%}
+[data-theme="night"] .constellation{display:block}
+.con-line{stroke:rgba(155,138,255,0.06);stroke-width:0.8;fill:none}
+@keyframes dashPulse{to{stroke-dashoffset:-40}}
+.con-pulse{stroke:rgba(155,138,255,0.18);stroke-width:1.2;fill:none;stroke-dasharray:8 32;animation:dashPulse var(--spd) linear infinite}
+@keyframes conNode{0%,100%{r:3;opacity:0.06}50%{r:5;opacity:0.18}}
+.con-dot{fill:rgba(155,138,255,0.12);animation:conNode var(--dur) ease-in-out infinite;animation-delay:var(--del)}
 .hero h1{font-family:var(--d);font-size:clamp(44px,6vw,72px);font-weight:800;letter-spacing:-2.2px;line-height:1.02;margin-bottom:22px;position:relative;z-index:1}
 .hero h1 em{font-style:normal;color:var(--prime)}
 .hero h1 em::after{content:'';position:absolute;bottom:-4px;left:0;right:0;height:3px;background:var(--prime);border-radius:0;animation:ul .7s var(--ease) .8s both}
@@ -173,7 +193,7 @@ footer{background:var(--s1);border-top:1.5px solid var(--bdr);padding:56px 0 28p
 @keyframes countUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 
 @media(max-width:900px){.bento{grid-template-columns:1fr}.bc.s2{grid-column:span 1}.journey{grid-template-columns:1fr 1fr}.journey::before{display:none}.ba{grid-template-columns:1fr}.ba-mid{display:none}.nk{display:none}.met-in{grid-template-columns:repeat(2,1fr)}.fg{grid-template-columns:1fr 1fr}.cta{margin:0 16px 56px;padding:48px 28px}.proof-in{flex-wrap:wrap;gap:16px}}
-@media(prefers-reduced-motion:reduce){.aurora-band,.hero-hex,.hero::before{animation:none!important}}
+@media(prefers-reduced-motion:reduce){.aurora-band,.hero-hex,.hero::before,.orbit-ring,.con-pulse,.con-dot{animation:none!important}}
 </style>
 </head>
 <body>
@@ -206,14 +226,53 @@ footer{background:var(--s1);border-top:1.5px solid var(--bdr);padding:56px 0 28p
     <div class="aurora-band ab3"></div>
   </div>
   <!-- Breathing hex nodes -->
-  <div class="hero-hex" style="top:5%;left:4%;width:100px;height:87px;--dur:7s;--del:0s;--o-lo:0.02;--o-hi:0.08"><svg viewBox="0 0 100 87"><path d="M50 1L99 23L99 64L50 86L1 64L1 23Z" fill="none" stroke="var(--prime)" stroke-width="0.8"/></svg></div>
-  <div class="hero-hex" style="top:14%;right:8%;width:140px;height:121px;--dur:9s;--del:1.5s;--o-lo:0.015;--o-hi:0.06"><svg viewBox="0 0 140 121"><path d="M70 1L139 32L139 89L70 120L1 89L1 32Z" fill="none" stroke="var(--prime)" stroke-width="0.6"/></svg></div>
-  <div class="hero-hex" style="top:38%;left:6%;width:70px;height:61px;--dur:6s;--del:3s;--o-lo:0.02;--o-hi:0.09"><svg viewBox="0 0 70 61"><path d="M35 1L69 17L69 44L35 60L1 44L1 17Z" fill="none" stroke="var(--prime)" stroke-width="0.7"/></svg></div>
-  <div class="hero-hex" style="top:60%;right:5%;width:120px;height:104px;--dur:10s;--del:0.8s;--o-lo:0.015;--o-hi:0.05"><svg viewBox="0 0 120 104"><path d="M60 1L119 27L119 77L60 103L1 77L1 27Z" fill="none" stroke="var(--prime)" stroke-width="0.5"/></svg></div>
-  <div class="hero-hex" style="top:78%;left:14%;width:80px;height:69px;--dur:8s;--del:4s;--o-lo:0.02;--o-hi:0.07"><svg viewBox="0 0 80 69"><path d="M40 1L79 18L79 51L40 68L1 51L1 18Z" fill="none" stroke="var(--prime)" stroke-width="0.6"/></svg></div>
-  <div class="hero-hex" style="top:22%;left:40%;width:50px;height:43px;--dur:7.5s;--del:5s;--o-lo:0.02;--o-hi:0.06"><svg viewBox="0 0 50 43"><path d="M25 1L49 12L49 31L25 42L1 31L1 12Z" fill="none" stroke="var(--prime)" stroke-width="0.5"/></svg></div>
-  <div class="hero-hex" style="bottom:10%;right:18%;width:90px;height:78px;--dur:11s;--del:2s;--o-lo:0.015;--o-hi:0.055"><svg viewBox="0 0 90 78"><path d="M45 1L89 21L89 57L45 77L1 57L1 21Z" fill="none" stroke="var(--prime)" stroke-width="0.6"/></svg></div>
-  <div class="hero-hex" style="top:48%;right:22%;width:60px;height:52px;--dur:6.5s;--del:6s;--o-lo:0.02;--o-hi:0.07"><svg viewBox="0 0 60 52"><path d="M30 1L59 14L59 38L30 51L1 38L1 14Z" fill="none" stroke="var(--prime)" stroke-width="0.5"/></svg></div>
+  <div class="hero-hex" style="top:5%;left:4%;width:100px;height:87px;--dur:7s;--del:0s;--o-lo:0.04;--o-hi:0.16"><svg viewBox="0 0 100 87"><path d="M50 1L99 23L99 64L50 86L1 64L1 23Z" fill="none" stroke="var(--prime)" stroke-width="1.2"/></svg></div>
+  <div class="hero-hex" style="top:14%;right:8%;width:140px;height:121px;--dur:9s;--del:1.5s;--o-lo:0.03;--o-hi:0.14"><svg viewBox="0 0 140 121"><path d="M70 1L139 32L139 89L70 120L1 89L1 32Z" fill="none" stroke="var(--prime)" stroke-width="1"/></svg></div>
+  <div class="hero-hex" style="top:38%;left:6%;width:70px;height:61px;--dur:6s;--del:3s;--o-lo:0.04;--o-hi:0.18"><svg viewBox="0 0 70 61"><path d="M35 1L69 17L69 44L35 60L1 44L1 17Z" fill="none" stroke="var(--prime)" stroke-width="1.1"/></svg></div>
+  <div class="hero-hex" style="top:60%;right:5%;width:120px;height:104px;--dur:10s;--del:0.8s;--o-lo:0.03;--o-hi:0.12"><svg viewBox="0 0 120 104"><path d="M60 1L119 27L119 77L60 103L1 77L1 27Z" fill="none" stroke="var(--prime)" stroke-width="0.9"/></svg></div>
+  <div class="hero-hex" style="top:78%;left:14%;width:80px;height:69px;--dur:8s;--del:4s;--o-lo:0.04;--o-hi:0.15"><svg viewBox="0 0 80 69"><path d="M40 1L79 18L79 51L40 68L1 51L1 18Z" fill="none" stroke="var(--prime)" stroke-width="1"/></svg></div>
+  <div class="hero-hex" style="top:22%;left:40%;width:50px;height:43px;--dur:7.5s;--del:5s;--o-lo:0.04;--o-hi:0.14"><svg viewBox="0 0 50 43"><path d="M25 1L49 12L49 31L25 42L1 31L1 12Z" fill="none" stroke="var(--prime)" stroke-width="0.9"/></svg></div>
+  <div class="hero-hex" style="bottom:10%;right:18%;width:90px;height:78px;--dur:11s;--del:2s;--o-lo:0.03;--o-hi:0.13"><svg viewBox="0 0 90 78"><path d="M45 1L89 21L89 57L45 77L1 57L1 21Z" fill="none" stroke="var(--prime)" stroke-width="1"/></svg></div>
+  <div class="hero-hex" style="top:48%;right:22%;width:60px;height:52px;--dur:6.5s;--del:6s;--o-lo:0.04;--o-hi:0.15"><svg viewBox="0 0 60 52"><path d="M30 1L59 14L59 38L30 51L1 38L1 14Z" fill="none" stroke="var(--prime)" stroke-width="0.9"/></svg></div>
+  <!-- Night-only: Orbital hex rings -->
+  <div class="orbitals"><svg viewBox="0 0 700 700">
+    <path class="orbit-ring or1" d="M350 50L620 194L620 506L350 650L80 506L80 194Z"/>
+    <path class="orbit-ring or2" d="M350 120L560 242L560 458L350 580L140 458L140 242Z"/>
+    <path class="orbit-ring or3" d="M350 190L500 286L500 414L350 510L200 414L200 286Z"/>
+  </svg></div>
+  <!-- Night-only: Constellation pulse network -->
+  <div class="constellation"><svg viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice">
+    <line class="con-line" x1="120" y1="80" x2="420" y2="220"/>
+    <line class="con-line" x1="420" y1="220" x2="720" y2="160"/>
+    <line class="con-line" x1="720" y1="160" x2="1020" y2="280"/>
+    <line class="con-line" x1="1020" y1="280" x2="1320" y2="140"/>
+    <line class="con-line" x1="420" y1="220" x2="280" y2="480"/>
+    <line class="con-line" x1="720" y1="160" x2="660" y2="440"/>
+    <line class="con-line" x1="660" y1="440" x2="900" y2="580"/>
+    <line class="con-line" x1="1020" y1="280" x2="1140" y2="520"/>
+    <line class="con-line" x1="280" y1="480" x2="520" y2="620"/>
+    <line class="con-line" x1="900" y1="580" x2="1140" y2="520"/>
+    <line class="con-pulse" x1="120" y1="80" x2="420" y2="220" style="--spd:3s"/>
+    <line class="con-pulse" x1="420" y1="220" x2="720" y2="160" style="--spd:4s"/>
+    <line class="con-pulse" x1="720" y1="160" x2="1020" y2="280" style="--spd:3.5s"/>
+    <line class="con-pulse" x1="1020" y1="280" x2="1320" y2="140" style="--spd:3s"/>
+    <line class="con-pulse" x1="420" y1="220" x2="280" y2="480" style="--spd:4.5s"/>
+    <line class="con-pulse" x1="720" y1="160" x2="660" y2="440" style="--spd:3.2s"/>
+    <line class="con-pulse" x1="660" y1="440" x2="900" y2="580" style="--spd:4s"/>
+    <line class="con-pulse" x1="1020" y1="280" x2="1140" y2="520" style="--spd:3.6s"/>
+    <line class="con-pulse" x1="280" y1="480" x2="520" y2="620" style="--spd:4.2s"/>
+    <line class="con-pulse" x1="900" y1="580" x2="1140" y2="520" style="--spd:3.8s"/>
+    <circle class="con-dot" cx="120" cy="80" r="3" style="--dur:4s;--del:0s"/>
+    <circle class="con-dot" cx="420" cy="220" r="4" style="--dur:5s;--del:1s"/>
+    <circle class="con-dot" cx="720" cy="160" r="5" style="--dur:6s;--del:2s"/>
+    <circle class="con-dot" cx="1020" cy="280" r="4" style="--dur:4.5s;--del:0.5s"/>
+    <circle class="con-dot" cx="1320" cy="140" r="3" style="--dur:5.5s;--del:3s"/>
+    <circle class="con-dot" cx="280" cy="480" r="3" style="--dur:7s;--del:1.5s"/>
+    <circle class="con-dot" cx="660" cy="440" r="3" style="--dur:6s;--del:2.5s"/>
+    <circle class="con-dot" cx="900" cy="580" r="4" style="--dur:5s;--del:4s"/>
+    <circle class="con-dot" cx="1140" cy="520" r="3" style="--dur:6.5s;--del:1s"/>
+    <circle class="con-dot" cx="520" cy="620" r="3" style="--dur:5s;--del:3.5s"/>
+  </svg></div>
 <div class="w">
   <h1>Forecast with<br><em>conviction.</em></h1>
   <p class="hs">AI-native FP&A for teams that outgrew spreadsheets. Close faster, forecast accurately, plan across every department.</p>
