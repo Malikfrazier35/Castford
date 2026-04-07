@@ -113,6 +113,7 @@
 .fade-in{opacity:0;transform:translateY(16px);transition:opacity .5s,transform .5s}.fade-in.visible{opacity:1;transform:translateY(0)}
 </style>
 <script src="/site/rain.js" defer></script>
+<script src="/site/castford-shell.js" defer></script>
 </head>
 <body>
 
@@ -224,7 +225,7 @@
       <div class="api-t-header"><span></span><span></span><span></span></div>
       <div class="api-t-body">
         <span class="cm">// Pull actuals from any GL</span><br>
-        <span class="kw">const</span> actuals = <span class="kw">await</span> financeOS.gl.query({<br>
+        <span class="kw">const</span> actuals = <span class="kw">await</span> castford.gl.query({<br>
         &nbsp;&nbsp;entity: <span class="str">"US-Corp"</span>,<br>
         &nbsp;&nbsp;period: <span class="str">"2026-Q1"</span>,<br>
         &nbsp;&nbsp;accounts: [<span class="str">"4000..4999"</span>]<br>
