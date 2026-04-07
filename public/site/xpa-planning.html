@@ -32,9 +32,9 @@
 @media(max-width:768px){}
 
 /* HERO */
-.hero{padding:100px 40px 60px;background:linear-gradient(180deg,#EEF2FF 0%,#fff 80%);text-align:center;position:relative;overflow:hidden}
+.hero{padding:100px 40px 60px;background:linear-gradient(180deg,var(--prime-bg) 0%,var(--bg) 80%);text-align:center;position:relative;overflow:hidden}
 .hero::before{content:'';position:absolute;top:-200px;left:50%;transform:translateX(-50%);width:800px;height:800px;border-radius:50%;background:radial-gradient(circle,rgba(99,102,241,.04),transparent 60%);pointer-events:none}
-.hero-badge{display:inline-flex;align-items:center;gap:8px;padding:6px 16px;border-radius:20px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;background:rgba(99,102,241,.06);border:1px solid rgba(99,102,241,.15);color:var(--indigo);margin-bottom:20px}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;padding:6px 16px;border-radius:0;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;background:rgba(99,102,241,.06);border:1px solid rgba(99,102,241,.15);color:var(--indigo);margin-bottom:20px}
 .hero-badge .dot{width:8px;height:8px;border-radius:50%;background:var(--indigo);animation:pulse 2s ease infinite}
 .hero h1{font-size:clamp(36px,5.5vw,56px);font-weight:900;letter-spacing:-.04em;line-height:1.1;margin-bottom:16px;color:var(--ink)}
 .hero h1 .accent{background:linear-gradient(135deg,var(--indigo),var(--cyan),var(--green));background-size:300% 300%;animation:gradShift 6s ease infinite;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
@@ -56,7 +56,7 @@
 
 /* DEPARTMENT TABS */
 .dept-tabs{display:flex;justify-content:center;gap:6px;flex-wrap:wrap;margin-bottom:40px}
-.dept-tab{padding:10px 20px;border-radius:0;font-size:13px;font-weight:700;border:1px solid var(--border);background:#fff;cursor:pointer;transition:all .25s var(--ease);display:flex;align-items:center;gap:8px;color:var(--t3)}
+.dept-tab{padding:10px 20px;border-radius:0;font-size:13px;font-weight:700;border:1px solid var(--border);background:var(--s1);cursor:pointer;transition:all .25s var(--ease);display:flex;align-items:center;gap:8px;color:var(--t3)}
 .dept-tab:hover{border-color:var(--indigo);color:var(--indigo)}
 .dept-tab.active{background:var(--indigo);color:#fff;border-color:var(--indigo);box-shadow:0 4px 16px rgba(99,102,241,.2)}
 .dept-tab svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2}
@@ -67,29 +67,29 @@
 .dept-panel.active{display:block}
 @keyframes fadeIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
 .dept-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:start}
-.dept-info{padding:32px;background:#fff;border:1px solid var(--border);border-radius:20px}
+.dept-info{padding:32px;background:var(--s1);border:1px solid var(--border);border-radius:0}
 .dept-info h3{font-size:24px;font-weight:900;letter-spacing:-.02em;margin-bottom:8px}
 .dept-info .dept-desc{font-size:14px;color:var(--t3);line-height:1.7;margin-bottom:24px}
 .dept-kpis{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .dept-kpi{padding:16px;border-radius:0;background:var(--bg);border:1px solid var(--border)}
 .dept-kpi .kpi-val{font-size:24px;font-weight:900;font-family:var(--mono);letter-spacing:-.03em}
 .dept-kpi .kpi-label{font-size:11px;color:var(--t3);margin-top:2px}
-.dept-mockup{padding:24px;background:var(--ink);border-radius:20px;border:1px solid rgba(255,255,255,.06);color:#fff}
+.dept-mockup{padding:24px;background:var(--ink);border-radius:0;border:1px solid var(--dark-bdr);color:#fff}
 .mock-bar{display:flex;align-items:center;gap:8px;margin-bottom:16px}
 .mock-dot{width:8px;height:8px;border-radius:50%}
-.mock-title{font-size:12px;font-weight:700;color:rgba(255,255,255,.5);margin-left:auto;font-family:var(--mono)}
-.mock-row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.06)}
+.mock-title{font-size:12px;font-weight:700;color:var(--dark-t);margin-left:auto;font-family:var(--mono)}
+.mock-row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--dark-bdr)}
 .mock-row:last-child{border:none}
-.mock-label{font-size:12px;font-weight:600;color:rgba(255,255,255,.5);width:120px;flex-shrink:0}
-.mock-bar-track{flex:1;height:8px;border-radius:4px;background:rgba(255,255,255,.06);overflow:hidden}
+.mock-label{font-size:12px;font-weight:600;color:var(--dark-t);width:120px;flex-shrink:0}
+.mock-bar-track{flex:1;height:8px;border-radius:4px;background:var(--dash-card);overflow:hidden}
 .mock-bar-fill{height:100%;border-radius:4px;transition:width 1s var(--ease)}
-.mock-val{font-size:12px;font-weight:700;font-family:var(--mono);color:rgba(255,255,255,.7);width:60px;text-align:right}
+.mock-val{font-size:12px;font-weight:700;font-family:var(--mono);color:var(--dash-val);width:60px;text-align:right}
 
 /* FLOW TIMELINE */
 .flow-steps{display:grid;grid-template-columns:repeat(5,1fr);gap:16px;position:relative}
 .flow-steps::before{content:'';position:absolute;top:36px;left:10%;right:10%;height:2px;background:linear-gradient(90deg,var(--indigo),var(--cyan),var(--green),var(--purple),var(--amber));border-radius:2px}
 .flow-step{text-align:center;position:relative;z-index:1}
-.flow-num{width:72px;height:72px;border-radius:50%;background:#fff;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;margin:0 auto 14px;transition:all .3s}
+.flow-num{width:72px;height:72px;border-radius:50%;background:var(--s1);border:2px solid var(--border);display:flex;align-items:center;justify-content:center;margin:0 auto 14px;transition:all .3s}
 .flow-num svg{width:28px;height:28px;stroke-width:1.5}
 .flow-step:hover .flow-num{border-color:var(--indigo);box-shadow:0 8px 24px rgba(99,102,241,.1)}
 .flow-step h4{font-size:14px;font-weight:800;margin-bottom:4px}
@@ -97,8 +97,8 @@
 
 /* BEFORE/AFTER */
 .ba-grid{display:grid;grid-template-columns:1fr auto 1fr;gap:24px;align-items:start}
-.ba-card{padding:32px;border-radius:20px;border:1px solid var(--border)}
-.ba-card.before{background:#FFF7ED;border-color:#FED7AA}
+.ba-card{padding:32px;border-radius:0;border:1px solid var(--border)}
+.ba-card.before{background:var(--s1)7ED;border-color:#FED7AA}
 .ba-card.after{background:rgba(16,185,129,.03);border-color:rgba(16,185,129,.2)}
 .ba-label{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;margin-bottom:16px;display:flex;align-items:center;gap:6px}
 .ba-card.before .ba-label{color:var(--amber)}
@@ -111,7 +111,7 @@
 /* CTA */
 .bottom-ct
 .bottom-cta h2{font-size:clamp(28px,4vw,44px);font-weight:900;letter-spacing:-.03em;margin-bottom:14px;color:#fff}
-.bottom-cta p{font-size:16px;color:rgba(255,255,255,.45);max-width:520px;margin:0 auto 32px;line-height:1.6}
+.bottom-cta p{font-size:16px;color:var(--dark-t);max-width:520px;margin:0 auto 32px;line-height:1.6}
 .bottom-cta .cta-row{display:inline-flex;gap:12px}
 .bottom-cta .cta-row 
 
@@ -232,7 +232,7 @@
 </div>
 </div>
 <div class="dept-mockup">
-<div class="mock-bar"><div class="mock-brand" style="font-size:10px;font-weight:600;letter-spacing:0.5px;color:rgba(255,255,255,0.4)">CASTFORD</div><div class="mock-title">fp&a-dashboard.view</div></div>
+<div class="mock-bar"><div class="mock-brand" style="font-size:10px;font-weight:600;letter-spacing:0.5px;color:var(--dark-t)">CASTFORD</div><div class="mock-title">fp&a-dashboard.view</div></div>
 <div class="mock-row"><div class="mock-label">Revenue</div><div class="mock-bar-track"><div class="mock-bar-fill" style="width:82%;background:linear-gradient(90deg,var(--green),var(--cyan))"></div></div><div class="mock-val">$4.2M</div></div>
 <div class="mock-row"><div class="mock-label">COGS</div><div class="mock-bar-track"><div class="mock-bar-fill" style="width:25%;background:var(--amber)"></div></div><div class="mock-val">$643K</div></div>
 <div class="mock-row"><div class="mock-label">OpEx</div><div class="mock-bar-track"><div class="mock-bar-fill" style="width:48%;background:var(--purple)"></div></div><div class="mock-val">$1.98M</div></div>
@@ -256,7 +256,7 @@
 </div>
 </div>
 <div class="dept-mockup">
-<div class="mock-bar"><div class="mock-brand" style="font-size:10px;font-weight:600;letter-spacing:0.5px;color:rgba(255,255,255,0.4)">CASTFORD</div><div class="mock-title">ops-capacity.view</div></div>
+<div class="mock-bar"><div class="mock-brand" style="font-size:10px;font-weight:600;letter-spacing:0.5px;color:var(--dark-t)">CASTFORD</div><div class="mock-title">ops-capacity.view</div></div>
 <div class="mock-row"><div class="mock-label">Capacity</div><div class="mock-bar-track"><div class="mock-bar-fill" style="width:78%;background:var(--green)"></div></div><div class="mock-val">78%</div></div>
 <div class="mock-row"><div class="mock-label">Utilization</div><div class="mock-bar-track"><div class="mock-bar-fill" style="width:85%;background:var(--cyan)"></div></div><div class="mock-val">85%</div></div>
 <div class="mock-row"><div class="mock-label">Quality</div><div class="mock-bar-track"><div class="mock-bar-fill" style="width:96%;background:var(--indigo)"></div></div><div class="mock-val">96.2%</div></div>
@@ -279,7 +279,7 @@
 </div>
 </div>
 <div class="dept-mockup">
-<div class="mock-bar"><div class="mock-brand" style="font-size:10px;font-weight:600;letter-spacing:0.5px;color:rgba(255,255,255,0.4)">CASTFORD</div><div class="mock-title">revops-pipeline.view</div></div>
+<div class="mock-bar"><div class="mock-brand" style="font-size:10px;font-weight:600;letter-spacing:0.5px;color:var(--dark-t)">CASTFORD</div><div class="mock-title">revops-pipeline.view</div></div>
 <div class="mock-row"><div class="mock-label">New ARR</div><div class="mock-bar-track"><div class="mock-bar-fill" style="width:72%;background:var(--green)"></div></div><div class="mock-val">$1.8M</div></div>
 <div class="mock-row"><div class="mock-label">Expansion</div><div class="mock-bar-track"><div class="mock-bar-fill" style="width:45%;background:var(--cyan)"></div></div><div class="mock-val">$920K</div></div>
 <div class="mock-row"><div class="mock-label">Churn Risk</div><div class="mock-bar-track"><div class="mock-bar-fill" style="width:12%;background:var(--red)"></div></div><div class="mock-val">2.1%</div></div>
@@ -302,7 +302,7 @@
 </div>
 </div>
 <div class="dept-mockup">
-<div class="mock-bar"><div class="mock-brand" style="font-size:10px;font-weight:600;letter-spacing:0.5px;color:rgba(255,255,255,0.4)">CASTFORD</div><div class="mock-title">workforce-plan.view</div></div>
+<div class="mock-bar"><div class="mock-brand" style="font-size:10px;font-weight:600;letter-spacing:0.5px;color:var(--dark-t)">CASTFORD</div><div class="mock-title">workforce-plan.view</div></div>
 <div class="mock-row"><div class="mock-label">Engineering</div><div class="mock-bar-track"><div class="mock-bar-fill" style="width:65%;background:var(--purple)"></div></div><div class="mock-val">98 FTE</div></div>
 <div class="mock-row"><div class="mock-label">Sales</div><div class="mock-bar-track"><div class="mock-bar-fill" style="width:42%;background:var(--cyan)"></div></div><div class="mock-val">62 FTE</div></div>
 <div class="mock-row"><div class="mock-label">G&A</div><div class="mock-bar-track"><div class="mock-bar-fill" style="width:28%;background:var(--green)"></div></div><div class="mock-val">42 FTE</div></div>
@@ -325,7 +325,7 @@
 </div>
 </div>
 <div class="dept-mockup">
-<div class="mock-bar"><div class="mock-brand" style="font-size:10px;font-weight:600;letter-spacing:0.5px;color:rgba(255,255,255,0.4)">CASTFORD</div><div class="mock-title">mktg-attribution.view</div></div>
+<div class="mock-bar"><div class="mock-brand" style="font-size:10px;font-weight:600;letter-spacing:0.5px;color:var(--dark-t)">CASTFORD</div><div class="mock-title">mktg-attribution.view</div></div>
 <div class="mock-row"><div class="mock-label">Paid Search</div><div class="mock-bar-track"><div class="mock-bar-fill" style="width:72%;background:var(--amber)"></div></div><div class="mock-val">$380K</div></div>
 <div class="mock-row"><div class="mock-label">Content</div><div class="mock-bar-track"><div class="mock-bar-fill" style="width:55%;background:var(--green)"></div></div><div class="mock-val">$260K</div></div>
 <div class="mock-row"><div class="mock-label">Events</div><div class="mock-bar-track"><div class="mock-bar-fill" style="width:38%;background:var(--purple)"></div></div><div class="mock-val">$180K</div></div>
@@ -348,7 +348,7 @@
 </div>
 </div>
 <div class="dept-mockup">
-<div class="mock-bar"><div class="mock-brand" style="font-size:10px;font-weight:600;letter-spacing:0.5px;color:rgba(255,255,255,0.4)">CASTFORD</div><div class="mock-title">it-spend-analysis.view</div></div>
+<div class="mock-bar"><div class="mock-brand" style="font-size:10px;font-weight:600;letter-spacing:0.5px;color:var(--dark-t)">CASTFORD</div><div class="mock-title">it-spend-analysis.view</div></div>
 <div class="mock-row"><div class="mock-label">AWS</div><div class="mock-bar-track"><div class="mock-bar-fill" style="width:62%;background:var(--amber)"></div></div><div class="mock-val">$260K</div></div>
 <div class="mock-row"><div class="mock-label">SaaS Stack</div><div class="mock-bar-track"><div class="mock-bar-fill" style="width:45%;background:var(--pink)"></div></div><div class="mock-val">$188K</div></div>
 <div class="mock-row"><div class="mock-label">Security</div><div class="mock-bar-track"><div class="mock-bar-fill" style="width:22%;background:var(--green)"></div></div><div class="mock-val">$92K</div></div>
@@ -371,7 +371,7 @@
 </div>
 </div>
 <div class="dept-mockup">
-<div class="mock-bar"><div class="mock-brand" style="font-size:10px;font-weight:600;letter-spacing:0.5px;color:rgba(255,255,255,0.4)">CASTFORD</div><div class="mock-title">supply-chain.view</div></div>
+<div class="mock-bar"><div class="mock-brand" style="font-size:10px;font-weight:600;letter-spacing:0.5px;color:var(--dark-t)">CASTFORD</div><div class="mock-title">supply-chain.view</div></div>
 <div class="mock-row"><div class="mock-label">Inventory</div><div class="mock-bar-track"><div class="mock-bar-fill" style="width:72%;background:var(--teal)"></div></div><div class="mock-val">$4.8M</div></div>
 <div class="mock-row"><div class="mock-label">In Transit</div><div class="mock-bar-track"><div class="mock-bar-fill" style="width:35%;background:var(--cyan)"></div></div><div class="mock-val">$1.2M</div></div>
 <div class="mock-row"><div class="mock-label">Backorder</div><div class="mock-bar-track"><div class="mock-bar-fill" style="width:8%;background:var(--red)"></div></div><div class="mock-val">$180K</div></div>
