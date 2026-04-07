@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="day">
 <head>
+<script>((d)=>{const t=localStorage.getItem("cf-theme");if(t)d.dataset.theme=t})(document.documentElement)</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Castford xP&A | Cross-Departmental Planning Platform</title>
@@ -480,7 +481,7 @@
 </div></footer>
 
 <script>
-document.getElementById('themeToggle').addEventListener('click',()=>{const h=document.documentElement;h.dataset.theme=h.dataset.theme==='day'?'night':'day'});
+document.getElementById('themeToggle').addEventListener('click',()=>{const h=document.documentElement;h.dataset.theme=h.dataset.theme==='day'?'night':'day';localStorage.setItem('cf-theme',h.dataset.theme)});
 const _o=new IntersectionObserver(e=>{e.forEach(el=>{if(el.isIntersecting){el.target.classList.add('v');el.target.classList.add('visible')}})},{threshold:0.08});
 document.querySelectorAll('.cf-fin,.fade-in').forEach(el=>_o.observe(el));
 </script>

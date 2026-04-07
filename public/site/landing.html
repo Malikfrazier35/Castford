@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="day">
 <head>
+<script>((d)=>{const t=localStorage.getItem("cf-theme");if(t)d.dataset.theme=t})(document.documentElement)</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Castford — Forecast with conviction</title>
@@ -348,7 +349,7 @@ footer{background:var(--s1);border-top:1.5px solid var(--bdr);padding:56px 0 28p
 </div></footer>
 
 <script>
-document.getElementById('themeToggle').addEventListener('click',()=>{const h=document.documentElement;h.dataset.theme=h.dataset.theme==='day'?'night':'day'});
+document.getElementById('themeToggle').addEventListener('click',()=>{const h=document.documentElement;h.dataset.theme=h.dataset.theme==='day'?'night':'day';localStorage.setItem('cf-theme',h.dataset.theme)});
 const obs=new IntersectionObserver(e=>{e.forEach(el=>{if(el.isIntersecting){el.target.classList.add('v');if(el.target.classList.contains('cnt')){const t=parseInt(el.target.dataset.to);const s=el.target.dataset.suffix||'';let c=0;const step=Math.ceil(t/30);const int=setInterval(()=>{c+=step;if(c>=t){c=t;clearInterval(int)}el.target.textContent=c+s},25)}}})},{threshold:0.08});
 document.querySelectorAll('.fin,.cnt').forEach(el=>obs.observe(el));
 </script>
