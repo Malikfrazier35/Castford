@@ -84,3 +84,20 @@ a{color:inherit;text-decoration:none}
 /* === RESPONSIVE === */
 @media(max-width:900px){.cf-nav-links{display:none}.cf-ft-grid{grid-template-columns:1fr 1fr;gap:24px}.cf-grid-3,.cf-grid-4{grid-template-columns:1fr 1fr}}
 @media(max-width:600px){.cf-grid-2,.cf-grid-3,.cf-grid-4{grid-template-columns:1fr}.cf-ft-grid{grid-template-columns:1fr}}
+
+/* === HEX GRID BACKGROUND SYSTEM === */
+body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='48.5'%3E%3Cpath d='M28 0L56 14L56 34.5L28 48.5L0 34.5L0 14Z' fill='none' stroke='%231A3F7A' stroke-width='0.4' opacity='0.04'/%3E%3C/svg%3E");
+  background-size:56px 48.5px;transition:opacity .5s}
+[data-theme="night"] body::after{
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='48.5'%3E%3Cpath d='M28 0L56 14L56 34.5L28 48.5L0 34.5L0 14Z' fill='none' stroke='%239B8AFF' stroke-width='0.4' opacity='0.05'/%3E%3C/svg%3E")}
+
+/* Glow nodes — breathing hexagons scattered on pages */
+.cf-glow-field{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.cf-gnode{position:absolute;will-change:opacity,transform}
+.cf-gnode svg{width:100%;height:100%}
+@keyframes cfNodePulse{0%,100%{opacity:0;transform:scale(0.85)}25%{opacity:var(--peak)}50%{opacity:var(--peak);transform:scale(1)}75%{opacity:0;transform:scale(0.85)}}
+.cf-gnode{animation:cfNodePulse var(--dur) ease-in-out infinite;animation-delay:var(--del)}
+.cf-gnode.cf-filled svg path{fill:var(--prime);fill-opacity:0.03}
+[data-theme="night"] .cf-gnode.cf-filled svg path{fill:var(--prime);fill-opacity:0.05}
+@media(prefers-reduced-motion:reduce){.cf-gnode{animation:none!important}}
