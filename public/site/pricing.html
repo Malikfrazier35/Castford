@@ -218,7 +218,7 @@
 <div class="plan-desc">For small finance teams getting started with modern FP&A</div>
 <div class="plan-btns">
 <a href="/login" class="plan-btn outline">Try Demo</a>
-<a href="https://buy.stripe.com/7sY7sL4OPeZ4gUaaERdwc0G" class="plan-btn green">Subscribe</a>
+<a href="https://buy.stripe.com/bJe5kD1B87NOgU01SSbo40d" class="plan-btn green" data-monthly="https://buy.stripe.com/bJe5kD1B87NOgU01SSbo40d" data-annual="https://buy.stripe.com/eVqfZh3Jg6JK0V22WWbo40e">Subscribe</a>
 </div>
 <div class="feat-section-title">Platform</div>
 <ul class="feat-list">
@@ -244,7 +244,7 @@
 <div class="plan-desc">For scaling teams with advanced forecasting and AI needs</div>
 <div class="plan-btns">
 <a href="/login" class="plan-btn outline">Try Demo</a>
-<a href="https://buy.stripe.com/00wcN59552ci6fw00ddwc0H" class="plan-btn green">Subscribe</a>
+<a href="https://buy.stripe.com/aFa9ATdjQfggeLS658bo40f" class="plan-btn green" data-monthly="https://buy.stripe.com/aFa9ATdjQfggeLS658bo40f" data-annual="https://buy.stripe.com/dRm5kD93A6JKbzG658bo40g">Subscribe</a>
 </div>
 <div class="feat-section-title">Platform</div>
 <ul class="feat-list">
@@ -272,7 +272,7 @@
 <div class="plan-desc">Full enterprise suite for large, complex finance orgs</div>
 <div class="plan-btns">
 <a href="/login" class="plan-btn outline">Try Demo</a>
-<a href="https://buy.stripe.com/9B600j4OPg38eM228ldwc0I" class="plan-btn green">Subscribe</a>
+<a href="https://buy.stripe.com/aFaeVdgw26JK1Z6dBAbo40h" class="plan-btn green" data-monthly="https://buy.stripe.com/aFaeVdgw26JK1Z6dBAbo40h" data-annual="https://buy.stripe.com/8x200jdjQfgg8nueFEbo40i">Subscribe</a>
 </div>
 <div class="feat-section-title">Platform</div>
 <ul class="feat-list">
@@ -431,6 +431,35 @@
 document.getElementById('themeToggle').addEventListener('click',()=>{const h=document.documentElement;h.dataset.theme=h.dataset.theme==='day'?'night':'day';localStorage.setItem('cf-theme',h.dataset.theme)});
 const _o=new IntersectionObserver(e=>{e.forEach(el=>{if(el.isIntersecting){el.target.classList.add('v');el.target.classList.add('vis');el.target.classList.add('visible')}})},{threshold:0.08});
 document.querySelectorAll('.cf-fin,.fade-in,.reveal').forEach(el=>_o.observe(el));
+
+// Billing toggle: switches prices AND Subscribe button links
+var currentBilling = 'annual';
+function setBilling(mode) {
+  currentBilling = mode;
+  // Toggle active state
+  document.getElementById('tog-monthly').classList.toggle('active', mode === 'monthly');
+  document.getElementById('tog-annual').classList.toggle('active', mode === 'annual');
+  // Update price displays
+  document.querySelectorAll('.amount').forEach(function(el) {
+    var val = el.dataset[mode];
+    if (val) el.textContent = Number(val).toLocaleString();
+  });
+  // Update save text
+  document.querySelectorAll('.plan-save').forEach(function(el) {
+    el.textContent = el.dataset['save' + mode.charAt(0).toUpperCase() + mode.slice(1)] || '';
+  });
+  // Switch Subscribe button links between monthly/annual
+  document.querySelectorAll('.plan-btn.green').forEach(function(btn) {
+    var url = btn.dataset[mode];
+    if (url) btn.href = url;
+  });
+}
+
+// ROI Calculator modal
+function openCalc() {
+  var calc = document.getElementById('roiCalc');
+  if (calc) calc.style.display = calc.style.display === 'flex' ? 'none' : 'flex';
+}
 </script>
 </body>
 </html>
