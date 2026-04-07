@@ -12,15 +12,15 @@
 nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,0.88);backdrop-filter:blur(16px) saturate(180%);-webkit-backdrop-filter:blur(16px) saturate(180%);border-bottom:1px solid #F1F5F9}
 .nav-inner{max-width:1200px;margin:0 auto;padding:0 24px;height:60px;display:flex;align-items:center;justify-content:space-between}
 .logo-link{display:flex;align-items:center;gap:8px;font-weight:800;font-size:17px;color:#0F172A;text-decoration:none;letter-spacing:-0.01em}
-.logo-link .ldot{width:9px;height:9px;background:#10B981;border-radius:50%}
+.logo-link .ldot{width:9px;height:9px;background:#CF8A2E;border-radius:50%}
 .nav-mid{display:flex;gap:4px;font-size:14px;font-weight:500;align-items:center}
 .nav-mid a{color:#64748B;padding:8px 12px;border-radius:8px;text-decoration:none;transition:color .15s}
 .nav-mid a:hover{color:#0F172A;background:rgba(0,0,0,0.03)}
 .nav-end{display:flex;align-items:center;gap:10px}
 .nav-end a{font-size:14px;font-weight:500;color:#64748B;padding:8px 12px;text-decoration:none;transition:color .15s}
 .nav-end a:hover{color:#0F172A}
-.btn-sub{display:inline-flex;align-items:center;padding:8px 18px;border-radius:8px;font-weight:600;font-size:13px;background:#10B981;color:#fff!important;text-decoration:none;border:none;cursor:pointer;transition:all .15s}
-.btn-sub:hover{background:#059669;box-shadow:0 2px 12px rgba(16,185,129,0.25)}
+.btn-sub{display:inline-flex;align-items:center;padding:8px 18px;border-radius:8px;font-weight:600;font-size:13px;background:#CF8A2E;color:#fff!important;text-decoration:none;border:none;cursor:pointer;transition:all .15s}
+.btn-sub:hover{background:#B07520;box-shadow:0 2px 12px rgba(207,138,46,0.25)}
 @media(max-width:900px){.nav-mid{display:none}}
 
 /* ===== SHARED FOOTER ===== */
@@ -37,7 +37,7 @@ footer{background:#F8FAFC;border-top:1px solid #E2E8F0;padding:56px 24px 24px}
 @media(max-width:768px){.ft-inner{grid-template-columns:1fr 1fr;gap:24px}}
 
 :root{
-  --green:#10B981;--green-50:#ECFDF5;--green-100:#D1FAE5;--green-200:#A7F3D0;--green-600:#059669;--green-700:#047857;
+  --green:#CF8A2E;--green-50:#FFF8EE;--green-100:#FEECC8;--green-200:#FDD89A;--green-600:#B07520;--green-700:#8F5E18;
   --cyan:#0891B2;--purple:#7C3AED;--blue:#2563EB;--amber:#D97706;--red:#EF4444;
   --bg:#FFFFFF;--bg-alt:#F8FAFC;--bg-warm:#FAFAF9;
   --text:#0F172A;--text-secondary:#334155;--muted:#64748B;--light:#94A3B8;
@@ -72,7 +72,7 @@ nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,0.88);backdrop
 .btn-md{padding:10px 22px}
 .btn-lg{padding:13px 28px;font-size:15px;border-radius:10px}
 .btn-primary{background:var(--green);color:#fff}
-.btn-primary:hover{background:var(--green-600);box-shadow:0 2px 12px rgba(16,185,129,0.25)}
+.btn-primary:hover{background:var(--green-600);box-shadow:0 2px 12px rgba(207,138,46,0.25)}
 .btn-secondary{background:var(--text);color:#fff}
 .btn-secondary:hover{background:#1E293B}
 .btn-outline{background:var(--bg);color:var(--text);border:1px solid var(--border)}
@@ -94,7 +94,7 @@ nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,0.88);backdrop
 .hero-visual{max-width:960px;margin:0 auto;border-radius:var(--radius-xl);overflow:hidden;box-shadow:var(--shadow-xl);border:1px solid var(--border);background:var(--bg)}
 .hv-topbar{display:flex;align-items:center;gap:8px;padding:10px 16px;background:var(--bg-alt);border-bottom:1px solid var(--border)}
 .hv-brand{display:flex;align-items:center;gap:6px;font-size:11px;font-weight:600;letter-spacing:0.5px;color:rgba(255,255,255,0.5)}
-.hv-brand-dot{width:8px;height:8px;background:#22c55e;border-radius:50%}
+.hv-brand-dot{width:8px;height:8px;background:#D4962A;border-radius:50%}
 .hv-tabs{display:flex;gap:0;margin-left:20px}
 .hv-tab{padding:4px 12px;font-size:11px;font-weight:500;color:var(--muted);border-radius:6px}
 .hv-tab.active{background:var(--bg);color:var(--text);box-shadow:var(--shadow-xs)}
@@ -168,7 +168,7 @@ nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,0.88);backdrop
 .ai-t-header .ai-brand{font-size:10px;font-weight:600;letter-spacing:0.5px;color:rgba(255,255,255,0.4)}
 .ai-t-header .t-title{margin-left:12px;font-size:11px;color:#475569;font-family:var(--mono)}
 .ai-t-body{padding:20px;line-height:2;color:#94A3B8}
-.ai-t-body .prompt{color:#10B981}
+.ai-t-body .prompt{color:#CF8A2E}
 .ai-t-body .response{color:#67E8F9}
 .ai-t-body .hl{color:#FCD34D}
 .ai-t-body .dim{color:#334155}
@@ -239,7 +239,7 @@ footer{background:var(--bg-alt);border-top:1px solid var(--border);padding:56px 
 @keyframes heroScale{from{opacity:0;transform:translateY(40px) scale(0.97)}to{opacity:1;transform:translateY(0) scale(1)}}
 @keyframes shimmer{0%{background-position:-200% center}100%{background-position:200% center}}
 @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
-@keyframes pulse-dot{0%,100%{box-shadow:0 0 0 0 rgba(16,185,129,0.4)}70%{box-shadow:0 0 0 6px rgba(16,185,129,0)}}
+@keyframes pulse-dot{0%,100%{box-shadow:0 0 0 0 rgba(207,138,46,0.4)}70%{box-shadow:0 0 0 6px rgba(207,138,46,0)}}
 @keyframes glow-line{0%{opacity:0.3;transform:scaleX(0)}50%{opacity:1;transform:scaleX(1)}100%{opacity:0.3;transform:scaleX(0)}}
 @keyframes bar-grow{from{transform:scaleY(0)}to{transform:scaleY(1)}}
 @keyframes slide-in-left{from{opacity:0;transform:translateX(-20px)}to{opacity:1;transform:translateX(0)}}
@@ -308,8 +308,8 @@ footer{background:var(--bg-alt);border-top:1px solid var(--border);padding:56px 
 
 /* Enhanced button hovers */
 .btn-primary{transition:all .25s cubic-bezier(.16,1,.3,1)}
-.btn-primary:hover{transform:translateY(-2px);box-shadow:0 4px 20px rgba(16,185,129,0.3)}
-.btn-primary:active{transform:translateY(0);box-shadow:0 2px 8px rgba(16,185,129,0.2)}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 4px 20px rgba(207,138,46,0.3)}
+.btn-primary:active{transform:translateY(0);box-shadow:0 2px 8px rgba(207,138,46,0.2)}
 .btn-outline{transition:all .25s cubic-bezier(.16,1,.3,1)}
 .btn-outline:hover{transform:translateY(-2px);box-shadow:var(--shadow-md)}
 
@@ -353,7 +353,7 @@ footer{background:var(--bg-alt);border-top:1px solid var(--border);padding:56px 
 
 /* Nav subscribe button pop */
 .btn-sub{transition:all .25s cubic-bezier(.16,1,.3,1)}
-.btn-sub:hover{transform:translateY(-2px) scale(1.03);box-shadow:0 4px 16px rgba(16,185,129,0.3)}
+.btn-sub:hover{transform:translateY(-2px) scale(1.03);box-shadow:0 4px 16px rgba(207,138,46,0.3)}
 </style>
 
 <script>
@@ -379,17 +379,17 @@ if ('caches' in window) {
 
 /* Bolder nav logo */
 .logo-link { font-size: 19px !important; font-weight: 900 !important; letter-spacing: -0.02em !important; }
-.logo-link .ldot { width: 11px !important; height: 11px !important; box-shadow: 0 0 12px rgba(16,185,129,0.4) !important; }
+.logo-link .ldot { width: 11px !important; height: 11px !important; box-shadow: 0 0 12px rgba(207,138,46,0.4) !important; }
 
 /* Hero: dark gradient background for enterprise feel */
 .hero { background: linear-gradient(168deg, #0F172A 0%, #1E293B 55%, #0F172A 100%) !important; color: #F8FAFC !important; padding-bottom: 80px !important; }
 .hero h1 { color: #FFFFFF !important; font-size: clamp(38px, 4.5vw, 60px) !important; font-weight: 800 !important; letter-spacing: -0.03em !important; line-height: 1.08 !important; }
-.hero h1 span, .hero h1 .green { color: #34D399 !important; }
+.hero h1 span, .hero h1 .green { color: #E9A23B !important; }
 .hero .hero-sub, .hero p { color: #94A3B8 !important; font-size: 18px !important; line-height: 1.6 !important; }
-.hero .ann-badge, .hero .badge { background: rgba(16,185,129,0.12) !important; border: 1px solid rgba(16,185,129,0.25) !important; color: #34D399 !important; }
-.hero .ann-badge .ann-new, .hero .badge span:first-child { background: #10B981 !important; color: #fff !important; }
-.hero .btn-primary, .hero .btn-cta, .hero a.btn-sub, .hero button:first-of-type { background: #10B981 !important; color: #fff !important; padding: 14px 32px !important; font-size: 16px !important; font-weight: 700 !important; border-radius: 12px !important; box-shadow: 0 4px 24px rgba(16,185,129,0.3) !important; transition: all 0.2s !important; }
-.hero .btn-primary:hover, .hero .btn-cta:hover { background: #059669 !important; box-shadow: 0 8px 32px rgba(16,185,129,0.4) !important; transform: translateY(-1px) !important; }
+.hero .ann-badge, .hero .badge { background: rgba(207,138,46,0.12) !important; border: 1px solid rgba(207,138,46,0.25) !important; color: #E9A23B !important; }
+.hero .ann-badge .ann-new, .hero .badge span:first-child { background: #CF8A2E !important; color: #fff !important; }
+.hero .btn-primary, .hero .btn-cta, .hero a.btn-sub, .hero button:first-of-type { background: #CF8A2E !important; color: #fff !important; padding: 14px 32px !important; font-size: 16px !important; font-weight: 700 !important; border-radius: 12px !important; box-shadow: 0 4px 24px rgba(207,138,46,0.3) !important; transition: all 0.2s !important; }
+.hero .btn-primary:hover, .hero .btn-cta:hover { background: #B07520 !important; box-shadow: 0 8px 32px rgba(207,138,46,0.4) !important; transform: translateY(-1px) !important; }
 .hero .btn-outline, .hero button:nth-of-type(2) { background: transparent !important; border: 1.5px solid rgba(255,255,255,0.2) !important; color: #E2E8F0 !important; padding: 14px 32px !important; font-size: 16px !important; font-weight: 600 !important; border-radius: 12px !important; }
 .hero .btn-outline:hover { border-color: rgba(255,255,255,0.4) !important; background: rgba(255,255,255,0.05) !important; }
 .hero .hero-note, .hero .schedule-note { color: #64748B !important; }
@@ -411,7 +411,7 @@ section h2, .section h2 { font-size: clamp(28px, 3vw, 42px) !important; font-wei
 
 /* Feature cards: elevated */
 .feature-card, .bento-card { border-radius: 16px !important; border: 1px solid #E2E8F0 !important; transition: all 0.2s !important; }
-.feature-card:hover, .bento-card:hover { border-color: #10B981 !important; box-shadow: 0 12px 40px rgba(16,185,129,0.1) !important; transform: translateY(-2px) !important; }
+.feature-card:hover, .bento-card:hover { border-color: #CF8A2E !important; box-shadow: 0 12px 40px rgba(207,138,46,0.1) !important; transform: translateY(-2px) !important; }
 
 /* CTA section: dark & bold */
 .cta-section, .final-cta { background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%) !important; border-radius: 24px !important; padding: 64px !important; }
@@ -428,15 +428,15 @@ footer { background: #FAFBFC !important; }
 body { -webkit-font-smoothing: antialiased !important; -moz-osx-font-smoothing: grayscale !important; }
 /* Hero title glow animation */
 @keyframes titleGlow {
-  0%, 100% { text-shadow: 0 0 20px rgba(16,185,129,0), 0 0 40px rgba(16,185,129,0); }
-  50% { text-shadow: 0 0 20px rgba(16,185,129,0.3), 0 0 60px rgba(16,185,129,0.15), 0 0 100px rgba(16,185,129,0.05); }
+  0%, 100% { text-shadow: 0 0 20px rgba(207,138,46,0), 0 0 40px rgba(207,138,46,0); }
+  50% { text-shadow: 0 0 20px rgba(207,138,46,0.3), 0 0 60px rgba(207,138,46,0.15), 0 0 100px rgba(207,138,46,0.05); }
 }
 @keyframes textShimmer {
   0% { background-position: -200% center; }
   100% { background-position: 200% center; }
 }
 .hero h1 {
-  background: linear-gradient(90deg, #FFFFFF 0%, #FFFFFF 35%, #34D399 50%, #FFFFFF 65%, #FFFFFF 100%) !important;
+  background: linear-gradient(90deg, #FFFFFF 0%, #FFFFFF 35%, #E9A23B 50%, #FFFFFF 65%, #FFFFFF 100%) !important;
   background-size: 200% auto !important;
   -webkit-background-clip: text !important;
   -webkit-text-fill-color: transparent !important;
@@ -449,7 +449,7 @@ body { -webkit-font-smoothing: antialiased !important; -moz-osx-font-smoothing: 
   width: 80px;
   height: 3px;
   margin: 16px auto 0;
-  background: linear-gradient(90deg, transparent, #34D399, #10B981, transparent);
+  background: linear-gradient(90deg, transparent, #E9A23B, #CF8A2E, transparent);
   border-radius: 3px;
   animation: glow-line 4s ease-in-out infinite;
 }
@@ -630,7 +630,7 @@ body { -webkit-font-smoothing: antialiased !important; -moz-osx-font-smoothing: 
         <h2>Your senior analyst, available 24/7</h2>
         <p>Not a chatbot bolted onto a spreadsheet. Castford AI is trained on financial data patterns, understands GAAP/IFRS, and provides sourced, auditable answers with full data lineage.</p>
         <div class="ai-list">
-          <div class="ai-item"><div class="ai-item-icon" style="background:var(--green-50)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.35-4.35"/></svg></div><div><h4>Variance Analysis</h4><p>Instant sourced breakdown of any line item change</p></div></div>
+          <div class="ai-item"><div class="ai-item-icon" style="background:var(--green-50)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#B07520" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.35-4.35"/></svg></div><div><h4>Variance Analysis</h4><p>Instant sourced breakdown of any line item change</p></div></div>
           <div class="ai-item"><div class="ai-item-icon" style="background:#EFF6FF"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2563EB" stroke-width="2" stroke-linecap="round"><path d="M18 20V10M12 20V4M6 20v-6"/></svg></div><div><h4>Anomaly Detection</h4><p>Flags unusual patterns before they become findings</p></div></div>
           <div class="ai-item"><div class="ai-item-icon" style="background:#F5F3FF"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#7C3AED" stroke-width="2" stroke-linecap="round"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg></div><div><h4>Proactive Insights</h4><p>Surfaces risks and opportunities you didn't know to look for</p></div></div>
           <div class="ai-item"><div class="ai-item-icon" style="background:#FFFBEB"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#D97706" stroke-width="2" stroke-linecap="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg></div><div><h4>Multi-Turn Conversations</h4><p>Ask follow-ups — context maintained across the session</p></div></div>
@@ -659,10 +659,10 @@ body { -webkit-font-smoothing: antialiased !important; -moz-osx-font-smoothing: 
   <h2>Connects to your entire stack</h2>
   <p>Extensive pre-built connectors. OAuth setup. Real-time sync.</p>
   <div class="int-logos">
-    <div class="int-chip"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M7 8h10M7 12h6M7 16h8"/></svg>ERP Systems</div>
+    <div class="int-chip"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#CF8A2E" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M7 8h10M7 12h6M7 16h8"/></svg>ERP Systems</div>
     <div class="int-chip"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2563EB" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>CRM Platforms</div>
     <div class="int-chip"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#7C3AED" stroke-width="2" stroke-linecap="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>HRIS & Payroll</div>
-    <div class="int-chip"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2" stroke-linecap="round"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>Banking & Payments</div>
+    <div class="int-chip"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#B07520" stroke-width="2" stroke-linecap="round"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>Banking & Payments</div>
     <div class="int-chip"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0891B2" stroke-width="2" stroke-linecap="round"><path d="M12 2l10 6v8l-10 6L2 16V8l10-6z"/></svg>Data Warehouses</div>
     <div class="int-chip"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#D97706" stroke-width="2" stroke-linecap="round"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>BI & Analytics</div>
     <div class="int-chip"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8v4M12 16h0" stroke-linecap="round"/></svg>200+ connectors</div>
@@ -679,17 +679,17 @@ body { -webkit-font-smoothing: antialiased !important; -moz-osx-font-smoothing: 
     </div>
     <div class="testimonials-grid" style="grid-template-columns:repeat(3,1fr);gap:20px">
       <div class="test-card fade-in" style="text-align:center;padding:32px 24px">
-        <div style="font-size:36px;font-weight:800;color:#10B981;font-family:'JetBrains Mono',monospace;margin-bottom:8px">3 days</div>
+        <div style="font-size:36px;font-weight:800;color:#CF8A2E;font-family:'JetBrains Mono',monospace;margin-bottom:8px">3 days</div>
         <div style="font-size:14px;font-weight:600;color:#1E293B;margin-bottom:4px">Average Monthly Close</div>
         <div style="font-size:13px;color:#64748B">Down from 12+ days with manual processes</div>
       </div>
       <div class="test-card fade-in" style="text-align:center;padding:32px 24px">
-        <div style="font-size:36px;font-weight:800;color:#10B981;font-family:'JetBrains Mono',monospace;margin-bottom:8px">50+</div>
+        <div style="font-size:36px;font-weight:800;color:#CF8A2E;font-family:'JetBrains Mono',monospace;margin-bottom:8px">50+</div>
         <div style="font-size:14px;font-weight:600;color:#1E293B;margin-bottom:4px">What-If Scenarios</div>
         <div style="font-size:13px;color:#64748B">Run in a single afternoon with AI copilot</div>
       </div>
       <div class="test-card fade-in" style="text-align:center;padding:32px 24px">
-        <div style="font-size:36px;font-weight:800;color:#10B981;font-family:'JetBrains Mono',monospace;margin-bottom:8px">1 model</div>
+        <div style="font-size:36px;font-weight:800;color:#CF8A2E;font-family:'JetBrains Mono',monospace;margin-bottom:8px">1 model</div>
         <div style="font-size:14px;font-weight:600;color:#1E293B;margin-bottom:4px">Unified xP&A</div>
         <div style="font-size:13px;color:#64748B">Revenue, sales, and finance in one source of truth</div>
       </div>
