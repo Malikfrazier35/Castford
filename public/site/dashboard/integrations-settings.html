@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="day">
+<head>
+<script>((d)=>{const t=localStorage.getItem("cf-theme");if(t)d.dataset.theme=t})(document.documentElement)</script>
+<meta charset="UTF-8">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Integrations — Castford</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=Instrument+Sans:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/site/theme.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="/site/auth-guard.js"></script>
+<script src="/site/castford-shell.js" defer></script>
+<style>
+.int-page{max-width:960px;margin:0 auto;padding:32px 24px}
+.int-header{margin-bottom:32px}
+.int-header h1{font-family:var(--d);font-size:28px;font-weight:800;margin-bottom:6px}
+.int-header p{color:var(--t2);font-size:15px}
+.int-cats{display:flex;gap:8px;margin-bottom:28px;flex-wrap:wrap}
+.int-cat{padding:7px 16px;border:1px solid var(--bdr);background:var(--s1);color:var(--t2);font-size:13px;font-weight:600;cursor:pointer;font-family:var(--b);transition:all .15s}
+.int-cat:hover{border-color:var(--prime);color:var(--ink)}
+.int-cat.active{background:var(--prime);color:#fff;border-color:var(--prime)}
+.int-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px}
+.int-card{border:1px solid var(--bdr);padding:24px;background:var(--s1);transition:all .2s;position:relative}
+.int-card:hover{border-color:var(--prime);box-shadow:0 4px 16px rgba(26,63,122,0.06)}
+.int-card-head{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.int-icon{width:40px;height:40px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;font-family:var(--m);color:#fff}
+.int-card h3{font-size:16px;font-weight:700;color:var(--ink);margin:0}
+.int-card-cat{font-size:11px;color:var(--t3);text-transform:uppercase;letter-spacing:0.5px;font-family:var(--m)}
+.int-card p{font-size:13px;color:var(--t2);line-height:1.5;margin-bottom:16px}
+.int-status{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:600;font-family:var(--m);padding:4px 10px}
+.int-status-connected{background:rgba(34,197,94,0.08);color:#16a34a}
+.int-status-concept{background:rgba(100,116,139,0.08);color:#64748b}
+.int-status-beta{background:rgba(91,127,204,0.08);color:#5B7FCC}
+.int-status-error{background:rgba(239,68,68,0.08);color:#ef4444}
+.int-btn{padding:9px 20px;border:none;font-size:13px;font-weight:600;cursor:pointer;font-family:var(--b);transition:all .15s}
+.int-btn-prime{background:var(--prime);color:#fff}
+.int-btn-prime:hover{opacity:0.9}
+.int-btn-outline{background:transparent;border:1px solid var(--bdr);color:var(--ink)}
+.int-btn-outline:hover{border-color:var(--prime);color:var(--prime)}
+.int-btn-danger{background:transparent;border:1px solid #fca5a5;color:#ef4444;font-size:12px;padding:6px 12px}
+.int-actions{display:flex;gap:8px;margin-top:16px;align-items:center;flex-wrap:wrap}
+.int-synced{font-size:11px;color:var(--t3);font-family:var(--m);margin-top:10px}
+
+/* Modal */
+.int-modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:9999;justify-content:center;align-items:center}
+.int-modal-bg.open{display:flex}
+.int-modal{background:var(--s1);border:1px solid var(--bdr);width:520px;max-width:95vw;max-height:90vh;overflow-y:auto;padding:32px}
+.int-modal h2{font-family:var(--d);font-size:22px;font-weight:800;margin-bottom:6px}
+.int-modal p{color:var(--t2);font-size:14px;margin-bottom:24px}
+.int-field{margin-bottom:16px}
+.int-field label{display:block;font-size:12px;font-weight:600;color:var(--t2);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:5px}
+.int-field input{width:100%;padding:10px 14px;border:1px solid var(--bdr);background:var(--s1);color:var(--ink);font-size:14px;font-family:var(--m);box-sizing:border-box}
+.int-field input:focus{outline:none;border-color:var(--prime)}
+.int-modal-actions{display:flex;gap:10px;margin-top:24px;justify-content:flex-end}
+.int-guide{background:rgba(91,127,204,0.04);border:1px solid rgba(91,127,204,0.15);padding:16px;margin-bottom:20px;font-size:13px;color:var(--t2);line-height:1.6}
+.int-guide strong{color:var(--ink)}
+.int-toast{position:fixed;bottom:24px;right:24px;padding:14px 24px;font-size:14px;font-weight:600;z-index:99999;display:none;font-family:var(--b)}
+.int-toast.success{background:#f0fdf4;border:1px solid #bbf7d0;color:#16a34a;display:block}
+.int-toast.error{background:#fef2f2;border:1px solid #fecaca;color:#ef4444;display:block}
+.int-spinner{width:14px;height:14px;border:2px solid rgba(255,255,255,0.3);border-top:2px solid #fff;border-radius:50%;animation:spin .6s linear infinite;display:inline-block}
+@keyframes spin{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+<div class="int-page">
+  <div class="int-header">
+    <a href="/site/dashboard.html" style="font-size:13px;color:var(--t3);text-decoration:none;display:inline-block;margin-bottom:12px">← Back to Dashboard</a>
+    <h1>Integrations</h1>
+    <p>Connect your ERP, accounting software, or bank to pull live financial data into Castford.</p>
+  </div>
+
+  <div class="int-cats" id="catFilters">
+    <button class="int-cat active" data-cat="all">All</button>
+    <button class="int-cat" data-cat="erp">ERP</button>
+    <button class="int-cat" data-cat="accounting">Accounting</button>
+    <button class="int-cat" data-cat="banking">Banking</button>
+    <button class="int-cat" data-cat="spreadsheet">Spreadsheet</button>
+  </div>
+
+  <div class="int-grid" id="connectorGrid">
+    <div style="text-align:center;padding:40px;color:var(--t3);grid-column:1/-1">Loading connectors...</div>
+  </div>
+</div>
+
+<!-- Connect Modal -->
+<div class="int-modal-bg" id="connectModal">
+  <div class="int-modal">
+    <h2 id="modalTitle">Connect</h2>
+    <p id="modalDesc">Enter your credentials to connect this integration.</p>
+    <div id="modalGuide" class="int-guide" style="display:none"></div>
+    <div id="modalFields"></div>
+    <div id="modalError" style="display:none;color:#ef4444;font-size:13px;margin-top:8px;padding:10px;background:#fef2f2;border:1px solid #fecaca"></div>
+    <div class="int-modal-actions">
+      <button class="int-btn int-btn-outline" onclick="closeModal()">Cancel</button>
+      <button class="int-btn int-btn-prime" id="modalConnect" onclick="saveCredentials()">Connect</button>
+    </div>
+  </div>
+</div>
+
+<div class="int-toast" id="toast"></div>
+
+<script>
+var SB_URL = 'https://crecesswagluelvkesul.supabase.co';
+var SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNyZWNlc3N3YWdsdWVsdmtlc3VsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM4MTI5NzYsImV4cCI6MjA4OTM4ODk3Nn0.IGEEYDStt-eH9Mf2G_DzqCPfruDjN8m_ORtAcmtSAZg';
+var sb = window.supabase.createClient(SB_URL, SB_KEY);
+var connectors = [];
+var currentProvider = null;
+
+var providerColors = {
+  netsuite:'#1A3F7A', quickbooks:'#2CA01C', xero:'#13B5EA', sage_intacct:'#00DC00',
+  freshbooks:'#0075DD', zoho_books:'#E42527', dynamics365:'#002050', csv_upload:'#64748B', plaid:'#111'
+};
+
+var providerGuides = {
+  netsuite: '<strong>How to get NetSuite credentials:</strong><br>1. In NetSuite: Setup → Integration → Manage Integrations → New<br>2. Name it "Castford", enable Token-Based Authentication<br>3. Copy the Consumer Key and Consumer Secret<br>4. Go to Setup → Users/Roles → Access Tokens → New<br>5. Select the Castford integration, pick your role<br>6. Copy the Token ID and Token Secret<br>7. Your Account ID is in the URL: https://<strong>TSTDRV1234567</strong>.app.netsuite.com',
+  quickbooks: '<strong>How to connect QuickBooks:</strong><br>1. Go to <a href="https://developer.intuit.com" target="_blank" style="color:var(--prime)">developer.intuit.com</a><br>2. Create an app, get Client ID and Client Secret<br>3. Your Realm ID (Company ID) is in the QuickBooks URL after /app/<br>4. Generate access and refresh tokens via the OAuth playground',
+  xero: '<strong>How to connect Xero:</strong><br>1. Go to <a href="https://developer.xero.com/app/manage" target="_blank" style="color:var(--prime)">developer.xero.com</a><br>2. Create an app, get Client ID and Client Secret<br>3. Your Tenant ID is your Xero organization ID<br>4. Generate tokens via the Xero OAuth 2.0 flow',
+  sage_intacct: '<strong>How to connect Sage Intacct:</strong><br>1. In Sage Intacct: Company → Admin → Web Services Users<br>2. Create a Web Services user or use an existing one<br>3. Your Company ID is shown in the browser URL<br>4. Contact Sage support for your Sender ID and Sender Password',
+  dynamics365: '<strong>How to connect Dynamics 365:</strong><br>1. Register an app in Azure Active Directory<br>2. Grant API permissions for Dynamics 365 Business Central<br>3. Your Tenant ID is your Azure AD tenant<br>4. Environment is usually "Production"<br>5. Company ID is in the D365 URL',
+  zoho_books: '<strong>How to connect Zoho Books:</strong><br>1. Go to <a href="https://accounts.zoho.com/developerconsole" target="_blank" style="color:var(--prime)">Zoho Developer Console</a><br>2. Create a self-client, generate a token<br>3. Your Organization ID is in Zoho Books settings',
+  csv_upload: '<strong>Upload a CSV or Excel file:</strong><br>Supported formats: .csv, .xlsx<br>Required columns: Account Name, Account Type, Amount, Date<br>We will map your columns to the Castford GL schema automatically.'
+};
+
+async function getToken() {
+  var s = await sb.auth.getSession();
+  return s.data?.session?.access_token;
+}
+
+async function apiCall(action, extra) {
+  var token = await getToken();
+  if (!token) { showToast('Not authenticated', 'error'); return null; }
+  var body = { action, ...extra };
+  var res = await fetch(SB_URL + '/functions/v1/sync-connector', {
+    method: 'POST', headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
+    body: JSON.stringify(body)
+  });
+  return res.json();
+}
+
+async function loadConnectors() {
+  var data = await apiCall('list_connectors');
+  if (!data || !data.connectors) {
+    document.getElementById('connectorGrid').innerHTML = '<div style="text-align:center;padding:40px;color:var(--t3);grid-column:1/-1">Could not load connectors. Please sign in first.</div>';
+    return;
+  }
+  connectors = data.connectors;
+  renderConnectors('all');
+}
+
+function renderConnectors(cat) {
+  var filtered = cat === 'all' ? connectors : connectors.filter(function(c) { return c.category === cat; });
+  var grid = document.getElementById('connectorGrid');
+  if (!filtered.length) { grid.innerHTML = '<div style="text-align:center;padding:40px;color:var(--t3);grid-column:1/-1">No connectors in this category</div>'; return; }
+
+  grid.innerHTML = filtered.map(function(c) {
+    var color = providerColors[c.provider] || '#64748B';
+    var initials = c.display_name.split(' ').map(function(w){return w[0]}).join('').substring(0,2);
+    var statusClass = c.connected ? 'connected' : c.status;
+    var statusLabel = c.connected ? 'Connected' : (c.status === 'beta' ? 'Beta' : c.status === 'live' ? 'Ready' : 'Available');
+    var dot = c.connected ? '●' : (c.status === 'beta' ? '◉' : '○');
+
+    var actions = '';
+    if (c.connected) {
+      actions = '<div class="int-actions">'
+        + '<button class="int-btn int-btn-outline" onclick="syncProvider(\'' + c.provider + '\')">Sync Now</button>'
+        + '<button class="int-btn int-btn-outline" onclick="testProvider(\'' + c.provider + '\')">Test</button>'
+        + '<button class="int-btn int-btn-danger" onclick="disconnectProvider(\'' + c.provider + '\')">Disconnect</button>'
+        + '</div>'
+        + (c.last_sync ? '<div class="int-synced">Last sync: ' + new Date(c.last_sync).toLocaleString() + ' · ' + (c.records || 0) + ' records</div>' : '');
+    } else {
+      actions = '<div class="int-actions"><button class="int-btn int-btn-prime" onclick="openConnect(\'' + c.provider + '\')">Connect</button></div>';
+    }
+
+    return '<div class="int-card" data-cat="' + c.category + '">'
+      + '<div class="int-card-head">'
+      + '<div class="int-icon" style="background:' + color + '">' + initials + '</div>'
+      + '<div><h3>' + c.display_name + '</h3><div class="int-card-cat">' + c.category + '</div></div>'
+      + '</div>'
+      + '<span class="int-status int-status-' + statusClass + '">' + dot + ' ' + statusLabel + '</span>'
+      + actions
+      + '</div>';
+  }).join('');
+}
+
+function openConnect(provider) {
+  currentProvider = provider;
+  var c = connectors.find(function(x){return x.provider === provider});
+  if (!c) return;
+
+  document.getElementById('modalTitle').textContent = 'Connect ' + c.display_name;
+  document.getElementById('modalDesc').textContent = 'Enter your ' + c.display_name + ' credentials to sync financial data into Castford.';
+
+  var guide = providerGuides[provider];
+  var guideEl = document.getElementById('modalGuide');
+  if (guide) { guideEl.innerHTML = guide; guideEl.style.display = 'block'; }
+  else { guideEl.style.display = 'none'; }
+
+  var fields = c.credential_fields || [];
+  document.getElementById('modalFields').innerHTML = fields.map(function(f) {
+    var type = f.type === 'password' ? 'password' : 'text';
+    return '<div class="int-field"><label>' + f.label + (f.required ? ' *' : '') + '</label>'
+      + '<input type="' + type + '" id="field-' + f.key + '" placeholder="' + (f.placeholder || '') + '"'
+      + (f.required ? ' required' : '') + '></div>';
+  }).join('');
+
+  document.getElementById('modalError').style.display = 'none';
+  document.getElementById('modalConnect').disabled = false;
+  document.getElementById('modalConnect').innerHTML = 'Connect';
+  document.getElementById('connectModal').classList.add('open');
+}
+
+function closeModal() {
+  document.getElementById('connectModal').classList.remove('open');
+  currentProvider = null;
+}
+
+async function saveCredentials() {
+  if (!currentProvider) return;
+  var c = connectors.find(function(x){return x.provider === currentProvider});
+  var fields = c.credential_fields || [];
+  var payload = { provider: currentProvider };
+
+  for (var i = 0; i < fields.length; i++) {
+    var f = fields[i];
+    var val = document.getElementById('field-' + f.key).value.trim();
+    if (f.required && !val) {
+      document.getElementById('modalError').textContent = f.label + ' is required';
+      document.getElementById('modalError').style.display = 'block';
+      return;
+    }
+    payload[f.key] = val;
+  }
+
+  var btn = document.getElementById('modalConnect');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="int-spinner"></span> Saving...';
+  document.getElementById('modalError').style.display = 'none';
+
+  // Step 1: Save
+  var saveResult = await apiCall('save', payload);
+  if (saveResult?.error) {
+    btn.disabled = false; btn.innerHTML = 'Connect';
+    document.getElementById('modalError').textContent = saveResult.error;
+    document.getElementById('modalError').style.display = 'block';
+    return;
+  }
+
+  // Step 2: Test
+  btn.innerHTML = '<span class="int-spinner"></span> Testing connection...';
+  var testResult = await apiCall('test', { provider: currentProvider });
+
+  if (testResult?.status === 'error') {
+    btn.disabled = false; btn.innerHTML = 'Connect';
+    document.getElementById('modalError').textContent = 'Connection failed: ' + testResult.message;
+    document.getElementById('modalError').style.display = 'block';
+    return;
+  }
+
+  // Step 3: Sync accounts
+  btn.innerHTML = '<span class="int-spinner"></span> Syncing accounts...';
+  var syncResult = await apiCall('sync_accounts', { provider: currentProvider });
+
+  closeModal();
+  showToast(c.display_name + ' connected! ' + (syncResult?.accounts_synced || 0) + ' accounts synced.', 'success');
+  loadConnectors(); // Refresh grid
+}
+
+async function syncProvider(provider) {
+  showToast('Syncing...', 'success');
+  var r1 = await apiCall('sync_accounts', { provider: provider });
+  var r2 = await apiCall('sync_transactions', { provider: provider });
+  showToast('Synced: ' + (r1?.accounts_synced || 0) + ' accounts, ' + (r2?.transactions_synced || 0) + ' transactions', 'success');
+  loadConnectors();
+}
+
+async function testProvider(provider) {
+  var result = await apiCall('test', { provider: provider });
+  if (result?.status === 'connected') showToast(result.display_name + ': Connection healthy', 'success');
+  else showToast('Connection error: ' + (result?.message || 'Unknown'), 'error');
+}
+
+async function disconnectProvider(provider) {
+  if (!confirm('Disconnect this integration? Your synced data will remain in Castford.')) return;
+  await apiCall('disconnect', { provider: provider });
+  showToast('Disconnected', 'success');
+  loadConnectors();
+}
+
+function showToast(msg, type) {
+  var t = document.getElementById('toast');
+  t.textContent = msg; t.className = 'int-toast ' + type;
+  setTimeout(function(){ t.className = 'int-toast'; }, 4000);
+}
+
+// Category filters
+document.querySelectorAll('.int-cat').forEach(function(btn) {
+  btn.addEventListener('click', function() {
+    document.querySelectorAll('.int-cat').forEach(function(b){b.classList.remove('active')});
+    btn.classList.add('active');
+    renderConnectors(btn.dataset.cat);
+  });
+});
+
+// Close modal on backdrop click
+document.getElementById('connectModal').addEventListener('click', function(e) {
+  if (e.target === this) closeModal();
+});
+
+// Init
+loadConnectors();
+</script>
+</body>
+</html>
