@@ -481,8 +481,8 @@
 
 <script>
 document.getElementById('themeToggle').addEventListener('click',()=>{const h=document.documentElement;h.dataset.theme=h.dataset.theme==='day'?'night':'day'});
-const _o=new IntersectionObserver(e=>{e.forEach(el=>{if(el.isIntersecting)el.target.classList.add('v')})},{threshold:0.08});
-document.querySelectorAll('.cf-fin').forEach(el=>_o.observe(el));
+const _o=new IntersectionObserver(e=>{e.forEach(el=>{if(el.isIntersecting){el.target.classList.add('v');el.target.classList.add('visible')}})},{threshold:0.08});
+document.querySelectorAll('.cf-fin,.fade-in').forEach(el=>_o.observe(el));
 </script>
 </body>
 </html>
