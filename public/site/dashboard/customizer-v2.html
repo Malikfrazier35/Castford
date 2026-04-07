@@ -192,7 +192,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--t1);-webkit-font-s
 /* ═══ CUSTOMIZATION FLOATING BAR ═══ */
 .customize-bar{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);z-index:200;background:rgba(15,23,42,0.94);backdrop-filter:blur(24px) saturate(1.5);border-radius:14px;padding:8px 16px;display:flex;align-items:center;gap:10px;box-shadow:0 8px 40px rgba(0,0,0,0.2),0 0 0 1px rgba(255,255,255,0.05);color:#fff;animation:slideUp 0.6s var(--ease);}
 @keyframes slideUp{from{transform:translateX(-50%) translateY(30px);opacity:0;}to{transform:translateX(-50%) translateY(0);opacity:1;}}
-.cbar-icon{width:28px;height:28px;border-radius:8px;background:linear-gradient(135deg,#06B6D4,#8B5CF6);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.cbar-icon{width:28px;height:28px;border-radius:8px;background:linear-gradient(135deg,#06B6D4,#9B8AFF);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
 .cbar-icon svg{width:14px;height:14px;}
 .cbar-title{font-size:12px;font-weight:700;white-space:nowrap;}
 .cbar-divider{width:1px;height:24px;background:rgba(255,255,255,0.08);}
@@ -202,7 +202,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--t1);-webkit-font-s
 .cbar-btn{padding:5px 10px;border-radius:7px;font-size:11px;font-weight:600;border:1px solid rgba(255,255,255,0.08);background:rgba(255,255,255,0.04);color:rgba(255,255,255,0.65);cursor:pointer;transition:all 0.15s;white-space:nowrap;display:flex;align-items:center;gap:4px;}
 .cbar-btn:hover{background:rgba(255,255,255,0.1);color:#fff;}
 .cbar-btn.active{background:rgba(6,182,212,0.2);border-color:rgba(6,182,212,0.4);color:#67E8F9;}
-.cbar-template{padding:6px 14px;border-radius:8px;font-size:11px;font-weight:700;border:none;background:linear-gradient(135deg,#06B6D4,#8B5CF6);color:#fff;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;gap:5px;}
+.cbar-template{padding:6px 14px;border-radius:8px;font-size:11px;font-weight:700;border:none;background:linear-gradient(135deg,#06B6D4,#9B8AFF);color:#fff;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;gap:5px;}
 .cbar-template:hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(6,182,212,0.3);}
 
 /* ═══ TEMPLATE PICKER MODAL ═══ */
@@ -304,6 +304,8 @@ body{font-family:var(--font);background:var(--bg);color:var(--t1);-webkit-font-s
 </style>
 <script src="/site/castford-shell.js" defer></script>
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="/site/dashboard-data.js"></script>
 </head>
 <body>
 
@@ -317,7 +319,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--t1);-webkit-font-s
 <!-- Top Bar -->
 <div class="topbar">
   <a href="/site/landing.html" class="topbar-logo" style="text-decoration:none;color:inherit;">
-    <svg viewBox="0 0 32 32" fill="none"><defs><linearGradient id="lg" x1="0" y1="0" x2="32" y2="32"><stop stop-color="#3B82F6"/><stop offset="1" stop-color="#8B5CF6"/></linearGradient></defs><rect width="32" height="32" rx="8" fill="url(#lg)"/><path d="M8 12h16M8 16h12M8 20h8" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>
+    <svg viewBox="0 0 32 32" fill="none"><defs><linearGradient id="lg" x1="0" y1="0" x2="32" y2="32"><stop stop-color="#3B82F6"/><stop offset="1" stop-color="#9B8AFF"/></linearGradient></defs><rect width="32" height="32" rx="8" fill="url(#lg)"/><path d="M8 12h16M8 16h12M8 20h8" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>
     <span class="name">Castford</span>
     <span class="plan-badge">ENTERPRISE</span>
   </a>
@@ -431,7 +433,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--t1);-webkit-font-s
       </div>
       <div class="sidebar-team" style="margin-top:8px;">TEAM <span class="online">1 online</span></div>
       <div class="sidebar-user">
-        <div class="sidebar-avatar" style="background:linear-gradient(135deg,#3B82F6,#8B5CF6);">MF</div>
+        <div class="sidebar-avatar" style="background:linear-gradient(135deg,#3B82F6,#9B8AFF);">MF</div>
         <div class="sidebar-user-info">
           <div class="name">Malik Frazier</div>
           <div class="role">Owner</div>
@@ -440,7 +442,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--t1);-webkit-font-s
       <div class="sidebar-invite">+ Invite teammates</div>
       <div style="padding:6px 8px;margin-top:4px;border-top:1px solid var(--border);padding-top:8px;">
         <div style="display:flex;align-items:center;gap:8px;">
-          <div class="sidebar-avatar" style="background:linear-gradient(135deg,#10B981,#059669);width:24px;height:24px;font-size:9px;">MF</div>
+          <div class="sidebar-avatar" style="background:linear-gradient(135deg,#1A3F7A,#1A3F7A);width:24px;height:24px;font-size:9px;">MF</div>
           <div><div style="font-size:11px;font-weight:600;">Malik Frazier</div><div style="font-size:9px;color:var(--t4);">ENTERPRISE</div></div>
         </div>
       </div>
@@ -554,21 +556,21 @@ var currentLayout='grid';
 // ═══ DASHBOARD PRODUCT IDENTITIES ═══
 const PRODUCTS={
   light:{name:'ClearView',tagline:'Crystal-clear financial visibility',icon:'◎',gradient:'linear-gradient(135deg,#3B82F6,#60A5FA)',badgeBg:'rgba(59,130,246,0.08)',badgeColor:'#3B82F6'},
-  midnight:{name:'NightOwl',tagline:'After-hours analytics, built for late shifts',icon:'◑',gradient:'linear-gradient(135deg,#22D3EE,#818CF8)',badgeBg:'rgba(34,211,238,0.12)',badgeColor:'#22D3EE'},
+  midnight:{name:'NightOwl',tagline:'After-hours analytics, built for late shifts',icon:'◑',gradient:'linear-gradient(135deg,#5B7FCC,#818CF8)',badgeBg:'rgba(34,211,238,0.12)',badgeColor:'#5B7FCC'},
   warm:{name:'Emberstone',tagline:'Warm, focused financial command',icon:'◈',gradient:'linear-gradient(135deg,#D97706,#F59E0B)',badgeBg:'rgba(217,119,6,0.1)',badgeColor:'#D97706'},
-  forest:{name:'Canopy',tagline:'Sustainable growth intelligence',icon:'◇',gradient:'linear-gradient(135deg,#34D399,#10B981)',badgeBg:'rgba(52,211,153,0.12)',badgeColor:'#34D399'},
+  forest:{name:'Canopy',tagline:'Sustainable growth intelligence',icon:'◇',gradient:'linear-gradient(135deg,#2D5BA0,#1A3F7A)',badgeBg:'rgba(52,211,153,0.12)',badgeColor:'#2D5BA0'},
   executive:{name:'Boardroom',tagline:'Board-ready executive reporting',icon:'◆',gradient:'linear-gradient(135deg,#818CF8,#A78BFA)',badgeBg:'rgba(129,140,248,0.12)',badgeColor:'#818CF8'},
-  terminal:{name:'Devline',tagline:'Engineering-grade financial ops',icon:'▣',gradient:'linear-gradient(135deg,#22D3EE,#06B6D4)',badgeBg:'rgba(34,211,238,0.1)',badgeColor:'#22D3EE'}
+  terminal:{name:'Devline',tagline:'Engineering-grade financial ops',icon:'▣',gradient:'linear-gradient(135deg,#5B7FCC,#06B6D4)',badgeBg:'rgba(34,211,238,0.1)',badgeColor:'#5B7FCC'}
 };
 
 // ═══ THEME SYSTEM ═══
 const THEMES={
   light:{bg:'#f3f4f8',surface:'#ffffff',card:'#ffffff',elevated:'#eef0f5',border:'#e2e5ed',border2:'#cdd2de',t1:'#0a0d15',t2:'#3a4259',t3:'#576175',t4:'#8792a8',accent:'#3b82f6',accentDim:'rgba(59,130,246,0.07)',greenDim:'rgba(16,185,129,0.07)',redDim:'rgba(239,68,68,0.07)',amberDim:'rgba(245,158,11,0.07)',purpleDim:'rgba(139,92,246,0.07)',cyanDim:'rgba(6,182,212,0.07)',modalBg:'#fff'},
-  midnight:{bg:'#030711',surface:'#070D19',card:'#0C1323',elevated:'#111D33',border:'rgba(30,48,80,0.5)',border2:'rgba(40,65,110,0.6)',t1:'#F1F5F9',t2:'#CBD5E1',t3:'#94A3B8',t4:'#64748B',accent:'#22D3EE',accentDim:'rgba(34,211,238,0.1)',greenDim:'rgba(16,185,129,0.12)',redDim:'rgba(239,68,68,0.12)',amberDim:'rgba(245,158,11,0.12)',purpleDim:'rgba(139,92,246,0.12)',cyanDim:'rgba(6,182,212,0.12)',modalBg:'#0C1323'},
+  midnight:{bg:'#030711',surface:'#070D19',card:'#0C1323',elevated:'#111D33',border:'rgba(30,48,80,0.5)',border2:'rgba(40,65,110,0.6)',t1:'#F1F5F9',t2:'#CBD5E1',t3:'#94A3B8',t4:'#64748B',accent:'#5B7FCC',accentDim:'rgba(34,211,238,0.1)',greenDim:'rgba(16,185,129,0.12)',redDim:'rgba(239,68,68,0.12)',amberDim:'rgba(245,158,11,0.12)',purpleDim:'rgba(139,92,246,0.12)',cyanDim:'rgba(6,182,212,0.12)',modalBg:'#0C1323'},
   warm:{bg:'#FFFBF5',surface:'#FFF8EE',card:'#ffffff',elevated:'#F5EDE0',border:'rgba(180,140,100,0.15)',border2:'rgba(160,120,80,0.25)',t1:'#1C1410',t2:'#4A3728',t3:'#7A6550',t4:'#A08E78',accent:'#D97706',accentDim:'rgba(217,119,6,0.08)',greenDim:'rgba(16,185,129,0.08)',redDim:'rgba(239,68,68,0.08)',amberDim:'rgba(245,158,11,0.1)',purpleDim:'rgba(139,92,246,0.08)',cyanDim:'rgba(6,182,212,0.08)',modalBg:'#FFF8EE'},
-  forest:{bg:'#040D0A',surface:'#061210',card:'#0A1A14',elevated:'#0F2A20',border:'rgba(52,211,153,0.1)',border2:'rgba(52,211,153,0.18)',t1:'#D1FAE5',t2:'#A7F3D0',t3:'#6EE7B7',t4:'#34D399',accent:'#34D399',accentDim:'rgba(52,211,153,0.1)',greenDim:'rgba(16,185,129,0.15)',redDim:'rgba(239,68,68,0.12)',amberDim:'rgba(245,158,11,0.12)',purpleDim:'rgba(139,92,246,0.12)',cyanDim:'rgba(6,182,212,0.12)',modalBg:'#0A1A14'},
+  forest:{bg:'#040D0A',surface:'#061210',card:'#0A1A14',elevated:'#0F2A20',border:'rgba(52,211,153,0.1)',border2:'rgba(52,211,153,0.18)',t1:'rgba(26,63,122,0.08)',t2:'rgba(26,63,122,0.12)',t3:'#5B7FCC',t4:'#2D5BA0',accent:'#2D5BA0',accentDim:'rgba(52,211,153,0.1)',greenDim:'rgba(16,185,129,0.15)',redDim:'rgba(239,68,68,0.12)',amberDim:'rgba(245,158,11,0.12)',purpleDim:'rgba(139,92,246,0.12)',cyanDim:'rgba(6,182,212,0.12)',modalBg:'#0A1A14'},
   executive:{bg:'#0C0A1A',surface:'#100E24',card:'#14102A',elevated:'#1E1840',border:'rgba(129,140,248,0.12)',border2:'rgba(129,140,248,0.2)',t1:'#E2E0F0',t2:'#C4C0E0',t3:'#9B95C8',t4:'#7570A0',accent:'#818CF8',accentDim:'rgba(129,140,248,0.1)',greenDim:'rgba(16,185,129,0.12)',redDim:'rgba(239,68,68,0.12)',amberDim:'rgba(245,158,11,0.12)',purpleDim:'rgba(139,92,246,0.15)',cyanDim:'rgba(6,182,212,0.12)',modalBg:'#14102A'},
-  terminal:{bg:'#0a0a0a',surface:'#0f0f0f',card:'#141414',elevated:'#1a1a1a',border:'rgba(34,211,238,0.08)',border2:'rgba(34,211,238,0.15)',t1:'#E0E0E0',t2:'#B0B0B0',t3:'#808080',t4:'#606060',accent:'#22D3EE',accentDim:'rgba(34,211,238,0.08)',greenDim:'rgba(16,185,129,0.12)',redDim:'rgba(239,68,68,0.12)',amberDim:'rgba(245,158,11,0.12)',purpleDim:'rgba(139,92,246,0.12)',cyanDim:'rgba(6,182,212,0.12)',modalBg:'#141414'}
+  terminal:{bg:'#0a0a0a',surface:'#0f0f0f',card:'#141414',elevated:'#1a1a1a',border:'rgba(34,211,238,0.08)',border2:'rgba(34,211,238,0.15)',t1:'#E0E0E0',t2:'#B0B0B0',t3:'#808080',t4:'#606060',accent:'#5B7FCC',accentDim:'rgba(34,211,238,0.08)',greenDim:'rgba(16,185,129,0.12)',redDim:'rgba(239,68,68,0.12)',amberDim:'rgba(245,158,11,0.12)',purpleDim:'rgba(139,92,246,0.12)',cyanDim:'rgba(6,182,212,0.12)',modalBg:'#141414'}
 };
 
 function applyTheme(id){
@@ -641,11 +643,11 @@ function setLayout(mode,btn){
 // Templates data — each has a unique product name
 const TPLS=[
   {id:'light',name:'ClearView',subtitle:'Arctic Light Theme',desc:'Crystal-clear financial visibility with clean whites and blue accents',tags:[{l:'DEFAULT',c:'#3B82F6'},{l:'LIGHT',c:'#64748B'}],bg:'#F3F4F8',sidebar:'#fff',topbar:'#fff',kpi:'#fff',accent:'#3B82F6',text:'#0F172A',border:'rgba(15,23,42,0.08)',bars:[45,58,65,52,75,68,82,74,88]},
-  {id:'midnight',name:'NightOwl',subtitle:'Midnight Theme',desc:'After-hours analytics with deep navy and cyan glow',tags:[{l:'DARK',c:'#818CF8'},{l:'POPULAR',c:'#34D399'}],bg:'#030711',sidebar:'#070D19',topbar:'#030711',kpi:'#0C1323',accent:'#22D3EE',text:'#F1F5F9',border:'rgba(30,48,80,0.4)',bars:[35,42,50,32,55,38,45,28,52]},
+  {id:'midnight',name:'NightOwl',subtitle:'Midnight Theme',desc:'After-hours analytics with deep navy and cyan glow',tags:[{l:'DARK',c:'#818CF8'},{l:'POPULAR',c:'#2D5BA0'}],bg:'#030711',sidebar:'#070D19',topbar:'#030711',kpi:'#0C1323',accent:'#5B7FCC',text:'#F1F5F9',border:'rgba(30,48,80,0.4)',bars:[35,42,50,32,55,38,45,28,52]},
   {id:'warm',name:'Emberstone',subtitle:'Warm Sand Theme',desc:'Warm, focused financial command with cream and amber tones',tags:[{l:'LIGHT',c:'#D97706'},{l:'NEW',c:'#EC4899'}],bg:'#FFFBF5',sidebar:'#FFF8EE',topbar:'#FFFBF5',kpi:'#fff',accent:'#D97706',text:'#1C1410',border:'rgba(180,140,100,0.12)',bars:[60,55,70,48,65,72,58,80,62]},
-  {id:'forest',name:'Canopy',subtitle:'Forest Theme',desc:'Sustainable growth intelligence with deep emerald data viz',tags:[{l:'DARK',c:'#34D399'}],bg:'#040D0A',sidebar:'#040D0A',topbar:'#040D0A',kpi:'#0A1A14',accent:'#34D399',text:'#D1FAE5',border:'rgba(52,211,153,0.08)',bars:[40,52,48,65,58,72,55,68,78]},
+  {id:'forest',name:'Canopy',subtitle:'Forest Theme',desc:'Sustainable growth intelligence with deep emerald data viz',tags:[{l:'DARK',c:'#2D5BA0'}],bg:'#040D0A',sidebar:'#040D0A',topbar:'#040D0A',kpi:'#0A1A14',accent:'#2D5BA0',text:'rgba(26,63,122,0.08)',border:'rgba(52,211,153,0.08)',bars:[40,52,48,65,58,72,55,68,78]},
   {id:'executive',name:'Boardroom',subtitle:'Executive Theme',desc:'Board-ready executive reporting with deep violet',tags:[{l:'DARK',c:'#818CF8'},{l:'NEW',c:'#FBBF24'}],bg:'#0C0A1A',sidebar:'#0C0A1A',topbar:'#0C0A1A',kpi:'#14102A',accent:'#818CF8',text:'#E2E0F0',border:'rgba(129,140,248,0.12)',bars:[50,62,55,70,65,78,72,82,75]},
-  {id:'terminal',name:'Devline',subtitle:'Terminal Theme',desc:'Engineering-grade financial ops with monospace and cyan',tags:[{l:'DARK',c:'#22D3EE'},{l:'HACKER',c:'#34D399'}],bg:'#0a0a0a',sidebar:'#0a0a0a',topbar:'#0a0a0a',kpi:'#111',accent:'#22D3EE',text:'#E0E0E0',border:'rgba(34,211,238,0.06)',bars:[30,45,38,52,42,58,35,62,48]}
+  {id:'terminal',name:'Devline',subtitle:'Terminal Theme',desc:'Engineering-grade financial ops with monospace and cyan',tags:[{l:'DARK',c:'#5B7FCC'},{l:'HACKER',c:'#2D5BA0'}],bg:'#0a0a0a',sidebar:'#0a0a0a',topbar:'#0a0a0a',kpi:'#111',accent:'#5B7FCC',text:'#E0E0E0',border:'rgba(34,211,238,0.06)',bars:[30,45,38,52,42,58,35,62,48]}
 ];
 
 function openTemplates(){document.getElementById('tplModal').classList.add('open');renderTpls();}
@@ -731,9 +733,9 @@ function renderDashboard(){
       <span class="stat"><strong>3.1M</strong> records synced</span>
       <span class="stat"><strong>18</strong> GL accounts · <strong>162</strong> transactions</span>
       <div class="connectors">
-        <span class="connector-chip"><span class="cdot" style="background:#10B981;"></span> NetSuite 847K</span>
+        <span class="connector-chip"><span class="cdot" style="background:#1A3F7A;"></span> NetSuite 847K</span>
         <span class="connector-chip"><span class="cdot" style="background:#3B82F6;"></span> Salesforce 124K</span>
-        <span class="connector-chip"><span class="cdot" style="background:#8B5CF6;"></span> Stripe 38K</span>
+        <span class="connector-chip"><span class="cdot" style="background:#9B8AFF;"></span> Stripe 38K</span>
         <span class="connector-chip"><span class="cdot" style="background:#06B6D4;"></span> Snowflake 2.1M</span>
         <span class="connector-chip"><span class="cdot" style="background:#EC4899;"></span> Rippling 312</span>
       </div>
@@ -891,7 +893,7 @@ function renderAdmin(){
           <span class="role-badge" style="background:var(--green-dim);color:var(--green);">Owner</span>
         </div>
         <div class="team-member">
-          <div class="avatar" style="background:linear-gradient(135deg,#8B5CF6,#7C3AED);">SC</div>
+          <div class="avatar" style="background:linear-gradient(135deg,#9B8AFF,#7C3AED);">SC</div>
           <div class="info"><div class="name">Sarah Chen</div><div class="dept">FP&A · 2 min ago</div></div>
           <span class="role-badge" style="background:var(--accent-dim);color:var(--accent);">Admin</span>
         </div>
@@ -906,7 +908,7 @@ function renderAdmin(){
           <span class="role-badge" style="background:var(--cyan-dim);color:var(--cyan);">Budget Owner</span>
         </div>
         <div class="team-member">
-          <div class="avatar" style="background:linear-gradient(135deg,#06B6D4,#0891B2);">DK</div>
+          <div class="avatar" style="background:linear-gradient(135deg,#06B6D4,#2D5BA0);">DK</div>
           <div class="info"><div class="name">David Kim</div><div class="dept">RevOps · 3 hr ago</div></div>
           <span class="role-badge" style="background:var(--elevated);color:var(--t3);">Viewer</span>
         </div>
@@ -938,7 +940,7 @@ function renderAdmin(){
         <span style="font-size:10px;color:var(--accent);cursor:pointer;margin-left:8px;font-weight:600;">Preview</span>
       </div>
       <div class="team-member">
-        <div class="avatar" style="background:linear-gradient(135deg,#8B5CF6,#7C3AED);">SC</div>
+        <div class="avatar" style="background:linear-gradient(135deg,#9B8AFF,#7C3AED);">SC</div>
         <div class="info"><div class="name">Sarah Chen</div><div class="dept">Admin · FP&A</div></div>
         <span style="font-size:10px;font-weight:700;padding:3px 8px;border-radius:4px;background:rgba(129,140,248,0.12);color:#818CF8;margin-left:auto;">◆ Boardroom</span>
         <span style="font-size:10px;color:var(--accent);cursor:pointer;margin-left:8px;font-weight:600;">Preview</span>
@@ -946,17 +948,17 @@ function renderAdmin(){
       <div class="team-member">
         <div class="avatar" style="background:linear-gradient(135deg,#EC4899,#DB2777);">PP</div>
         <div class="info"><div class="name">Priya Patel</div><div class="dept">Manager · Accounting</div></div>
-        <span style="font-size:10px;font-weight:700;padding:3px 8px;border-radius:4px;background:rgba(34,211,238,0.1);color:#22D3EE;margin-left:auto;">◑ NightOwl</span>
+        <span style="font-size:10px;font-weight:700;padding:3px 8px;border-radius:4px;background:rgba(34,211,238,0.1);color:#5B7FCC;margin-left:auto;">◑ NightOwl</span>
         <span style="font-size:10px;color:var(--accent);cursor:pointer;margin-left:8px;font-weight:600;">Preview</span>
       </div>
       <div class="team-member">
         <div class="avatar" style="background:linear-gradient(135deg,#F59E0B,#D97706);">JR</div>
         <div class="info"><div class="name">James Rodriguez</div><div class="dept">Budget Owner · Ops</div></div>
-        <span style="font-size:10px;font-weight:700;padding:3px 8px;border-radius:4px;background:rgba(52,211,153,0.12);color:#34D399;margin-left:auto;">◇ Canopy</span>
+        <span style="font-size:10px;font-weight:700;padding:3px 8px;border-radius:4px;background:rgba(52,211,153,0.12);color:#2D5BA0;margin-left:auto;">◇ Canopy</span>
         <span style="font-size:10px;color:var(--accent);cursor:pointer;margin-left:8px;font-weight:600;">Preview</span>
       </div>
       <div class="team-member">
-        <div class="avatar" style="background:linear-gradient(135deg,#06B6D4,#0891B2);">DK</div>
+        <div class="avatar" style="background:linear-gradient(135deg,#06B6D4,#2D5BA0);">DK</div>
         <div class="info"><div class="name">David Kim</div><div class="dept">Viewer · RevOps</div></div>
         <span style="font-size:10px;font-weight:700;padding:3px 8px;border-radius:4px;background:rgba(217,119,6,0.1);color:#D97706;margin-left:auto;">◈ Emberstone</span>
         <span style="font-size:10px;color:var(--accent);cursor:pointer;margin-left:8px;font-weight:600;">Preview</span>
@@ -1032,7 +1034,7 @@ function renderAdmin(){
       <div style="margin-top:12px;">
         <div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);font-size:12px;">
           <span style="font-size:10px;color:var(--t4);font-family:var(--mono);width:70px;flex-shrink:0;">2 min ago</span>
-          <div class="avatar" style="width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,#8B5CF6,#7C3AED);font-size:8px;font-weight:700;color:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;">SC</div>
+          <div class="avatar" style="width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,#9B8AFF,#7C3AED);font-size:8px;font-weight:700;color:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;">SC</div>
           <span style="font-weight:600;">Sarah Chen</span>
           <span style="color:var(--t3);">exported</span>
           <span style="font-weight:600;color:var(--accent);">Q1 Board Deck</span>
@@ -1044,7 +1046,7 @@ function renderAdmin(){
           <span style="font-weight:600;">Priya Patel</span>
           <span style="color:var(--t3);">completed task</span>
           <span style="font-weight:600;color:var(--green);">March Accruals</span>
-          <span style="margin-left:auto;font-size:10px;font-weight:700;padding:2px 6px;border-radius:3px;background:rgba(34,211,238,0.1);color:#22D3EE;">◑ NightOwl</span>
+          <span style="margin-left:auto;font-size:10px;font-weight:700;padding:2px 6px;border-radius:3px;background:rgba(34,211,238,0.1);color:#5B7FCC;">◑ NightOwl</span>
         </div>
         <div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);font-size:12px;">
           <span style="font-size:10px;color:var(--t4);font-family:var(--mono);width:70px;flex-shrink:0;">1 hr ago</span>
@@ -1052,11 +1054,11 @@ function renderAdmin(){
           <span style="font-weight:600;">James Rodriguez</span>
           <span style="color:var(--t3);">escalated</span>
           <span style="font-weight:600;color:var(--red);">NetSuite Discrepancy</span>
-          <span style="margin-left:auto;font-size:10px;font-weight:700;padding:2px 6px;border-radius:3px;background:rgba(52,211,153,0.12);color:#34D399;">◇ Canopy</span>
+          <span style="margin-left:auto;font-size:10px;font-weight:700;padding:2px 6px;border-radius:3px;background:rgba(52,211,153,0.12);color:#2D5BA0;">◇ Canopy</span>
         </div>
         <div style="display:flex;align-items:center;gap:10px;padding:8px 0;font-size:12px;">
           <span style="font-size:10px;color:var(--t4);font-family:var(--mono);width:70px;flex-shrink:0;">3 hr ago</span>
-          <div class="avatar" style="width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,#06B6D4,#0891B2);font-size:8px;font-weight:700;color:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;">DK</div>
+          <div class="avatar" style="width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,#06B6D4,#2D5BA0);font-size:8px;font-weight:700;color:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;">DK</div>
           <span style="font-weight:600;">David Kim</span>
           <span style="color:var(--t3);">viewed</span>
           <span style="font-weight:600;color:var(--accent);">Revenue Dashboard</span>
@@ -1112,7 +1114,7 @@ function renderSettingsOrg(){
     '<div class="settings-row"><span class="label">Admin Email</span><span class="value">admin@castford.com</span></div>'+
     '</div>'+
     '<div class="settings-card"><h3>Workspace Branding</h3><div class="subtitle">Customize how your workspace appears</div>'+
-    '<div class="settings-row"><span class="label">Logo</span><span class="value"><span style="width:24px;height:24px;border-radius:6px;background:linear-gradient(135deg,#3B82F6,#8B5CF6);display:inline-flex;align-items:center;justify-content:center;color:#fff;font-size:10px;font-weight:800;">F</span> Castford</span></div>'+
+    '<div class="settings-row"><span class="label">Logo</span><span class="value"><span style="width:24px;height:24px;border-radius:6px;background:linear-gradient(135deg,#3B82F6,#9B8AFF);display:inline-flex;align-items:center;justify-content:center;color:#fff;font-size:10px;font-weight:800;">F</span> Castford</span></div>'+
     '<div class="settings-row"><span class="label">Theme</span><span class="value">'+currentTheme.charAt(0).toUpperCase()+currentTheme.slice(1)+'</span></div>'+
     '<div class="settings-row"><span class="label">Fiscal Year Start</span><span class="value">January</span></div>'+
     '</div>';

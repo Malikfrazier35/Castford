@@ -12,10 +12,10 @@
   --border:#E2E8F0;--border2:#CBD5E1;
   --t1:#0F172A;--t2:#334155;--t3:#64748B;--t4:#94A3B8;
   --accent:#3B82F6;--accent-dim:rgba(59,130,246,0.06);--accent-glow:rgba(59,130,246,0.15);
-  --green:#10B981;--green-dim:rgba(16,185,129,0.06);
+  --green:#1A3F7A;--green-dim:rgba(16,185,129,0.06);
   --red:#EF4444;--red-dim:rgba(239,68,68,0.06);
   --amber:#F59E0B;--amber-dim:rgba(245,158,11,0.06);
-  --purple:#8B5CF6;--purple-dim:rgba(139,92,246,0.06);
+  --purple:#9B8AFF;--purple-dim:rgba(139,92,246,0.06);
   --cyan:#06B6D4;--cyan-dim:rgba(6,182,212,0.06);
   --radius:12px;--radius-sm:8px;
   --shadow:0 1px 3px rgba(0,0,0,0.04);
@@ -70,8 +70,8 @@ body{font-family:var(--font);background:var(--bg);color:var(--t1);-webkit-font-s
 .tier-btn:hover{transform:translateY(-1px);}
 .tier-btn.active{box-shadow:0 0 0 2px currentColor,0 0 12px currentColor;}
 .t-starter{color:#06B6D4;border-color:rgba(6,182,212,0.2);background:rgba(6,182,212,0.06);}
-.t-growth{color:#10B981;border-color:rgba(16,185,129,0.2);background:rgba(16,185,129,0.06);}
-.t-business{color:#8B5CF6;border-color:rgba(139,92,246,0.2);background:rgba(139,92,246,0.06);}
+.t-growth{color:#1A3F7A;border-color:rgba(16,185,129,0.2);background:rgba(16,185,129,0.06);}
+.t-business{color:#9B8AFF;border-color:rgba(139,92,246,0.2);background:rgba(139,92,246,0.06);}
 
 /* ═══ LAYOUT ═══ */
 .layout{display:flex;min-height:calc(100vh - 54px);}
@@ -111,7 +111,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--t1);-webkit-font-s
 .kpi::before{content:'';position:absolute;top:0;left:0;width:3px;height:100%;border-radius:0 3px 3px 0;opacity:0.5;transition:opacity 0.3s;}
 .kpi:hover{transform:translateY(-3px);box-shadow:var(--shadow-md);}
 .kpi:hover::before{opacity:1;}
-.kpi.c-blue::before{background:#3B82F6;}.kpi.c-green::before{background:#10B981;}.kpi.c-amber::before{background:#F59E0B;}.kpi.c-purple::before{background:#8B5CF6;}.kpi.c-cyan::before{background:#06B6D4;}
+.kpi.c-blue::before{background:#3B82F6;}.kpi.c-green::before{background:#1A3F7A;}.kpi.c-amber::before{background:#F59E0B;}.kpi.c-purple::before{background:#9B8AFF;}.kpi.c-cyan::before{background:#06B6D4;}
 .kpi::after{content:'';position:absolute;top:0;left:-100%;width:50%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.04),transparent);pointer-events:none;}
 .kpi:hover::after{animation:shimmer 0.8s ease forwards;}
 .kpi .icon{font-size:16px;margin-bottom:4px;}
@@ -176,7 +176,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--t1);-webkit-font-s
 
 /* ═══ CUSTOMIZE BAR ═══ */
 .cbar{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);z-index:200;background:rgba(15,23,42,0.94);backdrop-filter:blur(24px) saturate(1.5);border-radius:14px;padding:8px 16px;display:flex;align-items:center;gap:10px;box-shadow:0 8px 40px rgba(0,0,0,0.2),0 0 0 1px rgba(255,255,255,0.05);color:#fff;animation:slideUp 0.5s var(--ease);}
-.cbar-icon{width:28px;height:28px;border-radius:8px;background:linear-gradient(135deg,#06B6D4,#8B5CF6);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:12px;}
+.cbar-icon{width:28px;height:28px;border-radius:8px;background:linear-gradient(135deg,#06B6D4,#9B8AFF);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:12px;}
 .cbar-title{font-size:12px;font-weight:700;white-space:nowrap;}
 .cbar-sep{width:1px;height:22px;background:rgba(255,255,255,0.08);}
 .cbar-lbl{font-size:8px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:rgba(255,255,255,0.3);white-space:nowrap;}
@@ -185,7 +185,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--t1);-webkit-font-s
 .cbar-btn{padding:5px 11px;border-radius:6px;font-size:10px;font-weight:600;border:1px solid rgba(255,255,255,0.08);background:rgba(255,255,255,0.04);color:rgba(255,255,255,0.6);cursor:pointer;transition:all 0.15s;white-space:nowrap;}
 .cbar-btn:hover{background:rgba(255,255,255,0.1);color:#fff;}
 .cbar-btn.active{background:rgba(6,182,212,0.2);border-color:rgba(6,182,212,0.4);color:#67E8F9;}
-.cbar-studio{padding:7px 16px;border-radius:8px;font-size:11px;font-weight:700;border:none;background:linear-gradient(135deg,#06B6D4,#8B5CF6);color:#fff;cursor:pointer;transition:all 0.25s var(--ease);display:flex;align-items:center;gap:5px;}
+.cbar-studio{padding:7px 16px;border-radius:8px;font-size:11px;font-weight:700;border:none;background:linear-gradient(135deg,#06B6D4,#9B8AFF);color:#fff;cursor:pointer;transition:all 0.25s var(--ease);display:flex;align-items:center;gap:5px;}
 .cbar-studio:hover{transform:translateY(-2px);box-shadow:0 4px 20px rgba(6,182,212,0.35);}
 
 /* ═══ DESIGN STUDIO MODAL ═══ */
@@ -263,7 +263,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--t1);-webkit-font-s
 /* Modal footer */
 .modal-footer{padding:14px 28px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;background:var(--elevated);flex-shrink:0;}
 .modal-footer .mf-info{font-size:12px;color:var(--t3);}.modal-footer .mf-info strong{color:var(--t1);}
-.apply-btn{padding:10px 30px;border-radius:var(--radius-sm);font-size:13px;font-weight:700;border:none;background:linear-gradient(135deg,#06B6D4,#8B5CF6);color:#fff;cursor:pointer;transition:all 0.25s var(--ease);box-shadow:0 2px 12px rgba(6,182,212,0.25);}
+.apply-btn{padding:10px 30px;border-radius:var(--radius-sm);font-size:13px;font-weight:700;border:none;background:linear-gradient(135deg,#06B6D4,#9B8AFF);color:#fff;cursor:pointer;transition:all 0.25s var(--ease);box-shadow:0 2px 12px rgba(6,182,212,0.25);}
 .apply-btn:hover{transform:translateY(-2px);box-shadow:0 6px 24px rgba(6,182,212,0.35);}
 
 /* ═══ TOAST ═══ */
@@ -284,19 +284,21 @@ body{font-family:var(--font);background:var(--bg);color:var(--t1);-webkit-font-s
 </style>
 <script src="/site/castford-shell.js" defer></script>
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="/site/dashboard-data.js"></script>
 </head>
 <body>
 <div class="toast-container" id="toasts"></div>
 
 <!-- TOPBAR -->
 <div class="topbar" id="topbar">
-  <div class="topbar-logo"><svg viewBox="0 0 32 32" fill="none"><defs><linearGradient id="lg" x1="0" y1="0" x2="32" y2="32"><stop stop-color="#3B82F6"/><stop offset="1" stop-color="#8B5CF6"/></linearGradient></defs><rect width="32" height="32" rx="8" fill="url(#lg)"/><path d="M8 12h16M8 16h12M8 20h8" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg><span class="name">Castford</span><span class="plan-badge" id="planBadge" style="background:var(--green-dim);color:var(--green);">GROWTH</span></div>
+  <div class="topbar-logo"><svg viewBox="0 0 32 32" fill="none"><defs><linearGradient id="lg" x1="0" y1="0" x2="32" y2="32"><stop stop-color="#3B82F6"/><stop offset="1" stop-color="#9B8AFF"/></linearGradient></defs><rect width="32" height="32" rx="8" fill="url(#lg)"/><path d="M8 12h16M8 16h12M8 20h8" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg><span class="name">Castford</span><span class="plan-badge" id="planBadge" style="background:var(--green-dim);color:var(--green);">GROWTH</span></div>
   <div class="topbar-info"><span>Enterprise · FY2025 YTD</span><span class="sep"></span><span class="clock" id="clock"></span></div>
   <div class="search-box" onclick="toast('info','Search','⌘K to search across views')">🔍 Search… <kbd>⌘K</kbd></div>
   <div class="topbar-controls">
     <button class="role-btn active" onclick="setRole('cfo',this)"><span class="rdot" style="background:#3B82F6;"></span> CFO</button>
-    <button class="role-btn" onclick="setRole('ceo',this)"><span class="rdot" style="background:#8B5CF6;"></span> CEO</button>
-    <button class="role-btn" onclick="setRole('controller',this)"><span class="rdot" style="background:#10B981;"></span> Controller</button>
+    <button class="role-btn" onclick="setRole('ceo',this)"><span class="rdot" style="background:#9B8AFF;"></span> CEO</button>
+    <button class="role-btn" onclick="setRole('controller',this)"><span class="rdot" style="background:#1A3F7A;"></span> Controller</button>
     <span style="width:1px;height:24px;background:var(--border);margin:0 4px;"></span>
     <button class="tier-btn t-starter" onclick="setTier('starter',this)">Starter</button>
     <button class="tier-btn t-growth active" onclick="setTier('growth',this)">Growth</button>
@@ -374,7 +376,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--t1);-webkit-font-s
 
 <script>
 const M=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-const ACCENT_COLORS=['#3B82F6','#06B6D4','#8B5CF6','#10B981','#F59E0B','#EF4444','#EC4899','#6366F1'];
+const ACCENT_COLORS=['#3B82F6','#06B6D4','#9B8AFF','#1A3F7A','#F59E0B','#EF4444','#EC4899','#6366F1'];
 const MODULES=[
   {name:'KPI Cards',desc:'Key performance indicators',on:true},
   {name:'Charts',desc:'Revenue & trend visualizations',on:true},
@@ -392,17 +394,17 @@ const ROLES={
 
 const TIERS={
   starter:{label:'Starter',color:'#06B6D4',price:'$499/mo',banner:'Core dashboard with P&L, basic KPIs, and integrations',features:['Overview','P&L','Basic KPIs','Integrations'],lockG:['Forecast','Scenarios','AI Copilot','Multi-Entity','Growth Metrics','Investor Metrics'],lockB:['Command Center','Close Tasks','Team','SOX Audit','Audit Trail','Reconciliation']},
-  growth:{label:'Growth',color:'#10B981',price:'$1,499/mo',banner:'Advanced analytics with forecasting, scenarios, and AI Copilot',features:['Everything in Starter','Forecast','Scenarios','AI Copilot','Multi-Entity'],lockG:[],lockB:['Command Center','Close Tasks','Team','SOX Audit','Audit Trail','Reconciliation']},
-  business:{label:'Business',color:'#8B5CF6',price:'$3,999/mo',banner:'Full enterprise suite with Command Center, SOX audit, SSO, and team management',features:['Everything in Growth','Command Center','Close Tasks','Investor Metrics','SOX Audit'],lockG:[],lockB:[]}
+  growth:{label:'Growth',color:'#1A3F7A',price:'$1,499/mo',banner:'Advanced analytics with forecasting, scenarios, and AI Copilot',features:['Everything in Starter','Forecast','Scenarios','AI Copilot','Multi-Entity'],lockG:[],lockB:['Command Center','Close Tasks','Team','SOX Audit','Audit Trail','Reconciliation']},
+  business:{label:'Business',color:'#9B8AFF',price:'$3,999/mo',banner:'Full enterprise suite with Command Center, SOX audit, SSO, and team management',features:['Everything in Growth','Command Center','Close Tasks','Investor Metrics','SOX Audit'],lockG:[],lockB:[]}
 };
 
 const DESIGNS=[
   {id:'arctic',name:'Arctic Light',desc:'Clean white surfaces with blue accents',cats:['light'],tags:[{l:'DEFAULT',c:'#3B82F6'},{l:'LIGHT',c:'#94A3B8'}],bg:'#F8FAFC',surface:'#ffffff',card:'#ffffff',elevated:'#F1F5F9',accent:'#3B82F6',text:'#0F172A',text2:'#64748B',border:'#E2E8F0',bars:[45,58,65,52,75,68,82,74,88,80,62,55],font:'dm'},
-  {id:'midnight',name:'Midnight',desc:'Deep navy with cyan glow effects',cats:['dark'],tags:[{l:'DARK',c:'#818CF8'},{l:'POPULAR',c:'#34D399'}],bg:'#030711',surface:'#070D19',card:'#0C1323',elevated:'#111827',accent:'#22D3EE',text:'#F1F5F9',text2:'#94A3B8',border:'rgba(30,48,80,0.5)',bars:[35,42,50,32,55,38,45,28,52,30,48,40],font:'dm'},
+  {id:'midnight',name:'Midnight',desc:'Deep navy with cyan glow effects',cats:['dark'],tags:[{l:'DARK',c:'#818CF8'},{l:'POPULAR',c:'#2D5BA0'}],bg:'#030711',surface:'#070D19',card:'#0C1323',elevated:'#111827',accent:'#5B7FCC',text:'#F1F5F9',text2:'#94A3B8',border:'rgba(30,48,80,0.5)',bars:[35,42,50,32,55,38,45,28,52,30,48,40],font:'dm'},
   {id:'warm',name:'Warm Sand',desc:'Soft cream tones with amber accents',cats:['light','new'],tags:[{l:'LIGHT',c:'#D97706'},{l:'NEW',c:'#EC4899'}],bg:'#FFFBF5',surface:'#FFF8EE',card:'#FFFFFF',elevated:'#FFF5E6',accent:'#D97706',text:'#1C1410',text2:'#8B7355',border:'rgba(180,140,100,0.15)',bars:[60,55,70,48,65,72,58,80,62,75,68,85],font:'dm'},
-  {id:'forest',name:'Forest',desc:'Deep emerald with green data accents',cats:['dark'],tags:[{l:'DARK',c:'#34D399'}],bg:'#040D0A',surface:'#061210',card:'#0A1A14',elevated:'#0F2418',accent:'#34D399',text:'#D1FAE5',text2:'#6EE7B7',border:'rgba(52,211,153,0.1)',bars:[40,52,48,65,58,72,55,68,78,62,85,70],font:'dm'},
+  {id:'forest',name:'Forest',desc:'Deep emerald with green data accents',cats:['dark'],tags:[{l:'DARK',c:'#2D5BA0'}],bg:'#040D0A',surface:'#061210',card:'#0A1A14',elevated:'#0F2418',accent:'#2D5BA0',text:'rgba(26,63,122,0.08)',text2:'#5B7FCC',border:'rgba(52,211,153,0.1)',bars:[40,52,48,65,58,72,55,68,78,62,85,70],font:'dm'},
   {id:'executive',name:'Executive',desc:'Deep violet for board-ready presentations',cats:['dark','new'],tags:[{l:'DARK',c:'#818CF8'},{l:'NEW',c:'#FBBF24'}],bg:'#0C0A1A',surface:'#0E0C1E',card:'#14102A',elevated:'#1A1540',accent:'#818CF8',text:'#E2E0F0',text2:'#A5A0D0',border:'rgba(129,140,248,0.12)',bars:[50,62,55,70,65,78,72,82,75,88,80,92],font:'dm'},
-  {id:'terminal',name:'Terminal',desc:'Pure black with monospace matrix effects',cats:['dark'],tags:[{l:'DARK',c:'#22D3EE'},{l:'HACKER',c:'#34D399'}],bg:'#0a0a0a',surface:'#0d0d0d',card:'#111111',elevated:'#1a1a1a',accent:'#22D3EE',text:'#E0E0E0',text2:'#888888',border:'rgba(34,211,238,0.08)',bars:[30,45,38,52,42,58,35,62,48,55,65,40],font:'mono'}
+  {id:'terminal',name:'Terminal',desc:'Pure black with monospace matrix effects',cats:['dark'],tags:[{l:'DARK',c:'#5B7FCC'},{l:'HACKER',c:'#2D5BA0'}],bg:'#0a0a0a',surface:'#0d0d0d',card:'#111111',elevated:'#1a1a1a',accent:'#5B7FCC',text:'#E0E0E0',text2:'#888888',border:'rgba(34,211,238,0.08)',bars:[30,45,38,52,42,58,35,62,48,55,65,40],font:'mono'}
 ];
 
 // STATE
@@ -445,7 +447,7 @@ function renderSidebar(){
     h+=`<div class="sb-item${active?' active':''}${locked?' locked':''}" onclick="${locked?'':`setView('${item}',this)`}">
       <span class="ico">${['📊','💹','📈','🔀','🏢','🔗','✨','🎯','📋','👥','⚙️'][i]||'📄'}</span>
       <span>${item}</span>
-      ${locked?`<span class="lock-badge" style="background:${lt==='growth'?'rgba(16,185,129,0.1);color:#10B981':'rgba(139,92,246,0.1);color:#8B5CF6'}">🔒 ${lt==='growth'?'GROWTH':'BIZ'}</span>`:''}
+      ${locked?`<span class="lock-badge" style="background:${lt==='growth'?'rgba(16,185,129,0.1);color:#1A3F7A':'rgba(139,92,246,0.1);color:#9B8AFF'}">🔒 ${lt==='growth'?'GROWTH':'BIZ'}</span>`:''}
       ${item==='Overview'&&!locked?`<span class="cnt">${R.table.rows.length}</span>`:''}
     </div>`;
   });h+='</div>';document.getElementById('sidebar').innerHTML=h;
@@ -478,13 +480,13 @@ function renderOverview(R,T){
   if(moduleState['Data Tables'])h+=`<div class="data-table" style="animation:scaleReveal 0.5s var(--ease) 0.2s backwards;"><div class="dt-head" style="grid-template-columns:${R.table.w}">${R.table.cols.map(c=>`<span>${c.toUpperCase()}</span>`).join('')}</div>${R.table.rows.map((r,ri)=>`<div class="dt-row" style="grid-template-columns:${R.table.w};animation:fadeUp 0.3s var(--ease) ${0.25+ri*0.04}s backwards;" onclick="toast('info','${r[0]}','Opening detail view…')"><span style="font-weight:600;">${r[0]}</span><span>${r[1]}</span><span class="status s-${r[2]}">${r[2].toUpperCase()}</span><span style="color:var(--t4);">${r[3]}</span></div>`).join('')}</div>`;
   // AI
   if(moduleState['AI Copilot']){
-    if(tier==='starter'){h+=`<div class="lock-wrap" style="min-height:120px;"><div class="lock-blur"><div class="ai-grid"><div class="ai-card"><div class="tag" style="color:var(--amber);">⚡ VARIANCE</div><p>Alert…</p></div><div class="ai-card"><div class="tag" style="color:var(--green);">📈 FORECAST</div><p>Trending…</p></div><div class="ai-card"><div class="tag" style="color:var(--cyan);">✈️ RUNWAY</div><p>Extended…</p></div></div></div><div class="lock-gate"><div class="licon">🔒</div><div class="ltitle">AI Copilot Insights</div><div class="lsub">Available on Growth plan and above</div><button class="ubtn" style="background:#10B981;" onclick="setTier('growth',document.querySelector('.t-growth'))">Upgrade to Growth · $1,499/mo</button></div></div>`;}
+    if(tier==='starter'){h+=`<div class="lock-wrap" style="min-height:120px;"><div class="lock-blur"><div class="ai-grid"><div class="ai-card"><div class="tag" style="color:var(--amber);">⚡ VARIANCE</div><p>Alert…</p></div><div class="ai-card"><div class="tag" style="color:var(--green);">📈 FORECAST</div><p>Trending…</p></div><div class="ai-card"><div class="tag" style="color:var(--cyan);">✈️ RUNWAY</div><p>Extended…</p></div></div></div><div class="lock-gate"><div class="licon">🔒</div><div class="ltitle">AI Copilot Insights</div><div class="lsub">Available on Growth plan and above</div><button class="ubtn" style="background:#1A3F7A;" onclick="setTier('growth',document.querySelector('.t-growth'))">Upgrade to Growth · $1,499/mo</button></div></div>`;}
     else{h+=`<div class="ai-section" style="animation:fadeUp 0.4s var(--ease) 0.3s backwards;"><h3>✨ AI Copilot Insights</h3><div class="ai-grid stagger"><div class="ai-card" onclick="toast('warning','Variance','Marketing OPEX $67K over budget')"><div class="tag" style="color:var(--amber);">⚡ VARIANCE ALERT</div><p>Marketing OPEX is <strong>$67K over budget</strong> — auto-reclassified to prepaid.</p></div><div class="ai-card" onclick="toast('success','Forecast','Revenue 7.7% above Q1 target')"><div class="tag" style="color:var(--green);">📈 FORECAST</div><p>Revenue trending <strong>7.7% above</strong> Q1 forecast.</p></div><div class="ai-card" onclick="toast('info','Runway','Cash runway now 18.2 months')"><div class="tag" style="color:var(--cyan);">✈️ RUNWAY</div><p>Cash runway extended to <strong>18.2 months</strong> (+2.4mo).</p></div></div></div>`;}
   }
   // Team
   if(moduleState['Team Panel']){
-    if(tier==='business'){h+=`<h3 style="font-size:13px;font-weight:700;margin:16px 0 10px;">Team Active</h3><div class="team-grid stagger"><div class="team-card" onclick="toast('info','Sarah C.','CFO · Online')"><div class="avatar" style="background:linear-gradient(135deg,#3B82F6,#2563EB);">SC</div><div class="tname">Sarah C.</div><div class="trole">CFO</div><div class="tstatus">Online</div></div><div class="team-card" onclick="toast('info','James R.','FP&A · Online')"><div class="avatar" style="background:linear-gradient(135deg,#10B981,#059669);">JR</div><div class="tname">James R.</div><div class="trole">FP&A</div><div class="tstatus">Online</div></div><div class="team-card" onclick="toast('info','Priya P.','Controller · Online')"><div class="avatar" style="background:linear-gradient(135deg,#F59E0B,#D97706);">PP</div><div class="tname">Priya P.</div><div class="trole">Controller</div><div class="tstatus">Online</div></div><div class="team-card" onclick="toast('info','David K.','RevOps · Away')"><div class="avatar" style="background:linear-gradient(135deg,#8B5CF6,#7C3AED);">DK</div><div class="tname">David K.</div><div class="trole">RevOps</div><div class="tstatus" style="color:var(--amber);">Away</div></div></div>`;}
-    else{h+=`<div class="lock-wrap" style="min-height:100px;"><div class="lock-blur"><div class="team-grid"><div class="team-card"><div class="avatar" style="background:#ccc;"></div><div class="tname">Team</div></div><div class="team-card"><div class="avatar" style="background:#ccc;"></div><div class="tname">Team</div></div><div class="team-card"><div class="avatar" style="background:#ccc;"></div><div class="tname">Team</div></div><div class="team-card"><div class="avatar" style="background:#ccc;"></div><div class="tname">Team</div></div></div></div><div class="lock-gate"><div class="licon">🔒</div><div class="ltitle">Team Management</div><div class="lsub">Available on Business plan</div><button class="ubtn" style="background:#8B5CF6;" onclick="setTier('business',document.querySelector('.t-business'))">Upgrade to Business · $3,999/mo</button></div></div>`;}
+    if(tier==='business'){h+=`<h3 style="font-size:13px;font-weight:700;margin:16px 0 10px;">Team Active</h3><div class="team-grid stagger"><div class="team-card" onclick="toast('info','Sarah C.','CFO · Online')"><div class="avatar" style="background:linear-gradient(135deg,#3B82F6,#2563EB);">SC</div><div class="tname">Sarah C.</div><div class="trole">CFO</div><div class="tstatus">Online</div></div><div class="team-card" onclick="toast('info','James R.','FP&A · Online')"><div class="avatar" style="background:linear-gradient(135deg,#1A3F7A,#1A3F7A);">JR</div><div class="tname">James R.</div><div class="trole">FP&A</div><div class="tstatus">Online</div></div><div class="team-card" onclick="toast('info','Priya P.','Controller · Online')"><div class="avatar" style="background:linear-gradient(135deg,#F59E0B,#D97706);">PP</div><div class="tname">Priya P.</div><div class="trole">Controller</div><div class="tstatus">Online</div></div><div class="team-card" onclick="toast('info','David K.','RevOps · Away')"><div class="avatar" style="background:linear-gradient(135deg,#9B8AFF,#7C3AED);">DK</div><div class="tname">David K.</div><div class="trole">RevOps</div><div class="tstatus" style="color:var(--amber);">Away</div></div></div>`;}
+    else{h+=`<div class="lock-wrap" style="min-height:100px;"><div class="lock-blur"><div class="team-grid"><div class="team-card"><div class="avatar" style="background:#ccc;"></div><div class="tname">Team</div></div><div class="team-card"><div class="avatar" style="background:#ccc;"></div><div class="tname">Team</div></div><div class="team-card"><div class="avatar" style="background:#ccc;"></div><div class="tname">Team</div></div><div class="team-card"><div class="avatar" style="background:#ccc;"></div><div class="tname">Team</div></div></div></div><div class="lock-gate"><div class="licon">🔒</div><div class="ltitle">Team Management</div><div class="lsub">Available on Business plan</div><button class="ubtn" style="background:#9B8AFF;" onclick="setTier('business',document.querySelector('.t-business'))">Upgrade to Business · $3,999/mo</button></div></div>`;}
   }
   return h;
 }
@@ -504,7 +506,7 @@ function renderStudio(cat){
     <div class="studio-card${d.id===design?' selected':''}" onclick="selectDesign('${d.id}',this)">
       <div class="check">✓</div>
       <div class="sp" style="background:${d.bg};">
-        <div class="sp-sb" style="background:${d.surface};border-color:${d.border};"><div class="sp-logo" style="background:linear-gradient(135deg,${d.accent},#8B5CF6);"></div><div class="sp-dot on" style="background:${d.accent};"></div><div class="sp-dot" style="background:${d.border};"></div><div class="sp-dot" style="background:${d.border};"></div></div>
+        <div class="sp-sb" style="background:${d.surface};border-color:${d.border};"><div class="sp-logo" style="background:linear-gradient(135deg,${d.accent},#9B8AFF);"></div><div class="sp-dot on" style="background:${d.accent};"></div><div class="sp-dot" style="background:${d.border};"></div><div class="sp-dot" style="background:${d.border};"></div></div>
         <div class="sp-top" style="background:${d.surface};border-color:${d.border};color:${d.text};">Command Center</div>
         <div class="sp-body" style="background:${d.bg};"><div class="sp-kpis">${d.bars.slice(0,4).map((_,i)=>`<div class="sp-kpi" style="background:${d.card};border-color:${d.border};"><div class="sp-kv" style="color:${d.text};">$${4+i}M</div><div class="sp-kl" style="color:${d.accent}80;">KPI</div></div>`).join('')}</div><div class="sp-chart" style="background:${d.card};border-color:${d.border};">${d.bars.map(h=>`<div class="sp-bar" style="height:${h}%;background:${d.accent};opacity:0.5;"></div>`).join('')}</div></div>
         <div class="sp-foot" style="background:${d.bg};border-color:${d.border};color:${d.accent}80;"><div class="sp-live" style="background:${d.accent};"></div><span style="font-family:var(--mono);">LIVE</span><span style="font-family:var(--mono);">7 CONN</span></div>

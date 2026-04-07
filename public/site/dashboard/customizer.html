@@ -12,7 +12,7 @@
   --border: rgba(15,23,42,0.08); --border2: rgba(15,23,42,0.12);
   --t1: #0F172A; --t2: #334155; --t3: #64748B; --t4: #94A3B8;
   --cyan: #06B6D4; --cyan-bg: rgba(6,182,212,0.06); --cyan-border: rgba(6,182,212,0.15);
-  --green: #059669; --green-bg: rgba(5,150,105,0.06);
+  --green: #1A3F7A; --green-bg: rgba(5,150,105,0.06);
   --purple: #7C3AED; --purple-bg: rgba(124,58,237,0.06);
   --amber: #D97706; --amber-bg: rgba(217,119,6,0.06);
   --red: #DC2626; --red-bg: rgba(220,38,38,0.06);
@@ -195,6 +195,8 @@ body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg); color
 </style>
 <script src="/site/castford-shell.js" defer></script>
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="/site/dashboard-data.js"></script>
 </head>
 <body>
 
@@ -210,7 +212,7 @@ body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg); color
   <div class="topbar-center">
     <button class="role-tab active" onclick="switchRole('cfo')"><span class="dot" style="background:#06B6D4"></span> CFO</button>
     <button class="role-tab" onclick="switchRole('ceo')"><span class="dot" style="background:#7C3AED"></span> CEO</button>
-    <button class="role-tab" onclick="switchRole('controller')"><span class="dot" style="background:#059669"></span> Controller</button>
+    <button class="role-tab" onclick="switchRole('controller')"><span class="dot" style="background:#1A3F7A"></span> Controller</button>
   </div>
 
   <!-- Tier Tabs -->
@@ -385,11 +387,11 @@ const TIERS = {
 
 const TEMPLATES = [
   { id: 'arctic', name: 'Arctic Light', desc: 'Clean white with cyan accents. Professional and modern.', tags: [{ label: 'DEFAULT', color: 'var(--cyan)' }, { label: 'LIGHT', color: 'var(--t3)' }], bg: '#F8FAFC', sidebar: '#fff', topbar: '#fff', kpi: '#fff', chart: '#fff', accent: '#06B6D4', text: '#0F172A', border: 'rgba(15,23,42,0.08)' },
-  { id: 'midnight', name: 'Midnight', desc: 'Deep navy with cyan glow. The signature dark theme.', tags: [{ label: 'DARK', color: '#818CF8' }, { label: 'POPULAR', color: '#34D399' }], bg: '#030711', sidebar: '#070D19', topbar: '#030711', kpi: '#0C1323', chart: '#0C1323', accent: '#22D3EE', text: '#F1F5F9', border: 'rgba(30,48,80,0.4)' },
+  { id: 'midnight', name: 'Midnight', desc: 'Deep navy with cyan glow. The signature dark theme.', tags: [{ label: 'DARK', color: '#818CF8' }, { label: 'POPULAR', color: '#2D5BA0' }], bg: '#030711', sidebar: '#070D19', topbar: '#030711', kpi: '#0C1323', chart: '#0C1323', accent: '#5B7FCC', text: '#F1F5F9', border: 'rgba(30,48,80,0.4)' },
   { id: 'warm', name: 'Warm Sand', desc: 'Soft cream tones with amber accents. Elegant and calm.', tags: [{ label: 'LIGHT', color: '#D97706' }], bg: '#FFFBF5', sidebar: '#FFF8EE', topbar: '#FFFBF5', kpi: '#fff', chart: '#fff', accent: '#D97706', text: '#1C1410', border: 'rgba(180,140,100,0.12)' },
-  { id: 'forest', name: 'Forest', desc: 'Deep emerald with green data accents. Nature-inspired dark.', tags: [{ label: 'DARK', color: '#34D399' }], bg: '#040D0A', sidebar: '#040D0A', topbar: '#040D0A', kpi: '#0A1A14', chart: '#0A1A14', accent: '#34D399', text: '#D1FAE5', border: 'rgba(52,211,153,0.1)' },
+  { id: 'forest', name: 'Forest', desc: 'Deep emerald with green data accents. Nature-inspired dark.', tags: [{ label: 'DARK', color: '#2D5BA0' }], bg: '#040D0A', sidebar: '#040D0A', topbar: '#040D0A', kpi: '#0A1A14', chart: '#0A1A14', accent: '#2D5BA0', text: 'rgba(26,63,122,0.08)', border: 'rgba(52,211,153,0.1)' },
   { id: 'executive', name: 'Executive', desc: 'Deep violet with purple data accents. Board-ready.', tags: [{ label: 'DARK', color: '#818CF8' }, { label: 'NEW', color: '#FBBF24' }], bg: '#0C0A1A', sidebar: '#0C0A1A', topbar: '#0C0A1A', kpi: '#14102A', chart: '#14102A', accent: '#818CF8', text: '#E2E0F0', border: 'rgba(129,140,248,0.12)' },
-  { id: 'terminal', name: 'Terminal', desc: 'Monochrome black with cyan matrix vibes. For power users.', tags: [{ label: 'DARK', color: '#22D3EE' }, { label: 'HACKER', color: '#34D399' }], bg: '#0a0a0a', sidebar: '#0a0a0a', topbar: '#0a0a0a', kpi: '#111', chart: '#111', accent: '#22D3EE', text: '#E0E0E0', border: 'rgba(34,211,238,0.08)' }
+  { id: 'terminal', name: 'Terminal', desc: 'Monochrome black with cyan matrix vibes. For power users.', tags: [{ label: 'DARK', color: '#5B7FCC' }, { label: 'HACKER', color: '#2D5BA0' }], bg: '#0a0a0a', sidebar: '#0a0a0a', topbar: '#0a0a0a', kpi: '#111', chart: '#111', accent: '#5B7FCC', text: '#E0E0E0', border: 'rgba(34,211,238,0.08)' }
 ];
 
 // ═══ STATE ═══
@@ -551,10 +553,10 @@ function renderMain() {
   if (currentTier === 'business') {
     html += `<div style="margin-top:24px"><h3 style="font-size:14px;font-weight:700;margin-bottom:12px;">Team Active</h3>
     <div class="team-row">
-      <div class="team-card"><div class="team-avatar" style="background:linear-gradient(135deg,#06B6D4,#0891B2);"></div><div class="team-name">Sarah C.</div><div class="team-role">CFO</div></div>
-      <div class="team-card"><div class="team-avatar" style="background:linear-gradient(135deg,#059669,#10B981);"></div><div class="team-name">James R.</div><div class="team-role">FP&A</div></div>
+      <div class="team-card"><div class="team-avatar" style="background:linear-gradient(135deg,#06B6D4,#2D5BA0);"></div><div class="team-name">Sarah C.</div><div class="team-role">CFO</div></div>
+      <div class="team-card"><div class="team-avatar" style="background:linear-gradient(135deg,#1A3F7A,#1A3F7A);"></div><div class="team-name">James R.</div><div class="team-role">FP&A</div></div>
       <div class="team-card"><div class="team-avatar" style="background:linear-gradient(135deg,#D97706,#F59E0B);"></div><div class="team-name">Priya P.</div><div class="team-role">Controller</div></div>
-      <div class="team-card"><div class="team-avatar" style="background:linear-gradient(135deg,#7C3AED,#8B5CF6);"></div><div class="team-name">David K.</div><div class="team-role">RevOps</div></div>
+      <div class="team-card"><div class="team-avatar" style="background:linear-gradient(135deg,#7C3AED,#9B8AFF);"></div><div class="team-name">David K.</div><div class="team-role">RevOps</div></div>
     </div></div>`;
   } else {
     // Locked team for non-Business

@@ -13,10 +13,10 @@
   --border:#E2E8F0;--border2:#CBD5E1;
   --t1:#0F172A;--t2:#334155;--t3:#64748B;--t4:#94A3B8;
   --accent:#3B82F6;--accent-dim:rgba(59,130,246,0.06);--accent-glow:rgba(59,130,246,0.15);
-  --green:#10B981;--green-dim:rgba(16,185,129,0.06);--green-glow:rgba(16,185,129,0.15);
+  --green:#1A3F7A;--green-dim:rgba(16,185,129,0.06);--green-glow:rgba(16,185,129,0.15);
   --red:#EF4444;--red-dim:rgba(239,68,68,0.06);
   --amber:#F59E0B;--amber-dim:rgba(245,158,11,0.06);--amber-glow:rgba(245,158,11,0.15);
-  --purple:#8B5CF6;--purple-dim:rgba(139,92,246,0.06);--purple-glow:rgba(139,92,246,0.15);
+  --purple:#9B8AFF;--purple-dim:rgba(139,92,246,0.06);--purple-glow:rgba(139,92,246,0.15);
   --cyan:#06B6D4;--cyan-dim:rgba(6,182,212,0.06);--cyan-glow:rgba(6,182,212,0.15);
   --radius:12px;--radius-sm:8px;--radius-lg:16px;
   --shadow:0 1px 3px rgba(0,0,0,0.04),0 1px 2px rgba(0,0,0,0.03);
@@ -136,10 +136,10 @@ body{font-family:var(--font);background:var(--bg);color:var(--t1);-webkit-font-s
 .kpi:hover{transform:translateY(-3px);box-shadow:var(--shadow-md);border-color:var(--border2);}
 .kpi:hover::before{opacity:1;}
 .kpi.c-blue::before{background:linear-gradient(180deg,#3B82F6,#2563EB);}
-.kpi.c-green::before{background:linear-gradient(180deg,#10B981,#059669);}
-.kpi.c-purple::before{background:linear-gradient(180deg,#8B5CF6,#7C3AED);}
+.kpi.c-green::before{background:linear-gradient(180deg,#1A3F7A,#1A3F7A);}
+.kpi.c-purple::before{background:linear-gradient(180deg,#9B8AFF,#7C3AED);}
 .kpi.c-amber::before{background:linear-gradient(180deg,#F59E0B,#D97706);}
-.kpi.c-cyan::before{background:linear-gradient(180deg,#06B6D4,#0891B2);}
+.kpi.c-cyan::before{background:linear-gradient(180deg,#06B6D4,#2D5BA0);}
 .kpi.c-red::before{background:linear-gradient(180deg,#EF4444,#DC2626);}
 .kpi:hover.c-blue{box-shadow:0 0 24px var(--accent-glow),var(--shadow-md);}
 .kpi:hover.c-green{box-shadow:0 0 24px var(--green-glow),var(--shadow-md);}
@@ -307,7 +307,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--t1);-webkit-font-s
 
 /* ═══ CUSTOMIZE BAR ═══ */
 .cbar{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);z-index:200;background:rgba(15,23,42,0.94);backdrop-filter:blur(24px) saturate(1.5);border-radius:14px;padding:8px 16px;display:flex;align-items:center;gap:10px;box-shadow:0 8px 40px rgba(0,0,0,0.2),0 0 0 1px rgba(255,255,255,0.05);color:#fff;animation:slideUp 0.5s var(--ease);}
-.cbar-icon{width:28px;height:28px;border-radius:8px;background:linear-gradient(135deg,#06B6D4,#8B5CF6);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:12px;animation:gradientShift 4s ease infinite;background-size:200% 200%;}
+.cbar-icon{width:28px;height:28px;border-radius:8px;background:linear-gradient(135deg,#06B6D4,#9B8AFF);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:12px;animation:gradientShift 4s ease infinite;background-size:200% 200%;}
 .cbar-title{font-size:12px;font-weight:700;white-space:nowrap;}
 .cbar-sep{width:1px;height:22px;background:rgba(255,255,255,0.08);}
 .cbar-lbl{font-size:8px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:rgba(255,255,255,0.3);white-space:nowrap;}
@@ -318,7 +318,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--t1);-webkit-font-s
 .cbar-btn.active{background:rgba(6,182,212,0.2);border-color:rgba(6,182,212,0.4);color:#67E8F9;}
 .cbar-res{padding:5px 11px;border-radius:6px;font-size:10px;font-weight:600;border:1px solid rgba(255,255,255,0.08);background:rgba(255,255,255,0.04);color:rgba(255,255,255,0.6);cursor:pointer;transition:all 0.15s;white-space:nowrap;}
 .cbar-res:hover{background:rgba(255,255,255,0.1);color:#fff;}
-.cbar-studio{padding:7px 16px;border-radius:8px;font-size:11px;font-weight:700;border:none;background:linear-gradient(135deg,#06B6D4,#8B5CF6);color:#fff;cursor:pointer;transition:all 0.25s var(--ease);display:flex;align-items:center;gap:5px;}
+.cbar-studio{padding:7px 16px;border-radius:8px;font-size:11px;font-weight:700;border:none;background:linear-gradient(135deg,#06B6D4,#9B8AFF);color:#fff;cursor:pointer;transition:all 0.25s var(--ease);display:flex;align-items:center;gap:5px;}
 .cbar-studio:hover{transform:translateY(-2px);box-shadow:0 4px 20px rgba(6,182,212,0.35);}
 
 /* ═══ DESIGN STUDIO MODAL ═══ */
@@ -404,6 +404,8 @@ body{font-family:var(--font);background:var(--bg);color:var(--t1);-webkit-font-s
 </style>
 <script src="/site/castford-shell.js" defer></script>
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="/site/dashboard-data.js"></script>
 </head>
 <body>
 
@@ -413,7 +415,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--t1);-webkit-font-s
 <!-- Top Bar -->
 <div class="topbar" id="topbar">
   <div class="topbar-logo">
-    <svg viewBox="0 0 32 32" fill="none"><defs><linearGradient id="lg" x1="0" y1="0" x2="32" y2="32"><stop stop-color="#3B82F6"/><stop offset="1" stop-color="#8B5CF6"/></linearGradient></defs><rect width="32" height="32" rx="8" fill="url(#lg)"/><path d="M8 12h16M8 16h12M8 20h8" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>
+    <svg viewBox="0 0 32 32" fill="none"><defs><linearGradient id="lg" x1="0" y1="0" x2="32" y2="32"><stop stop-color="#3B82F6"/><stop offset="1" stop-color="#9B8AFF"/></linearGradient></defs><rect width="32" height="32" rx="8" fill="url(#lg)"/><path d="M8 12h16M8 16h12M8 20h8" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>
     <span class="name">Castford</span>
     <span class="plan-badge" id="planBadge" style="background:var(--green-dim);color:var(--green);">GROWTH</span>
   </div>
@@ -430,8 +432,8 @@ body{font-family:var(--font);background:var(--bg);color:var(--t1);-webkit-font-s
 
   <div class="topbar-controls">
     <button class="role-btn active" data-role="cfo" onclick="setRole('cfo',this)"><span class="rdot" style="background:#3B82F6;"></span> CFO</button>
-    <button class="role-btn" data-role="ceo" onclick="setRole('ceo',this)"><span class="rdot" style="background:#8B5CF6;"></span> CEO</button>
-    <button class="role-btn" data-role="controller" onclick="setRole('controller',this)"><span class="rdot" style="background:#10B981;"></span> Controller</button>
+    <button class="role-btn" data-role="ceo" onclick="setRole('ceo',this)"><span class="rdot" style="background:#9B8AFF;"></span> CEO</button>
+    <button class="role-btn" data-role="controller" onclick="setRole('controller',this)"><span class="rdot" style="background:#1A3F7A;"></span> Controller</button>
     <span style="width:1px;height:24px;background:var(--border);margin:0 4px;"></span>
     <button class="tier-btn tier-starter" data-tier="starter" onclick="setTier('starter',this)">Starter</button>
     <button class="tier-btn tier-growth active" data-tier="growth" onclick="setTier('growth',this)">Growth</button>
@@ -597,16 +599,16 @@ const TIERS = {
 const DESIGNS = [
   {id:'arctic',name:'Arctic Light',desc:'Clean white surfaces with blue accents. Professional and modern.',cats:['light'],tags:[{l:'DEFAULT',c:'var(--accent)'},{l:'LIGHT',c:'var(--t4)'}],feats:['Glass blur','Clean type','White surfaces'],
    bg:'#F8FAFC',sidebar:'#ffffff',topbar:'#ffffff',card:'#ffffff',elevated:'#F1F5F9',kpi:'#ffffff',accent:'#3B82F6',text:'#0F172A',text2:'#64748B',border:'#E2E8F0',bars:[45,58,65,52,75,68,82,74,88,80,62,55],font:'DM Sans'},
-  {id:'midnight',name:'Midnight',desc:'Deep navy with cyan glow. The signature Castford dark aesthetic.',cats:['dark'],tags:[{l:'DARK',c:'#818CF8'},{l:'POPULAR',c:'#34D399'}],feats:['Glow effects','Cyan palette','Glass blur'],
-   bg:'#030711',sidebar:'#070D19',topbar:'#060C18',card:'#0C1323',elevated:'#111827',kpi:'#0C1323',accent:'#22D3EE',text:'#F1F5F9',text2:'#94A3B8',border:'rgba(30,48,80,0.5)',bars:[35,42,50,32,55,38,45,28,52,30,48,40],font:'DM Sans'},
+  {id:'midnight',name:'Midnight',desc:'Deep navy with cyan glow. The signature Castford dark aesthetic.',cats:['dark'],tags:[{l:'DARK',c:'#818CF8'},{l:'POPULAR',c:'#2D5BA0'}],feats:['Glow effects','Cyan palette','Glass blur'],
+   bg:'#030711',sidebar:'#070D19',topbar:'#060C18',card:'#0C1323',elevated:'#111827',kpi:'#0C1323',accent:'#5B7FCC',text:'#F1F5F9',text2:'#94A3B8',border:'rgba(30,48,80,0.5)',bars:[35,42,50,32,55,38,45,28,52,30,48,40],font:'DM Sans'},
   {id:'warm',name:'Warm Sand',desc:'Soft cream tones with amber data accents. Elegant and sophisticated.',cats:['light','new'],tags:[{l:'LIGHT',c:'#D97706'},{l:'NEW',c:'#EC4899'}],feats:['Warm palette','Amber accents','Cream surfaces'],
    bg:'#FFFBF5',sidebar:'#FFF8EE',topbar:'#FFFBF5',card:'#FFFFFF',elevated:'#FFF5E6',kpi:'#FFFFFF',accent:'#D97706',text:'#1C1410',text2:'#8B7355',border:'rgba(180,140,100,0.15)',bars:[60,55,70,48,65,72,58,80,62,75,68,85],font:'DM Sans'},
-  {id:'forest',name:'Forest',desc:'Deep emerald with green data accents. Nature-inspired and focused.',cats:['dark'],tags:[{l:'DARK',c:'#34D399'}],feats:['Emerald palette','Green data viz','Deep surfaces'],
-   bg:'#040D0A',sidebar:'#061210',topbar:'#050E0B',card:'#0A1A14',elevated:'#0F2418',kpi:'#0A1A14',accent:'#34D399',text:'#D1FAE5',text2:'#6EE7B7',border:'rgba(52,211,153,0.1)',bars:[40,52,48,65,58,72,55,68,78,62,85,70],font:'DM Sans'},
+  {id:'forest',name:'Forest',desc:'Deep emerald with green data accents. Nature-inspired and focused.',cats:['dark'],tags:[{l:'DARK',c:'#2D5BA0'}],feats:['Emerald palette','Green data viz','Deep surfaces'],
+   bg:'#040D0A',sidebar:'#061210',topbar:'#050E0B',card:'#0A1A14',elevated:'#0F2418',kpi:'#0A1A14',accent:'#2D5BA0',text:'rgba(26,63,122,0.08)',text2:'#5B7FCC',border:'rgba(52,211,153,0.1)',bars:[40,52,48,65,58,72,55,68,78,62,85,70],font:'DM Sans'},
   {id:'executive',name:'Executive',desc:'Deep violet with purple accents. Board-ready for investor meetings.',cats:['dark','new'],tags:[{l:'DARK',c:'#818CF8'},{l:'NEW',c:'#FBBF24'}],feats:['Purple palette','Board-ready','Premium feel'],
    bg:'#0C0A1A',sidebar:'#0E0C1E',topbar:'#0D0B1C',card:'#14102A',elevated:'#1A1540',kpi:'#14102A',accent:'#818CF8',text:'#E2E0F0',text2:'#A5A0D0',border:'rgba(129,140,248,0.12)',bars:[50,62,55,70,65,78,72,82,75,88,80,92],font:'DM Sans'},
-  {id:'terminal',name:'Terminal',desc:'Pure black with monospace type and cyan matrix effects.',cats:['dark'],tags:[{l:'DARK',c:'#22D3EE'},{l:'HACKER',c:'#34D399'}],feats:['Monospace fonts','Matrix aesthetic','Keyboard-first'],
-   bg:'#0a0a0a',sidebar:'#0d0d0d',topbar:'#0a0a0a',card:'#111111',elevated:'#1a1a1a',kpi:'#111111',accent:'#22D3EE',text:'#E0E0E0',text2:'#888',border:'rgba(34,211,238,0.08)',bars:[30,45,38,52,42,58,35,62,48,55,65,40],font:'JetBrains Mono'}
+  {id:'terminal',name:'Terminal',desc:'Pure black with monospace type and cyan matrix effects.',cats:['dark'],tags:[{l:'DARK',c:'#5B7FCC'},{l:'HACKER',c:'#2D5BA0'}],feats:['Monospace fonts','Matrix aesthetic','Keyboard-first'],
+   bg:'#0a0a0a',sidebar:'#0d0d0d',topbar:'#0a0a0a',card:'#111111',elevated:'#1a1a1a',kpi:'#111111',accent:'#5B7FCC',text:'#E0E0E0',text2:'#888',border:'rgba(34,211,238,0.08)',bars:[30,45,38,52,42,58,35,62,48,55,65,40],font:'JetBrains Mono'}
 ];
 
 // ═══════════════════════════════════════════════════════════════
@@ -872,9 +874,9 @@ function renderOverview(R,T){
     h+=`<h3 style="font-size:13px;font-weight:700;margin:16px 0 10px;animation:fadeUp 0.4s var(--ease) 0.35s backwards;">Team Active</h3>
     <div class="team-grid stagger">
       <div class="team-card" onclick="showToast('info','Sarah C.','CFO · Online · Last active 2m ago')"><div class="avatar" style="background:linear-gradient(135deg,#3B82F6,#2563EB);">SC</div><div class="name">Sarah C.</div><div class="role">CFO</div><div class="status-indicator">Online</div></div>
-      <div class="team-card" onclick="showToast('info','James R.','FP&A · Online · Last active 5m ago')"><div class="avatar" style="background:linear-gradient(135deg,#10B981,#059669);">JR</div><div class="name">James R.</div><div class="role">FP&A</div><div class="status-indicator">Online</div></div>
+      <div class="team-card" onclick="showToast('info','James R.','FP&A · Online · Last active 5m ago')"><div class="avatar" style="background:linear-gradient(135deg,#1A3F7A,#1A3F7A);">JR</div><div class="name">James R.</div><div class="role">FP&A</div><div class="status-indicator">Online</div></div>
       <div class="team-card" onclick="showToast('info','Priya P.','Controller · Online · Last active 1m ago')"><div class="avatar" style="background:linear-gradient(135deg,#F59E0B,#D97706);">PP</div><div class="name">Priya P.</div><div class="role">Controller</div><div class="status-indicator">Online</div></div>
-      <div class="team-card" onclick="showToast('info','David K.','RevOps · Away · Last active 30m ago')"><div class="avatar" style="background:linear-gradient(135deg,#8B5CF6,#7C3AED);">DK</div><div class="name">David K.</div><div class="role">RevOps</div><div class="status-indicator" style="color:var(--amber);">Away</div></div>
+      <div class="team-card" onclick="showToast('info','David K.','RevOps · Away · Last active 30m ago')"><div class="avatar" style="background:linear-gradient(135deg,#9B8AFF,#7C3AED);">DK</div><div class="name">David K.</div><div class="role">RevOps</div><div class="status-indicator" style="color:var(--amber);">Away</div></div>
     </div>`;
   } else {
     h+=`<div class="lock-wrap" style="min-height:100px;animation:fadeUp 0.4s var(--ease) 0.35s backwards;">
@@ -1085,7 +1087,7 @@ function renderStudio(cat){
       <div class="check">✓</div>
       <div class="studio-preview" style="background:${d.bg};">
         <div class="sp-sidebar" style="background:${d.sidebar};border-color:${d.border};">
-          <div class="sp-logo" style="background:linear-gradient(135deg,${d.accent},#8B5CF6);"></div>
+          <div class="sp-logo" style="background:linear-gradient(135deg,${d.accent},#9B8AFF);"></div>
           <div class="sp-dot active" style="background:${d.accent};"></div>
           <div class="sp-dot" style="background:${d.border};"></div>
           <div class="sp-dot" style="background:${d.border};"></div>
