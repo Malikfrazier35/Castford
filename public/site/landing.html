@@ -3,735 +3,407 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Castford — AI-Native Financial Planning & Analysis</title>
-<link rel="icon" type="image/svg+xml" href="/site/logo.svg">
-<link rel="apple-touch-icon" href="/site/logo.svg">
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<title>Castford — See what the numbers won't tell you</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,300&family=Instrument+Sans:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-/* ===== SHARED NAV ===== */
-nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,0.88);backdrop-filter:blur(16px) saturate(180%);-webkit-backdrop-filter:blur(16px) saturate(180%);border-bottom:1px solid #F1F5F9}
-.nav-inner{max-width:1200px;margin:0 auto;padding:0 24px;height:60px;display:flex;align-items:center;justify-content:space-between}
-.logo-link{display:flex;align-items:center;gap:8px;font-weight:800;font-size:17px;color:#0F172A;text-decoration:none;letter-spacing:-0.01em}
-.logo-link .ldot{width:9px;height:9px;background:#CF8A2E;border-radius:50%}
-.nav-mid{display:flex;gap:4px;font-size:14px;font-weight:500;align-items:center}
-.nav-mid a{color:#64748B;padding:8px 12px;border-radius:8px;text-decoration:none;transition:color .15s}
-.nav-mid a:hover{color:#0F172A;background:rgba(0,0,0,0.03)}
-.nav-end{display:flex;align-items:center;gap:10px}
-.nav-end a{font-size:14px;font-weight:500;color:#64748B;padding:8px 12px;text-decoration:none;transition:color .15s}
-.nav-end a:hover{color:#0F172A}
-.btn-sub{display:inline-flex;align-items:center;padding:8px 18px;border-radius:8px;font-weight:600;font-size:13px;background:#CF8A2E;color:#fff!important;text-decoration:none;border:none;cursor:pointer;transition:all .15s}
-.btn-sub:hover{background:#B07520;box-shadow:0 2px 12px rgba(207,138,46,0.25)}
-@media(max-width:900px){.nav-mid{display:none}}
-
-/* ===== SHARED FOOTER ===== */
-footer{background:#F8FAFC;border-top:1px solid #E2E8F0;padding:56px 24px 24px}
-.ft-inner{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:1.5fr repeat(4,1fr);gap:40px;margin-bottom:40px}
-.ft-brand p{font-size:13px;color:#64748B;line-height:1.6;max-width:240px;margin-top:10px}
-.ft-col{display:flex;flex-direction:column;gap:8px}
-.ft-col h5{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;color:#0F172A;margin-bottom:4px}
-.ft-col a{font-size:13px;color:#64748B;text-decoration:none;transition:color .15s}
-.ft-col a:hover{color:#0F172A}
-.ft-bottom{max-width:1200px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;padding-top:20px;border-top:1px solid #E2E8F0;font-size:12px;color:#64748B}
-.ft-bottom a{color:#64748B;text-decoration:none;transition:color .15s}
-.ft-bottom a:hover{color:#0F172A}
-@media(max-width:768px){.ft-inner{grid-template-columns:1fr 1fr;gap:24px}}
-
-:root{
-  --green:#CF8A2E;--green-50:#FFF8EE;--green-100:#FEECC8;--green-200:#FDD89A;--green-600:#B07520;--green-700:#8F5E18;
-  --cyan:#0891B2;--purple:#7C3AED;--blue:#2563EB;--amber:#D97706;--red:#EF4444;
-  --bg:#FFFFFF;--bg-alt:#F8FAFC;--bg-warm:#FAFAF9;
-  --text:#0F172A;--text-secondary:#334155;--muted:#64748B;--light:#94A3B8;
-  --border:#E2E8F0;--border-light:#F1F5F9;
-  --shadow-xs:0 1px 2px rgba(0,0,0,0.04);--shadow-sm:0 1px 3px rgba(0,0,0,0.06),0 1px 2px rgba(0,0,0,0.04);
-  --shadow-md:0 4px 6px -1px rgba(0,0,0,0.07),0 2px 4px -2px rgba(0,0,0,0.04);
-  --shadow-lg:0 10px 15px -3px rgba(0,0,0,0.07),0 4px 6px -4px rgba(0,0,0,0.04);
-  --shadow-xl:0 20px 25px -5px rgba(0,0,0,0.07),0 8px 10px -6px rgba(0,0,0,0.04);
-  --font:'DM Sans',system-ui,-apple-system,sans-serif;--mono:'JetBrains Mono',monospace;
-  --radius:12px;--radius-lg:16px;--radius-xl:20px;
-  --max-w:1200px;
+:root {
+  --display: 'Instrument Sans', -apple-system, sans-serif;
+  --body: 'DM Sans', -apple-system, sans-serif;
+  --mono: 'Geist Mono', 'SF Mono', monospace;
+  --bg: #FAFAF9;
+  --surface: #FFFFFF;
+  --raised: #F4F4F2;
+  --ink: #141413;
+  --text: #3D3D3A;
+  --muted: #73726C;
+  --faint: #A3A29B;
+  --border: rgba(0,0,0,0.06);
+  --border-v: rgba(0,0,0,0.08);
+  --accent: #CF8A2E;
+  --accent-hover: #B07520;
+  --accent-bg: rgba(207,138,46,0.06);
+  --accent-border: rgba(207,138,46,0.18);
+  --up: #1A7A45;
+  --up-bg: rgba(26,122,69,0.06);
+  --hero-bg: #0E1117;
+  --hero-surface: #161B24;
+  --hero-border: rgba(255,255,255,0.06);
+  --hero-text: #CDD1D8;
+  --hero-muted: #6B7280;
+  --glow: 0 1px 2px rgba(0,0,0,0.04), 0 4px 16px rgba(0,0,0,0.03);
+  --glow-md: 0 2px 4px rgba(0,0,0,0.04), 0 8px 24px rgba(0,0,0,0.05);
+  --glow-lg: 0 4px 8px rgba(0,0,0,0.04), 0 16px 40px rgba(0,0,0,0.06);
+  --ease: cubic-bezier(0.4, 0, 0.2, 1);
+  --r: 12px;
+  --r-lg: 16px;
+  --max: 1120px;
 }
 *{margin:0;padding:0;box-sizing:border-box}
-html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
-body{font-family:var(--font);background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;line-height:1.6;overflow-x:hidden}
+html{scroll-behavior:smooth}
+body{font-family:var(--body);background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased;line-height:1.6;overflow-x:hidden}
 a{color:inherit;text-decoration:none}
-img{display:block;max-width:100%}
+.w{max-width:var(--max);margin:0 auto;padding:0 28px}
 
-/* ===== NAVIGATION ===== */
-nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,0.88);backdrop-filter:blur(16px) saturate(180%);-webkit-backdrop-filter:blur(16px) saturate(180%);border-bottom:1px solid var(--border-light)}
-.nav-inner{max-width:var(--max-w);margin:0 auto;padding:0 24px;height:60px;display:flex;align-items:center;justify-content:space-between}
-.logo{display:flex;align-items:center;gap:8px;font-weight:800;font-size:17px;letter-spacing:-0.01em}
-.logo-dot{width:9px;height:9px;background:var(--green);border-radius:50%}
-.nav-links{display:flex;gap:24px;font-size:14px;font-weight:500}
-.nav-links a{color:var(--muted);transition:color .15s}
-.nav-links a:hover{color:var(--text)}
-.nav-right{display:flex;align-items:center;gap:10px}
-.nav-right a{font-size:14px;font-weight:500;color:var(--muted);padding:8px 12px;transition:color .15s}
-.nav-right a:hover{color:var(--text)}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;border-radius:8px;font-weight:600;font-size:14px;border:none;cursor:pointer;font-family:var(--font);transition:all .15s ease;white-space:nowrap}
-.btn-sm{padding:8px 16px;font-size:13px}
-.btn-md{padding:10px 22px}
-.btn-lg{padding:13px 28px;font-size:15px;border-radius:10px}
-.btn-primary{background:var(--green);color:#fff}
-.btn-primary:hover{background:var(--green-600);box-shadow:0 2px 12px rgba(207,138,46,0.25)}
-.btn-secondary{background:var(--text);color:#fff}
-.btn-secondary:hover{background:#1E293B}
-.btn-outline{background:var(--bg);color:var(--text);border:1px solid var(--border)}
-.btn-outline:hover{background:var(--bg-alt);border-color:#CBD5E1}
-.btn-ghost{background:transparent;color:var(--muted)}
-.btn-ghost:hover{color:var(--text);background:var(--bg-alt)}
+/* ===== NAV ===== */
+nav{position:sticky;top:0;z-index:100;background:rgba(14,17,23,0.7);backdrop-filter:blur(24px) saturate(1.4);-webkit-backdrop-filter:blur(24px) saturate(1.4);border-bottom:1px solid rgba(255,255,255,0.06)}
+.nav-in{max-width:var(--max);margin:0 auto;padding:0 28px;height:56px;display:flex;align-items:center;justify-content:space-between}
+.nav-logo{display:flex;align-items:center;gap:10px}
+.nav-mark{width:26px;height:26px;border-radius:7px;overflow:hidden}
+.nav-name{font-family:var(--display);font-size:16px;font-weight:600;letter-spacing:-0.3px;color:#FFFFFF}
+.nav-links{display:flex;gap:6px}
+.nav-links a{font-size:13px;font-weight:500;color:rgba(255,255,255,0.45);padding:6px 12px;border-radius:8px;transition:all .2s var(--ease)}
+.nav-links a:hover{color:rgba(255,255,255,0.85);background:rgba(255,255,255,0.06)}
+.nav-right{display:flex;align-items:center;gap:8px}
+.nav-sign{font-size:13px;font-weight:500;color:rgba(255,255,255,0.45);padding:6px 12px;transition:color .2s}
+.nav-sign:hover{color:#fff}
+.nav-cta{font-family:var(--body);font-size:12px;font-weight:600;background:var(--accent);color:var(--hero-bg);padding:7px 16px;border-radius:8px;border:none;cursor:pointer;transition:all .2s var(--ease)}
+.nav-cta:hover{background:var(--accent-hover);transform:translateY(-1px)}
 
 /* ===== HERO ===== */
-.hero{padding:72px 24px 56px;text-align:center;position:relative}
-.hero::before{content:'';position:absolute;top:0;left:0;right:0;height:100%;background:linear-gradient(180deg,var(--green-50) 0%,var(--bg) 80%);z-index:-1}
-.hero-eyebrow{display:inline-flex;align-items:center;gap:8px;padding:6px 6px 6px 14px;border-radius:100px;font-size:13px;font-weight:500;color:var(--text-secondary);background:var(--bg);border:1px solid var(--border);margin-bottom:20px;box-shadow:var(--shadow-xs)}
-.hero-eyebrow .tag{background:var(--green-100);color:var(--green-700);padding:3px 10px;border-radius:100px;font-size:11px;font-weight:700;letter-spacing:0.02em}
-.hero h1{font-size:clamp(38px,5.5vw,64px);font-weight:800;letter-spacing:-0.035em;line-height:1.08;margin-bottom:18px;max-width:720px;margin-left:auto;margin-right:auto;color:var(--text)}
-.hero-sub{font-size:clamp(16px,1.8vw,19px);color:var(--text-secondary);max-width:520px;margin:0 auto 32px;line-height:1.55;font-weight:400}
-.hero-buttons{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:12px}
-.hero-note{font-size:12px;color:var(--light);margin-bottom:48px}
+.hero{background:var(--hero-bg);padding:0 0 0;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 30% 20%,rgba(207,138,46,0.07) 0%,transparent 55%),radial-gradient(ellipse at 70% 60%,rgba(99,130,255,0.04) 0%,transparent 50%);pointer-events:none}
 
-/* HERO VISUAL */
-.hero-visual{max-width:960px;margin:0 auto;border-radius:var(--radius-xl);overflow:hidden;box-shadow:var(--shadow-xl);border:1px solid var(--border);background:var(--bg)}
-.hv-topbar{display:flex;align-items:center;gap:8px;padding:10px 16px;background:var(--bg-alt);border-bottom:1px solid var(--border)}
-.hv-brand{display:flex;align-items:center;gap:6px;font-size:11px;font-weight:600;letter-spacing:0.5px;color:rgba(255,255,255,0.5)}
-.hv-brand-dot{width:8px;height:8px;background:#D4962A;border-radius:50%}
-.hv-tabs{display:flex;gap:0;margin-left:20px}
-.hv-tab{padding:4px 12px;font-size:11px;font-weight:500;color:var(--muted);border-radius:6px}
-.hv-tab.active{background:var(--bg);color:var(--text);box-shadow:var(--shadow-xs)}
-.hv-body{display:grid;grid-template-columns:200px 1fr;min-height:340px}
-.hv-sidebar{background:var(--bg-alt);border-right:1px solid var(--border-light);padding:16px 12px}
-.hv-sidebar-item{display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:7px;font-size:12px;font-weight:500;color:var(--muted);margin-bottom:2px;cursor:default;transition:all .15s}
-.hv-sidebar-item.active{background:var(--green-50);color:var(--green-700)}
-.hv-sidebar-item .dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
-.hv-main{padding:20px}
-.hv-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
-.hv-header h3{font-size:15px;font-weight:700;letter-spacing:-0.01em}
-.hv-header .period{font-size:12px;color:var(--muted);background:var(--bg-alt);padding:4px 10px;border-radius:6px;border:1px solid var(--border-light)}
-.hv-metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px}
-.hv-metric{background:var(--bg-alt);border:1px solid var(--border-light);border-radius:10px;padding:12px}
-.hv-metric .label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:0.04em;margin-bottom:3px}
-.hv-metric .value{font-family:var(--mono);font-size:18px;font-weight:700;color:var(--text);letter-spacing:-0.02em}
-.hv-metric .change{font-size:10px;font-weight:600;margin-top:2px}
-.hv-metric .up{color:var(--green)}
-.hv-metric .down{color:var(--red)}
-.hv-chart{background:var(--bg-alt);border:1px solid var(--border-light);border-radius:10px;padding:16px;display:flex;align-items:flex-end;gap:5px;height:120px}
-.hv-bar{flex:1;background:linear-gradient(180deg,var(--green),var(--green-200));border-radius:3px 3px 0 0;min-height:8px;transition:height .4s ease}
+/* Frosted glass overlay */
+.hero-frost{position:relative;z-index:1;padding:72px 0 0}
+.hero-frost::before{content:'';position:absolute;inset:0;background:rgba(14,17,23,0.4);backdrop-filter:blur(80px) saturate(1.2);-webkit-backdrop-filter:blur(80px) saturate(1.2);pointer-events:none;z-index:-1}
 
-/* ===== SOCIAL PROOF ===== */
-.social-proof{padding:40px 24px;border-bottom:1px solid var(--border-light)}
-.sp-inner{max-width:var(--max-w);margin:0 auto;text-align:center}
-.sp-inner p{font-size:12px;color:var(--light);text-transform:uppercase;letter-spacing:0.08em;font-weight:500;margin-bottom:20px}
-.sp-logos{display:flex;justify-content:center;gap:36px;flex-wrap:wrap;align-items:center}
-.sp-logo{display:flex;align-items:center;gap:6px;font-size:14px;font-weight:600;color:#94A3B8;letter-spacing:0.01em}
-.sp-logo svg{flex-shrink:0}
+.hero-content{position:relative;z-index:2;text-align:center;max-width:700px;margin:0 auto;padding:0 28px}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;padding:5px 6px 5px 14px;border-radius:100px;font-size:12px;font-weight:500;color:var(--hero-text);background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.06);margin-bottom:28px;backdrop-filter:blur(12px)}
+.hero-badge-tag{background:var(--accent);color:var(--hero-bg);padding:2px 9px;border-radius:100px;font-size:10px;font-weight:700;letter-spacing:0.3px}
+.hero h1{font-family:var(--display);font-size:clamp(36px,5.2vw,58px);font-weight:700;letter-spacing:-1.5px;line-height:1.06;color:#FFFFFF;margin-bottom:20px}
+.hero h1 em{font-style:normal;background:linear-gradient(135deg,var(--accent),#E9A23B);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero-sub{font-size:17px;color:rgba(255,255,255,0.5);max-width:460px;margin:0 auto 36px;line-height:1.55;font-weight:400}
+.hero-btns{display:flex;gap:10px;justify-content:center;margin-bottom:10px}
+.btn-hero{font-family:var(--body);font-size:15px;font-weight:600;padding:12px 28px;border-radius:10px;border:none;cursor:pointer;transition:all .25s var(--ease)}
+.btn-amber{background:var(--accent);color:var(--hero-bg)}
+.btn-amber:hover{background:var(--accent-hover);transform:translateY(-2px);box-shadow:0 8px 24px rgba(207,138,46,0.25)}
+.btn-glass{background:rgba(255,255,255,0.06);color:rgba(255,255,255,0.8);border:1px solid rgba(255,255,255,0.1);backdrop-filter:blur(12px)}
+.btn-glass:hover{background:rgba(255,255,255,0.1);border-color:rgba(255,255,255,0.2)}
+.hero-note{font-size:12px;color:rgba(255,255,255,0.25);margin-bottom:52px}
 
-/* ===== METRICS STRIP ===== */
-.metrics-strip{padding:48px 24px;background:var(--text);color:#fff}
-.metrics-inner{max-width:900px;margin:0 auto;display:grid;grid-template-columns:repeat(5,1fr);gap:24px;text-align:center}
-.m-val{font-family:var(--mono);font-size:clamp(22px,2.5vw,30px);font-weight:700;color:var(--green);margin-bottom:2px;letter-spacing:-0.02em}
-.m-label{font-size:12px;color:#94A3B8;font-weight:400}
+/* Hero Visual */
+.hero-dash{position:relative;z-index:2;max-width:900px;margin:0 auto;padding:0 28px}
+.dash-frame{background:rgba(22,27,36,0.6);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.08);border-radius:16px 16px 0 0;overflow:hidden;box-shadow:0 -4px 60px rgba(0,0,0,0.4),0 0 0 1px rgba(255,255,255,0.03),inset 0 1px 0 rgba(255,255,255,0.04)}
+.dash-top{display:flex;align-items:center;gap:8px;padding:10px 16px;background:rgba(0,0,0,0.2);border-bottom:1px solid rgba(255,255,255,0.05)}
+.dash-dots{display:flex;gap:5px}
+.dash-dots span{width:8px;height:8px;border-radius:50%}
+.dash-label{font-family:var(--mono);font-size:10px;font-weight:500;color:rgba(255,255,255,0.25);letter-spacing:0.5px;margin-left:12px}
+.dash-tabs{display:flex;gap:2px;margin-left:auto}
+.dash-tab{font-size:11px;font-weight:500;color:rgba(255,255,255,0.3);padding:3px 10px;border-radius:6px}
+.dash-tab.active{background:rgba(255,255,255,0.06);color:rgba(255,255,255,0.7)}
+.dash-body{display:grid;grid-template-columns:160px 1fr;min-height:280px}
+.dash-side{border-right:1px solid rgba(255,255,255,0.04);padding:14px 10px}
+.dash-side-item{font-size:11px;font-weight:500;color:rgba(255,255,255,0.3);padding:6px 10px;border-radius:6px;display:flex;align-items:center;gap:7px;margin-bottom:2px}
+.dash-side-item.active{background:rgba(207,138,46,0.08);color:var(--accent)}
+.dash-side-item .sd{width:5px;height:5px;border-radius:2px;background:rgba(255,255,255,0.1)}
+.dash-side-item.active .sd{background:var(--accent)}
+.dash-main{padding:16px 20px}
+.dash-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+.dash-header h3{font-family:var(--display);font-size:14px;font-weight:600;color:#FFFFFF;letter-spacing:-0.2px}
+.dash-period{font-family:var(--mono);font-size:10px;color:rgba(255,255,255,0.3);background:rgba(255,255,255,0.04);padding:3px 8px;border-radius:5px;border:1px solid rgba(255,255,255,0.06)}
+.dash-metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px}
+.dash-metric{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.05);border-radius:8px;padding:10px 12px}
+.dm-label{font-size:9px;color:rgba(255,255,255,0.3);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:3px}
+.dm-val{font-family:var(--mono);font-size:16px;font-weight:600;color:#FFFFFF;letter-spacing:-0.5px}
+.dm-delta{font-size:9px;font-weight:600;color:var(--accent);margin-top:2px}
+.dash-chart{background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.05);border-radius:8px;padding:12px;display:flex;align-items:flex-end;gap:4px;height:90px}
+.dash-bar{flex:1;border-radius:2px 2px 0 0;min-height:4px;transition:height .6s var(--ease)}
+.dash-bar.amber{background:linear-gradient(180deg,var(--accent),rgba(207,138,46,0.3))}
 
-/* ===== SECTION COMMON ===== */
-.section{max-width:var(--max-w);margin:0 auto;padding:80px 24px}
-.section-alt{background:var(--bg-alt)}
-.section-header{text-align:center;margin-bottom:56px}
-.section-header .overline{font-size:12px;font-weight:600;color:var(--green);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px}
-.section-header h2{font-size:clamp(28px,3.5vw,40px);font-weight:800;letter-spacing:-0.025em;margin-bottom:12px;line-height:1.15}
-.section-header p{font-size:16px;color:var(--text-secondary);max-width:520px;margin:0 auto;line-height:1.55}
+/* ===== TRUST ===== */
+.trust{padding:28px 0;border-bottom:1px solid var(--border)}
+.trust-in{display:flex;justify-content:center;gap:32px;align-items:center;flex-wrap:wrap}
+.trust-item{font-family:var(--mono);font-size:11px;font-weight:500;color:var(--faint);letter-spacing:0.5px}
 
-/* ===== FEATURE BENTO GRID ===== */
-.bento{display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:auto auto;gap:16px}
-.bento-card{background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-lg);padding:28px;transition:all .2s;overflow:hidden;position:relative}
-.bento-card:hover{box-shadow:var(--shadow-md);border-color:#CBD5E1}
+/* ===== METRICS ===== */
+.metrics{background:var(--ink);padding:36px 0}
+.metrics-in{display:grid;grid-template-columns:repeat(5,1fr);gap:20px;text-align:center}
+.metric-val{font-family:var(--display);font-size:24px;font-weight:700;color:var(--accent);letter-spacing:-0.5px;margin-bottom:2px}
+.metric-label{font-size:11px;color:rgba(255,255,255,0.4);font-weight:400}
+
+/* ===== SECTION ===== */
+.sect{padding:72px 0}
+.sect-head{text-align:center;margin-bottom:48px}
+.sect-over{font-family:var(--mono);font-size:11px;font-weight:500;color:var(--accent);letter-spacing:1px;text-transform:uppercase;margin-bottom:6px}
+.sect-title{font-family:var(--display);font-size:clamp(24px,3vw,34px);font-weight:700;letter-spacing:-0.8px;margin-bottom:10px}
+.sect-sub{font-size:15px;color:var(--muted);max-width:480px;margin:0 auto;line-height:1.55}
+
+/* ===== BENTO ===== */
+.bento{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.bento-card{background:var(--surface);border:1px solid var(--border-v);border-radius:var(--r-lg);padding:28px;transition:all .3s var(--ease);position:relative;overflow:hidden}
+.bento-card:hover{box-shadow:var(--glow-md);border-color:var(--accent-border);transform:translateY(-3px)}
 .bento-card.span-2{grid-column:span 2}
-.bento-card .overline{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:10px}
-.bento-card h3{font-size:17px;font-weight:700;margin-bottom:6px;letter-spacing:-0.01em}
-.bento-card p{font-size:13px;color:var(--text-secondary);line-height:1.55}
-.bento-card .bento-stat{font-family:var(--mono);font-size:36px;font-weight:700;color:var(--green);margin-top:16px;letter-spacing:-0.02em}
-.bento-card .bento-stat-label{font-size:12px;color:var(--muted);margin-top:2px}
-.bento-mini-chart{display:flex;gap:3px;align-items:flex-end;height:48px;margin-top:16px}
-.bento-mini-chart span{flex:1;background:var(--green-200);border-radius:2px 2px 0 0}
+.bento-over{font-family:var(--mono);font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px}
+.bento-card h3{font-family:var(--display);font-size:16px;font-weight:600;letter-spacing:-0.2px;margin-bottom:6px}
+.bento-card p{font-size:13px;color:var(--muted);line-height:1.55}
+.bento-stat{font-family:var(--display);font-size:32px;font-weight:700;color:var(--accent);margin-top:16px;letter-spacing:-1px}
+.bento-stat-label{font-size:11px;color:var(--faint);margin-top:2px}
+.bento-mini{display:flex;gap:3px;align-items:flex-end;height:40px;margin-top:16px}
+.bento-mini span{flex:1;background:linear-gradient(180deg,var(--accent),rgba(207,138,46,0.15));border-radius:2px 2px 0 0}
 
-/* ===== AI SHOWCASE ===== */
+/* ===== AI SECTION ===== */
 .ai-split{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center}
-.ai-text .overline{font-size:12px;font-weight:600;color:var(--green);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px}
-.ai-text h2{font-size:clamp(26px,3vw,36px);font-weight:800;letter-spacing:-0.025em;margin-bottom:12px;line-height:1.15}
-.ai-text>p{font-size:15px;color:var(--text-secondary);line-height:1.6;margin-bottom:24px}
-.ai-list{display:flex;flex-direction:column;gap:12px}
-.ai-item{display:flex;gap:12px;align-items:flex-start}
-.ai-item-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
-.ai-item h4{font-size:14px;font-weight:600;margin-bottom:1px}
-.ai-item p{font-size:12px;color:var(--muted)}
+.ai-text h2{font-family:var(--display);font-size:clamp(24px,2.5vw,32px);font-weight:700;letter-spacing:-0.6px;margin-bottom:10px}
+.ai-text>p{font-size:14px;color:var(--muted);line-height:1.65;margin-bottom:24px}
+.ai-feat{display:flex;gap:12px;align-items:flex-start;margin-bottom:14px}
+.ai-feat-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:14px}
+.ai-feat h4{font-family:var(--display);font-size:13px;font-weight:600;margin-bottom:1px}
+.ai-feat p{font-size:12px;color:var(--faint)}
+.ai-term{background:var(--hero-bg);border-radius:var(--r-lg);overflow:hidden;box-shadow:var(--glow-lg);border:1px solid rgba(255,255,255,0.06)}
+.ai-term-top{padding:10px 16px;background:rgba(0,0,0,0.3);display:flex;align-items:center;gap:8px;border-bottom:1px solid rgba(255,255,255,0.04)}
+.ai-term-brand{font-family:var(--mono);font-size:9px;font-weight:500;color:rgba(255,255,255,0.25);letter-spacing:0.5px}
+.ai-term-label{font-family:var(--mono);font-size:10px;color:rgba(255,255,255,0.15);margin-left:8px}
+.ai-term-body{padding:20px;font-family:var(--mono);font-size:12px;line-height:2;color:rgba(255,255,255,0.35)}
+.ai-prompt{color:var(--accent)}
+.ai-response{color:#7DD3FC}
+.ai-hl{color:#FCD34D}
+.ai-dim{color:#334155}
 
-.ai-terminal{background:#0F172A;border-radius:var(--radius-lg);overflow:hidden;font-family:var(--mono);font-size:12px;box-shadow:var(--shadow-xl)}
-.ai-t-header{padding:10px 16px;background:rgba(0,0,0,0.3);display:flex;align-items:center;gap:6px}
-.ai-t-header .ai-brand{font-size:10px;font-weight:600;letter-spacing:0.5px;color:rgba(255,255,255,0.4)}
-.ai-t-header .t-title{margin-left:12px;font-size:11px;color:#475569;font-family:var(--mono)}
-.ai-t-body{padding:20px;line-height:2;color:#94A3B8}
-.ai-t-body .prompt{color:#CF8A2E}
-.ai-t-body .response{color:#67E8F9}
-.ai-t-body .hl{color:#FCD34D}
-.ai-t-body .dim{color:#334155}
+/* ===== INTEGRATIONS ===== */
+.int-grid{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;max-width:720px;margin:0 auto 24px}
+.int-chip{display:flex;align-items:center;gap:6px;padding:7px 14px;border-radius:100px;background:var(--surface);border:1px solid var(--border-v);font-size:12px;font-weight:500;color:var(--text);transition:all .2s var(--ease)}
+.int-chip:hover{transform:translateY(-2px);box-shadow:var(--glow);border-color:var(--accent-border)}
+.int-dot{width:6px;height:6px;border-radius:3px}
 
-/* ===== INTEGRATIONS STRIP ===== */
-.int-strip{text-align:center;padding:64px 24px}
-.int-strip h2{font-size:clamp(24px,3vw,32px);font-weight:800;letter-spacing:-0.02em;margin-bottom:8px}
-.int-strip>p{color:var(--text-secondary);font-size:15px;margin-bottom:32px}
-.int-logos{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;max-width:800px;margin:0 auto 28px}
-.int-chip{display:flex;align-items:center;gap:6px;padding:6px 14px;border-radius:100px;background:var(--bg);border:1px solid var(--border);font-size:12px;font-weight:500;color:var(--text-secondary);transition:all .2s cubic-bezier(.16,1,.3,1)}
-.int-chip:hover{transform:translateY(-2px);box-shadow:var(--shadow-sm);border-color:#CBD5E1}
-.int-chip svg{flex-shrink:0}
-.int-chip .ic-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;display:none}
-
-/* ===== TESTIMONIALS ===== */
-.testimonials-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
-.test-card{background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-lg);padding:24px;transition:box-shadow .2s}
-.test-card:hover{box-shadow:var(--shadow-md)}
-.test-stars{color:#F59E0B;font-size:13px;letter-spacing:1px;margin-bottom:12px}
-.test-card blockquote{font-size:14px;color:var(--text-secondary);line-height:1.6;margin-bottom:16px;font-style:italic}
-.test-author{font-size:13px;font-weight:600;color:var(--text)}
-.test-role{font-size:12px;color:var(--muted)}
+/* ===== RESULTS ===== */
+.results{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.result-card{background:var(--surface);border:1px solid var(--border-v);border-radius:var(--r-lg);padding:32px 24px;text-align:center;transition:all .3s var(--ease)}
+.result-card:hover{transform:translateY(-3px);box-shadow:var(--glow-md)}
+.result-val{font-family:var(--display);font-size:32px;font-weight:700;color:var(--accent);letter-spacing:-1px;margin-bottom:4px}
+.result-name{font-family:var(--display);font-size:14px;font-weight:600;margin-bottom:4px}
+.result-desc{font-size:12px;color:var(--faint)}
 
 /* ===== CTA ===== */
-.cta{text-align:center;padding:80px 24px 96px}
-.cta h2{font-size:clamp(28px,3.5vw,42px);font-weight:800;letter-spacing:-0.03em;margin-bottom:12px;line-height:1.1}
-.cta p{font-size:16px;color:var(--text-secondary);margin-bottom:28px;max-width:440px;margin-left:auto;margin-right:auto}
-.cta-buttons{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
-.cta-note{font-size:12px;color:var(--light);margin-top:14px}
+.cta-section{background:var(--hero-bg);border-radius:24px;margin:0 28px 72px;padding:64px 40px;text-align:center;position:relative;overflow:hidden}
+.cta-section::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(207,138,46,0.08) 0%,transparent 60%);pointer-events:none}
+.cta-section::after{content:'';position:absolute;inset:0;backdrop-filter:blur(40px);-webkit-backdrop-filter:blur(40px);pointer-events:none;z-index:0}
+.cta-inner{position:relative;z-index:1}
+.cta-inner h2{font-family:var(--display);font-size:clamp(28px,3.5vw,40px);font-weight:700;letter-spacing:-1px;margin-bottom:10px;color:#fff}
+.cta-inner p{font-size:15px;color:rgba(255,255,255,0.45);margin-bottom:28px;max-width:420px;margin-left:auto;margin-right:auto}
+.cta-btns{display:flex;gap:10px;justify-content:center}
+.cta-note{font-size:12px;color:rgba(255,255,255,0.2);margin-top:14px}
 
 /* ===== FOOTER ===== */
-footer{background:var(--bg-alt);border-top:1px solid var(--border);padding:56px 24px 28px}
-.footer-inner{max-width:var(--max-w);margin:0 auto;display:grid;grid-template-columns:1.5fr repeat(4,1fr);gap:40px;margin-bottom:40px}
-.footer-brand .logo{margin-bottom:12px}
-.footer-brand p{font-size:13px;color:var(--muted);line-height:1.5;max-width:220px}
-.footer-col h5{font-size:11px;font-weight:600;color:var(--text);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:12px}
-.footer-col a{display:block;font-size:13px;color:var(--muted);margin-bottom:8px;transition:color .15s}
-.footer-col a:hover{color:var(--green)}
-.footer-bottom{max-width:var(--max-w);margin:0 auto;display:flex;justify-content:space-between;align-items:center;padding-top:20px;border-top:1px solid var(--border);font-size:12px;color:var(--light)}
-.footer-bottom-links{display:flex;gap:20px}
-.footer-bottom-links a{color:var(--light);transition:color .15s}
-.footer-bottom-links a:hover{color:var(--text)}
-
-/* ===== RESPONSIVE ===== */
-@media(max-width:960px){
-  .bento{grid-template-columns:1fr 1fr}
-  .bento-card.span-2{grid-column:span 1}
-  .ai-split{grid-template-columns:1fr;gap:32px}
-  .hv-body{grid-template-columns:1fr}
-  .hv-sidebar{display:none}
-  .footer-inner{grid-template-columns:repeat(2,1fr)}
-}
-@media(max-width:768px){
-  .nav-links{display:none}
-  .bento{grid-template-columns:1fr}
-  .metrics-inner{grid-template-columns:repeat(2,1fr)}
-  .testimonials-grid{grid-template-columns:1fr}
-  .hv-metrics{grid-template-columns:repeat(2,1fr)}
-  .footer-inner{grid-template-columns:1fr}
-  .footer-bottom{flex-direction:column;gap:10px;text-align:center}
-}
-@media(max-width:480px){
-  .metrics-inner{grid-template-columns:1fr}
-}
+footer{background:var(--surface);border-top:1px solid var(--border);padding:48px 0 24px}
+.ft-grid{display:grid;grid-template-columns:1.4fr repeat(4,1fr);gap:36px;margin-bottom:36px}
+.ft-brand p{font-size:12px;color:var(--faint);line-height:1.6;max-width:200px;margin-top:10px}
+.ft-col h5{font-family:var(--mono);font-size:10px;font-weight:500;letter-spacing:0.5px;text-transform:uppercase;color:var(--ink);margin-bottom:12px}
+.ft-col a{display:block;font-size:13px;color:var(--muted);margin-bottom:7px;transition:color .15s}
+.ft-col a:hover{color:var(--accent)}
+.ft-bottom{display:flex;justify-content:space-between;align-items:center;padding-top:18px;border-top:1px solid var(--border);font-size:11px;color:var(--faint)}
+.ft-bottom-links{display:flex;gap:16px}
+.ft-bottom-links a{color:var(--faint);transition:color .15s}
+.ft-bottom-links a:hover{color:var(--ink)}
 
 /* ===== ANIMATIONS ===== */
-@keyframes heroIn{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
-@keyframes heroScale{from{opacity:0;transform:translateY(40px) scale(0.97)}to{opacity:1;transform:translateY(0) scale(1)}}
-@keyframes shimmer{0%{background-position:-200% center}100%{background-position:200% center}}
-@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
-@keyframes pulse-dot{0%,100%{box-shadow:0 0 0 0 rgba(207,138,46,0.4)}70%{box-shadow:0 0 0 6px rgba(207,138,46,0)}}
-@keyframes glow-line{0%{opacity:0.3;transform:scaleX(0)}50%{opacity:1;transform:scaleX(1)}100%{opacity:0.3;transform:scaleX(0)}}
-@keyframes bar-grow{from{transform:scaleY(0)}to{transform:scaleY(1)}}
-@keyframes slide-in-left{from{opacity:0;transform:translateX(-20px)}to{opacity:1;transform:translateX(0)}}
-@keyframes typing-blink{0%,100%{opacity:1}50%{opacity:0}}
-@keyframes counter-up{from{opacity:0;transform:translateY(12px) scale(0.95)}to{opacity:1;transform:translateY(0) scale(1)}}
-@keyframes card-in{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
-@keyframes logo-slide{from{opacity:0;transform:translateX(10px)}to{opacity:1;transform:translateX(0)}}
-
-/* Hero entrance cascade */
-.hero-eyebrow{animation:heroIn .6s cubic-bezier(.16,1,.3,1) .1s both}
-.hero h1{animation:heroIn .7s cubic-bezier(.16,1,.3,1) .2s both}
-.hero-sub{animation:heroIn .7s cubic-bezier(.16,1,.3,1) .35s both}
-.hero-buttons{animation:heroIn .6s cubic-bezier(.16,1,.3,1) .5s both}
-.hero-note{animation:heroIn .5s cubic-bezier(.16,1,.3,1) .6s both}
-.hero-visual{animation:heroScale .8s cubic-bezier(.16,1,.3,1) .4s both}
-
-/* Logo dot pulse */
-.logo-link .ldot,.logo-dot{animation:pulse-dot 2.5s ease infinite}
-
-/* Hero visual glow accent line */
-.hero-visual::after{content:'';position:absolute;bottom:-1px;left:10%;right:10%;height:2px;background:linear-gradient(90deg,transparent,var(--green),var(--cyan),transparent);animation:glow-line 4s ease-in-out infinite;border-radius:2px}
-.hero-visual{position:relative}
-
-/* Dashboard bar chart grow animation */
-.hv-bar{transform-origin:bottom;animation:bar-grow .6s cubic-bezier(.16,1,.3,1) both}
-.hv-bar:nth-child(1){animation-delay:.5s}
-.hv-bar:nth-child(2){animation-delay:.55s}
-.hv-bar:nth-child(3){animation-delay:.6s}
-.hv-bar:nth-child(4){animation-delay:.65s}
-.hv-bar:nth-child(5){animation-delay:.7s}
-.hv-bar:nth-child(6){animation-delay:.75s}
-.hv-bar:nth-child(7){animation-delay:.8s}
-.hv-bar:nth-child(8){animation-delay:.85s}
-.hv-bar:nth-child(9){animation-delay:.9s}
-.hv-bar:nth-child(10){animation-delay:.95s}
-.hv-bar:nth-child(11){animation-delay:1s}
-.hv-bar:nth-child(12){animation-delay:1.05s}
-
-/* Social proof staggered entrance */
-.sp-logo{animation:logo-slide .4s cubic-bezier(.16,1,.3,1) both}
-.sp-logo:nth-child(1){animation-delay:.1s}
-.sp-logo:nth-child(2){animation-delay:.15s}
-.sp-logo:nth-child(3){animation-delay:.2s}
-.sp-logo:nth-child(4){animation-delay:.25s}
-.sp-logo:nth-child(5){animation-delay:.3s}
-.sp-logo:nth-child(6){animation-delay:.35s}
-.sp-logo:nth-child(7){animation-delay:.4s}
-.sp-logo:nth-child(8){animation-delay:.45s}
-
-/* Metrics strip counter entrance */
-.metrics-inner>div{animation:counter-up .5s cubic-bezier(.16,1,.3,1) both}
-.metrics-inner>div:nth-child(1){animation-delay:.1s}
-.metrics-inner>div:nth-child(2){animation-delay:.2s}
-.metrics-inner>div:nth-child(3){animation-delay:.3s}
-.metrics-inner>div:nth-child(4){animation-delay:.4s}
-.metrics-inner>div:nth-child(5){animation-delay:.5s}
-
-/* Scroll-triggered fade-in with stagger */
-.fade-in{opacity:0;transform:translateY(20px);transition:opacity .6s cubic-bezier(.16,1,.3,1),transform .6s cubic-bezier(.16,1,.3,1)}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes barGrow{from{transform:scaleY(0)}to{transform:scaleY(1)}}
+.hero-badge{animation:fadeUp .5s var(--ease) .1s both}
+.hero h1{animation:fadeUp .6s var(--ease) .2s both}
+.hero-sub{animation:fadeUp .6s var(--ease) .3s both}
+.hero-btns{animation:fadeUp .5s var(--ease) .4s both}
+.hero-note{animation:fadeUp .4s var(--ease) .5s both}
+.dash-frame{animation:fadeUp .7s var(--ease) .35s both}
+.dash-bar{transform-origin:bottom;animation:barGrow .6s var(--ease) both}
+.dash-bar:nth-child(1){animation-delay:.5s}.dash-bar:nth-child(2){animation-delay:.55s}.dash-bar:nth-child(3){animation-delay:.6s}.dash-bar:nth-child(4){animation-delay:.65s}.dash-bar:nth-child(5){animation-delay:.7s}.dash-bar:nth-child(6){animation-delay:.75s}.dash-bar:nth-child(7){animation-delay:.8s}.dash-bar:nth-child(8){animation-delay:.85s}.dash-bar:nth-child(9){animation-delay:.9s}.dash-bar:nth-child(10){animation-delay:.95s}.dash-bar:nth-child(11){animation-delay:1s}.dash-bar:nth-child(12){animation-delay:1.05s}
+.fade-in{opacity:0;transform:translateY(16px);transition:opacity .5s var(--ease),transform .5s var(--ease)}
 .fade-in.visible{opacity:1;transform:translateY(0)}
-.fade-in:nth-child(2){transition-delay:.08s}
-.fade-in:nth-child(3){transition-delay:.16s}
-.fade-in:nth-child(4){transition-delay:.24s}
-.fade-in:nth-child(5){transition-delay:.32s}
-.fade-in:nth-child(6){transition-delay:.4s}
+.fade-in:nth-child(2){transition-delay:.06s}.fade-in:nth-child(3){transition-delay:.12s}.fade-in:nth-child(4){transition-delay:.18s}.fade-in:nth-child(5){transition-delay:.24s}.fade-in:nth-child(6){transition-delay:.3s}
 
-/* Enhanced button hovers */
-.btn-primary{transition:all .25s cubic-bezier(.16,1,.3,1)}
-.btn-primary:hover{transform:translateY(-2px);box-shadow:0 4px 20px rgba(207,138,46,0.3)}
-.btn-primary:active{transform:translateY(0);box-shadow:0 2px 8px rgba(207,138,46,0.2)}
-.btn-outline{transition:all .25s cubic-bezier(.16,1,.3,1)}
-.btn-outline:hover{transform:translateY(-2px);box-shadow:var(--shadow-md)}
-
-/* Bento card enhanced hovers */
-.bento-card{transition:all .3s cubic-bezier(.16,1,.3,1)}
-.bento-card:hover{transform:translateY(-4px);box-shadow:0 16px 40px rgba(0,0,0,0.06);border-color:#CBD5E1}
-.bento-stat{transition:transform .3s cubic-bezier(.16,1,.3,1)}
-.bento-card:hover .bento-stat{transform:scale(1.05)}
-.bento-mini-chart span{transition:height .6s cubic-bezier(.16,1,.3,1)}
-.bento-card:hover .bento-mini-chart span{filter:saturate(1.5)}
-
-/* Testimonial card hover lift */
-.test-card{transition:all .3s cubic-bezier(.16,1,.3,1)}
-.test-card:hover{transform:translateY(-6px);box-shadow:0 20px 40px rgba(0,0,0,0.06)}
-.test-stars{transition:transform .3s}
-.test-card:hover .test-stars{transform:scale(1.08)}
-
-/* AI terminal typing cursor */
-.ai-t-body::after{content:'_';color:var(--green);animation:typing-blink 1s step-end infinite;font-weight:700}
-
-/* AI terminal float effect */
-.ai-terminal{transition:all .3s cubic-bezier(.16,1,.3,1)}
-.ai-terminal:hover{transform:translateY(-4px);box-shadow:0 24px 48px rgba(0,0,0,0.15)}
-
-/* Integration chips hover */
-.int-chip{transition:all .2s cubic-bezier(.16,1,.3,1)}
-.int-chip:hover{transform:translateY(-2px);box-shadow:var(--shadow-sm);border-color:#CBD5E1}
-
-/* CTA section entrance */
-.cta h2{background:linear-gradient(135deg,var(--text) 0%,var(--green-700) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-
-/* Metric value shimmer on hover */
-.hv-metric{transition:all .2s ease}
-.hv-metric:hover{background:var(--bg);box-shadow:var(--shadow-sm);border-color:#CBD5E1;transform:translateY(-1px)}
-
-/* Dashboard sidebar item hover */
-.hv-sidebar-item:hover{background:var(--green-50);color:var(--green-700);transform:translateX(2px)}
-
-/* Eyebrow tag shimmer */
-.hero-eyebrow .tag{background:linear-gradient(90deg,var(--green-100),var(--green-200),var(--green-100));background-size:200% auto;animation:shimmer 3s linear infinite}
-
-/* Nav subscribe button pop */
-.btn-sub{transition:all .25s cubic-bezier(.16,1,.3,1)}
-.btn-sub:hover{transform:translateY(-2px) scale(1.03);box-shadow:0 4px 16px rgba(207,138,46,0.3)}
-</style>
-
-<script>
-// Clean up stale service workers and caches from old PWA dashboard
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.getRegistrations().then(function(registrations) {
-    registrations.forEach(function(registration) {
-      registration.unregister();
-    });
-  });
-}
-if ('caches' in window) {
-  caches.keys().then(function(names) {
-    names.forEach(function(name) {
-      caches.delete(name);
-    });
-  });
-}
-</script>
-
-<style>
-/* === CORPORATE BRANDING OVERRIDES === */
-
-/* Bolder nav logo */
-.logo-link { font-size: 19px !important; font-weight: 900 !important; letter-spacing: -0.02em !important; }
-.logo-link .ldot { width: 11px !important; height: 11px !important; box-shadow: 0 0 12px rgba(207,138,46,0.4) !important; }
-
-/* Hero: dark gradient background for enterprise feel */
-.hero { background: linear-gradient(168deg, #0F172A 0%, #1E293B 55%, #0F172A 100%) !important; color: #F8FAFC !important; padding-bottom: 80px !important; }
-.hero h1 { color: #FFFFFF !important; font-size: clamp(38px, 4.5vw, 60px) !important; font-weight: 800 !important; letter-spacing: -0.03em !important; line-height: 1.08 !important; }
-.hero h1 span, .hero h1 .green { color: #E9A23B !important; }
-.hero .hero-sub, .hero p { color: #94A3B8 !important; font-size: 18px !important; line-height: 1.6 !important; }
-.hero .ann-badge, .hero .badge { background: rgba(207,138,46,0.12) !important; border: 1px solid rgba(207,138,46,0.25) !important; color: #E9A23B !important; }
-.hero .ann-badge .ann-new, .hero .badge span:first-child { background: #CF8A2E !important; color: #fff !important; }
-.hero .btn-primary, .hero .btn-cta, .hero a.btn-sub, .hero button:first-of-type { background: #CF8A2E !important; color: #fff !important; padding: 14px 32px !important; font-size: 16px !important; font-weight: 700 !important; border-radius: 12px !important; box-shadow: 0 4px 24px rgba(207,138,46,0.3) !important; transition: all 0.2s !important; }
-.hero .btn-primary:hover, .hero .btn-cta:hover { background: #B07520 !important; box-shadow: 0 8px 32px rgba(207,138,46,0.4) !important; transform: translateY(-1px) !important; }
-.hero .btn-outline, .hero button:nth-of-type(2) { background: transparent !important; border: 1.5px solid rgba(255,255,255,0.2) !important; color: #E2E8F0 !important; padding: 14px 32px !important; font-size: 16px !important; font-weight: 600 !important; border-radius: 12px !important; }
-.hero .btn-outline:hover { border-color: rgba(255,255,255,0.4) !important; background: rgba(255,255,255,0.05) !important; }
-.hero .hero-note, .hero .schedule-note { color: #64748B !important; }
-
-/* Dashboard mockup: elevated card feel */
-.dash-card, .hero .mockup, .hero .dash { background: #1E293B !important; border: 1px solid rgba(255,255,255,0.08) !important; border-radius: 16px !important; box-shadow: 0 24px 80px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.05) !important; }
-
-/* Trust logos bar: more prominent */
-.logos-bar, .trust-bar { background: #FFFFFF !important; padding: 32px 0 !important; border-bottom: 1px solid #E2E8F0 !important; }
-.logos-bar .logo-item, .trust-bar span { font-size: 15px !important; font-weight: 700 !important; color: #334155 !important; opacity: 0.7 !important; }
-
-/* Metrics strip: premium dark */
-.metrics-strip, .stats-strip { background: linear-gradient(135deg, #0F172A, #1E293B) !important; padding: 40px 0 !important; }
-.metrics-strip .stat-val, .stats-strip .val { font-size: 32px !important; font-weight: 800 !important; color: #FFFFFF !important; }
-.metrics-strip .stat-label, .stats-strip .label { color: #64748B !important; font-size: 13px !important; text-transform: uppercase !important; letter-spacing: 0.05em !important; }
-
-/* Section headings: stronger */
-section h2, .section h2 { font-size: clamp(28px, 3vw, 42px) !important; font-weight: 800 !important; letter-spacing: -0.02em !important; color: #0F172A !important; }
-
-/* Feature cards: elevated */
-.feature-card, .bento-card { border-radius: 16px !important; border: 1px solid #E2E8F0 !important; transition: all 0.2s !important; }
-.feature-card:hover, .bento-card:hover { border-color: #CF8A2E !important; box-shadow: 0 12px 40px rgba(207,138,46,0.1) !important; transform: translateY(-2px) !important; }
-
-/* CTA section: dark & bold */
-.cta-section, .final-cta { background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%) !important; border-radius: 24px !important; padding: 64px !important; }
-.cta-section h2, .final-cta h2 { color: #FFFFFF !important; font-size: 36px !important; font-weight: 800 !important; }
-.cta-section p, .final-cta p { color: #94A3B8 !important; }
-
-/* Footer: cleaner */
-footer { background: #FAFBFC !important; }
-
-/* Testimonial cards: premium borders */
-.testimonial-card { border: 1px solid #E2E8F0 !important; border-radius: 16px !important; box-shadow: 0 4px 20px rgba(0,0,0,0.04) !important; }
-
-/* Global: smoother fonts */
-body { -webkit-font-smoothing: antialiased !important; -moz-osx-font-smoothing: grayscale !important; }
-/* Hero title glow animation */
-@keyframes titleGlow {
-  0%, 100% { text-shadow: 0 0 20px rgba(207,138,46,0), 0 0 40px rgba(207,138,46,0); }
-  50% { text-shadow: 0 0 20px rgba(207,138,46,0.3), 0 0 60px rgba(207,138,46,0.15), 0 0 100px rgba(207,138,46,0.05); }
-}
-@keyframes textShimmer {
-  0% { background-position: -200% center; }
-  100% { background-position: 200% center; }
-}
-.hero h1 {
-  background: linear-gradient(90deg, #FFFFFF 0%, #FFFFFF 35%, #E9A23B 50%, #FFFFFF 65%, #FFFFFF 100%) !important;
-  background-size: 200% auto !important;
-  -webkit-background-clip: text !important;
-  -webkit-text-fill-color: transparent !important;
-  background-clip: text !important;
-  animation: heroIn .7s cubic-bezier(.16,1,.3,1) .2s both, textShimmer 6s ease-in-out infinite 1.5s !important;
-}
-.hero h1::after {
-  content: '';
-  display: block;
-  width: 80px;
-  height: 3px;
-  margin: 16px auto 0;
-  background: linear-gradient(90deg, transparent, #E9A23B, #CF8A2E, transparent);
-  border-radius: 3px;
-  animation: glow-line 4s ease-in-out infinite;
-}
+@media(max-width:900px){.bento{grid-template-columns:1fr}.bento-card.span-2{grid-column:span 1}.ai-split{grid-template-columns:1fr;gap:32px}.dash-body{grid-template-columns:1fr}.dash-side{display:none}.ft-grid{grid-template-columns:1fr 1fr;gap:24px}.nav-links{display:none}.metrics-in{grid-template-columns:repeat(2,1fr)}.results{grid-template-columns:1fr}.cta-section{margin:0 16px 48px;padding:48px 24px}}
 </style>
 </head>
 <body>
 
-<!-- NAV -->
+<!-- NAV (frosted dark glass) -->
 <nav>
-  <div class="nav-inner">
-    <a href="/" class="logo-link"><img src="/site/logo.svg" alt="Castford" width="24" height="24" style="border-radius:5px"> Castford</a>
-    <div class="nav-mid">
+  <div class="nav-in">
+    <a href="/" class="nav-logo">
+      <div class="nav-mark"><svg viewBox="0 0 40 40" width="26" height="26"><rect width="40" height="40" rx="9" fill="#CF8A2E"/><path d="M19.5 10.5C14.8 10.5 11 14.1 11 18.8V21.2C11 25.9 14.8 29.5 19.5 29.5C21.8 29.5 23.8 28.6 25.2 27.1" stroke="#0A0A09" stroke-width="3.2" stroke-linecap="round" fill="none"/><line x1="27" y1="11" x2="27" y2="29" stroke="#0A0A09" stroke-width="3.2" stroke-linecap="round"/><line x1="27" y1="11" x2="33" y2="11" stroke="#0A0A09" stroke-width="3.2" stroke-linecap="round"/><line x1="27" y1="19.5" x2="32" y2="19.5" stroke="#0A0A09" stroke-width="2.8" stroke-linecap="round"/></svg></div>
+      <span class="nav-name">Castford</span>
+    </a>
+    <div class="nav-links">
       <a href="/solutions">Solutions</a>
       <a href="/integrations">Integrations</a>
       <a href="/security">Trust</a>
       <a href="/pricing">Pricing</a>
-      
       <a href="/resources">Resources</a>
     </div>
-    <div class="nav-end">
-      <a href="/login">Sign In</a>
-      <a href="/pricing" class="btn-sub">Subscribe</a>
+    <div class="nav-right">
+      <a href="/login" class="nav-sign">Sign in</a>
+      <button class="nav-cta">Get started</button>
     </div>
   </div>
 </nav>
 
-<!-- HERO -->
+<!-- HERO (frosted glass over dark) -->
 <section class="hero">
-  <div class="hero-eyebrow">
-    Now available: Plan across 7 departments in one platform
-    <span class="tag">NEW</span>
-  </div>
-  <h1>Financial planning that earns 5-star reviews</h1>
-  <p class="hero-sub">AI-native FP&A for teams that outgrew spreadsheets. Close faster, forecast accurately, and plan across every department — in one platform.</p>
-  <div class="hero-buttons">
-    <a href="/login" class="btn btn-primary btn-lg" style="text-decoration:none">Get Started Free</a>
-    <a href="mailto:sales@castford.com?subject=Castford Demo Request" class="btn btn-outline btn-lg" style="text-decoration:none">Book a Demo →</a>
-  </div>
-  <p class="hero-note">Schedule a demo · See it in action</p>
-
-  <div class="hero-visual">
-    <div class="hv-topbar">
-      <div class="hv-brand"><span class="hv-brand-dot"></span> CASTFORD</div>
-      <div class="hv-tabs">
-        <div class="hv-tab active">Dashboard</div>
-        <div class="hv-tab">Forecast</div>
-        <div class="hv-tab">Scenarios</div>
+  <div class="hero-frost">
+    <div class="hero-content">
+      <div class="hero-badge">Plan across 7 departments in one platform <span class="hero-badge-tag">NEW</span></div>
+      <h1>The numbers your<br>board <em>hasn't seen yet.</em></h1>
+      <p class="hero-sub">AI-native FP&A that surfaces what spreadsheets bury. Close faster, forecast accurately, plan across every department.</p>
+      <div class="hero-btns">
+        <button class="btn-hero btn-amber">Get Started Free</button>
+        <button class="btn-hero btn-glass">Book a Demo</button>
       </div>
+      <p class="hero-note">No credit card required</p>
     </div>
-    <div class="hv-body">
-      <div class="hv-sidebar">
-        <div class="hv-sidebar-item active"><span class="dot" style="background:var(--green)"></span>Dashboard</div>
-        <div class="hv-sidebar-item"><span class="dot" style="background:var(--border)"></span>P&L</div>
-        <div class="hv-sidebar-item"><span class="dot" style="background:var(--border)"></span>Balance Sheet</div>
-        <div class="hv-sidebar-item"><span class="dot" style="background:var(--border)"></span>Cash Flow</div>
-        <div class="hv-sidebar-item"><span class="dot" style="background:var(--border)"></span>Revenue</div>
-        <div class="hv-sidebar-item"><span class="dot" style="background:var(--border)"></span>Headcount</div>
-        <div class="hv-sidebar-item"><span class="dot" style="background:var(--border)"></span>Consolidation</div>
-        <div class="hv-sidebar-item"><span class="dot" style="background:var(--border)"></span>AI Copilot</div>
-      </div>
-      <div class="hv-main">
-        <div class="hv-header">
-          <h3>Executive Dashboard</h3>
-          <span class="period">Q1 2026</span>
+    <div class="hero-dash">
+      <div class="dash-frame">
+        <div class="dash-top">
+          <div class="dash-dots"><span style="background:#FF5F57"></span><span style="background:#FEBC2E"></span><span style="background:#28C840"></span></div>
+          <span class="dash-label">CASTFORD</span>
+          <div class="dash-tabs">
+            <span class="dash-tab active">Dashboard</span>
+            <span class="dash-tab">Forecast</span>
+            <span class="dash-tab">Scenarios</span>
+          </div>
         </div>
-        <div class="hv-metrics">
-          <div class="hv-metric"><div class="label">ARR</div><div class="value">Growing</div><div class="change up">YoY Growth</div></div>
-          <div class="hv-metric"><div class="label">NDR</div><div class="value">Strong</div><div class="change up">Improving</div></div>
-          <div class="hv-metric"><div class="label">Burn Multiple</div><div class="value">Efficient</div><div class="change up">Efficient</div></div>
-          <div class="hv-metric"><div class="label">Gross Margin</div><div class="value">Strong</div><div class="change up">Improving</div></div>
-        </div>
-        <div class="hv-chart">
-          <div class="hv-bar" style="height:28%"></div>
-          <div class="hv-bar" style="height:32%"></div>
-          <div class="hv-bar" style="height:30%"></div>
-          <div class="hv-bar" style="height:38%"></div>
-          <div class="hv-bar" style="height:42%"></div>
-          <div class="hv-bar" style="height:40%"></div>
-          <div class="hv-bar" style="height:48%"></div>
-          <div class="hv-bar" style="height:52%"></div>
-          <div class="hv-bar" style="height:56%"></div>
-          <div class="hv-bar" style="height:62%"></div>
-          <div class="hv-bar" style="height:68%"></div>
-          <div class="hv-bar" style="height:78%"></div>
+        <div class="dash-body">
+          <div class="dash-side">
+            <div class="dash-side-item active"><span class="sd"></span>Dashboard</div>
+            <div class="dash-side-item"><span class="sd"></span>P&L</div>
+            <div class="dash-side-item"><span class="sd"></span>Balance Sheet</div>
+            <div class="dash-side-item"><span class="sd"></span>Cash Flow</div>
+            <div class="dash-side-item"><span class="sd"></span>Revenue</div>
+            <div class="dash-side-item"><span class="sd"></span>Headcount</div>
+            <div class="dash-side-item"><span class="sd"></span>Consolidation</div>
+          </div>
+          <div class="dash-main">
+            <div class="dash-header"><h3>Executive Dashboard</h3><span class="dash-period">Q1 2026</span></div>
+            <div class="dash-metrics">
+              <div class="dash-metric"><div class="dm-label">ARR</div><div class="dm-val">$12.4M</div><div class="dm-delta">+18.3%</div></div>
+              <div class="dash-metric"><div class="dm-label">NDR</div><div class="dm-val">118%</div><div class="dm-delta">+4.2pp</div></div>
+              <div class="dash-metric"><div class="dm-label">Burn</div><div class="dm-val">0.9x</div><div class="dm-delta">Efficient</div></div>
+              <div class="dash-metric"><div class="dm-label">Margin</div><div class="dm-val">74.8%</div><div class="dm-delta">+2.1pp</div></div>
+            </div>
+            <div class="dash-chart">
+              <div class="dash-bar amber" style="height:28%"></div><div class="dash-bar amber" style="height:32%"></div><div class="dash-bar amber" style="height:30%"></div><div class="dash-bar amber" style="height:38%"></div><div class="dash-bar amber" style="height:42%"></div><div class="dash-bar amber" style="height:40%"></div><div class="dash-bar amber" style="height:48%"></div><div class="dash-bar amber" style="height:52%"></div><div class="dash-bar amber" style="height:56%"></div><div class="dash-bar amber" style="height:62%"></div><div class="dash-bar amber" style="height:68%"></div><div class="dash-bar amber" style="height:78%"></div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- SOCIAL PROOF -->
-<div class="social-proof">
-  <div class="sp-inner">
-    <p>Built for modern finance teams</p>
-    <div class="sp-logos" style="gap:48px">
-      <span class="sp-logo" style="font-size:13px;font-weight:700;color:#64748B;letter-spacing:0.05em;text-transform:uppercase">SOC 2 Type II</span>
-      <span class="sp-logo" style="font-size:13px;font-weight:700;color:#64748B;letter-spacing:0.05em;text-transform:uppercase">GDPR</span>
-      <span class="sp-logo" style="font-size:13px;font-weight:700;color:#64748B;letter-spacing:0.05em;text-transform:uppercase">ISO 27001</span>
-      <span class="sp-logo" style="font-size:13px;font-weight:700;color:#64748B;letter-spacing:0.05em;text-transform:uppercase">AES-256</span>
-      <span class="sp-logo" style="font-size:13px;font-weight:700;color:#64748B;letter-spacing:0.05em;text-transform:uppercase">SSO / SAML</span>
-    </div>
-  </div>
-</div>
+<!-- TRUST -->
+<div class="trust"><div class="trust-in">
+  <span class="trust-item">SOC 2 Type II</span><span class="trust-item">GDPR</span><span class="trust-item">ISO 27001</span><span class="trust-item">AES-256</span><span class="trust-item">SSO / SAML</span>
+</div></div>
 
-<!-- METRICS STRIP -->
-<div class="metrics-strip">
-  <div class="metrics-inner">
-    <div><div class="m-val">3-Day</div><div class="m-label">Avg. Monthly Close</div></div>
-    <div><div class="m-val">200+</div><div class="m-label">Native Integrations</div></div>
-    <div><div class="m-val">AI-Native</div><div class="m-label">Platform Architecture</div></div>
-    <div><div class="m-val">Real-Time</div><div class="m-label">Data Sync</div></div>
-    <div><div class="m-val">SOC 2</div><div class="m-label">Certified</div></div>
-  </div>
-</div>
+<!-- METRICS -->
+<div class="metrics"><div class="w"><div class="metrics-in">
+  <div><div class="metric-val">3-Day</div><div class="metric-label">Avg. Monthly Close</div></div>
+  <div><div class="metric-val">200+</div><div class="metric-label">Native Integrations</div></div>
+  <div><div class="metric-val">AI-Native</div><div class="metric-label">Platform Architecture</div></div>
+  <div><div class="metric-val">Real-Time</div><div class="metric-label">Data Sync</div></div>
+  <div><div class="metric-val">SOC 2</div><div class="metric-label">Certified</div></div>
+</div></div></div>
 
-<!-- FEATURE BENTO GRID -->
-<section class="section">
-  <div class="section-header">
-    <div class="overline">Platform</div>
-    <h2>Everything your finance team needs</h2>
-    <p>Close faster, forecast accurately, and plan across every department — without the spreadsheet chaos.</p>
+<!-- FEATURES -->
+<section class="sect" style="background:var(--bg)"><div class="w">
+  <div class="sect-head">
+    <div class="sect-over">Platform</div>
+    <div class="sect-title">Everything your finance team needs</div>
+    <div class="sect-sub">Close faster, forecast accurately, and plan across every department.</div>
   </div>
   <div class="bento">
-    <div class="bento-card span-2 fade-in">
-      <div class="overline" style="color:var(--green)">AI Copilot</div>
-      <h3>Ask questions in plain English</h3>
-      <p>"Why did COGS spike in March?" — get instant, sourced variance analysis with drill-down to individual transactions. No SQL, no formulas, no waiting.</p>
-      <div class="bento-stat">High</div>
-      <div class="bento-stat-label">Forecast accuracy with AI</div>
-    </div>
-    <div class="bento-card fade-in">
-      <div class="overline" style="color:var(--cyan)">Close</div>
-      <h3>Rapid monthly close</h3>
-      <p>Automated multi-entity consolidation, intercompany elimination, and real-time GL sync.</p>
-      <div class="bento-stat">80%</div>
-      <div class="bento-stat-label">Faster than industry avg</div>
-    </div>
-    <div class="bento-card fade-in">
-      <div class="overline" style="color:var(--purple)">xP&A</div>
-      <h3>7-department planning</h3>
-      <p>Finance, Revenue, Workforce, Operations, Marketing, IT, and Supply Chain in one unified model.</p>
-      <div class="bento-mini-chart">
-        <span style="height:40%"></span><span style="height:55%"></span><span style="height:45%"></span>
-        <span style="height:65%"></span><span style="height:70%"></span><span style="height:60%"></span>
-        <span style="height:80%"></span><span style="height:Significant"></span>
-      </div>
-    </div>
-    <div class="bento-card span-2 fade-in">
-      <div class="overline" style="color:var(--blue)">Integrations</div>
-      <h3>Extensive pre-built connectors</h3>
-      <p>ERP, CRM, HRIS, banking, and data warehouse connectors — 200+ and growing. OAuth setup in under 5 minutes. Real-time or batch sync with automatic schema mapping.</p>
-      <div class="bento-stat">< 5 min</div>
-      <div class="bento-stat-label">Average connector setup time</div>
-    </div>
-    <div class="bento-card fade-in">
-      <div class="overline" style="color:var(--amber)">Scenarios</div>
-      <h3>Unlimited what-ifs</h3>
-      <p>Monte Carlo simulations, side-by-side comparison, and AI-suggested scenarios based on market signals.</p>
-      <div class="bento-stat">30s</div>
-      <div class="bento-stat-label">Any scenario, created</div>
-    </div>
-    <div class="bento-card fade-in">
-      <div class="overline" style="color:var(--red)">Compliance</div>
-      <h3>SOX 404 automation</h3>
-      <p>Continuous control monitoring, immutable audit trails, one-click evidence export.</p>
-      <div class="bento-stat">Significant</div>
-      <div class="bento-stat-label">Less audit prep time</div>
-    </div>
+    <div class="bento-card span-2 fade-in"><div class="bento-over" style="color:var(--accent)">AI Copilot</div><h3>Ask questions in plain English</h3><p>"Why did COGS spike?" — instant variance analysis with drill-down to individual transactions.</p><div class="bento-stat">96%</div><div class="bento-stat-label">Forecast accuracy with AI</div></div>
+    <div class="bento-card fade-in"><div class="bento-over" style="color:#5B8DEF">Close</div><h3>Rapid monthly close</h3><p>Automated consolidation, intercompany elimination, real-time GL sync.</p><div class="bento-stat">80%</div><div class="bento-stat-label">Faster than industry avg</div></div>
+    <div class="bento-card fade-in"><div class="bento-over" style="color:#8B6AE0">xP&A</div><h3>7-department planning</h3><p>Finance, Revenue, Workforce, Ops, Marketing, IT, Supply Chain — one model.</p><div class="bento-mini"><span style="height:40%"></span><span style="height:55%"></span><span style="height:45%"></span><span style="height:65%"></span><span style="height:70%"></span><span style="height:60%"></span><span style="height:80%"></span></div></div>
+    <div class="bento-card span-2 fade-in"><div class="bento-over" style="color:#5B8DEF">Integrations</div><h3>200+ pre-built connectors</h3><p>ERP, CRM, HRIS, banking, data warehouses. OAuth setup in under 5 minutes.</p><div class="bento-stat">&lt; 5 min</div><div class="bento-stat-label">Average connector setup</div></div>
+    <div class="bento-card fade-in"><div class="bento-over" style="color:var(--accent)">Scenarios</div><h3>Unlimited what-ifs</h3><p>Monte Carlo simulations, side-by-side comparison, AI-suggested scenarios.</p><div class="bento-stat">30s</div><div class="bento-stat-label">Any scenario, created</div></div>
   </div>
-</section>
+</div></section>
 
 <!-- AI SHOWCASE -->
-<div class="section-alt">
-  <section class="section">
-    <div class="ai-split">
-      <div class="ai-text fade-in">
-        <div class="overline">AI Copilot</div>
-        <h2>Your senior analyst, available 24/7</h2>
-        <p>Not a chatbot bolted onto a spreadsheet. Castford AI is trained on financial data patterns, understands GAAP/IFRS, and provides sourced, auditable answers with full data lineage.</p>
-        <div class="ai-list">
-          <div class="ai-item"><div class="ai-item-icon" style="background:var(--green-50)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#B07520" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.35-4.35"/></svg></div><div><h4>Variance Analysis</h4><p>Instant sourced breakdown of any line item change</p></div></div>
-          <div class="ai-item"><div class="ai-item-icon" style="background:#EFF6FF"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2563EB" stroke-width="2" stroke-linecap="round"><path d="M18 20V10M12 20V4M6 20v-6"/></svg></div><div><h4>Anomaly Detection</h4><p>Flags unusual patterns before they become findings</p></div></div>
-          <div class="ai-item"><div class="ai-item-icon" style="background:#F5F3FF"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#7C3AED" stroke-width="2" stroke-linecap="round"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg></div><div><h4>Proactive Insights</h4><p>Surfaces risks and opportunities you didn't know to look for</p></div></div>
-          <div class="ai-item"><div class="ai-item-icon" style="background:#FFFBEB"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#D97706" stroke-width="2" stroke-linecap="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg></div><div><h4>Multi-Turn Conversations</h4><p>Ask follow-ups — context maintained across the session</p></div></div>
-        </div>
-      </div>
-      <div class="ai-terminal fade-in">
-        <div class="ai-t-header"><span class="ai-brand">CASTFORD</span><span class="t-title">AI Copilot</span></div>
-        <div class="ai-t-body">
-          <div class="prompt">You → Why did OPEX exceed budget by $340K?</div><br>
-          <div class="response">Three factors drove the $340K overage:</div><br>
-          <span class="dim">1.</span> <span class="hl">Eng headcount</span> <span class="dim">+$180K</span><br>
-          <span class="dim">&nbsp;&nbsp;&nbsp;4 unbudgeted hires (HC-2026-014)</span><br>
-          <span class="dim">2.</span> <span class="hl">AWS infra</span> <span class="dim">+$95K</span><br>
-          <span class="dim">&nbsp;&nbsp;&nbsp;PH launch traffic surge (+47%)</span><br>
-          <span class="dim">3.</span> <span class="hl">Legal</span> <span class="dim">+$65K</span><br>
-          <span class="dim">&nbsp;&nbsp;&nbsp;SOC 2 audit (one-time)</span><br><br>
-          <div class="response">Shall I reforecast Q2-Q4?</div>
-        </div>
+<section class="sect" style="background:var(--surface);border-top:1px solid var(--border);border-bottom:1px solid var(--border)"><div class="w">
+  <div class="ai-split">
+    <div class="ai-text fade-in">
+      <div class="sect-over">AI Copilot</div>
+      <h2>Your senior analyst,<br>available 24/7</h2>
+      <p>Not a chatbot on a spreadsheet. Castford AI understands GAAP/IFRS and provides sourced, auditable answers.</p>
+      <div class="ai-feat"><div class="ai-feat-icon" style="background:var(--accent-bg)">&#9670;</div><div><h4>Variance analysis</h4><p>Instant breakdown of any line item</p></div></div>
+      <div class="ai-feat"><div class="ai-feat-icon" style="background:rgba(91,141,239,0.08)">&#9679;</div><div><h4>Anomaly detection</h4><p>Flags patterns before they become findings</p></div></div>
+      <div class="ai-feat"><div class="ai-feat-icon" style="background:rgba(139,106,224,0.08)">&#9733;</div><div><h4>Proactive insights</h4><p>Surfaces risks and opportunities automatically</p></div></div>
+    </div>
+    <div class="ai-term fade-in">
+      <div class="ai-term-top"><span class="ai-term-brand">CASTFORD</span><span class="ai-term-label">AI Copilot</span></div>
+      <div class="ai-term-body">
+        <span class="ai-prompt">You</span> <span class="ai-dim">—</span> Why did OPEX exceed budget by $340K?<br><br>
+        <span class="ai-response">Three factors drove the $340K overage:</span><br>
+        <span class="ai-dim">1.</span> <span class="ai-hl">Eng headcount</span> <span class="ai-dim">+$180K</span><br>
+        <span class="ai-dim">&nbsp;&nbsp;&nbsp;4 unbudgeted hires</span><br>
+        <span class="ai-dim">2.</span> <span class="ai-hl">AWS infra</span> <span class="ai-dim">+$95K</span><br>
+        <span class="ai-dim">&nbsp;&nbsp;&nbsp;Traffic surge (+47%)</span><br>
+        <span class="ai-dim">3.</span> <span class="ai-hl">Legal</span> <span class="ai-dim">+$65K</span><br>
+        <span class="ai-dim">&nbsp;&nbsp;&nbsp;SOC 2 audit (one-time)</span><br><br>
+        <span class="ai-response">Shall I reforecast Q2-Q4?</span>
       </div>
     </div>
-  </section>
-</div>
-
-<!-- INTEGRATIONS STRIP -->
-<section class="int-strip">
-  <h2>Connects to your entire stack</h2>
-  <p>Extensive pre-built connectors. OAuth setup. Real-time sync.</p>
-  <div class="int-logos">
-    <div class="int-chip"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#CF8A2E" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M7 8h10M7 12h6M7 16h8"/></svg>ERP Systems</div>
-    <div class="int-chip"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2563EB" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>CRM Platforms</div>
-    <div class="int-chip"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#7C3AED" stroke-width="2" stroke-linecap="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>HRIS & Payroll</div>
-    <div class="int-chip"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#B07520" stroke-width="2" stroke-linecap="round"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>Banking & Payments</div>
-    <div class="int-chip"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0891B2" stroke-width="2" stroke-linecap="round"><path d="M12 2l10 6v8l-10 6L2 16V8l10-6z"/></svg>Data Warehouses</div>
-    <div class="int-chip"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#D97706" stroke-width="2" stroke-linecap="round"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>BI & Analytics</div>
-    <div class="int-chip"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8v4M12 16h0" stroke-linecap="round"/></svg>200+ connectors</div>
   </div>
-  <a href="/integrations" class="btn btn-outline btn-md" style="text-decoration:none">View All Integrations →</a>
-</section>
+</div></section>
 
-<!-- TRUST STRIP -->
-<div class="section-alt">
-  <section class="section">
-    <div class="section-header">
-      <div class="overline">Built for Scale</div>
-      <h2>Built for results that matter</h2>
-    </div>
-    <div class="testimonials-grid" style="grid-template-columns:repeat(3,1fr);gap:20px">
-      <div class="test-card fade-in" style="text-align:center;padding:32px 24px">
-        <div style="font-size:36px;font-weight:800;color:#CF8A2E;font-family:'JetBrains Mono',monospace;margin-bottom:8px">3 days</div>
-        <div style="font-size:14px;font-weight:600;color:#1E293B;margin-bottom:4px">Average Monthly Close</div>
-        <div style="font-size:13px;color:#64748B">Down from 12+ days with manual processes</div>
-      </div>
-      <div class="test-card fade-in" style="text-align:center;padding:32px 24px">
-        <div style="font-size:36px;font-weight:800;color:#CF8A2E;font-family:'JetBrains Mono',monospace;margin-bottom:8px">50+</div>
-        <div style="font-size:14px;font-weight:600;color:#1E293B;margin-bottom:4px">What-If Scenarios</div>
-        <div style="font-size:13px;color:#64748B">Run in a single afternoon with AI copilot</div>
-      </div>
-      <div class="test-card fade-in" style="text-align:center;padding:32px 24px">
-        <div style="font-size:36px;font-weight:800;color:#CF8A2E;font-family:'JetBrains Mono',monospace;margin-bottom:8px">1 model</div>
-        <div style="font-size:14px;font-weight:600;color:#1E293B;margin-bottom:4px">Unified xP&A</div>
-        <div style="font-size:13px;color:#64748B">Revenue, sales, and finance in one source of truth</div>
-      </div>
-    </div>
-  </section>
-</div>
-
-<!-- CTA -->
-<section class="cta">
-  <h2>Start planning smarter today</h2>
-  <p>Join finance teams that outgrew spreadsheets. Setup in minutes.</p>
-  <div class="cta-buttons">
-    <a href="/login" class="btn btn-primary btn-lg" style="text-decoration:none">Get Started Free</a>
-    <a href="mailto:sales@castford.com?subject=Castford%20Sales%20Inquiry" class="btn btn-outline btn-lg" style="text-decoration:none">Talk to Sales</a>
+<!-- INTEGRATIONS -->
+<section class="sect"><div class="w">
+  <div class="sect-head"><div class="sect-title">Connects to your entire stack</div><div class="sect-sub">Pre-built connectors. OAuth setup. Real-time sync.</div></div>
+  <div class="int-grid">
+    <div class="int-chip"><span class="int-dot" style="background:var(--accent)"></span>ERP Systems</div>
+    <div class="int-chip"><span class="int-dot" style="background:#5B8DEF"></span>CRM Platforms</div>
+    <div class="int-chip"><span class="int-dot" style="background:#8B6AE0"></span>HRIS & Payroll</div>
+    <div class="int-chip"><span class="int-dot" style="background:#1A7A45"></span>Banking</div>
+    <div class="int-chip"><span class="int-dot" style="background:#0891B2"></span>Data Warehouses</div>
+    <div class="int-chip"><span class="int-dot" style="background:var(--accent)"></span>BI & Analytics</div>
+    <div class="int-chip"><span class="int-dot" style="background:var(--faint)"></span>200+ connectors</div>
   </div>
-  <p class="cta-note">Schedule a demo · See it in action</p>
-</section>
+</div></section>
+
+<!-- RESULTS -->
+<section class="sect" style="background:var(--surface);border-top:1px solid var(--border);border-bottom:1px solid var(--border)"><div class="w">
+  <div class="sect-head"><div class="sect-over">Built for scale</div><div class="sect-title">Results that matter</div></div>
+  <div class="results">
+    <div class="result-card fade-in"><div class="result-val">3 days</div><div class="result-name">Average Monthly Close</div><div class="result-desc">Down from 12+ days manual</div></div>
+    <div class="result-card fade-in"><div class="result-val">50+</div><div class="result-name">What-If Scenarios</div><div class="result-desc">In a single afternoon</div></div>
+    <div class="result-card fade-in"><div class="result-val">1 model</div><div class="result-name">Unified xP&A</div><div class="result-desc">One source of truth</div></div>
+  </div>
+</div></section>
+
+<!-- CTA (frosted dark card) -->
+<div class="w" style="padding-top:72px">
+  <div class="cta-section">
+    <div class="cta-inner">
+      <h2>See what the numbers see.</h2>
+      <p>Join finance teams that outgrew spreadsheets. Setup in minutes.</p>
+      <div class="cta-btns">
+        <button class="btn-hero btn-amber">Get Started Free</button>
+        <button class="btn-hero btn-glass">Talk to Sales</button>
+      </div>
+      <p class="cta-note">No credit card required</p>
+    </div>
+  </div>
+</div>
 
 <!-- FOOTER -->
-<footer>
-  <div class="ft-inner">
+<footer><div class="w">
+  <div class="ft-grid">
     <div class="ft-brand">
-      <a href="/" class="logo-link"><img src="/site/logo.svg" alt="Castford" width="20" height="20" style="border-radius:4px"> Castford</a>
+      <div class="nav-logo" style="margin-bottom:0"><div class="nav-mark"><svg viewBox="0 0 40 40" width="22" height="22"><rect width="40" height="40" rx="9" fill="#CF8A2E"/><path d="M19.5 10.5C14.8 10.5 11 14.1 11 18.8V21.2C11 25.9 14.8 29.5 19.5 29.5C21.8 29.5 23.8 28.6 25.2 27.1" stroke="#0A0A09" stroke-width="3.2" stroke-linecap="round" fill="none"/><line x1="27" y1="11" x2="27" y2="29" stroke="#0A0A09" stroke-width="3.2" stroke-linecap="round"/><line x1="27" y1="11" x2="33" y2="11" stroke="#0A0A09" stroke-width="3.2" stroke-linecap="round"/><line x1="27" y1="19.5" x2="32" y2="19.5" stroke="#0A0A09" stroke-width="2.8" stroke-linecap="round"/></svg></div><span class="nav-name" style="font-size:15px;color:var(--ink)">Castford</span></div>
       <p>AI-native financial planning & analysis for modern finance teams.</p>
     </div>
     <div class="ft-col"><h5>Product</h5><a href="/">Platform</a><a href="/integrations">Integrations</a><a href="/pricing">Pricing</a><a href="/security">Security</a></div>
-    <div class="ft-col"><h5>Solutions</h5><a href="/solutions">SaaS</a><a href="/solutions">E-Commerce</a><a href="/xpa-planning">Cross-Dept Planning</a></div>
-    <div class="ft-col"><h5>Resources</h5><a href="/resources">Resource Library</a><a href="/whats-new">Changelog</a></div>
-    <div class="ft-col"><h5>Company</h5><a href="#">About</a><a href="#">Careers</a><a href="#">Contact</a></div>
+    <div class="ft-col"><h5>Solutions</h5><a href="/solutions">SaaS</a><a href="/solutions">E-Commerce</a><a href="/xpa-planning">Cross-Dept</a></div>
+    <div class="ft-col"><h5>Resources</h5><a href="/resources">Library</a><a href="/whats-new">Changelog</a></div>
+    <div class="ft-col"><h5>Company</h5><a href="#">About</a><a href="#">Careers</a><a href="mailto:sales@castford.com">Contact</a></div>
   </div>
-  <div class="ft-bottom">
-    <span>&copy; 2026 Castford, Inc.</span>
-    <div style="display:flex;gap:20px"><a href="/privacy">Privacy</a><a href="/terms">Terms</a><a href="/security">Security</a></div>
-  </div>
-</footer>
+  <div class="ft-bottom"><span>&copy; 2026 Castford, Inc.</span><div class="ft-bottom-links"><a href="/privacy">Privacy</a><a href="/terms">Terms</a><a href="/security">Security</a></div></div>
+</div></footer>
 
 <script>
-const obs = new IntersectionObserver((entries) => {
-  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
-}, { threshold: 0.08 });
+const obs = new IntersectionObserver(e => e.forEach(el => { if (el.isIntersecting) el.target.classList.add('visible') }), { threshold: 0.08 });
 document.querySelectorAll('.fade-in').forEach(el => obs.observe(el));
 </script>
 </body>
-                                 </html>
-
+</html>
