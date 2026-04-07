@@ -143,6 +143,7 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;bottom:0;background:
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="/site/dashboard-data.js"></script>
+<script src="/site/castford-charts.js"></script>
 </head>
 <body>
 <div class="scroll-progress" id="scrollProgress"></div>
@@ -245,13 +246,16 @@ setTimeout(()=>{animateForecast();animateBars()},400);
 document.addEventListener('DOMContentLoaded', async function() {
   if (window.CastfordData) {
     var cd = await CastfordData.init();
-    if (!cd.isDemoMode()) {
-      // Replace static P&L with live GL data
-      var rev = await cd.getRevenue();
-      var vals = document.querySelectorAll('.pl-val');
-      // Future: map each .pl-val to real GL account data
-      console.log('Castford: Live data connected', rev);
-    }
+    // Fetch live data from dashboard-summary API
+    try {
+      var token = (await window.supabase.createClient('https://crecesswagluelvkesul.supabase.co','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNyZWNlc3N3YWdsdWVsdmtlc3VsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM4MTI5NzYsImV4cCI6MjA4OTM4ODk3Nn0.IGEEYDStt-eH9Mf2G_DzqCPfruDjN8m_ORtAcmtSAZg').auth.getSession()).data?.session?.access_token;
+      if (token) {
+        var resp = await fetch('https://crecesswagluelvkesul.supabase.co/functions/v1/dashboard-summary?view=summary', {headers:{'Authorization':'Bearer '+token,'Content-Type':'application/json'}});
+        var apiData = await resp.json();
+        if (window.CastfordCharts) CastfordCharts.render(apiData);
+        console.log('Castford: Live charts rendered', apiData.kpis);
+      }
+    } catch(e) { console.warn('Chart data fetch failed:', e); }
   }
 });
 </script>
