@@ -279,10 +279,95 @@
   <div class="cf-ft-bottom"><span>&copy; 2026 Castford, Inc.</span><div style="display:flex;gap:16px"><a href="/privacy" style="color:var(--t3)">Privacy</a><a href="/terms" style="color:var(--t3)">Terms</a><a href="/security" style="color:var(--t3)">Security</a></div></div>
 </div></footer>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
+const SUPABASE_URL='https://crecesswagluelvkesul.supabase.co';
+const SUPABASE_ANON='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNyZWNlc3N3YWdsdWVsdmtlc3VsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM4MTI5NzYsImV4cCI6MjA4OTM4ODk3Nn0.IGEEYDStt-eH9Mf2G_DzqCPfruDjN8m_ORtAcmtSAZg';
+const sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON);
+const REDIRECT='https://castford.com/site/dashboard.html';
+
+// Theme toggle
 document.getElementById('themeToggle').addEventListener('click',()=>{const h=document.documentElement;h.dataset.theme=h.dataset.theme==='day'?'night':'day';localStorage.setItem('cf-theme',h.dataset.theme)});
+
+// IntersectionObserver
 const _o=new IntersectionObserver(e=>{e.forEach(el=>{if(el.isIntersecting){el.target.classList.add('v');el.target.classList.add('vis');el.target.classList.add('visible')}})},{threshold:0.08});
 document.querySelectorAll('.cf-fin,.fade-in,.reveal').forEach(el=>_o.observe(el));
+
+// Check if already logged in
+sb.auth.getSession().then(({data:{session}})=>{if(session)window.location.href=REDIRECT});
+
+// Apple Sign-In
+document.getElementById('btn-apple').addEventListener('click',async()=>{
+  const btn=document.getElementById('btn-apple');
+  btn.classList.add('loading');
+  const{error}=await sb.auth.signInWithOAuth({provider:'apple',options:{redirectTo:REDIRECT}});
+  if(error){btn.classList.remove('loading');alert('Apple Sign-In error: '+error.message)}
+});
+
+// Google Sign-In
+document.getElementById('btn-google').addEventListener('click',async()=>{
+  const btn=document.getElementById('btn-google');
+  btn.classList.add('loading');
+  const{error}=await sb.auth.signInWithOAuth({provider:'google',options:{redirectTo:REDIRECT}});
+  if(error){btn.classList.remove('loading');alert('Google Sign-In error: '+error.message)}
+});
+
+// Email/Password Login
+document.getElementById('loginForm').addEventListener('submit',async(e)=>{
+  e.preventDefault();
+  const email=document.getElementById('email').value.trim();
+  const pw=document.getElementById('password').value;
+  const btn=document.getElementById('submitBtn');
+  const emailErr=document.getElementById('emailError');
+  const pwErr=document.getElementById('pwError');
+  emailErr.style.display='none';pwErr.style.display='none';
+  if(!email||!email.includes('@')){emailErr.style.display='block';return}
+  if(!pw||pw.length<8){pwErr.style.display='block';return}
+  btn.textContent='Signing in...';btn.disabled=true;
+  const{error}=await sb.auth.signInWithPassword({email,password:pw});
+  if(error){btn.textContent='Sign In';btn.disabled=false;
+    if(error.message.includes('Invalid')){pwErr.textContent='Invalid email or password';pwErr.style.display='block'}
+    else if(error.message.includes('rate')){document.getElementById('rateLimitBar').style.display='block'}
+    else{pwErr.textContent=error.message;pwErr.style.display='block'}
+  }else{window.location.href=REDIRECT}
+});
+
+// Password visibility toggle
+document.getElementById('togglePw').addEventListener('click',()=>{
+  const pw=document.getElementById('password');
+  const btn=document.getElementById('togglePw');
+  if(pw.type==='password'){pw.type='text';btn.textContent='Hide'}else{pw.type='password';btn.textContent='Show'}
+});
+
+// SSO Modal
+document.getElementById('btn-sso').addEventListener('click',()=>{document.getElementById('ssoModal').style.display='flex'});
+function closeSsoModal(){document.getElementById('ssoModal').style.display='none'}
+function submitSso(){
+  const domain=document.getElementById('ssoInput').value.trim();
+  if(!domain){document.getElementById('ssoErr').textContent='Enter your company domain';document.getElementById('ssoErr').style.display='block';return}
+  document.getElementById('ssoErr').style.display='none';
+  sb.auth.signInWithSSO({domain}).then(({data,error})=>{
+    if(error){document.getElementById('ssoErr').textContent=error.message;document.getElementById('ssoErr').style.display='block'}
+    else if(data?.url){window.location.href=data.url}
+  });
+}
+
+// Forgot Password Modal
+document.getElementById('forgotLink').addEventListener('click',()=>{document.getElementById('forgotModal').style.display='flex'});
+function closeForgotModal(){document.getElementById('forgotModal').style.display='none'}
+function submitForgot(){
+  const email=document.getElementById('forgotEmail').value.trim();
+  const msg=document.getElementById('forgotMsg');
+  if(!email){msg.textContent='Enter your email';msg.className='mmsg err';msg.style.display='block';return}
+  sb.auth.resetPasswordForEmail(email,{redirectTo:'https://castford.com/site/reset-password.html'}).then(({error})=>{
+    if(error){msg.textContent=error.message;msg.className='mmsg err'}
+    else{msg.textContent='Check your email for a reset link';msg.className='mmsg ok'}
+    msg.style.display='block';
+  });
+}
+
+// Sign Up link
+document.getElementById('signupLink').addEventListener('click',()=>{window.location.href='/site/login.html?signup=true'});
 </script>
 </body>
 </html>
