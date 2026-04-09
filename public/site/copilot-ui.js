@@ -13,14 +13,32 @@
   var body = document.querySelector('.copilot-body');
   if (!input || !btn || !body) return;
 
-  function addMsg(role, text) {
+  function addMsg(role, text, typewriter) {
     var div = document.createElement('div');
     div.className = 'copilot-msg ' + role;
     var bubble = document.createElement('div');
     bubble.className = 'copilot-bubble';
-    bubble.innerHTML = text.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/- /g, '&bull; ');
     div.appendChild(bubble);
     body.appendChild(div);
+
+    if (role === 'ai' && typewriter !== false) {
+      // Typewriter: 20ms per character
+      var formatted = text.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/- /g, '&bull; ');
+      var chars = formatted.split('');
+      var i = 0;
+      bubble.innerHTML = '<span class="copilot-cursor" style="display:inline-block;width:2px;height:14px;background:var(--blue,#5B7FCC);animation:blink .8s infinite;vertical-align:text-bottom"></span>';
+      var interval = setInterval(function() {
+        if (i >= chars.length) { clearInterval(interval); bubble.innerHTML = formatted; body.scrollTop = body.scrollHeight; return; }
+        // Insert before cursor
+        var cursor = bubble.querySelector('.copilot-cursor');
+        if (cursor) cursor.insertAdjacentHTML('beforebegin', chars[i]);
+        else bubble.innerHTML += chars[i];
+        i++;
+        if (i % 8 === 0) body.scrollTop = body.scrollHeight;
+      }, 18);
+    } else {
+      bubble.innerHTML = text.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/- /g, '&bull; ');
+    }
     body.scrollTop = body.scrollHeight;
   }
 
