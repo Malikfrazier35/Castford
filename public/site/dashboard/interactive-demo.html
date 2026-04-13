@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Castford — Interactive Demo</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#f8f7f4;--surface:#ffffff;--surface-2:#faf9f6;--border:rgba(0,0,0,0.06);--text:#1a1a2e;--text-2:#5a5a72;--text-3:#8a8a9e;--shadow-sm:0 1px 3px rgba(0,0,0,0.04);--shadow-md:0 4px 20px rgba(0,0,0,0.06);--shadow-lg:0 12px 40px rgba(0,0,0,0.08);--blue:#2563eb;--blue-soft:#dbeafe;--blue-text:#1e40af;--green:#059669;--green-soft:#d1fae5;--green-text:#065f46;--amber:#d97706;--amber-soft:#fef3c7;--amber-text:#92400e;--rose:#dc2626;--rose-soft:#fee2e2;--rose-text:#991b1b;--purple:#7c3aed;--purple-soft:#ede9fe;--purple-text:#5b21b6;--radius:20px;--radius-sm:14px}
+body{background:var(--bg);color:var(--text);font-family:'Manrope',system-ui,sans-serif;line-height:1.6;-webkit-font-smoothing:antialiased}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 80% 50% at 20% 0%,rgba(219,234,254,0.4),transparent),radial-gradient(ellipse 60% 40% at 80% 100%,rgba(209,250,229,0.3),transparent);pointer-events:none;z-index:0}
+.mono{font-family:'JetBrains Mono',monospace}
+
+/* Header */
+.demo-header{padding:16px 48px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);backdrop-filter:blur(24px);position:sticky;top:0;z-index:90;background:rgba(248,247,244,0.85)}
+.demo-logo{display:flex;align-items:center;gap:12px;text-decoration:none;color:var(--text)}
+.demo-logo-icon{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,var(--blue),var(--purple));display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;color:#fff;box-shadow:0 4px 12px rgba(37,99,235,0.25)}
+.demo-logo-text{font-size:17px;font-weight:800}
+.demo-badge{font-size:10px;font-weight:700;padding:4px 12px;border-radius:20px;background:var(--amber-soft);color:var(--amber-text);text-transform:uppercase;letter-spacing:.06em}
+.demo-cta{padding:10px 24px;border-radius:10px;background:var(--blue);color:#fff;font-weight:700;font-size:13px;text-decoration:none;border:none;cursor:pointer;box-shadow:0 2px 8px rgba(37,99,235,0.25);transition:all .2s}
+.demo-cta:hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(37,99,235,0.3)}
+
+/* Tour Steps */
+.tour-nav{display:flex;gap:4px;padding:16px 48px;background:var(--surface);border-bottom:1px solid var(--border);position:sticky;top:65px;z-index:80;overflow-x:auto}
+.tour-step{padding:10px 18px;border-radius:10px;font-size:12px;font-weight:700;cursor:pointer;border:1px solid var(--border);background:var(--surface);color:var(--text-2);transition:all .25s;white-space:nowrap;display:flex;align-items:center;gap:6px}
+.tour-step:hover{border-color:var(--blue);color:var(--blue)}
+.tour-step.active{background:var(--blue-soft);border-color:var(--blue);color:var(--blue-text)}
+.tour-step.done{background:var(--green-soft);border-color:transparent;color:var(--green-text)}
+.step-num{width:20px;height:20px;border-radius:50%;background:var(--surface-2);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800}
+.tour-step.active .step-num{background:var(--blue);color:#fff}
+.tour-step.done .step-num{background:var(--green);color:#fff}
+
+/* Content */
+.container{max-width:1100px;margin:0 auto;padding:36px 48px 80px;position:relative;z-index:1}
+.demo-section{display:none}
+.demo-section.active{display:block}
+.section-header{margin-bottom:28px}
+.section-title{font-size:26px;font-weight:800;letter-spacing:-0.02em;margin-bottom:6px}
+.section-sub{font-size:14px;color:var(--text-2)}
+
+/* KPI Grid */
+.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:28px}
+.kpi{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:22px;position:relative;overflow:hidden;transition:all .3s;cursor:default}
+.kpi:hover{box-shadow:var(--shadow-md);transform:translateY(-2px)}
+.kpi::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;opacity:0;transition:opacity .3s}
+.kpi:hover::before{opacity:1}
+.kpi[data-c="blue"]::before{background:linear-gradient(90deg,var(--blue),var(--purple))}
+.kpi[data-c="green"]::before{background:linear-gradient(90deg,var(--green),#10b981)}
+.kpi[data-c="amber"]::before{background:linear-gradient(90deg,var(--amber),#f59e0b)}
+.kpi[data-c="rose"]::before{background:linear-gradient(90deg,var(--rose),#f43f5e)}
+.kpi-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--text-3);margin-bottom:8px}
+.kpi-value{font-size:28px;font-weight:800;letter-spacing:-0.02em;margin-bottom:6px}
+.kpi-delta{display:inline-flex;align-items:center;gap:3px;font-size:11px;font-weight:700;padding:3px 8px;border-radius:16px}
+.delta-up{background:var(--green-soft);color:var(--green-text)}
+.delta-down{background:var(--rose-soft);color:var(--rose-text)}
+
+/* Chart placeholder */
+.chart-area{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:28px;margin-bottom:20px;min-height:240px;display:flex;flex-direction:column}
+.chart-title{font-size:15px;font-weight:700;margin-bottom:4px}
+.chart-sub{font-size:12px;color:var(--text-2);margin-bottom:20px}
+.chart-bars{display:flex;align-items:flex-end;gap:6px;height:160px;flex:1}
+.chart-bar{flex:1;border-radius:6px 6px 0 0;transition:height .8s cubic-bezier(.22,1,.36,1);position:relative;cursor:default}
+.chart-bar:hover{opacity:.85}
+.chart-bar::after{content:attr(data-label);position:absolute;bottom:-20px;left:50%;transform:translateX(-50%);font-size:9px;color:var(--text-3);white-space:nowrap}
+
+/* P&L Table */
+.pl-table{width:100%;border-collapse:collapse;font-size:13px}
+.pl-table th{text-align:left;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--text-3);padding:10px 14px;border-bottom:2px solid var(--border)}
+.pl-table td{padding:10px 14px;border-bottom:1px solid var(--border)}
+.pl-table tr:hover{background:rgba(59,130,246,0.02)}
+.pl-bold{font-weight:700}
+.pl-indent{padding-left:32px !important;color:var(--text-2)}
+
+/* Copilot Demo */
+.copilot-demo{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
+.copilot-header{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px}
+.copilot-dot{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 8px rgba(16,185,129,0.4);animation:pulse 2s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+.copilot-title{font-size:14px;font-weight:700}
+.copilot-messages{padding:20px;min-height:200px;max-height:360px;overflow-y:auto;display:flex;flex-direction:column;gap:12px}
+.msg{max-width:80%;padding:12px 16px;border-radius:14px;font-size:13px;line-height:1.5}
+.msg-user{align-self:flex-end;background:var(--blue);color:#fff;border-bottom-right-radius:4px}
+.msg-ai{align-self:flex-start;background:var(--surface-2);border:1px solid var(--border);border-bottom-left-radius:4px}
+.copilot-input{padding:16px 20px;border-top:1px solid var(--border);display:flex;gap:8px}
+.copilot-input input{flex:1;padding:10px 14px;border:1px solid var(--border);border-radius:10px;font-size:13px;font-family:inherit;background:var(--surface-2);color:var(--text);transition:border-color .2s}
+.copilot-input input:focus{outline:none;border-color:var(--blue)}
+.copilot-input button{padding:10px 20px;border-radius:10px;background:var(--blue);color:#fff;font-weight:700;font-size:12px;border:none;cursor:pointer}
+
+/* Suggestion chips */
+.suggestions{display:flex;flex-wrap:wrap;gap:8px;padding:0 20px 16px}
+.chip{padding:6px 14px;border-radius:20px;font-size:11px;font-weight:600;border:1px solid var(--border);background:var(--surface);color:var(--text-2);cursor:pointer;transition:all .2s}
+.chip:hover{border-color:var(--blue);color:var(--blue);background:var(--blue-soft)}
+
+/* Alert preview */
+.alert-preview{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);margin-bottom:10px;padding:16px 20px;display:flex;align-items:center;gap:14px;transition:all .25s}
+.alert-preview:hover{box-shadow:var(--shadow-md)}
+.alert-preview.critical{border-left:4px solid var(--rose)}
+.alert-preview.high{border-left:4px solid var(--amber)}
+.alert-sev{font-size:10px;font-weight:800;padding:4px 10px;border-radius:8px;text-transform:uppercase}
+.sev-c{background:var(--rose-soft);color:var(--rose-text)}
+.sev-h{background:var(--amber-soft);color:var(--amber-text)}
+.alert-text{flex:1}
+.alert-text strong{font-size:13px;display:block;margin-bottom:2px}
+.alert-text span{font-size:11px;color:var(--text-2)}
+
+/* Grid layouts */
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+@media(max-width:768px){.kpi-grid{grid-template-columns:repeat(2,1fr)}.two-col{grid-template-columns:1fr}.container{padding:20px}.demo-header,.tour-nav{padding-left:20px;padding-right:20px}}
+</style>
+</head>
+<body>
+
+<header class="demo-header">
+  <a href="https://castford.com" class="demo-logo">
+    <div class="demo-logo-icon">C</div>
+    <div class="demo-logo-text">Castford</div>
+  </a>
+  <div class="demo-badge">Interactive Demo</div>
+  <a href="https://castford.com/site/pricing.html" class="demo-cta">Start Free Trial</a>
+</header>
+
+<nav class="tour-nav" id="tour-nav">
+  <div class="tour-step active" onclick="goStep(0)"><span class="step-num">1</span> P&L Overview</div>
+  <div class="tour-step" onclick="goStep(1)"><span class="step-num">2</span> AI Copilot</div>
+  <div class="tour-step" onclick="goStep(2)"><span class="step-num">3</span> Alerts</div>
+  <div class="tour-step" onclick="goStep(3)"><span class="step-num">4</span> Forecasting</div>
+  <div class="tour-step" onclick="goStep(4)"><span class="step-num">5</span> Board Report</div>
+</nav>
+
+<div class="container">
+
+  <!-- STEP 1: P&L Overview -->
+  <div class="demo-section active" id="step-0">
+    <div class="section-header">
+      <div class="section-title">Profit & Loss — Live Dashboard</div>
+      <div class="section-sub">Real GL data from your ERP flows into these KPIs automatically. No spreadsheets.</div>
+    </div>
+    <div class="kpi-grid">
+      <div class="kpi" data-c="blue"><div class="kpi-label">Revenue</div><div class="kpi-value" id="kv-rev">$55.4M</div><div class="kpi-delta delta-up">+6.3% YoY</div></div>
+      <div class="kpi" data-c="green"><div class="kpi-label">Gross Margin</div><div class="kpi-value">85.1%</div><div class="kpi-delta delta-up">+1.2pp</div></div>
+      <div class="kpi" data-c="amber"><div class="kpi-label">OpEx</div><div class="kpi-value">$42.0M</div><div class="kpi-delta delta-down">+8.1% YoY</div></div>
+      <div class="kpi" data-c="rose"><div class="kpi-label">Net Income</div><div class="kpi-value">$5.1M</div><div class="kpi-delta delta-up">+12.4%</div></div>
+    </div>
+    <div class="two-col">
+      <div class="chart-area">
+        <div class="chart-title">Revenue by Month</div>
+        <div class="chart-sub">Trailing 9 months</div>
+        <div class="chart-bars" id="rev-bars"></div>
+      </div>
+      <div class="chart-area" style="overflow-x:auto">
+        <div class="chart-title">Income Statement</div>
+        <div class="chart-sub">Year-to-date actuals vs budget</div>
+        <table class="pl-table">
+          <tr><th>Account</th><th style="text-align:right">Actual</th><th style="text-align:right">Budget</th><th style="text-align:right">Var %</th></tr>
+          <tr class="pl-bold"><td>Revenue</td><td style="text-align:right">$55.4M</td><td style="text-align:right">$52.0M</td><td style="text-align:right;color:var(--green)">+6.5%</td></tr>
+          <tr><td class="pl-indent">Product Revenue</td><td style="text-align:right">$42.1M</td><td style="text-align:right">$40.0M</td><td style="text-align:right;color:var(--green)">+5.3%</td></tr>
+          <tr><td class="pl-indent">Services Revenue</td><td style="text-align:right">$13.3M</td><td style="text-align:right">$12.0M</td><td style="text-align:right;color:var(--green)">+10.8%</td></tr>
+          <tr class="pl-bold"><td>COGS</td><td style="text-align:right">$8.3M</td><td style="text-align:right">$8.0M</td><td style="text-align:right;color:var(--rose)">+3.8%</td></tr>
+          <tr class="pl-bold" style="background:rgba(59,130,246,0.03)"><td>Gross Profit</td><td style="text-align:right">$47.1M</td><td style="text-align:right">$44.0M</td><td style="text-align:right;color:var(--green)">+7.0%</td></tr>
+          <tr class="pl-bold"><td>Operating Expenses</td><td style="text-align:right">$42.0M</td><td style="text-align:right">$39.0M</td><td style="text-align:right;color:var(--rose)">+7.7%</td></tr>
+          <tr class="pl-bold" style="background:rgba(16,185,129,0.03)"><td>Net Income</td><td style="text-align:right">$5.1M</td><td style="text-align:right">$5.0M</td><td style="text-align:right;color:var(--green)">+2.0%</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 2: AI Copilot -->
+  <div class="demo-section" id="step-1">
+    <div class="section-header">
+      <div class="section-title">AI Financial Copilot</div>
+      <div class="section-sub">Ask questions about your financial data in plain English. The copilot reads your GL in real-time.</div>
+    </div>
+    <div class="copilot-demo">
+      <div class="copilot-header"><div class="copilot-dot"></div><div class="copilot-title">Castford Copilot</div></div>
+      <div class="copilot-messages" id="copilot-msgs">
+        <div class="msg msg-ai">Welcome to Castford. I have access to your full GL — 18 accounts, 162 transactions, and 216 budget entries. Ask me anything about your financials.</div>
+      </div>
+      <div class="suggestions" id="suggestions">
+        <div class="chip" onclick="askCopilot('Why did OPEX increase this quarter?')">Why did OPEX increase?</div>
+        <div class="chip" onclick="askCopilot('What is our gross margin trend?')">Gross margin trend</div>
+        <div class="chip" onclick="askCopilot('Show me accounts over budget')">Accounts over budget</div>
+        <div class="chip" onclick="askCopilot('Forecast next quarter revenue')">Forecast Q3 revenue</div>
+      </div>
+      <div class="copilot-input">
+        <input type="text" id="copilot-q" placeholder="Ask about your financials..." onkeydown="if(event.key==='Enter')askCopilot(this.value)">
+        <button onclick="askCopilot(document.getElementById('copilot-q').value)">Ask</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 3: Alerts -->
+  <div class="demo-section" id="step-2">
+    <div class="section-header">
+      <div class="section-title">Financial Alerts</div>
+      <div class="section-sub">The alert evaluator scans your GL every 6 hours for anomalies — variance spikes, unusual transactions, and revenue drops.</div>
+    </div>
+    <div class="alert-preview critical"><div class="alert-sev sev-c">Critical</div><div class="alert-text"><strong>FX Gains / (Losses): Over budget by 224.1%</strong><span>Actual $3.2M vs Budget $1.0M — $2.2M over target</span></div></div>
+    <div class="alert-preview critical"><div class="alert-sev sev-c">Critical</div><div class="alert-text"><strong>Interest Income: Over budget by 68.8%</strong><span>Actual $1.7M vs Budget $1.0M — investigate treasury allocation</span></div></div>
+    <div class="alert-preview high"><div class="alert-sev sev-h">High</div><div class="alert-text"><strong>Support & Onboarding: Under budget by 31.4%</strong><span>Actual $686K vs Budget $1.0M — potential underspend on customer success</span></div></div>
+    <div class="alert-preview high" style="border-left:4px solid var(--blue)"><div class="alert-sev" style="background:var(--blue-soft);color:var(--blue-text)">Medium</div><div class="alert-text"><strong>Usage / AI Module: Over budget by 29.4%</strong><span>Compute costs growing faster than revenue — review scaling strategy</span></div></div>
+    <div style="text-align:center;margin-top:20px;font-size:13px;color:var(--text-3)">7 alerts detected from 18 GL accounts and 162 transactions</div>
+  </div>
+
+  <!-- STEP 4: Forecasting -->
+  <div class="demo-section" id="step-3">
+    <div class="section-header">
+      <div class="section-title">Revenue Forecasting</div>
+      <div class="section-sub">Three models run automatically: Linear Regression, Exponential Moving Average, and Monte Carlo simulation with backtesting.</div>
+    </div>
+    <div class="chart-area" style="min-height:280px">
+      <div class="chart-title">Revenue Forecast — Next 6 Months</div>
+      <div class="chart-sub">Historical actuals + model projections with confidence bands</div>
+      <div class="chart-bars" id="forecast-bars" style="height:200px"></div>
+    </div>
+    <div class="kpi-grid" style="grid-template-columns:repeat(3,1fr)">
+      <div class="kpi" data-c="blue"><div class="kpi-label">Linear Model</div><div class="kpi-value" style="font-size:22px">$9.8M</div><div style="font-size:11px;color:var(--text-3)">MAPE: 4.2%</div></div>
+      <div class="kpi" data-c="green"><div class="kpi-label">EMA Model</div><div class="kpi-value" style="font-size:22px">$9.5M</div><div style="font-size:11px;color:var(--text-3)">MAPE: 3.8% (recommended)</div></div>
+      <div class="kpi" data-c="purple"><div class="kpi-label">Monte Carlo P50</div><div class="kpi-value" style="font-size:22px">$9.6M</div><div style="font-size:11px;color:var(--text-3)">P10: $8.1M · P90: $11.2M</div></div>
+    </div>
+  </div>
+
+  <!-- STEP 5: Board Report -->
+  <div class="demo-section" id="step-4">
+    <div class="section-header">
+      <div class="section-title">Board-Ready Report</div>
+      <div class="section-sub">One-click generation with AI-written executive summary. Runs automatically on the 1st of each month.</div>
+    </div>
+    <div class="chart-area" style="padding:32px">
+      <div style="text-align:center;margin-bottom:24px">
+        <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--text-3);margin-bottom:8px">Monthly Board Report</div>
+        <div style="font-size:22px;font-weight:800;letter-spacing:-0.02em">Financial Holding LLC</div>
+        <div style="font-size:13px;color:var(--text-2)">Period: April 2026</div>
+      </div>
+      <div style="background:var(--surface-2);border-radius:12px;padding:20px;margin-bottom:20px;border-left:3px solid var(--blue)">
+        <div style="font-size:12px;font-weight:700;color:var(--blue-text);margin-bottom:8px">Executive Summary</div>
+        <div style="font-size:13px;color:var(--text-2);line-height:1.7">Financial Holding LLC delivered $55.4M in total revenue with an 85.1% gross margin, exceeding budget targets by 6.5%. Net income of $5.1M (9.1% margin) reflects strong operating leverage despite an 8.1% YoY increase in operating expenses. Seven financial alerts were flagged, including critical FX variance and interest income overperformance. The EMA forecast model projects $9.5M monthly revenue for Q3 2026 with a 3.8% MAPE backtest score.</div>
+      </div>
+      <div class="kpi-grid" style="grid-template-columns:repeat(4,1fr)">
+        <div style="text-align:center"><div style="font-size:20px;font-weight:800;font-family:'JetBrains Mono',monospace">$55.4M</div><div style="font-size:10px;color:var(--text-3);text-transform:uppercase;letter-spacing:.06em;margin-top:4px">Revenue</div></div>
+        <div style="text-align:center"><div style="font-size:20px;font-weight:800;font-family:'JetBrains Mono',monospace">85.1%</div><div style="font-size:10px;color:var(--text-3);text-transform:uppercase;letter-spacing:.06em;margin-top:4px">Gross Margin</div></div>
+        <div style="text-align:center"><div style="font-size:20px;font-weight:800;font-family:'JetBrains Mono',monospace">$5.1M</div><div style="font-size:10px;color:var(--text-3);text-transform:uppercase;letter-spacing:.06em;margin-top:4px">Net Income</div></div>
+        <div style="text-align:center"><div style="font-size:20px;font-weight:800;font-family:'JetBrains Mono',monospace">7</div><div style="font-size:10px;color:var(--text-3);text-transform:uppercase;letter-spacing:.06em;margin-top:4px">Active Alerts</div></div>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:20px">
+      <a href="https://castford.com/site/pricing.html" class="demo-cta" style="display:inline-block;padding:14px 36px;font-size:15px">Start your free trial</a>
+      <div style="font-size:12px;color:var(--text-3);margin-top:8px">30-day money-back guarantee. No credit card required for demo.</div>
+    </div>
+  </div>
+</div>
+
+<script src="/site/castford-energy.js" defer></script>
+<script>
+let currentStep = 0;
+
+function goStep(n) {
+  currentStep = n;
+  document.querySelectorAll('.demo-section').forEach((s,i) => s.classList.toggle('active', i === n));
+  document.querySelectorAll('.tour-step').forEach((s,i) => {
+    s.classList.remove('active','done');
+    if (i === n) s.classList.add('active');
+    else if (i < n) s.classList.add('done');
+  });
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// Revenue chart bars
+const revData = [4.2, 4.5, 4.8, 5.1, 5.4, 5.8, 6.1, 6.3, 6.5];
+const months = ['Aug','Sep','Oct','Nov','Dec','Jan','Feb','Mar','Apr'];
+const maxRev = Math.max(...revData);
+document.getElementById('rev-bars').innerHTML = revData.map((v,i) =>
+  `<div class="chart-bar" data-label="${months[i]}" style="height:${(v/maxRev*100)}%;background:${i===revData.length-1?'linear-gradient(to top,#2563eb,#7c3aed)':'rgba(37,99,235,0.15)'};border:${i===revData.length-1?'none':'1px solid rgba(37,99,235,0.1)'}"></div>`
+).join('');
+
+// Forecast bars
+const histData = [5.8, 6.1, 6.3, 6.5];
+const foreData = [6.7, 6.9, 7.2, 7.4, 7.7, 8.0];
+const allF = [...histData, ...foreData];
+const maxF = Math.max(...allF);
+const fMonths = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct'];
+document.getElementById('forecast-bars').innerHTML = allF.map((v,i) =>
+  `<div class="chart-bar" data-label="${fMonths[i]}" style="height:${(v/maxF*100)}%;background:${i<4?'rgba(37,99,235,0.2)':'linear-gradient(to top,rgba(124,58,237,0.15),rgba(124,58,237,0.35))'};border:1px solid ${i<4?'rgba(37,99,235,0.15)':'rgba(124,58,237,0.2)'}"></div>`
+).join('');
+
+// Copilot demo
+const responses = {
+  'Why did OPEX increase this quarter?': 'Operating expenses grew 8.1% YoY driven by three categories: Cloud Infrastructure (+24.3% over budget at $1.2M), Usage/AI Module (+29.4% over budget at $1.3M), and Sales (+18.5% over budget). The largest contributor is compute scaling — your AI module costs are growing faster than revenue. I recommend reviewing your infrastructure provider contracts and considering reserved capacity pricing.',
+  'What is our gross margin trend?': 'Gross margin has been stable at 85.0-85.1% over the last 3 months, which is above the SaaS industry median of 78%. Your COGS ($8.3M) grew 3.8% against 6.5% revenue growth, indicating positive operating leverage. At current trajectory, GM should hold above 84% through Q3.',
+  'Show me accounts over budget': 'Seven accounts are currently over budget: FX Gains (+224.1%, critical), Interest Income (+68.8%, critical), AI Module (+29.4%), Revenue Ops (+26.0%), Cloud Infrastructure (+24.3%), Sales (+18.5%). One account is significantly under budget: Support & Onboarding (-31.4%), which may indicate understaffing in customer success.',
+  'Forecast next quarter revenue': 'Based on backtested model performance, the EMA model (MAPE 3.8%) projects monthly revenue of $9.5M for Q3 2026, representing 8.2% growth from current run rate. Monte Carlo P50 agrees at $9.6M with a confidence interval of $8.1M (P10) to $11.2M (P90). Linear regression projects slightly higher at $9.8M but with a 4.2% MAPE.',
+};
+
+function askCopilot(q) {
+  if (!q) return;
+  const msgs = document.getElementById('copilot-msgs');
+  msgs.innerHTML += `<div class="msg msg-user">${q}</div>`;
+  document.getElementById('copilot-q').value = '';
+  document.getElementById('suggestions').style.display = 'none';
+
+  const answer = responses[q] || `Based on your GL data (18 accounts, 162 transactions), here's what I found: Your total revenue is $55.4M with a gross margin of 85.1%. Net income stands at $5.1M (9.1% margin). There are 7 active financial alerts, including 2 critical variance spikes. Would you like me to drill into a specific area?`;
+
+  setTimeout(() => {
+    msgs.innerHTML += `<div class="msg msg-ai">${answer}</div>`;
+    msgs.scrollTop = msgs.scrollHeight;
+  }, 600);
+}
+</script>
+</body>
+</html>
