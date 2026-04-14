@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="day">
+<head>
+<script>((d)=>{const t=localStorage.getItem("cf-theme");if(t)d.dataset.theme=t})(document.documentElement)</script>
+<meta charset="UTF-8">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Import Data — Castford</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700;9..40,800&family=Instrument+Sans:wght@400;500;600;700;800&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/site/theme.css">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{min-height:100vh;background:var(--bg);color:var(--ink);font-family:var(--b)}
+.import-page{max-width:680px;margin:0 auto;padding:80px 24px 60px}
+.import-back{display:inline-flex;align-items:center;gap:6px;font-size:13px;color:var(--t3);text-decoration:none;margin-bottom:24px}
+.import-back:hover{color:var(--green)}
+.import-title{font-family:var(--d);font-size:28px;font-weight:800;letter-spacing:-0.03em;margin-bottom:6px}
+.import-sub{font-size:14px;color:var(--t2);margin-bottom:32px;line-height:1.6}
+
+.dropzone{border:1.5px dashed var(--bdr);padding:48px 32px;text-align:center;transition:all .2s;cursor:pointer;position:relative}
+.dropzone.dragover{border-color:var(--green);background:rgba(16,185,129,0.03)}
+.dropzone.uploading{border-style:solid;border-color:var(--ink);cursor:default}
+.dropzone.success{border-style:solid;border-color:var(--green);background:rgba(16,185,129,0.03)}
+.dropzone.error{border-style:solid;border-color:#dc2626;background:rgba(220,38,38,0.03)}
+.dz-icon{margin:0 auto 16px;width:40px;height:40px;display:flex;align-items:center;justify-content:center}
+.dz-icon svg{width:28px;height:28px;stroke:var(--t3);fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+.dropzone.dragover .dz-icon svg{stroke:var(--green)}
+.dropzone.success .dz-icon svg{stroke:var(--green)}
+.dz-text{font-size:15px;font-weight:600;color:var(--ink);margin-bottom:6px}
+.dz-sub{font-size:12px;color:var(--t3);margin-bottom:16px}
+.dz-btn{display:inline-block;padding:8px 20px;background:var(--green);color:#fff;font-size:13px;font-weight:700;font-family:var(--b);border:none;cursor:pointer;transition:all .2s}
+.dz-btn:hover{box-shadow:0 4px 16px rgba(16,185,129,0.25)}
+.dz-file-input{display:none}
+
+.progress-section{margin-top:24px;display:none}
+.progress-section.show{display:block}
+.progress-bar-wrap{height:4px;background:var(--bdr);margin-bottom:12px;overflow:hidden}
+.progress-bar{height:100%;background:var(--green);width:0%;transition:width .3s}
+.progress-status{font-size:12px;color:var(--t2);font-family:var(--m);margin-bottom:8px}
+.progress-stages{display:flex;flex-direction:column;gap:4px}
+.stage{display:flex;align-items:center;gap:8px;font-size:11px;color:var(--t3);padding:4px 0}
+.stage.active{color:var(--ink);font-weight:600}
+.stage.done{color:var(--green)}
+.stage-dot{width:6px;height:6px;border-radius:50%;background:var(--bdr);flex-shrink:0}
+.stage.active .stage-dot{background:var(--green);box-shadow:0 0 6px rgba(16,185,129,0.4)}
+.stage.done .stage-dot{background:var(--green)}
+
+.result-section{margin-top:24px;display:none}
+.result-section.show{display:block}
+.result-card{padding:20px;border:0.5px solid var(--bdr);background:var(--s1)}
+.result-title{font-size:14px;font-weight:700;color:var(--ink);margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.result-title svg{width:18px;height:18px;stroke:var(--green);fill:none;stroke-width:2}
+.result-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px}
+.result-stat{text-align:center}
+.result-stat .val{font-size:20px;font-weight:700;font-family:var(--m);font-variant-numeric:tabular-nums;color:var(--ink)}
+.result-stat .label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--t3);margin-top:2px}
+.result-detail{font-size:12px;color:var(--t2);line-height:1.6;margin-bottom:16px}
+.result-actions{display:flex;gap:8px}
+.result-btn{padding:8px 20px;font-size:13px;font-weight:700;font-family:var(--b);cursor:pointer;transition:all .2s;border:none}
+.result-btn.primary{background:var(--green);color:#fff}
+.result-btn.primary:hover{box-shadow:0 4px 16px rgba(16,185,129,0.25)}
+.result-btn.secondary{background:transparent;border:1px solid var(--bdr);color:var(--ink)}
+.result-btn.secondary:hover{border-color:var(--green);color:var(--green)}
+
+.error-msg{margin-top:16px;padding:12px 16px;border-left:2px solid #dc2626;background:rgba(220,38,38,0.03);font-size:12px;color:var(--t2);display:none}
+.error-msg.show{display:block}
+.error-msg b{color:var(--ink)}
+
+.mapping-preview{margin-top:24px;display:none}
+.mapping-preview.show{display:block}
+.mapping-title{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--t3);margin-bottom:8px}
+.mapping-table{width:100%;border:0.5px solid var(--bdr);font-size:11px;border-collapse:collapse}
+.mapping-table th{padding:6px 10px;text-align:left;font-weight:600;color:var(--ink);background:var(--s2);border-bottom:0.5px solid var(--bdr)}
+.mapping-table td{padding:5px 10px;border-bottom:0.5px solid var(--bdr);color:var(--t2)}
+.mapping-table .conf{font-family:var(--m);font-weight:600}
+.conf-high{color:var(--green)}
+.conf-med{color:#d97706}
+.conf-low{color:#dc2626}
+
+@media(max-width:480px){.result-grid{grid-template-columns:1fr 1fr}.import-page{padding:60px 16px 40px}}
+</style>
+<script src="/site/castford-shell.js" defer></script>
+</head>
+<body>
+<nav class="cf-nav"><div class="cf-nav-in">
+  <a href="/" class="cf-nav-logo">
+    <svg class="cf-logo" viewBox="0 0 100 100" width="26" height="26"><path d="M50 16 L80 33 L80 67 L50 84 L20 67 L20 33 Z" fill="none" stroke="var(--logo-main)" stroke-width="2.5"/><path d="M36 47 L50 39 L64 47 L64 57 L50 65 L36 57 Z" fill="var(--logo-inner)" style="opacity:var(--logo-inner-fill)"/><path d="M36 47 L50 39 L64 47 L64 57 L50 65 L36 57 Z" fill="none" stroke="var(--logo-inner)" stroke-width="1.5"/><circle cx="50" cy="52" r="3" fill="var(--logo-core)"/></svg>
+    <span class="cf-nav-name">Castford</span>
+  </a>
+  <div class="cf-nav-right">
+    <div class="cf-toggle" id="themeToggle" title="Toggle day/night"></div>
+  </div>
+</div></nav>
+
+<div class="import-page">
+  <a href="/site/dashboard.html" class="import-back">&larr; Back to dashboard</a>
+  <h1 class="import-title">Import financial data</h1>
+  <p class="import-sub">Upload a CSV, TSV, or TXT file containing your general ledger transactions. Castford will auto-detect columns, map accounts, and import everything in seconds.</p>
+
+  <div class="dropzone" id="dropzone">
+    <div class="dz-icon"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></div>
+    <div class="dz-text" id="dzText">Drop your file here</div>
+    <div class="dz-sub" id="dzSub">.csv, .tsv, .txt — up to 10MB</div>
+    <button class="dz-btn" id="dzBtn" type="button">Choose file</button>
+    <input type="file" class="dz-file-input" id="fileInput" accept=".csv,.tsv,.txt,.xls,.xlsx">
+  </div>
+
+  <div class="progress-section" id="progressSection">
+    <div class="progress-bar-wrap"><div class="progress-bar" id="progressBar"></div></div>
+    <div class="progress-status" id="progressStatus">Preparing...</div>
+    <div class="progress-stages" id="stages">
+      <div class="stage" id="s1"><div class="stage-dot"></div>Reading file</div>
+      <div class="stage" id="s2"><div class="stage-dot"></div>Detecting format</div>
+      <div class="stage" id="s3"><div class="stage-dot"></div>Mapping columns</div>
+      <div class="stage" id="s4"><div class="stage-dot"></div>Classifying accounts</div>
+      <div class="stage" id="s5"><div class="stage-dot"></div>Deduplicating rows</div>
+      <div class="stage" id="s6"><div class="stage-dot"></div>Inserting transactions</div>
+      <div class="stage" id="s7"><div class="stage-dot"></div>Verifying trial balance</div>
+    </div>
+  </div>
+
+  <div class="mapping-preview" id="mappingPreview">
+    <div class="mapping-title">Column mapping</div>
+    <table class="mapping-table">
+      <thead><tr><th>Your column</th><th>Castford field</th><th>Confidence</th></tr></thead>
+      <tbody id="mappingBody"></tbody>
+    </table>
+  </div>
+
+  <div class="error-msg" id="errorMsg"></div>
+
+  <div class="result-section" id="resultSection">
+    <div class="result-card">
+      <div class="result-title"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Import complete</div>
+      <div class="result-grid">
+        <div class="result-stat"><div class="val" id="rTransactions">0</div><div class="label">Transactions</div></div>
+        <div class="result-stat"><div class="val" id="rAccounts">0</div><div class="label">Accounts</div></div>
+        <div class="result-stat"><div class="val" id="rPeriods">0</div><div class="label">Periods</div></div>
+      </div>
+      <div class="result-detail" id="rDetail"></div>
+      <div class="result-actions">
+        <button class="result-btn primary" onclick="window.location.href='/site/dashboard.html'">View dashboard</button>
+        <button class="result-btn secondary" onclick="resetImport()">Import another file</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SB_URL='https://crecesswagluelvkesul.supabase.co';
+const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNyZWNlc3N3YWdsdWVsdmtlc3VsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM4MTI5NzYsImV4cCI6MjA4OTM4ODk3Nn0.IGEEYDStt-eH9Mf2G_DzqCPfruDjN8m_ORtAcmtSAZg';
+const sb=window.supabase.createClient(SB_URL,SB_KEY);
+let token='';
+
+// Auth check
+sb.auth.getSession().then(({data:{session}})=>{
+  if(!session){window.location.href='/login';return}
+  token=session.access_token;
+});
+
+document.getElementById('themeToggle').addEventListener('click',()=>{const h=document.documentElement;h.dataset.theme=h.dataset.theme==='day'?'night':'day';localStorage.setItem('cf-theme',h.dataset.theme)});
+
+// Dropzone interactions
+const dz=document.getElementById('dropzone');
+const fi=document.getElementById('fileInput');
+document.getElementById('dzBtn').addEventListener('click',()=>fi.click());
+dz.addEventListener('click',(e)=>{if(e.target.id!=='dzBtn')fi.click()});
+dz.addEventListener('dragover',(e)=>{e.preventDefault();dz.classList.add('dragover')});
+dz.addEventListener('dragleave',()=>dz.classList.remove('dragover'));
+dz.addEventListener('drop',(e)=>{e.preventDefault();dz.classList.remove('dragover');if(e.dataTransfer.files.length)handleFile(e.dataTransfer.files[0])});
+fi.addEventListener('change',()=>{if(fi.files.length)handleFile(fi.files[0])});
+
+function setStage(n, status){
+  for(let i=1;i<=7;i++){
+    const s=document.getElementById('s'+i);
+    s.classList.remove('active','done');
+    if(i<n)s.classList.add('done');
+    if(i===n)s.classList.add('active');
+  }
+  document.getElementById('progressBar').style.width=Math.round((n/7)*100)+'%';
+  document.getElementById('progressStatus').textContent=status;
+}
+
+async function handleFile(file){
+  if(file.size>10*1024*1024){showError('File exceeds 10MB limit.');return}
+  const ext=file.name.split('.').pop().toLowerCase();
+  if(!['csv','tsv','txt'].includes(ext)){showError('Unsupported file type. Please upload a .csv, .tsv, or .txt file.');return}
+
+  // Show progress
+  dz.classList.add('uploading');
+  document.getElementById('dzText').textContent=file.name;
+  document.getElementById('dzSub').textContent=(file.size/1024).toFixed(0)+' KB';
+  document.getElementById('dzBtn').style.display='none';
+  document.getElementById('progressSection').classList.add('show');
+  document.getElementById('errorMsg').classList.remove('show');
+  document.getElementById('resultSection').classList.remove('show');
+  document.getElementById('mappingPreview').classList.remove('show');
+
+  setStage(1,'Reading file...');
+  const text=await file.text();
+  await delay(300);
+
+  setStage(2,'Detecting format...');
+  await delay(200);
+
+  setStage(3,'Uploading to Castford...');
+  try{
+    const r=await fetch(SB_URL+'/functions/v1/import-gl',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},
+      body:JSON.stringify({csv_text:text,filename:file.name})
+    });
+    const d=await r.json();
+    if(!r.ok){showError(d.error||'Import failed: '+r.status);return}
+
+    // Show column mapping
+    if(d.column_mapping){
+      setStage(4,'Mapping columns...');
+      showMapping(d.column_mapping);
+      await delay(400);
+    }
+
+    setStage(5,'Classifying accounts...');
+    await delay(300);
+
+    setStage(6,'Inserting transactions...');
+    await delay(400);
+
+    setStage(7,'Verifying trial balance...');
+    await delay(300);
+
+    document.getElementById('progressBar').style.width='100%';
+    document.getElementById('progressStatus').textContent='Complete';
+
+    // Show results
+    dz.classList.remove('uploading');
+    dz.classList.add('success');
+    document.getElementById('dzText').textContent='Import successful';
+    document.getElementById('dz-icon')
+    document.getElementById('rTransactions').textContent=(d.inserted||d.rows_imported||0).toLocaleString();
+    document.getElementById('rAccounts').textContent=(d.accounts_created||d.new_accounts||0).toLocaleString();
+    document.getElementById('rPeriods').textContent=(d.periods_covered||0).toLocaleString();
+    const detail=[];
+    if(d.period_range)detail.push('Period: '+d.period_range);
+    if(d.trial_balance)detail.push('Trial balance: '+(d.trial_balance.balanced?'Balanced':'Imbalance of $'+Math.abs(d.trial_balance.difference).toFixed(2)));
+    if(d.duplicates_skipped)detail.push(d.duplicates_skipped+' duplicates skipped');
+    document.getElementById('rDetail').textContent=detail.join(' · ');
+    document.getElementById('resultSection').classList.add('show');
+  }catch(err){
+    showError('Network error: '+err.message);
+  }
+}
+
+function showMapping(mapping){
+  const tbody=document.getElementById('mappingBody');
+  tbody.innerHTML='';
+  if(Array.isArray(mapping)){
+    mapping.forEach(m=>{
+      const conf=m.confidence||m.score||0;
+      const cls=conf>=0.8?'conf-high':conf>=0.5?'conf-med':'conf-low';
+      const label=conf>=0.8?'High':conf>=0.5?'Medium':'Low';
+      tbody.innerHTML+=`<tr><td>${m.source||m.csv_column||''}</td><td>${m.target||m.castford_field||''}</td><td class="conf ${cls}">${label} (${Math.round(conf*100)}%)</td></tr>`;
+    });
+  }
+  document.getElementById('mappingPreview').classList.add('show');
+}
+
+function showError(msg){
+  dz.classList.remove('uploading');
+  dz.classList.add('error');
+  document.getElementById('errorMsg').innerHTML='<b>Import failed.</b> '+msg;
+  document.getElementById('errorMsg').classList.add('show');
+  document.getElementById('progressSection').classList.remove('show');
+}
+
+function resetImport(){
+  dz.className='dropzone';
+  document.getElementById('dzText').textContent='Drop your file here';
+  document.getElementById('dzSub').textContent='.csv, .tsv, .txt — up to 10MB';
+  document.getElementById('dzBtn').style.display='';
+  document.getElementById('progressSection').classList.remove('show');
+  document.getElementById('resultSection').classList.remove('show');
+  document.getElementById('mappingPreview').classList.remove('show');
+  document.getElementById('errorMsg').classList.remove('show');
+  document.getElementById('fileInput').value='';
+}
+
+function delay(ms){return new Promise(r=>setTimeout(r,ms))}
+</script>
+</body>
+</html>
