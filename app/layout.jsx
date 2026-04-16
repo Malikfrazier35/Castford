@@ -24,6 +24,9 @@ export const metadata = {
     description: "Financial planning that thinks before it answers.",
   },
   robots: { index: true, follow: true, "max-image-preview": "large", "max-snippet": -1 },
+  verification: {
+  google: '9EaZd9CUot3cR0-NUvyVz-Z-iDRiHlbpoxKvs_QZHro',
+},
   icons: {
     icon: [
       { url: "/favicon.svg", type: "image/svg+xml" },
