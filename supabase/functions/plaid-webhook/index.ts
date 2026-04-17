@@ -1,4 +1,5 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.49.1'
+import { verifyPlaidWebhook } from '../_shared/plaid-verify.ts'
 
 const sb = createClient(Deno.env.get('SUPABASE_URL')!, Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!)
 const PLAID_CLIENT_ID = Deno.env.get('PLAID_CLIENT_ID') || ''
@@ -19,7 +20,16 @@ Deno.serve(async (req: Request) => {
   if (req.method !== 'POST') return new Response('Method not allowed', { status: 405 });
 
   try {
-    const body = await req.json();
+    const bodyText = await req.text();
+    const verified = await verifyPlaidWebhook(req, bodyText);
+    if (!verified) {
+      console.warn('plaid-webhook: signature verification failed');
+      return new Response(JSON.stringify({ error: 'Invalid signature' }), {
+        status: 401,
+        headers: { 'Content-Type': 'application/json' },
+      });
+    }
+    const body = JSON.parse(bodyText);
     const webhookType = body.webhook_type; // TRANSACTIONS, ITEM, HOLDINGS
     const webhookCode = body.webhook_code; // SYNC_UPDATES_AVAILABLE, ERROR, etc.
     const itemId = body.item_id;
