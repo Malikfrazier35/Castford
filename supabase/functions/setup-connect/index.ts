@@ -1,0 +1,1 @@
+Deno.serve(() => new Response(JSON.stringify({ status: 'disabled', message: 'Setup complete. Use stripe-connect for all Connect operations.' }), { headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' } }))
