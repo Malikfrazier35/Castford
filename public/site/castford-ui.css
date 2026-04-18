@@ -1,0 +1,263 @@
+/* Castford UI — Component Library v1 */
+/* Depends on: theme.css */
+/* Import after theme.css: <link rel="stylesheet" href="/site/castford-ui.css"> */
+
+/* ═══════════════════════════════════════════════════════ */
+/* PAGE SCAFFOLDING                                        */
+/* ═══════════════════════════════════════════════════════ */
+.cf-page{display:grid;grid-template-columns:240px 1fr;min-height:calc(100vh - 56px);gap:0}
+.cf-page-main{padding:var(--sp-6) var(--sp-7);max-width:880px;width:100%}
+.cf-page-header{margin-bottom:var(--sp-6);padding-bottom:var(--sp-5);border-bottom:1px solid var(--bdr)}
+.cf-page-title{font-family:var(--d);font-size:var(--fs-28);font-weight:700;letter-spacing:-0.5px;margin-bottom:6px}
+.cf-page-desc{font-size:var(--fs-14);color:var(--t2);line-height:1.55;max-width:600px}
+
+/* ═══════════════════════════════════════════════════════ */
+/* SIDEBAR                                                 */
+/* ═══════════════════════════════════════════════════════ */
+.cf-sidebar{background:var(--s1);border-right:1px solid var(--bdr);padding:var(--sp-5) 0;position:sticky;top:56px;height:calc(100vh - 56px);overflow-y:auto}
+.cf-sidebar-group{padding:0 var(--sp-4);margin-bottom:var(--sp-5)}
+.cf-sidebar-label{font-family:var(--m);font-size:var(--fs-10);font-weight:500;letter-spacing:0.08em;text-transform:uppercase;color:var(--t3);padding:0 var(--sp-3);margin-bottom:var(--sp-2)}
+.cf-sidebar-item{display:flex;align-items:center;gap:var(--sp-2);padding:var(--sp-2) var(--sp-3);font-size:var(--fs-13);color:var(--t1);border-radius:var(--r-0);cursor:pointer;transition:all var(--dur-fast);border-left:2px solid transparent}
+.cf-sidebar-item:hover{background:var(--s2);color:var(--ink)}
+.cf-sidebar-item.active{background:var(--prime-bg);color:var(--prime);border-left-color:var(--prime);font-weight:500}
+.cf-sidebar-item svg{width:16px;height:16px;flex-shrink:0;opacity:0.7}
+.cf-sidebar-item.active svg{opacity:1}
+
+/* ═══════════════════════════════════════════════════════ */
+/* PANELS (section containers)                             */
+/* ═══════════════════════════════════════════════════════ */
+.cf-panel{background:var(--s1);border:1px solid var(--bdr);padding:var(--sp-5);margin-bottom:var(--sp-5)}
+.cf-panel-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:var(--sp-4);padding-bottom:var(--sp-4);border-bottom:1px solid var(--bdr)}
+.cf-panel-title{font-family:var(--d);font-size:var(--fs-18);font-weight:600;letter-spacing:-0.3px;margin-bottom:4px}
+.cf-panel-desc{font-size:var(--fs-13);color:var(--t2);line-height:1.55}
+
+/* ═══════════════════════════════════════════════════════ */
+/* FORM ROWS                                               */
+/* ═══════════════════════════════════════════════════════ */
+.cf-form-row{display:grid;grid-template-columns:200px 1fr;gap:var(--sp-5);padding:var(--sp-4) 0;border-bottom:1px solid var(--bdr)}
+.cf-form-row:last-child{border-bottom:none}
+.cf-form-label{font-size:var(--fs-13);font-weight:500;color:var(--ink);padding-top:10px}
+.cf-form-label-desc{font-size:var(--fs-12);color:var(--t3);font-weight:400;margin-top:2px;line-height:1.5}
+.cf-form-field{display:flex;flex-direction:column;gap:var(--sp-1)}
+.cf-form-hint{font-size:var(--fs-12);color:var(--t3);line-height:1.5}
+.cf-form-error{font-size:var(--fs-12);color:var(--down);line-height:1.5}
+
+/* ═══════════════════════════════════════════════════════ */
+/* INPUTS                                                  */
+/* ═══════════════════════════════════════════════════════ */
+.cf-input,.cf-select,.cf-textarea{
+  font-family:var(--b);font-size:var(--fs-14);color:var(--ink);
+  background:var(--bg);border:1px solid var(--bdr);border-radius:var(--r-0);
+  padding:10px 12px;width:100%;
+  transition:border-color var(--dur-fast),background var(--dur-fast);
+  outline:none;
+}
+.cf-input:hover,.cf-select:hover,.cf-textarea:hover{border-color:var(--bdr-strong)}
+.cf-input:focus,.cf-select:focus,.cf-textarea:focus{border-color:var(--prime);background:var(--s1);box-shadow:0 0 0 3px var(--prime-bg)}
+.cf-input::placeholder,.cf-textarea::placeholder{color:var(--t3)}
+.cf-textarea{min-height:80px;resize:vertical;line-height:1.5;font-family:var(--b)}
+.cf-input[disabled],.cf-select[disabled]{background:var(--s2);color:var(--t3);cursor:not-allowed}
+
+/* ═══════════════════════════════════════════════════════ */
+/* TOGGLES & CHECKBOXES                                    */
+/* ═══════════════════════════════════════════════════════ */
+.cf-switch{position:relative;display:inline-block;width:40px;height:22px;flex-shrink:0}
+.cf-switch input{opacity:0;width:0;height:0}
+.cf-switch-slider{position:absolute;inset:0;background:var(--s3);border:1px solid var(--bdr);border-radius:var(--r-full);cursor:pointer;transition:all var(--dur-fast)}
+.cf-switch-slider::before{content:'';position:absolute;top:2px;left:2px;width:16px;height:16px;background:var(--s1);border-radius:var(--r-full);transition:transform var(--dur-fast) var(--ease)}
+.cf-switch input:checked + .cf-switch-slider{background:var(--prime);border-color:var(--prime)}
+.cf-switch input:checked + .cf-switch-slider::before{transform:translateX(18px);background:var(--on-prime)}
+.cf-switch input:focus-visible + .cf-switch-slider{box-shadow:0 0 0 3px var(--prime-bg)}
+
+.cf-checkbox{width:18px;height:18px;border:1.5px solid var(--bdr-strong);background:var(--bg);cursor:pointer;display:inline-flex;align-items:center;justify-content:center;transition:all var(--dur-fast);flex-shrink:0}
+.cf-checkbox:checked{background:var(--prime);border-color:var(--prime)}
+.cf-checkbox:checked::after{content:'';width:5px;height:9px;border:solid var(--on-prime);border-width:0 2px 2px 0;transform:rotate(45deg) translate(-1px,-1px)}
+
+/* ═══════════════════════════════════════════════════════ */
+/* BADGES                                                  */
+/* ═══════════════════════════════════════════════════════ */
+.cf-badge{display:inline-flex;align-items:center;gap:4px;font-family:var(--m);font-size:var(--fs-10);font-weight:500;padding:3px 8px;border-radius:var(--r-0);letter-spacing:0.04em;line-height:1.4}
+.cf-badge-neutral{background:var(--s2);color:var(--t1);border:1px solid var(--bdr)}
+.cf-badge-prime{background:var(--prime-bg);color:var(--prime);border:1px solid var(--prime-bdr)}
+.cf-badge-accent{background:var(--accent-bg);color:var(--accent-dark);border:1px solid var(--accent-bdr)}
+.cf-badge-ai{background:var(--ai-bg);color:var(--ai-dark);border:1px solid var(--ai-bdr)}
+.cf-badge-up{background:var(--up-bg);color:var(--up)}
+.cf-badge-down{background:var(--down-bg);color:var(--down)}
+.cf-badge-warn{background:var(--warn-bg);color:var(--warn)}
+.cf-badge-info{background:var(--info-bg);color:var(--info)}
+.cf-badge-dot{width:6px;height:6px;border-radius:var(--r-full);background:currentColor;display:inline-block;flex-shrink:0}
+
+/* ═══════════════════════════════════════════════════════ */
+/* TABLES                                                  */
+/* ═══════════════════════════════════════════════════════ */
+.cf-table{width:100%;border-collapse:collapse;font-size:var(--fs-13)}
+.cf-table thead th{text-align:left;font-family:var(--m);font-size:var(--fs-10);font-weight:500;letter-spacing:0.06em;text-transform:uppercase;color:var(--t3);padding:var(--sp-2) var(--sp-3);border-bottom:1px solid var(--bdr);background:var(--s2)}
+.cf-table tbody td{padding:var(--sp-3);border-bottom:1px solid var(--bdr);color:var(--t1)}
+.cf-table tbody tr:last-child td{border-bottom:none}
+.cf-table tbody tr:hover{background:var(--prime-bg)}
+.cf-table tbody tr.cf-ai-row{border-left:2px solid var(--ai);background:var(--ai-bg)}
+.cf-table .cf-table-actions{display:flex;gap:6px;justify-content:flex-end}
+
+/* ═══════════════════════════════════════════════════════ */
+/* EMPTY & LOADING STATES                                  */
+/* ═══════════════════════════════════════════════════════ */
+.cf-empty{text-align:center;padding:var(--sp-7) var(--sp-5);border:1px dashed var(--bdr);background:var(--s2)}
+.cf-empty-icon{width:48px;height:48px;margin:0 auto var(--sp-3);opacity:0.4}
+.cf-empty-title{font-family:var(--d);font-size:var(--fs-16);font-weight:600;margin-bottom:6px}
+.cf-empty-desc{font-size:var(--fs-13);color:var(--t2);max-width:360px;margin:0 auto var(--sp-4);line-height:1.55}
+
+.cf-skeleton{background:linear-gradient(90deg,var(--s2) 0%,var(--s3) 50%,var(--s2) 100%);background-size:200% 100%;animation:cfSkeleton 1.4s ease infinite;border-radius:var(--r-0);height:14px;width:100%}
+@keyframes cfSkeleton{0%{background-position:200% 0}100%{background-position:-200% 0}}
+
+/* ═══════════════════════════════════════════════════════ */
+/* NOTICES (banners)                                       */
+/* ═══════════════════════════════════════════════════════ */
+.cf-notice{display:flex;gap:var(--sp-3);padding:var(--sp-3) var(--sp-4);border:1px solid;border-left-width:3px;font-size:var(--fs-13);line-height:1.55;margin-bottom:var(--sp-4)}
+.cf-notice-info{background:var(--info-bg);border-color:var(--prime-bdr);color:var(--t1)}
+.cf-notice-ai{background:var(--ai-bg);border-color:var(--ai-bdr);color:var(--t1);border-left-color:var(--ai)}
+.cf-notice-warn{background:var(--warn-bg);border-color:var(--accent-bdr);color:var(--t1);border-left-color:var(--warn)}
+.cf-notice-danger{background:var(--down-bg);border-color:rgba(184,48,64,0.22);color:var(--t1);border-left-color:var(--down)}
+.cf-notice-icon{flex-shrink:0;width:18px;height:18px;margin-top:1px}
+.cf-notice-title{font-weight:600;margin-bottom:2px}
+
+/* ═══════════════════════════════════════════════════════ */
+/* AVATARS                                                 */
+/* ═══════════════════════════════════════════════════════ */
+.cf-avatar{width:36px;height:36px;border-radius:var(--r-full);background:var(--prime);color:var(--on-prime);display:flex;align-items:center;justify-content:center;font-weight:600;font-size:var(--fs-13);font-family:var(--b);flex-shrink:0;overflow:hidden}
+.cf-avatar img{width:100%;height:100%;object-fit:cover}
+.cf-avatar-sm{width:28px;height:28px;font-size:var(--fs-11)}
+.cf-avatar-lg{width:48px;height:48px;font-size:var(--fs-16)}
+
+/* ═══════════════════════════════════════════════════════ */
+/* DIVIDERS                                                */
+/* ═══════════════════════════════════════════════════════ */
+.cf-divider{height:1px;background:var(--bdr);margin:var(--sp-4) 0;border:none}
+
+/* ═══════════════════════════════════════════════════════ */
+/* AI MOMENTS — softened universal-recognition treatment   */
+/* ═══════════════════════════════════════════════════════ */
+
+/* Reusable: Copilot sparkle glyph (use inline anywhere AI speaks) */
+.cf-spark{display:inline-block;width:12px;height:12px;color:var(--ai);flex-shrink:0;vertical-align:-2px}
+.cf-spark svg{width:100%;height:100%;fill:currentColor}
+
+/* Reusable: tiny pulsing "Copilot is present" dot */
+.cf-ai-dot{display:inline-block;width:6px;height:6px;border-radius:var(--r-full);background:var(--ai);flex-shrink:0;animation:cfAiPulse 2.4s ease-in-out infinite}
+@keyframes cfAiPulse{0%,100%{opacity:0.5;transform:scale(1)}50%{opacity:1;transform:scale(1.15)}}
+@media(prefers-reduced-motion:reduce){.cf-ai-dot{animation:none;opacity:0.8}}
+
+/* AI panel — soft gradient wash + gentle inset glow, no hard border */
+.cf-ai-panel{
+  position:relative;
+  background:linear-gradient(135deg,var(--ai-bg) 0%,transparent 85%),var(--s1);
+  border:1px solid var(--ai-bdr);
+  border-radius:var(--r-md);
+  padding:var(--sp-4) var(--sp-5);
+  box-shadow:inset 3px 0 0 0 var(--ai-bg),inset 1px 0 0 0 var(--ai-bdr);
+  transition:box-shadow var(--dur-base) var(--ease),border-color var(--dur-base) var(--ease);
+}
+.cf-ai-panel:hover{box-shadow:inset 3px 0 0 0 var(--ai),inset 1px 0 0 0 var(--ai-bdr)}
+.cf-ai-panel::after{
+  content:'';
+  position:absolute;top:var(--sp-3);right:var(--sp-3);
+  width:6px;height:6px;border-radius:var(--r-full);
+  background:var(--ai);opacity:0.7;
+  animation:cfAiPulse 2.4s ease-in-out infinite;
+}
+@media(prefers-reduced-motion:reduce){.cf-ai-panel::after{animation:none;opacity:0.5}}
+
+.cf-ai-label{
+  font-family:var(--m);font-size:var(--fs-10);font-weight:500;
+  letter-spacing:0.08em;text-transform:uppercase;
+  color:var(--ai-dark);
+  margin-bottom:var(--sp-2);
+  display:inline-flex;align-items:center;gap:6px;
+}
+[data-theme="night"] .cf-ai-label{color:var(--ai-light)}
+.cf-ai-sparkle{width:11px;height:11px;color:var(--ai);flex-shrink:0}
+
+/* Copilot messages — speech-bubble asymmetry, softer tint */
+.cf-copilot-thread{display:flex;flex-direction:column;gap:var(--sp-3)}
+
+.cf-copilot-msg{
+  position:relative;
+  background:var(--ai-bg);
+  padding:var(--sp-3) var(--sp-4);
+  font-size:var(--fs-14);
+  line-height:1.6;
+  color:var(--t1);
+  border-radius:2px 12px 12px 12px;
+  max-width:92%;
+  align-self:flex-start;
+  transition:background var(--dur-base) var(--ease);
+}
+.cf-copilot-msg:hover{background:var(--ai-bg),rgba(155,138,255,0.04)}
+
+.cf-copilot-msg .cf-ai-label{margin-bottom:var(--sp-2)}
+
+/* User message — mirror: right side, neutral tint, opposite asymmetry */
+.cf-copilot-msg.cf-user-msg{
+  background:var(--s2);
+  color:var(--ink);
+  border-radius:12px 2px 12px 12px;
+  align-self:flex-end;
+  max-width:88%;
+}
+.cf-copilot-msg.cf-user-msg::before{display:none}
+
+/* Inline AI-attribution marker (for use inside body text) */
+.cf-ai-mark{
+  display:inline-flex;align-items:center;gap:4px;
+  font-family:var(--m);font-size:var(--fs-10);
+  color:var(--ai-dark);
+  padding:1px 6px;
+  background:var(--ai-bg);
+  border-radius:var(--r-sm);
+  letter-spacing:0.04em;
+  vertical-align:1px;
+}
+[data-theme="night"] .cf-ai-mark{color:var(--ai-light)}
+
+/* Override AI table row — gentler left accent, softer fill */
+.cf-table tbody tr.cf-ai-row{
+  border-left:none;
+  background:linear-gradient(90deg,var(--ai-bg) 0%,transparent 60%);
+  box-shadow:inset 2px 0 0 0 var(--ai-bdr);
+  transition:box-shadow var(--dur-base) var(--ease);
+}
+.cf-table tbody tr.cf-ai-row:hover{
+  background:linear-gradient(90deg,var(--ai-bg) 0%,transparent 80%);
+  box-shadow:inset 2px 0 0 0 var(--ai);
+}
+
+/* Override AI notice — same soft wash treatment for consistency */
+.cf-notice-ai{
+  background:linear-gradient(135deg,var(--ai-bg) 0%,transparent 90%),var(--s1);
+  border:1px solid var(--ai-bdr);
+  border-left:none;
+  box-shadow:inset 3px 0 0 0 var(--ai-bdr);
+  color:var(--t1);
+}
+
+/* AI badge — always leads with the dot, creating universal recognition */
+.cf-badge-ai{
+  background:var(--ai-bg);
+  color:var(--ai-dark);
+  border:1px solid var(--ai-bdr);
+  display:inline-flex;align-items:center;gap:5px;
+}
+[data-theme="night"] .cf-badge-ai{color:var(--ai-light)}
+.cf-badge-ai .cf-badge-dot{
+  background:var(--ai);
+  animation:cfAiPulse 2.4s ease-in-out infinite;
+}
+@media(prefers-reduced-motion:reduce){.cf-badge-ai .cf-badge-dot{animation:none}}
+
+/* RESPONSIVE                                              */
+/* ═══════════════════════════════════════════════════════ */
+@media(max-width:900px){
+  .cf-page{grid-template-columns:1fr}
+  .cf-sidebar{position:static;height:auto;border-right:none;border-bottom:1px solid var(--bdr)}
+  .cf-form-row{grid-template-columns:1fr;gap:var(--sp-2)}
+  .cf-form-label{padding-top:0}
+}
