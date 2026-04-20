@@ -5,7 +5,7 @@
 <meta charset="UTF-8">
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="Castford applies zero trust security to every data interaction. SOC 2 Ready, GDPR compliant, SOX 404 ready, ISO 27001. AES-256 encryption, customer-specific keys, 90-day rotation.">
+<meta name="description" content="Castford applies zero trust security to every data interaction. SOC 2 Ready, GDPR compliant, SOX 404 ready, ISO 27001. AES-256 encryption, Supabase-managed keys, RLS-enforced tenant isolation.">
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="https://castford.com/security">
 <meta property="og:type" content="website">
@@ -286,7 +286,7 @@ h2{font-size:clamp(24px,3vw,36px);font-weight:800;letter-spacing:-0.025em;margin
             <div class="path-step"><span class="step-num">1</span>Customer authenticates via OAuth 2.0 or SAML SSO with the source system (e.g., NetSuite, SAP, Salesforce). Castford never receives or stores the customer's source system password.</div>
             <div class="path-step"><span class="step-num">2</span>A scoped, read-only access token is issued by the source system. This token is encrypted and stored in a dedicated secrets vault — isolated from the application database.</div>
             <div class="path-step"><span class="step-num">3</span>Data is pulled through the connector over TLS 1.3 encrypted channels. The raw payload is validated against the expected schema before any processing occurs.</div>
-            <div class="path-step"><span class="step-num">4</span>Validated data is written to the customer's isolated data environment (single-tenant logical partition). No cross-customer data mixing ever occurs.</div>
+            <div class="path-step"><span class="step-num">4</span>Validated data is written to the customer's RLS-enforced environment. Postgres Row-Level Security policies prevent cross-tenant data access at the database layer.</div>
             <div class="path-step"><span class="step-num">5</span>Schema mapping and transformation happen within the customer's partition. Original source records are preserved alongside the mapped data for full audit lineage.</div>
             <div class="path-step"><span class="step-num">6</span>Sync status, record counts, and any anomalies are logged to the immutable audit trail. The customer can view the full sync history in their dashboard.</div>
           </div>
@@ -341,24 +341,24 @@ h2{font-size:clamp(24px,3vw,36px);font-weight:800;letter-spacing:-0.025em;margin
         <div class="flow-icon" style="background:var(--cyan)">2</div>
         <div class="flow-content">
           <h4>Isolation</h4>
-          <p>Data is written to the customer's logically isolated partition. Each customer's data environment is separated at the storage, compute, and network layer. No shared tables, no shared query engines.</p>
-          <span class="detail">Single-tenant logical partition -- network micro-segmentation</span>
+          <p>Data is written with Row-Level Security (RLS) enforced on every query. Tenant isolation is guaranteed at the Postgres database layer — every query is scoped to the authenticated customer's organization ID.</p>
+          <span class="detail">Postgres RLS enforcement -- tenant_id scoping on every query</span>
         </div>
       </div>
       <div class="flow-step">
         <div class="flow-icon" style="background:var(--purple)">3</div>
         <div class="flow-content">
           <h4>Processing</h4>
-          <p>Financial models, AI analysis, variance detection, and forecasting happen entirely within the customer's partition. The AI engine accesses only that customer's data — it has no visibility into other customer environments, ever.</p>
-          <span class="detail">AI inference within partition -- no cross-tenant data access</span>
+          <p>Financial models, AI analysis, variance detection, and forecasting operate within the customer's RLS-enforced context. The AI layer (Anthropic Claude API) receives only the specific data needed for the current query — no persistent access, no cross-tenant visibility.</p>
+          <span class="detail">Anthropic Claude API -- per-query data scoping</span>
         </div>
       </div>
       <div class="flow-step">
         <div class="flow-icon" style="background:var(--blue)">4</div>
         <div class="flow-content">
           <h4>Storage</h4>
-          <p>Processed data is encrypted at rest with AES-256. Encryption keys are customer-specific and managed through a dedicated key management service. Keys rotate automatically every 90 days. Customers can also bring their own keys (BYOK).</p>
-          <span class="detail">AES-256 at rest -- customer-specific keys -- 90-day rotation</span>
+          <p>Processed data is encrypted at rest with AES-256, managed by Supabase's infrastructure encryption. Customer-managed keys (BYOK) are on the enterprise roadmap for 2026.</p>
+          <span class="detail">AES-256 at rest -- Supabase-managed encryption</span>
         </div>
       </div>
       <div class="flow-step">
@@ -413,20 +413,20 @@ h2{font-size:clamp(24px,3vw,36px);font-weight:800;letter-spacing:-0.025em;margin
         </tr>
         <tr>
           <td><strong>In transit (API calls)</strong></td>
-          <td class="secure">TLS 1.3 + mTLS</td>
-          <td>Mutual authentication</td>
-          <td>Short-lived client certificates</td>
+          <td class="secure">TLS 1.3</td>
+          <td>AEAD cipher suites</td>
+          <td>JWT-based authentication</td>
         </tr>
         <tr>
           <td><strong>At rest (primary storage)</strong></td>
           <td class="secure">AES-256-GCM</td>
-          <td>FIPS 140-2 Level 3</td>
-          <td>Customer-specific keys, 90-day rotation</td>
+          <td>Industry-standard AEAD</td>
+          <td>Supabase-managed encryption</td>
         </tr>
         <tr>
           <td><strong>At rest (backups)</strong></td>
           <td class="secure">AES-256-GCM</td>
-          <td>FIPS 140-2 Level 3</td>
+          <td>Industry-standard AEAD</td>
           <td>Separate backup encryption key</td>
         </tr>
         <tr>
@@ -518,7 +518,7 @@ h2{font-size:clamp(24px,3vw,36px);font-weight:800;letter-spacing:-0.025em;margin
       <div class="ret-card fade-in">
         <div class="metric">0</div>
         <h4>AI training on your data</h4>
-        <p>Castford AI models are trained on synthetic and anonymized data sets. Your actual financial data is never used for model training, benchmarking, or any purpose beyond serving your account.</p>
+        <p>Castford uses Anthropic's Claude API for AI capabilities. Anthropic's data policy guarantees API inputs are never used for model training. No training on your financial data, ever.</p>
       </div>
       <div class="ret-card fade-in">
         <div class="metric">30 days</div>
@@ -539,11 +539,11 @@ h2{font-size:clamp(24px,3vw,36px);font-weight:800;letter-spacing:-0.025em;margin
   <div class="faq-list">
     <div class="faq-item fade-in">
       <div class="faq-q">Can Castford employees access my financial data?<span class="toggle">+</span></div>
-      <div class="faq-a">No. Customer data environments are encrypted with customer-specific keys and access is restricted by role-based controls. Castford engineering and support staff do not have access to customer financial data in the normal course of operations. In the rare case that access is needed for a support escalation, it requires written customer approval, time-limited access, and full audit logging.</div>
+      <div class="faq-a">No. Customer data is protected by Supabase's AES-256 encryption at rest, with Row-Level Security (RLS) policies enforcing tenant isolation at the database layer. Access is further restricted by role-based controls. Castford engineering and support staff do not have access to customer financial data in the normal course of operations. In the rare case that access is needed for a support escalation, it requires written customer approval, time-limited access, and full audit logging.</div>
     </div>
     <div class="faq-item fade-in">
       <div class="faq-q">Where is my data stored geographically?<span class="toggle">+</span></div>
-      <div class="faq-a">Castford operates data centers in the United States (us-east, us-west), European Union (eu-west), and Asia-Pacific (ap-southeast). Enterprise customers can select their preferred data residency region during onboarding. Data does not leave the selected region for processing, storage, or backup purposes.</div>
+      <div class="faq-a">Castford data is stored in AWS us-west-2 via Supabase, with global edge distribution through Vercel. Multi-region data residency is on the 2026 enterprise roadmap. Contact sales@castford.com if specific residency is a contract requirement.</div>
     </div>
     <div class="faq-item fade-in">
       <div class="faq-q">What happens if I disconnect a connector?<span class="toggle">+</span></div>
@@ -551,7 +551,7 @@ h2{font-size:clamp(24px,3vw,36px);font-weight:800;letter-spacing:-0.025em;margin
     </div>
     <div class="faq-item fade-in">
       <div class="faq-q">Is my data used to train Castford AI models?<span class="toggle">+</span></div>
-      <div class="faq-a">No. Castford AI models are trained exclusively on synthetic and anonymized data sets. Your actual financial data is never used for model training, benchmarking, or aggregate analysis. The AI copilot processes your data only in real time to serve your queries — it does not retain context between sessions unless you explicitly enable conversation history.</div>
+      <div class="faq-a">No. Castford doesn't train its own AI models — the AI copilot is powered by Anthropic's Claude API. Anthropic's data policy guarantees that API inputs are never used to train their models. Your financial data is sent only for the duration of each query and is not persisted by the AI provider.</div>
     </div>
     <div class="faq-item fade-in">
       <div class="faq-q">Can I export all my data if I cancel?<span class="toggle">+</span></div>
@@ -559,7 +559,7 @@ h2{font-size:clamp(24px,3vw,36px);font-weight:800;letter-spacing:-0.025em;margin
     </div>
     <div class="faq-item fade-in">
       <div class="faq-q">Do you have a penetration testing program?<span class="toggle">+</span></div>
-      <div class="faq-a">Yes. Castford engages independent third-party security firms for annual penetration testing and continuous vulnerability assessment. We also maintain a responsible disclosure program for external security researchers. Pen test reports are available to enterprise customers and prospects under NDA.</div>
+      <div class="faq-a">We run a responsible disclosure program for external security researchers (security@castford.com) and perform continuous self-directed vulnerability scanning. Formal third-party penetration testing is scheduled for H2 2026. Prospects requiring pen test reports pre-deal can contact security@castford.com to discuss accelerated timelines.</div>
     </div>
   </div>
 </section>
