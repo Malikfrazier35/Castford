@@ -111,7 +111,11 @@ nav{position:sticky;top:0;z-index:100;background:var(--nav-bg);backdrop-filter:b
 .dmc .mv{font-family:var(--m);font-size:18px;font-weight:600;color:var(--dash-val);letter-spacing:-0.5px}
 .dmc .md{font-size:10px;font-weight:600;color:var(--prime);margin-top:3px}
 .dc{background:var(--dash-card);border:1px solid var(--dash-bdr);border-radius:0;padding:14px;display:flex;align-items:flex-end;gap:4px;height:88px}
-.bar{flex:1;border-radius:0;min-height:4px;background:var(--prime);opacity:0.7;transform-origin:bottom;animation:bg .5s var(--ease) both}
+.dc{position:relative}
+.bar{flex:1;border-radius:0;min-height:4px;background:var(--prime);opacity:0.7;transform-origin:bottom;animation:bg .5s var(--ease) both;cursor:crosshair;transition:opacity .15s}
+.bar:hover{opacity:1}
+.bar-tooltip{position:absolute;top:-30px;transform:translateX(-50%);background:var(--ink);color:var(--s1);font-family:var(--m);font-size:10px;padding:4px 9px;white-space:nowrap;pointer-events:none;opacity:0;transition:opacity .15s;letter-spacing:0.4px;z-index:5}
+.bar-tooltip.v{opacity:1}
 @keyframes bg{from{transform:scaleY(0)}to{transform:scaleY(1)}}
 .bar:nth-child(1){animation-delay:.3s}.bar:nth-child(2){animation-delay:.34s}.bar:nth-child(3){animation-delay:.38s}.bar:nth-child(4){animation-delay:.42s}.bar:nth-child(5){animation-delay:.46s}.bar:nth-child(6){animation-delay:.5s}.bar:nth-child(7){animation-delay:.54s}.bar:nth-child(8){animation-delay:.58s}.bar:nth-child(9){animation-delay:.62s}.bar:nth-child(10){animation-delay:.66s}.bar:nth-child(11){animation-delay:.7s}.bar:nth-child(12){animation-delay:.74s}
 
@@ -291,7 +295,7 @@ footer{background:var(--s1);border-top:1.5px solid var(--bdr);padding:56px 0 28p
         <div class="dmc"><div class="ml">Burn</div><div class="mv">0.9x</div><div class="md">Efficient</div></div>
         <div class="dmc"><div class="ml">Margin</div><div class="mv">74.8%</div><div class="md">+2.1pp</div></div>
       </div>
-      <div class="dc"><div class="bar" style="height:28%"></div><div class="bar" style="height:32%"></div><div class="bar" style="height:30%"></div><div class="bar" style="height:38%"></div><div class="bar" style="height:42%"></div><div class="bar" style="height:40%"></div><div class="bar" style="height:48%"></div><div class="bar" style="height:52%"></div><div class="bar" style="height:56%"></div><div class="bar" style="height:62%"></div><div class="bar" style="height:68%"></div><div class="bar" style="height:78%"></div></div>
+      <div class="dc" id="arrChart"><div class="bar" data-m="Jan" data-v="$4.5M" style="height:28%"></div><div class="bar" data-m="Feb" data-v="$5.1M" style="height:32%"></div><div class="bar" data-m="Mar" data-v="$4.8M" style="height:30%"></div><div class="bar" data-m="Apr" data-v="$6.0M" style="height:38%"></div><div class="bar" data-m="May" data-v="$6.7M" style="height:42%"></div><div class="bar" data-m="Jun" data-v="$6.4M" style="height:40%"></div><div class="bar" data-m="Jul" data-v="$7.6M" style="height:48%"></div><div class="bar" data-m="Aug" data-v="$8.3M" style="height:52%"></div><div class="bar" data-m="Sep" data-v="$8.9M" style="height:56%"></div><div class="bar" data-m="Oct" data-v="$9.9M" style="height:62%"></div><div class="bar" data-m="Nov" data-v="$10.8M" style="height:68%"></div><div class="bar" data-m="Dec" data-v="$12.4M" style="height:78%"></div><div class="bar-tooltip" id="barTip"></div></div>
     </div>
   </div></div>
 </div></section>
@@ -300,7 +304,7 @@ footer{background:var(--s1);border-top:1.5px solid var(--bdr);padding:56px 0 28p
 
 <div class="met"><div class="w"><div class="met-in">
   <div><div class="met-v cnt" data-to="3" data-suffix="-Day">3-Day</div><div class="met-l">Avg. Monthly Close</div></div>
-  <div><div class="met-v cnt" data-to="200" data-suffix="+">200+</div><div class="met-l">Native Integrations</div></div>
+  <div><div class="met-v">Bi-directional</div><div class="met-l">Sync Architecture</div></div>
   <div><div class="met-v">AI-Native</div><div class="met-l">Platform Architecture</div></div>
   <div><div class="met-v">Real-Time</div><div class="met-l">Data Sync</div></div>
   <div><div class="met-v">SOC 2</div><div class="met-l">Ready</div></div>
@@ -358,7 +362,7 @@ footer{background:var(--s1);border-top:1.5px solid var(--bdr);padding:56px 0 28p
     <div class="bc s2 fin"><div class="bo">AI Copilot</div><h3>Ask questions in plain English</h3><p>"Why did COGS spike?" — instant variance analysis with drill-down to individual transactions.</p><div class="bst">3</div><div class="bsl">Forecasting models (EMA + Linear + Monte Carlo)</div></div>
     <div class="bc fin"><div class="bo">Close</div><h3>Rapid monthly close</h3><p>Automated consolidation, intercompany elimination, real-time GL sync.</p><div class="bst">80%</div><div class="bsl">Faster than industry avg</div></div>
     <div class="bc fin"><div class="bo">xP&A</div><h3>7-department planning</h3><p>Finance, Revenue, Workforce, Ops, Marketing, IT, Supply Chain — one model.</p><div class="bst">7</div><div class="bsl">Departments, one model</div></div>
-    <div class="bc s2 fin"><div class="bo">Integrations</div><h3>200+ pre-built connectors</h3><p>ERP, CRM, HRIS, banking, data warehouses. OAuth setup in under 5 minutes.</p><div class="bst">&lt; 5 min</div><div class="bsl">Average connector setup</div></div>
+    <div class="bc s2 fin"><div class="bo">Integrations</div><h3>Native integrations, ready today</h3><p>QuickBooks, Xero, Stripe, Plaid wired with OAuth. Bi-directional sync with under 5 minute latency. More on the roadmap.</p><div class="bst">&lt; 5 min</div><div class="bsl">OAuth setup time</div></div>
   </div>
 </div></section>
 
@@ -415,6 +419,7 @@ footer{background:var(--s1);border-top:1.5px solid var(--bdr);padding:56px 0 28p
 document.getElementById('themeToggle').addEventListener('click',()=>{const h=document.documentElement;h.dataset.theme=h.dataset.theme==='day'?'night':'day';localStorage.setItem('cf-theme',h.dataset.theme)});
 const obs=new IntersectionObserver(e=>{e.forEach(el=>{if(el.isIntersecting){el.target.classList.add('v');if(el.target.classList.contains('cnt')){const t=parseInt(el.target.dataset.to);const s=el.target.dataset.suffix||'';let c=0;const step=Math.ceil(t/30);const int=setInterval(()=>{c+=step;if(c>=t){c=t;clearInterval(int)}el.target.textContent=c+s},25)}}})},{threshold:0.08});
 document.querySelectorAll('.fin,.cnt').forEach(el=>obs.observe(el));
+(function(){const chart=document.getElementById('arrChart');if(!chart)return;const tip=document.getElementById('barTip');chart.querySelectorAll('.bar').forEach(bar=>{bar.addEventListener('mouseenter',()=>{tip.textContent=bar.dataset.m+' \u00b7 '+bar.dataset.v;const r=bar.getBoundingClientRect();const cr=chart.getBoundingClientRect();tip.style.left=(r.left-cr.left+r.width/2)+'px';tip.classList.add('v')});bar.addEventListener('mouseleave',()=>tip.classList.remove('v'))})})();
 </script>
 <script src="/site/castford-energy.js" defer></script>
 </body>
