@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="none" role="img" aria-label="Castford">
+<title>Castford</title>
+<path d="M50 5 L90 27 L90 73 L50 95 L10 73 L10 27 Z" stroke="currentColor" stroke-width="0.8" opacity="0.08"/>
+<path d="M50 10 L85 30 L85 70 L50 90 L15 70 L15 30 Z" stroke="currentColor" stroke-width="1.2" opacity="0.18"/>
+<path d="M50 16 L80 33 L80 67 L50 84 L20 67 L20 33 Z" stroke="currentColor" stroke-width="2.5"/>
+<path d="M36 47 L50 39 L64 47 L64 57 L50 65 L36 57 Z" fill="currentColor" opacity="0.06"/>
+<path d="M36 47 L50 39 L64 47 L64 57 L50 65 L36 57 Z" stroke="currentColor" stroke-width="1.5"/>
+<circle cx="50" cy="52" r="3" fill="#C4884A"/>
+</svg>
