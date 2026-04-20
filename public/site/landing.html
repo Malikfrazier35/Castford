@@ -112,7 +112,7 @@ nav{position:sticky;top:0;z-index:100;background:var(--nav-bg);backdrop-filter:b
 .dmc .md{font-size:10px;font-weight:600;color:var(--prime);margin-top:3px}
 .dc{background:var(--dash-card);border:1px solid var(--dash-bdr);border-radius:0;padding:14px;display:flex;align-items:flex-end;gap:4px;height:88px}
 .dc{position:relative}
-.bar{flex:1;border-radius:0;min-height:4px;background:var(--prime);opacity:0.7;cursor:crosshair;transition:opacity .15s}
+.bar{flex:1;border-radius:0;min-height:4px;background:var(--prime);opacity:0.7;transform-origin:bottom;animation:bg .5s var(--ease) both;cursor:crosshair;transition:opacity .15s}
 .bar:hover{opacity:1}
 .bar-tooltip{position:absolute;top:-30px;transform:translateX(-50%);background:var(--ink);color:var(--s1);font-family:var(--m);font-size:10px;padding:4px 9px;white-space:nowrap;pointer-events:none;opacity:0;transition:opacity .15s;letter-spacing:0.4px;z-index:5}
 .bar-tooltip.v{opacity:1}
