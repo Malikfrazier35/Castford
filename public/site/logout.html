@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Signing out · Castford</title>
+  <meta name="robots" content="noindex">
+  <link rel="icon" href="/favicon.svg">
+  <style>
+    :root {
+      --denim: #5B7FCC;
+      --page: #F8F9FC;
+      --ink: #0f172a;
+      --text-2: #475569;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      background: var(--page);
+      color: var(--ink);
+      font-family: 'Instrument Sans', 'DM Sans', system-ui, sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 24px;
+    }
+    .spinner {
+      width: 28px;
+      height: 28px;
+      border: 2px solid rgba(91, 127, 204, 0.2);
+      border-top-color: var(--denim);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    .msg {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-2);
+      letter-spacing: 0.01em;
+    }
+    .brand {
+      position: absolute;
+      top: 32px;
+      left: 40px;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--denim);
+    }
+  </style>
+</head>
+<body>
+  <div class="brand">Castford</div>
+  <div class="spinner" role="status" aria-label="Signing out"></div>
+  <div class="msg" id="msg">Signing you out…</div>
+
+  <script src="https://esm.sh/@supabase/supabase-js@2.49.1"></script>
+  <script>
+    (async function() {
+      var SB_URL = 'https://crecesswagluelvkesul.supabase.co';
+      var SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNyZWNlc3N3YWdsdWVsdmtlc3VsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM4MTI5NzYsImV4cCI6MjA4OTM4ODk3Nn0.IGEEYDStt-eH9Mf2G_DzqCPfruDjN8m_ORtAcmtSAZg';
+
+      var msgEl = document.getElementById('msg');
+
+      try {
+        // 1. Supabase signOut (revokes server-side session + clears its own localStorage entries)
+        var mod = await import('https://esm.sh/@supabase/supabase-js@2.49.1');
+        var sb = mod.createClient(SB_URL, SB_KEY);
+        await sb.auth.signOut({ scope: 'global' }).catch(function() {});
+
+        // 2. Nuke any lingering Castford state
+        try {
+          Object.keys(localStorage).forEach(function(k) {
+            if (k.indexOf('supabase.auth') > -1 || k.indexOf('castford') > -1 || k.indexOf('__fos_') > -1 || k.indexOf('cf_') > -1) {
+              localStorage.removeItem(k);
+            }
+          });
+          sessionStorage.clear();
+        } catch (e) {}
+
+        // 3. Clear any auth cookies we control
+        document.cookie.split(';').forEach(function(c) {
+          var name = c.split('=')[0].trim();
+          if (name.indexOf('sb-') === 0 || name.indexOf('cf_') === 0) {
+            document.cookie = name + '=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT; Domain=' + location.hostname;
+            document.cookie = name + '=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT';
+          }
+        });
+
+        msgEl.textContent = 'Signed out.';
+      } catch (e) {
+        console.warn('Logout error', e);
+        msgEl.textContent = 'Sign-out had an issue — continuing anyway.';
+      }
+
+      // 4. Hard redirect to login (replace so back button doesn't return to dashboard)
+      setTimeout(function() { window.location.replace('/login'); }, 600);
+    })();
+  </script>
+</body>
+</html>

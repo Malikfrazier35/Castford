@@ -31,7 +31,7 @@ Deno.serve(async (req) => {
   if (!rl(`user:${user.id}`, 30)) return new Response(JSON.stringify({ error: 'Rate limited.' }), { status: 429, headers: { ...headers, 'Retry-After': '30' } })
 
   try {
-    const { data: existingUser, error: userErr } = await supabaseAdmin.from('users').select('id, org_id, role, full_name').eq('id', user.id).maybeSingle()
+    const { data: existingUser, error: userErr } = await supabaseAdmin.from('users').select('id, org_id, role, full_name, dashboard_role').eq('id', user.id).maybeSingle()
     if (userErr) return new Response(JSON.stringify({ error: 'User lookup failed' }), { status: 500, headers })
 
     if (existingUser?.org_id) {
@@ -43,7 +43,7 @@ Deno.serve(async (req) => {
 
       return new Response(JSON.stringify({
         status: 'active',
-        user: { id: existingUser.id, name: existingUser.full_name, role: existingUser.role },
+        user: { id: existingUser.id, name: existingUser.full_name, role: existingUser.role, dashboard_role: existingUser.dashboard_role || 'standard' },
         org: org ? { id: org.id, name: org.name, plan: org.plan, slug: org.slug, limits: { seats: org.seats_limit || 5, entities: org.entities_limit || 3 }, mbg_active: org.mbg_expires_at ? new Date(org.mbg_expires_at) > new Date() : false } : null,
       }), { status: 200, headers })
     }
