@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>P&L Statement · Castford CFO</title>
+  <meta name="robots" content="noindex">
+  <link rel="icon" href="/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Instrument+Serif&family=Geist+Mono:wght@400;500;600&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+  <script>window.__CFO_PAGE = 'pnl';</script>
+  <script src="https://unpkg.com/@supabase/supabase-js@2.49.1/dist/umd/supabase.min.js"></script>
+  <script src="/site/auth-guard.js" defer></script>
+  <script src="/site/cfo-subpage-shell.js" defer></script>
+  <script src="/site/cfo-pnl-brain.js" defer></script>
+</head>
+<body>
+  <main class="cfo-page">
+    <h1 class="cfo-title">P&L Statement</h1>
+    <p class="cfo-subtitle">Month-by-month drill-down across every revenue, COGS, and operating expense account. All values in USD.</p>
+
+    <div class="cfo-kpi-row" id="pnl-kpis">
+      <div class="cfo-kpi-card"><div class="k-label">Total Revenue</div><div class="k-value" data-kpi="revenue">—</div></div>
+      <div class="cfo-kpi-card"><div class="k-label">Gross Profit</div><div class="k-value" data-kpi="gross_profit">—</div></div>
+      <div class="cfo-kpi-card"><div class="k-label">OpEx</div><div class="k-value" data-kpi="opex">—</div></div>
+      <div class="cfo-kpi-card"><div class="k-label">Net Income</div><div class="k-value" data-kpi="net_income">—</div></div>
+    </div>
+
+    <section class="cfo-panel">
+      <div class="cfo-panel-title">Detailed Profit & Loss · Trailing 12 Months</div>
+      <div id="pnl-table-wrap">
+        <div class="cfo-loading">Loading live GL data…</div>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

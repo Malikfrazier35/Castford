@@ -9,12 +9,16 @@ const ROUTE_MAP = {
   '/logout':     '/site/logout.html',
 
   // Role-specific command centers
-  '/cfo':        '/site/dashboard/cfo.html',
-  '/ceo':        '/site/dashboard/ceo.html',
-  '/controller': '/site/dashboard/controller.html',
-  '/fpa':        '/site/dashboard/fpa.html',
-  '/standard':   '/site/dashboard/standard.html',
-  '/cashflow':   '/site/dashboard/cashflow.html',
+  '/cfo':           '/site/dashboard/cfo.html',
+  '/cfo/pnl':       '/site/dashboard/cfo/pnl.html',
+  '/cfo/cash':      '/site/dashboard/cfo/cash.html',
+  '/cfo/budget':    '/site/dashboard/cfo/budget.html',
+  '/cfo/forecast':  '/site/dashboard/cfo/forecast.html',
+  '/ceo':           '/site/dashboard/ceo.html',
+  '/controller':    '/site/dashboard/controller.html',
+  '/fpa':           '/site/dashboard/fpa.html',
+  '/standard':      '/site/dashboard/standard.html',
+  '/cashflow':      '/site/dashboard/cashflow.html',
 };
 
 export function middleware(request) {
@@ -33,6 +37,10 @@ export const config = {
     '/signup',
     '/logout',
     '/cfo',
+    '/cfo/pnl',
+    '/cfo/cash',
+    '/cfo/budget',
+    '/cfo/forecast',
     '/ceo',
     '/controller',
     '/fpa',
