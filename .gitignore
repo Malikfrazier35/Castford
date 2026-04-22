@@ -25,3 +25,5 @@ Thumbs.db
 
 # Local build scripts — not for repo
 castford-*.py
+*.bak-phase1
+*.bak-v2
