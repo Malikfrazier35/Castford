@@ -1,156 +1,128 @@
-/* Castford CFO P&L Brain v1 — /cfo/pnl page */
+/* Castford CFO P&L Brain v2 — period toggles + common-size */
 (function() {
   'use strict';
-
   function fmt(v) { return window.CF.fmt(v); }
-  function fmtNeg(v) { return Number(v) < 0 ? '(' + fmt(Math.abs(v)) + ')' : fmt(v); }
+  var currentPeriod = 'ttm';
+  var commonSize = false;
+  var lastData = null;
 
-  async function run() {
-    var data = await window.CF.fetchView('pnl');
-    if (!data) return;
+  function setKPI(key, val, color) {
+    var el = document.querySelector('[data-kpi="' + key + '"]');
+    if (el) { el.textContent = val; if (color) el.style.color = color; }
+  }
+  function setDelta(key, text, color) {
+    var el = document.querySelector('[data-kpi-delta="' + key + '"]');
+    if (el) { el.textContent = text; el.style.display = 'inline-block'; if (color) el.style.background = 'rgba(' + (color.indexOf('green')>-1 ? '34,197,94' : color.indexOf('rose')>-1 ? '239,68,68' : '91,127,204') + ',0.1)'; el.style.color = color; }
+  }
+
+  async function loadPeriod(p) {
+    currentPeriod = p;
+    document.querySelectorAll('.period-btn').forEach(function(b) {
+      b.classList.toggle('active', b.getAttribute('data-period') === p);
+    });
+    var labelEl = document.getElementById('period-label');
+    if (labelEl) labelEl.textContent = p.toUpperCase();
+
+    var token = await window.CF.getToken();
+    if (!token) { window.location.href = '/login'; return; }
+    var resp = await fetch(window.CF.BASE + '/cfo-command-center?view=pnl&period=' + p, {
+      headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
+    });
+    if (resp.status === 401 || resp.status === 403) { window.location.href = '/login'; return; }
+    if (!resp.ok) return;
+    var data = await resp.json();
     window.CF.buildSyncBadge(data.meta);
+    lastData = data;
+    paint();
+  }
 
+  function paint() {
+    var data = lastData;
+    if (!data) return;
+    var s = data.summary || {};
     var sections = data.sections || [];
     var periods = data.periods || [];
 
-    // ── KPIs ──
-    var totals = {};
-    sections.forEach(function(s) { totals[s.key] = s.total; });
-    var revenue = totals.revenue || 0;
-    var cogs = totals.cogs || 0;
-    var opex = totals.opex || 0;
-    var gross_profit = revenue - cogs;
-    var net_income = revenue - cogs - opex;
+    setKPI('revenue', fmt(s.revenue));
+    setKPI('gross_profit', fmt(s.gross_profit));
+    setKPI('opex', fmt(s.opex));
+    setKPI('net_income', fmt(s.net_income));
+    setDelta('gross_margin', s.gross_margin.toFixed(1) + '% margin', 'var(--denim)');
+    setDelta('net_margin', s.net_margin.toFixed(1) + '% margin', s.net_margin >= 0 ? 'var(--green)' : 'var(--rose)');
 
-    function setKPI(key, val) {
-      var el = document.querySelector('[data-kpi="' + key + '"]');
-      if (el) el.textContent = val;
-    }
-    setKPI('revenue', fmt(revenue));
-    setKPI('gross_profit', fmt(gross_profit));
-    setKPI('opex', fmt(opex));
-    setKPI('net_income', fmt(net_income));
+    // Show period deltas where available
+    sections.forEach(function(sec) {
+      if (sec.delta !== null && sec.delta !== undefined) {
+        var key = sec.key === 'revenue' ? 'revenue' : sec.key === 'opex' ? 'opex' : null;
+        if (key) setDelta(key, (sec.delta >= 0 ? '▲' : '▼') + ' ' + Math.abs(sec.delta).toFixed(1) + '% vs prior', sec.delta >= 0 && sec.key === 'revenue' ? 'var(--green)' : sec.delta >= 0 ? 'var(--rose)' : 'var(--green)');
+      }
+    });
 
-    // ── Detailed table ──
     var wrap = document.getElementById('pnl-table-wrap');
     if (!wrap) return;
 
-    var table = document.createElement('table');
-    table.className = 'cfo-table';
-
-    // Header: Account + each period + Total
-    var thead = document.createElement('thead');
-    var hr = document.createElement('tr');
-    var th0 = document.createElement('th');
-    th0.textContent = 'Account';
-    th0.style.minWidth = '220px';
-    hr.appendChild(th0);
-    periods.forEach(function(p) {
-      var th = document.createElement('th');
-      th.className = 'num';
-      th.textContent = p.label;
-      hr.appendChild(th);
-    });
-    var thT = document.createElement('th');
-    thT.className = 'num';
-    thT.textContent = 'Total';
-    hr.appendChild(thT);
-    thead.appendChild(hr);
-    table.appendChild(thead);
-
-    var tbody = document.createElement('tbody');
+    var html = '<table class="cfo-table"><thead><tr><th style="min-width:220px">Account</th>';
+    periods.forEach(function(p) { html += '<th class="num">' + p.label + '</th>'; });
+    html += '<th class="num">Total</th>';
+    if (commonSize) html += '<th class="num">% of Rev</th>';
+    html += '</tr></thead><tbody>';
 
     sections.forEach(function(section) {
-      // Section header
-      var sr = document.createElement('tr');
-      sr.className = 'section-row';
-      var sc = document.createElement('td');
-      sc.colSpan = periods.length + 2;
-      sc.textContent = section.label;
-      sr.appendChild(sc);
-      tbody.appendChild(sr);
-
+      html += '<tr class="section-row"><td colspan="' + (periods.length + 2 + (commonSize?1:0)) + '">' + section.label + '</td></tr>';
       section.accounts.forEach(function(a) {
-        var row = document.createElement('tr');
-        var tdName = document.createElement('td');
-        tdName.textContent = a.name;
-        row.appendChild(tdName);
-
+        html += '<tr><td>' + a.name + '</td>';
         periods.forEach(function(p) {
-          var td = document.createElement('td');
-          td.className = 'num';
           var v = a.monthly[p.period] || 0;
-          td.textContent = v > 0 ? fmt(v) : '—';
-          if (!v) td.style.color = 'var(--text-3)';
-          row.appendChild(td);
+          html += '<td class="num"' + (v ? '' : ' style="color:var(--text-3)"') + '>' + (v > 0 ? fmt(v) : '—') + '</td>';
         });
-
-        var tdTotal = document.createElement('td');
-        tdTotal.className = 'num';
-        tdTotal.style.fontWeight = '600';
-        tdTotal.textContent = fmt(a.amount);
-        row.appendChild(tdTotal);
-
-        tbody.appendChild(row);
+        html += '<td class="num" style="font-weight:600">' + fmt(a.amount) + '</td>';
+        if (commonSize) {
+          html += '<td class="num" style="color:var(--denim);font-weight:600">' + a.common_size.toFixed(1) + '%</td>';
+        }
+        html += '</tr>';
       });
-
-      // Section total row
-      var tr = document.createElement('tr');
-      tr.className = 'total-row';
-      var td0 = document.createElement('td');
-      td0.textContent = 'Total ' + section.label;
-      tr.appendChild(td0);
+      // Section total
+      html += '<tr class="total-row"><td>Total ' + section.label + '</td>';
       periods.forEach(function(p) {
         var sum = section.accounts.reduce(function(acc, a) { return acc + (a.monthly[p.period] || 0); }, 0);
-        var td = document.createElement('td');
-        td.className = 'num';
-        td.textContent = sum > 0 ? fmt(sum) : '—';
-        tr.appendChild(td);
+        html += '<td class="num">' + (sum > 0 ? fmt(sum) : '—') + '</td>';
       });
-      var tdT = document.createElement('td');
-      tdT.className = 'num';
-      tdT.textContent = fmt(section.total);
-      tr.appendChild(tdT);
-      tbody.appendChild(tr);
+      html += '<td class="num">' + fmt(section.total) + '</td>';
+      if (commonSize) {
+        var pct = s.revenue > 0 ? (section.total / s.revenue * 100).toFixed(1) : '0';
+        html += '<td class="num" style="color:var(--denim);font-weight:700">' + pct + '%</td>';
+      }
+      html += '</tr>';
     });
 
-    // Bottom: Net Income
-    var netRow = document.createElement('tr');
-    netRow.className = 'total-row';
-    netRow.style.borderTop = '3px solid var(--denim)';
-    var netTd = document.createElement('td');
-    netTd.innerHTML = '<strong style="color:var(--denim)">Net Income</strong>';
-    netRow.appendChild(netTd);
+    // Net Income row
+    html += '<tr class="total-row" style="border-top:3px solid var(--denim)">' +
+      '<td><strong style="color:var(--denim)">Net Income</strong></td>';
     periods.forEach(function(p) {
-      var r = sections.find(function(x) { return x.key === 'revenue'; });
-      var c = sections.find(function(x) { return x.key === 'cogs'; });
-      var o = sections.find(function(x) { return x.key === 'opex'; });
-      var rv = (r?.accounts || []).reduce(function(a, x) { return a + (x.monthly[p.period] || 0); }, 0);
-      var cg = (c?.accounts || []).reduce(function(a, x) { return a + (x.monthly[p.period] || 0); }, 0);
-      var op = (o?.accounts || []).reduce(function(a, x) { return a + (x.monthly[p.period] || 0); }, 0);
+      var rv = (sections.find(function(x){return x.key==='revenue';})?.accounts || []).reduce(function(a,x){return a + (x.monthly[p.period]||0);}, 0);
+      var cg = (sections.find(function(x){return x.key==='cogs';})?.accounts || []).reduce(function(a,x){return a + (x.monthly[p.period]||0);}, 0);
+      var op = (sections.find(function(x){return x.key==='opex';})?.accounts || []).reduce(function(a,x){return a + (x.monthly[p.period]||0);}, 0);
       var net = rv - cg - op;
-      var td = document.createElement('td');
-      td.className = 'num';
-      td.textContent = fmt(net);
-      td.style.color = net >= 0 ? 'var(--green)' : 'var(--rose)';
-      td.style.fontWeight = '600';
-      netRow.appendChild(td);
+      html += '<td class="num" style="color:' + (net >= 0 ? 'var(--green)' : 'var(--rose)') + ';font-weight:600">' + fmt(net) + '</td>';
     });
-    var netTotal = document.createElement('td');
-    netTotal.className = 'num';
-    netTotal.textContent = fmt(net_income);
-    netTotal.style.color = net_income >= 0 ? 'var(--green)' : 'var(--rose)';
-    netTotal.style.fontWeight = '700';
-    netRow.appendChild(netTotal);
-    tbody.appendChild(netRow);
+    html += '<td class="num" style="color:' + (s.net_income >= 0 ? 'var(--green)' : 'var(--rose)') + ';font-weight:700">' + fmt(s.net_income) + '</td>';
+    if (commonSize) {
+      html += '<td class="num" style="color:var(--denim);font-weight:700">' + s.net_margin.toFixed(1) + '%</td>';
+    }
+    html += '</tr></tbody></table>';
+    wrap.innerHTML = html;
 
-    table.appendChild(tbody);
-    wrap.innerHTML = '';
-    wrap.appendChild(table);
-
-    console.log('[CFO P&L brain] painted', { accounts: sections.reduce(function(a, s) { return a + s.accounts.length; }, 0), periods: periods.length });
+    console.log('[CFO P&L brain v2] painted', { period: currentPeriod, accounts: sections.reduce(function(a,s){return a+s.accounts.length;}, 0) });
   }
 
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', run);
-  else run();
+  function init() {
+    document.querySelectorAll('.period-btn').forEach(function(b) {
+      b.addEventListener('click', function() { loadPeriod(b.getAttribute('data-period')); });
+    });
+    var cs = document.getElementById('toggle-common-size');
+    if (cs) cs.addEventListener('change', function() { commonSize = cs.checked; paint(); });
+    loadPeriod('ttm');
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+  else init();
 })();
