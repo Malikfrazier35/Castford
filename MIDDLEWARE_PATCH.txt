@@ -1,0 +1,56 @@
+// MIDDLEWARE PATCH FOR /ceo ROUTE
+//
+// Add the /ceo route to your existing middleware.js so it serves
+// /site/dashboard/hub.html?role=ceo as a rewrite (not redirect — URL stays as /ceo).
+//
+// FIND your existing route map (likely a switch/case or object map) and add:
+
+// ──────────────────────────────────────────────────────────────────────────
+// Inside your middleware function, before the catch-all, add:
+// ──────────────────────────────────────────────────────────────────────────
+
+const ENGINE_ROUTES = {
+  '/ceo': '/site/dashboard/hub.html?role=ceo',
+  // Session 3 will add: /controller, /fpa, /treasurer
+};
+
+const enginePath = ENGINE_ROUTES[pathname];
+if (enginePath) {
+  return NextResponse.rewrite(new URL(enginePath, request.url));
+}
+
+// ──────────────────────────────────────────────────────────────────────────
+// FULL EXAMPLE if your middleware.js currently looks like this:
+// ──────────────────────────────────────────────────────────────────────────
+//
+// import { NextResponse } from 'next/server';
+//
+// export function middleware(request) {
+//   const { pathname } = request.nextUrl;
+//
+//   // Existing CFO route (DO NOT TOUCH — keeps cfo.html behavior):
+//   if (pathname === '/cfo') {
+//     return NextResponse.rewrite(new URL('/site/cfo.html', request.url));
+//   }
+//
+//   // ★ ADD THIS BLOCK ★
+//   const ENGINE_ROUTES = {
+//     '/ceo': '/site/dashboard/hub.html?role=ceo',
+//   };
+//   if (ENGINE_ROUTES[pathname]) {
+//     return NextResponse.rewrite(new URL(ENGINE_ROUTES[pathname], request.url));
+//   }
+//   // ★ END ADD ★
+//
+//   return NextResponse.next();
+// }
+//
+// export const config = {
+//   matcher: ['/cfo', '/cfo/:path*', '/ceo', '/controller', '/fpa', '/treasurer'],
+// };
+//
+// ──────────────────────────────────────────────────────────────────────────
+//
+// IMPORTANT: Update the matcher to include '/ceo' (and the other engine
+// routes that ship in Session 3). Without that, middleware won't run for
+// the new paths and the rewrite will be skipped.

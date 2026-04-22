@@ -1,0 +1,92 @@
+{
+  "role": "ceo",
+  "version": 1,
+  "title": "Founder Dashboard",
+  "subtitle": "The four numbers that decide whether you survive: cash, runway, growth, and burn.",
+  "tier_required": "starter",
+
+  "kpi_cards": [
+    {
+      "id": "cash",
+      "label": "Cash Position",
+      "data_path": "kpis.cash_position",
+      "format": "currency_short",
+      "drill_to": "/ceo/cash"
+    },
+    {
+      "id": "runway",
+      "label": "Runway",
+      "data_path": "kpis.runway_months",
+      "format": "months",
+      "color_logic": "runway_urgency",
+      "no_delta_text": "Profitable — no burn"
+    },
+    {
+      "id": "mrr",
+      "label": "MRR",
+      "data_path": "kpis.mrr",
+      "format": "currency_short",
+      "delta_path": "deltas.mrr_growth_pct",
+      "delta_label": "MoM"
+    },
+    {
+      "id": "growth",
+      "label": "Growth Rate",
+      "data_path": "deltas.mrr_growth_pct",
+      "format": "percent_signed",
+      "color_logic": "green_if_positive"
+    },
+    {
+      "id": "burn",
+      "label": "Burn Rate",
+      "data_path": "kpis.burn_rate_monthly",
+      "format": "currency_short_or_profitable"
+    },
+    {
+      "id": "revenue_ttm",
+      "label": "Revenue (TTM)",
+      "data_path": "kpis.revenue_ttm",
+      "format": "currency_short",
+      "delta_path": "deltas.revenue_qoq_pct",
+      "delta_label": "QoQ"
+    }
+  ],
+
+  "panels": [
+    {
+      "id": "cash_summary",
+      "type": "cash_position",
+      "title": "Cash Position",
+      "cash_path": "kpis.cash_position",
+      "burn_path": "kpis.burn_rate_monthly",
+      "runway_path": "kpis.runway_months",
+      "drill_to": "/ceo/cash"
+    },
+    {
+      "id": "cash_trend_12mo",
+      "type": "cash_trend",
+      "title": "12-Month Cash Trend",
+      "data_path": "trends.monthly",
+      "value_field": "net"
+    },
+    {
+      "id": "growth_metrics",
+      "type": "kpi_grid",
+      "title": "Growth Metrics",
+      "cards": [
+        { "label": "MRR", "data_path": "kpis.mrr", "format": "currency_short" },
+        { "label": "ARR", "data_path": "kpis.arr", "format": "currency_short" },
+        { "label": "NRR", "data_path": "kpis.nrr_pct", "format": "percent" },
+        { "label": "Logo Churn", "data_path": "kpis.logo_churn_pct", "format": "percent" }
+      ]
+    },
+    {
+      "id": "top_movers",
+      "type": "placeholder",
+      "title": "Top Movers This Month",
+      "icon": "🤖",
+      "heading": "AI Layer ships in Session 5",
+      "message": "This panel will explain the 3 biggest financial movements each month in plain English — automatically detected, no prompting needed."
+    }
+  ]
+}
