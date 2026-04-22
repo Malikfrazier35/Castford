@@ -110,8 +110,12 @@ nav{position:sticky;top:0;z-index:100;background:var(--nav-bg);backdrop-filter:b
 .dmc .ml{font-size:10px;color:var(--dash-dim);text-transform:uppercase;letter-spacing:0.6px;margin-bottom:4px}
 .dmc .mv{font-family:var(--m);font-size:18px;font-weight:600;color:var(--dash-val);letter-spacing:-0.5px}
 .dmc .md{font-size:10px;font-weight:600;color:var(--prime);margin-top:3px}
-.dc{background:var(--dash-card);border:1px solid var(--dash-bdr);border-radius:0;padding:14px;display:flex;align-items:flex-end;gap:4px;height:88px}
-.dc{position:relative}
+.dch{display:flex;justify-content:space-between;align-items:baseline;padding:8px 4px 12px;margin-top:6px}
+.dch-t{font-family:var(--d);font-size:13.5px;font-weight:700;color:var(--dash-val);letter-spacing:-0.2px;margin-bottom:3px}
+.dch-s{font-family:var(--m);font-size:10.5px;color:var(--dash-dim);letter-spacing:0.3px}
+.dch-r{font-family:var(--m);font-size:10.5px;color:var(--dash-dim);letter-spacing:0.3px;text-align:right;white-space:nowrap}
+.dch-r b{color:var(--prime);font-weight:600}
+.dc{background:var(--dash-card);border:1px solid var(--dash-bdr);border-radius:0;padding:14px;display:flex;align-items:flex-end;gap:4px;height:200px;position:relative}
 .bar{flex:1;border-radius:0;min-height:4px;background:var(--prime);opacity:0.7;transform-origin:bottom;animation:bg .5s var(--ease) both;cursor:crosshair;transition:opacity .15s}
 .bar:hover{opacity:1}
 .bar-tooltip{position:absolute;top:-30px;transform:translateX(-50%);background:var(--ink);color:var(--s1);font-family:var(--m);font-size:10px;padding:4px 9px;white-space:nowrap;pointer-events:none;opacity:0;transition:opacity .15s;letter-spacing:0.4px;z-index:5}
@@ -295,7 +299,7 @@ footer{background:var(--s1);border-top:1.5px solid var(--bdr);padding:56px 0 28p
         <div class="dmc"><div class="ml">Burn</div><div class="mv">0.9x</div><div class="md">Efficient</div></div>
         <div class="dmc"><div class="ml">Margin</div><div class="mv">74.8%</div><div class="md">+2.1pp</div></div>
       </div>
-      <div class="dc" id="arrChart"><div class="bar" data-m="Jan" data-v="$4.5M" style="height:17px"></div><div class="bar" data-m="Feb" data-v="$5.1M" style="height:19px"></div><div class="bar" data-m="Mar" data-v="$4.8M" style="height:18px"></div><div class="bar" data-m="Apr" data-v="$6.0M" style="height:23px"></div><div class="bar" data-m="May" data-v="$6.7M" style="height:25px"></div><div class="bar" data-m="Jun" data-v="$6.4M" style="height:24px"></div><div class="bar" data-m="Jul" data-v="$7.6M" style="height:29px"></div><div class="bar" data-m="Aug" data-v="$8.3M" style="height:31px"></div><div class="bar" data-m="Sep" data-v="$8.9M" style="height:34px"></div><div class="bar" data-m="Oct" data-v="$9.9M" style="height:37px"></div><div class="bar" data-m="Nov" data-v="$10.8M" style="height:41px"></div><div class="bar" data-m="Dec" data-v="$12.4M" style="height:47px"></div><div class="bar-tooltip" id="barTip"></div></div>
+      <div class="dch"><div class="dch-l"><div class="dch-t">Monthly ARR</div><div class="dch-s">Trailing 12 months</div></div><div class="dch-r">Growth <b>+176%</b></div></div><div class="dc" id="arrChart"><div class="bar" data-m="Jan" data-v="$4.5M" style="height:60px"></div><div class="bar" data-m="Feb" data-v="$5.1M" style="height:66px"></div><div class="bar" data-m="Mar" data-v="$4.8M" style="height:63px"></div><div class="bar" data-m="Apr" data-v="$6.0M" style="height:80px"></div><div class="bar" data-m="May" data-v="$6.7M" style="height:88px"></div><div class="bar" data-m="Jun" data-v="$6.4M" style="height:84px"></div><div class="bar" data-m="Jul" data-v="$7.6M" style="height:102px"></div><div class="bar" data-m="Aug" data-v="$8.3M" style="height:108px"></div><div class="bar" data-m="Sep" data-v="$8.9M" style="height:119px"></div><div class="bar" data-m="Oct" data-v="$9.9M" style="height:130px"></div><div class="bar" data-m="Nov" data-v="$10.8M" style="height:144px"></div><div class="bar" data-m="Dec" data-v="$12.4M" style="height:164px"></div><div class="bar-tooltip" id="barTip"></div></div>
     </div>
   </div></div>
 </div></section>
