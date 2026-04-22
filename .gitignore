@@ -27,3 +27,6 @@ Thumbs.db
 castford-*.py
 *.bak-phase1
 *.bak-v2
+
+*.bak-phase2a
+*.bak-login-fix

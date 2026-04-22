@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Forecast · Castford CFO</title>
+  <meta name="robots" content="noindex">
+  <link rel="icon" href="/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Instrument+Serif&family=Geist+Mono:wght@400;500;600&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+  <script>window.__CFO_PAGE = 'forecast';</script>
+  <script src="https://unpkg.com/@supabase/supabase-js@2.49.1/dist/umd/supabase.min.js"></script>
+  <script src="/site/auth-guard.js" defer></script>
+  <script src="/site/cfo-subpage-shell.js" defer></script>
+  <script src="/site/cfo-forecast-brain.js" defer></script>
+</head>
+<body>
+  <main class="cfo-page">
+    <h1 class="cfo-title">Forecast</h1>
+    <p class="cfo-subtitle">6-month revenue projection using linear regression + EMA blend. Bull/bear scenarios at ±15%. MAPE backtest validates accuracy.</p>
+
+    <div class="cfo-kpi-row" id="forecast-kpis">
+      <div class="cfo-kpi-card"><div class="k-label">Next Month (Base)</div><div class="k-value" data-kpi="next_base">—</div></div>
+      <div class="cfo-kpi-card"><div class="k-label">Bull Case</div><div class="k-value" data-kpi="next_bull">—</div></div>
+      <div class="cfo-kpi-card"><div class="k-label">Bear Case</div><div class="k-value" data-kpi="next_bear">—</div></div>
+      <div class="cfo-kpi-card"><div class="k-label">Backtest MAPE</div><div class="k-value" data-kpi="mape">—</div></div>
+    </div>
+
+    <section class="cfo-panel">
+      <div class="cfo-panel-title">Historical + 6-Month Forecast</div>
+      <div id="forecast-chart">
+        <div class="cfo-loading">Computing forecast…</div>
+      </div>
+    </section>
+
+    <section class="cfo-panel">
+      <div class="cfo-panel-title">Forecast Detail</div>
+      <div id="forecast-table">
+        <div class="cfo-loading">Loading scenarios…</div>
+      </div>
+    </section>
+  </main>
+</body>
+</html>
