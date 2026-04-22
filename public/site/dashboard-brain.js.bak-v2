@@ -59,12 +59,12 @@
       var label = el.nextElementSibling || el.parentElement.querySelector('.cash-stat-label');
       if (!label) return;
       var t = (label.textContent||'').toLowerCase();
-      /* brain v3: removed fabricated * 0.7 fallback — show designed demo value instead */
+      if (t.includes('current') || t.includes('balance')) el.textContent = fmt(kpis.total_revenue * 0.7);
     });
 
     // Panel badges with dollar values
     document.querySelectorAll('.panel-badge').forEach(function(el) {
-      /* brain v3: removed fabricated * 0.7 fallback — show designed demo value instead */
+      if (el.textContent.trim().startsWith('$')) el.textContent = fmt(kpis.total_revenue * 0.7);
     });
   }
 
