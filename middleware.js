@@ -14,7 +14,7 @@ const ROUTE_MAP = {
   '/cfo/cash':      '/site/dashboard/cfo/cash.html',
   '/cfo/budget':    '/site/dashboard/cfo/budget.html',
   '/cfo/forecast':  '/site/dashboard/cfo/forecast.html',
-  '/ceo':           '/site/dashboard/ceo.html',
+  '/ceo':           '/site/dashboard/hub.html?role=ceo',
   '/controller':    '/site/dashboard/controller.html',
   '/fpa':           '/site/dashboard/fpa.html',
   '/standard':      '/site/dashboard/standard.html',
