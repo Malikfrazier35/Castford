@@ -1,5 +1,13 @@
-/* Castford CFO Command Brain v6
- * v6 over v5: custom tooltip system on cash bars (rich detail hover).
+/* Castford CFO Command Brain v7
+ * v7 over v6: TRIANGLE PREFIX FIX
+ *
+ * Bug discovered: P&L row labels have a leading "▶ " expand/collapse character
+ * baked into the textContent. e.g. "▶ Revenue", "▶ COGS", "▶ Operating Expenses".
+ * The previous strict-equality matcher (label === 'revenue') never matched these,
+ * which is why $48.6M Revenue and $7.4M COGS demo values persisted across v3-v6.
+ *
+ * Fix: strip leading non-word characters before matching. One-line change in
+ * paintPL/paintPLBars. Same defensive normalization applied to all label matchers.
  */
 (function() {
   'use strict';
@@ -8,6 +16,11 @@
   var SB_URL = 'https://crecesswagluelvkesul.supabase.co';
   var SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNyZWNlc3N3YWdsdWVsdmtlc3VsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA1MTU0NTAsImV4cCI6MjA3NjA5MTQ1MH0.h7nBkfmZHLbuzqJxhX6lgfRFWxgjYuxl5d2SbkRSaCk';
   var DENIM = '#5B7FCC', GOLD = '#C4884A', CYAN = '#0EA5E9', ROSE = '#EF4444', GREEN = '#22C55E';
+
+  // ★ THE FIX: normalize labels by stripping leading non-word chars (▶ ▼ • bullets etc.)
+  function normalizeLabel(raw) {
+    return (raw || '').replace(/^[\s\W]+/, '').trim().toLowerCase();
+  }
 
   function fmt(v) {
     var n = Number(v) || 0; var a = Math.abs(n);
@@ -18,7 +31,6 @@
   }
   function fmtNeg(v) { return '(' + fmt(Math.abs(v)) + ')'; }
 
-  // ─────────────────────── TOOLTIP SYSTEM ───────────────────────
   var Tooltip = (function() {
     var el = null;
     function ensure() {
@@ -32,8 +44,7 @@
     function show(target, html) {
       var t = ensure();
       t.innerHTML = html;
-      t.style.display = 'block';
-      t.style.opacity = '0';
+      t.style.display = 'block'; t.style.opacity = '0';
       var rect = target.getBoundingClientRect();
       var tipRect = t.getBoundingClientRect();
       var top = rect.top - tipRect.height - 10;
@@ -41,13 +52,10 @@
       if (top < 8) top = rect.bottom + 10;
       if (left < 8) left = 8;
       if (left + tipRect.width > window.innerWidth - 8) left = window.innerWidth - tipRect.width - 8;
-      t.style.top = top + 'px';
-      t.style.left = left + 'px';
+      t.style.top = top + 'px'; t.style.left = left + 'px';
       requestAnimationFrame(function() { t.style.opacity = '1'; });
     }
-    function hide() {
-      if (el) { el.style.opacity = '0'; setTimeout(function() { if (el && el.style.opacity === '0') el.style.display = 'none'; }, 200); }
-    }
+    function hide() { if (el) { el.style.opacity = '0'; setTimeout(function() { if (el && el.style.opacity === '0') el.style.display = 'none'; }, 200); } }
     function attach(target, htmlOrFn) {
       if (target.dataset.cfoTipWired === 'true') return;
       target.dataset.cfoTipWired = 'true';
@@ -92,7 +100,7 @@
       var valEl = card.querySelector('.kpi-value');
       var deltaEl = card.querySelector('.kpi-delta');
       if (!labelEl || !valEl) return;
-      var label = (labelEl.textContent || '').trim().toLowerCase();
+      var label = normalizeLabel(labelEl.textContent);
       try {
         if (label === 'total revenue' || label === 'revenue') {
           valEl.textContent = fmt(kpis.revenue);
@@ -141,7 +149,7 @@
         }
       } catch (e) {}
     });
-    console.log('[CFO brain v6] KPIs painted:', painted, '/ 6');
+    console.log('[CFO brain v7] KPIs painted:', painted, '/ 6');
   }
 
   function paintPL(kpis) {
@@ -152,8 +160,7 @@
       var valEl = row.querySelector('.pl-val');
       if (!labelEl || !valEl) return;
       var rawLabel = labelEl.textContent;
-      var label = (rawLabel || '').trim().toLowerCase();
-      var beforeText = valEl.textContent;
+      var label = normalizeLabel(rawLabel);  // ★ stripped of leading ▶ etc.
       var action = 'no-match';
       try {
         if (label === 'revenue' || label === 'total revenue') {
@@ -174,7 +181,7 @@
       } catch (e) { action = 'ERR'; }
       trace.push('[' + idx + '] ' + JSON.stringify(rawLabel) + ' → ' + action);
     });
-    console.log('[CFO brain v6] P&L painted:', painted, '\n  ' + trace.join('\n  '));
+    console.log('[CFO brain v7] P&L painted:', painted, '/ 5\n  ' + trace.join('\n  '));
   }
 
   function paintPLBars(bars) {
@@ -183,7 +190,7 @@
       var labelEl = row.querySelector('.pl-label');
       var fillEl = row.querySelector('.pl-bar-fill');
       if (!labelEl || !fillEl) return;
-      var label = (labelEl.textContent || '').trim().toLowerCase();
+      var label = normalizeLabel(labelEl.textContent);  // ★ normalized
       try {
         if ((label === 'revenue' || label === 'total revenue') && bars.revenue && bars.revenue.pct != null) {
           var w = Math.min(100, bars.revenue.pct);
@@ -207,27 +214,19 @@
     var maxVal = Math.max.apply(null, bars.map(function(b) { return b.value || 0; }));
     for (var i = 0; i < n; i++) {
       try {
-        var el = els[i];
-        var d = bars[i];
-        el.style.height = d.pct + '%';
-        el.dataset.h = d.pct + '%';
+        var el = els[i]; var d = bars[i];
+        el.style.height = d.pct + '%'; el.dataset.h = d.pct + '%';
         var labelEl = el.querySelector('.cash-bar-label');
         if (labelEl) labelEl.textContent = d.label;
         el.style.cursor = 'pointer';
         if (!el.dataset.cfoHoverWired) {
           el.dataset.cfoHoverWired = 'true';
           el.addEventListener('mouseenter', function() {
-            this.style.filter = 'brightness(1.15)';
-            this.style.transform = 'scaleY(1.04)';
-            this.style.transformOrigin = 'bottom';
-            this.style.transition = 'transform 0.2s, filter 0.2s';
+            this.style.filter = 'brightness(1.15)'; this.style.transform = 'scaleY(1.04)';
+            this.style.transformOrigin = 'bottom'; this.style.transition = 'transform 0.2s, filter 0.2s';
           });
-          el.addEventListener('mouseleave', function() {
-            this.style.filter = '';
-            this.style.transform = '';
-          });
+          el.addEventListener('mouseleave', function() { this.style.filter = ''; this.style.transform = ''; });
         }
-        // Rich tooltip
         var pctOfMax = maxVal > 0 ? (d.value / maxVal * 100).toFixed(0) : 0;
         Tooltip.attach(el,
           '<div style="font-weight:700;color:' + DENIM + ';margin-bottom:6px;font-size:10px;text-transform:uppercase;letter-spacing:0.1em">' + d.label + '</div>' +
@@ -242,7 +241,7 @@
     document.querySelectorAll('.panel').forEach(function(panel) {
       var titleEl = panel.querySelector('.panel-title');
       if (!titleEl) return;
-      var title = (titleEl.textContent || '').trim().toLowerCase();
+      var title = normalizeLabel(titleEl.textContent);
       if (title === 'cash position') {
         var badge = panel.querySelector('.panel-badge');
         if (badge) badge.textContent = fmt(kpis.cash_position);
@@ -267,14 +266,9 @@
     var values = data.map(function(v) { return Math.abs(Number(v) || 0); });
     var max = Math.max.apply(null, values);
     if (max === 0) return '<svg viewBox="0 0 100 24" preserveAspectRatio="none" style="width:100%;height:100%;display:block"></svg>';
-    var n = data.length;
-    var w = 100, h = 24;
-    var barW = w / n;
-    var bars = '';
+    var n = data.length, w = 100, h = 24, barW = w / n, bars = '';
     for (var i = 0; i < n; i++) {
-      var v = values[i];
-      var bh = (v / max) * h;
-      var by = h - bh;
+      var v = values[i], bh = (v / max) * h, by = h - bh;
       var op = i === n - 1 ? '1' : (0.4 + 0.5 * (i / n)).toFixed(2);
       var pulseClass = (pulseLatest && i === n - 1) ? ' class="cfo-pulse"' : '';
       bars += '<rect' + pulseClass + ' x="' + (i * barW + 0.5).toFixed(2) + '" y="' + by.toFixed(2) +
@@ -299,7 +293,7 @@
       var labelEl = card.querySelector('.kpi-label');
       var sparkEl = card.querySelector('.kpi-spark');
       if (!labelEl || !sparkEl) return;
-      var label = (labelEl.textContent || '').trim().toLowerCase();
+      var label = normalizeLabel(labelEl.textContent);
       var data = null, color = DENIM;
       if (label === 'total revenue' || label === 'revenue') data = monthlyTrend.map(function(m) { return m.revenue; });
       else if (label === 'gross margin') data = monthlyTrend.map(function(m) { return m.revenue > 0 ? (m.revenue - m.cogs) / m.revenue * 100 : 0; });
@@ -317,7 +311,7 @@
       var titleEl = panel.querySelector('.panel-title');
       if (!titleEl) return;
       if (titleEl.dataset.cfoLinked === 'true') return;
-      var title = (titleEl.textContent || '').trim().toLowerCase();
+      var title = normalizeLabel(titleEl.textContent);
       var url = null;
       if (title === 'p&l statement') url = '/cfo/pnl';
       else if (title === 'cash position') url = '/cfo/cash';
@@ -382,7 +376,7 @@
   var lastData = null;
   function paintAll(data, stage) {
     if (!data || !data.kpis) return;
-    console.log('[CFO brain v6] paintAll', stage);
+    console.log('[CFO brain v7] paintAll', stage);
     paintKPIs(data.kpis, data.deltas || {});
     paintPL(data.kpis);
     paintPLBars(data.bars || {});
@@ -403,14 +397,14 @@
         headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
       });
       if (resp.status === 401 || resp.status === 403) { window.location.href = '/login'; return; }
-      if (!resp.ok) { console.error('[CFO brain v6] Hub fetch failed', resp.status); return; }
+      if (!resp.ok) { console.error('[CFO brain v7] Hub fetch failed', resp.status); return; }
       var data = await resp.json();
       lastData = data;
       if (data.meta && data.meta.demo_mode) return;
       paintAll(data, 'boot');
       setTimeout(function() { if (lastData) paintAll(lastData, '1500ms'); }, 1500);
       setTimeout(function() { if (lastData) paintAll(lastData, '3500ms'); }, 3500);
-    } catch (err) { console.error('[CFO brain v6] Error:', err); }
+    } catch (err) { console.error('[CFO brain v7] Error:', err); }
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', run);
   else run();
