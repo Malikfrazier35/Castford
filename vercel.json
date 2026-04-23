@@ -101,7 +101,7 @@
     },
     {
       "source": "/dashboard",
-      "destination": "/site/dashboard/landing.html"
+      "destination": "/site/dashboard/cfo.html"
     },
     {
       "source": "/live",
