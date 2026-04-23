@@ -1,63 +1,152 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Signing out · Castford</title>
-  <meta name="robots" content="noindex">
-  <link rel="icon" href="/favicon.svg">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <title>Signed out — Castford</title>
+  <link rel="icon" type="image/png" href="/site/favicon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Instrument+Serif&display=swap" rel="stylesheet" />
   <style>
     :root {
       --denim: #5B7FCC;
-      --page: #F8F9FC;
-      --ink: #0f172a;
+      --gold: #C4884A;
+      --bg: #F8F9FC;
+      --surface: #ffffff;
+      --text-1: #1a2332;
       --text-2: #475569;
+      --text-3: #94a3b8;
+      --border: #e2e8f0;
     }
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    html, body { height: 100%; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      background: var(--page);
-      color: var(--ink);
-      font-family: 'Instrument Sans', 'DM Sans', system-ui, sans-serif;
+      min-height: 100vh;
+      background: var(--bg);
+      font-family: 'Instrument Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      color: var(--text-1);
       display: flex;
       align-items: center;
       justify-content: center;
-      flex-direction: column;
-      gap: 24px;
-    }
-    .spinner {
-      width: 28px;
-      height: 28px;
-      border: 2px solid rgba(91, 127, 204, 0.2);
-      border-top-color: var(--denim);
-      border-radius: 50%;
-      animation: spin 0.8s linear infinite;
-    }
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
-    .msg {
-      font-size: 14px;
-      font-weight: 500;
-      color: var(--text-2);
-      letter-spacing: 0.01em;
+      padding: 24px;
     }
     .brand {
       position: absolute;
       top: 32px;
       left: 40px;
-      font-size: 13px;
-      font-weight: 700;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
+      font-family: 'Instrument Serif', Georgia, serif;
+      font-size: 22px;
+      letter-spacing: -0.01em;
+      color: var(--text-1);
+    }
+    .card {
+      width: 100%;
+      max-width: 440px;
+      background: var(--surface);
+      border-radius: 12px;
+      padding: 48px 40px;
+      box-shadow: 0 1px 3px rgba(15,23,42,0.06), 0 1px 2px rgba(15,23,42,0.04);
+      text-align: center;
+    }
+    .icon {
+      width: 56px;
+      height: 56px;
+      margin: 0 auto 24px;
+      background: rgba(91, 127, 204, 0.08);
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       color: var(--denim);
     }
+    .icon svg { width: 28px; height: 28px; }
+    h1 {
+      font-family: 'Instrument Serif', Georgia, serif;
+      font-size: 28px;
+      font-weight: 400;
+      letter-spacing: -0.01em;
+      margin-bottom: 12px;
+    }
+    p {
+      font-size: 14px;
+      line-height: 1.6;
+      color: var(--text-2);
+      margin-bottom: 28px;
+    }
+    .status {
+      font-size: 12px;
+      color: var(--text-3);
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .status .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--text-3);
+    }
+    .status.done .dot { background: #10b981; }
+    .spinner {
+      display: inline-block;
+      width: 12px;
+      height: 12px;
+      border: 2px solid rgba(91, 127, 204, 0.2);
+      border-top-color: var(--denim);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .btn {
+      display: inline-block;
+      padding: 12px 28px;
+      background: var(--denim);
+      color: #fff;
+      text-decoration: none;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      transition: opacity 0.15s;
+    }
+    .btn:hover { opacity: 0.9; }
+    .btn[disabled] { opacity: 0.4; cursor: not-allowed; }
+    .footer-note {
+      margin-top: 24px;
+      font-size: 12px;
+      color: var(--text-3);
+      line-height: 1.5;
+    }
+    .footer-note a { color: var(--denim); text-decoration: none; }
   </style>
 </head>
 <body>
   <div class="brand">Castford</div>
-  <div class="spinner" role="status" aria-label="Signing out"></div>
-  <div class="msg" id="msg">Signing you out…</div>
+
+  <div class="card">
+    <div class="icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+        <polyline points="16 17 21 12 16 7"/>
+        <line x1="21" y1="12" x2="9" y2="12"/>
+      </svg>
+    </div>
+
+    <h1 id="title">Signing you out…</h1>
+    <p id="subtitle">Clearing your session and securing your account.</p>
+
+    <div class="status" id="status"><span class="spinner"></span><span id="statusText">In progress</span></div>
+
+    <a id="signinBtn" href="/login" class="btn" style="display:none">Sign in again</a>
+
+    <div class="footer-note" id="cooldownNote" style="display:none">
+      For your security, sign-in is temporarily paused for <span id="cooldownSeconds">60</span> seconds<br>
+      to prevent automatic re-authentication.
+    </div>
+  </div>
 
   <script src="https://esm.sh/@supabase/supabase-js@2.49.1"></script>
   <script>
@@ -65,41 +154,89 @@
       var SB_URL = 'https://crecesswagluelvkesul.supabase.co';
       var SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNyZWNlc3N3YWdsdWVsdmtlc3VsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM4MTI5NzYsImV4cCI6MjA4OTM4ODk3Nn0.IGEEYDStt-eH9Mf2G_DzqCPfruDjN8m_ORtAcmtSAZg';
 
-      var msgEl = document.getElementById('msg');
+      var titleEl = document.getElementById('title');
+      var subtitleEl = document.getElementById('subtitle');
+      var statusEl = document.getElementById('status');
+      var statusTextEl = document.getElementById('statusText');
+      var signinBtn = document.getElementById('signinBtn');
+      var cooldownNote = document.getElementById('cooldownNote');
+      var cooldownSecondsEl = document.getElementById('cooldownSeconds');
+
+      // ── COOLDOWN MECHANISM ──
+      // Set a flag that auth-guard.js will respect to prevent immediate re-auth.
+      // This breaks the Apple SSO auto-redirect loop.
+      var COOLDOWN_KEY = 'castford_signout_cooldown_until';
+      var COOLDOWN_MS = 60 * 1000; // 60 seconds
+      var cooldownUntil = Date.now() + COOLDOWN_MS;
+      try { localStorage.setItem(COOLDOWN_KEY, String(cooldownUntil)); } catch (e) {}
 
       try {
-        // 1. Supabase signOut (revokes server-side session + clears its own localStorage entries)
+        // 1. Supabase global signOut (revokes server-side session)
         var mod = await import('https://esm.sh/@supabase/supabase-js@2.49.1');
         var sb = mod.createClient(SB_URL, SB_KEY);
         await sb.auth.signOut({ scope: 'global' }).catch(function() {});
 
-        // 2. Nuke any lingering Castford state
+        // 2. Nuke ALL Castford state (auth tokens, app state, FinanceOS legacy keys)
         try {
           Object.keys(localStorage).forEach(function(k) {
-            if (k.indexOf('supabase.auth') > -1 || k.indexOf('castford') > -1 || k.indexOf('__fos_') > -1 || k.indexOf('cf_') > -1) {
-              localStorage.removeItem(k);
+            if (
+              k.indexOf('supabase.auth') > -1 ||
+              k.indexOf('sb-') === 0 ||
+              k.indexOf('castford') > -1 ||
+              k.indexOf('__fos_') > -1 ||
+              k.indexOf('cf_') > -1 ||
+              k.indexOf('fos_') > -1
+            ) {
+              if (k !== COOLDOWN_KEY) localStorage.removeItem(k);
             }
           });
           sessionStorage.clear();
         } catch (e) {}
 
-        // 3. Clear any auth cookies we control
+        // 3. Clear all auth + app cookies aggressively
         document.cookie.split(';').forEach(function(c) {
           var name = c.split('=')[0].trim();
-          if (name.indexOf('sb-') === 0 || name.indexOf('cf_') === 0) {
-            document.cookie = name + '=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT; Domain=' + location.hostname;
-            document.cookie = name + '=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT';
+          if (
+            name.indexOf('sb-') === 0 ||
+            name.indexOf('cf_') === 0 ||
+            name.indexOf('castford') > -1 ||
+            name.indexOf('supabase') > -1
+          ) {
+            // Try multiple domain/path combinations to ensure cleanup
+            ['/', '/site', '/dashboard'].forEach(function(path) {
+              document.cookie = name + '=; Path=' + path + '; Expires=Thu, 01 Jan 1970 00:00:01 GMT';
+              document.cookie = name + '=; Path=' + path + '; Domain=' + location.hostname + '; Expires=Thu, 01 Jan 1970 00:00:01 GMT';
+              document.cookie = name + '=; Path=' + path + '; Domain=.' + location.hostname + '; Expires=Thu, 01 Jan 1970 00:00:01 GMT';
+            });
           }
         });
 
-        msgEl.textContent = 'Signed out.';
       } catch (e) {
-        console.warn('Logout error', e);
-        msgEl.textContent = 'Sign-out had an issue — continuing anyway.';
+        console.warn('[Logout] error during cleanup:', e);
       }
 
-      // 4. Hard redirect to login (replace so back button doesn't return to dashboard)
-      setTimeout(function() { window.location.replace('/login'); }, 600);
+      // ── SHOW SUCCESS STATE — NO AUTO-REDIRECT ──
+      titleEl.textContent = 'You\'re signed out';
+      subtitleEl.textContent = 'Your session has been cleared from this device.';
+      statusEl.classList.add('done');
+      statusEl.innerHTML = '<span class="dot"></span><span id="statusText">Session ended securely</span>';
+      cooldownNote.style.display = 'block';
+      signinBtn.style.display = 'inline-block';
+
+      // Disable sign-in button during cooldown to prevent confused re-clicks
+      signinBtn.setAttribute('disabled', 'true');
+      signinBtn.style.pointerEvents = 'none';
+
+      var tickInterval = setInterval(function() {
+        var remaining = Math.max(0, Math.ceil((cooldownUntil - Date.now()) / 1000));
+        cooldownSecondsEl.textContent = String(remaining);
+        if (remaining === 0) {
+          clearInterval(tickInterval);
+          signinBtn.removeAttribute('disabled');
+          signinBtn.style.pointerEvents = 'auto';
+          cooldownNote.innerHTML = 'You can sign in again now.';
+        }
+      }, 250);
     })();
   </script>
 </body>
