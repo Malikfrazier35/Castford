@@ -1,15 +1,9 @@
 // supabase/functions/set-active-org/index.ts
 //
-// Validates that the authenticated user has an active membership in the
-// requested org. Returns success/failure. Frontend stores active_org_id
-// in localStorage; this endpoint exists to:
-//   1. Verify the user is allowed to switch (security)
-//   2. Return the membership details for that org (so frontend has fresh state)
-//   3. (Future) Set an httpOnly cookie for SSR scenarios
-//
-// POST { org_id: "uuid" }
-// → 200 { active_org_id, membership } on success
-// → 403 if user not a member of that org
+// v3: Defensive body parsing. In some Supabase Edge Runtime + Cloudflare
+// configurations, the parsed HTTP headers get prepended to the body stream
+// when accessed via req.text(). We detect this by looking for the JSON
+// start marker and skipping any preamble.
 
 import { authenticate, sb, corsHeaders, jsonError, jsonOk, tierLimits } from '../_shared/auth.ts';
 
@@ -21,29 +15,61 @@ Deno.serve(async (req) => {
     return jsonError(405, 'POST required', headers);
   }
 
-  // Auth — don't require org context (we're switching it)
-  const auth = await authenticate(req, { requireOrg: false });
-  if (!auth.ok) return auth.res;
-  const { ctx } = auth;
+  let rawText = '';
+  try {
+    rawText = await req.text();
+  } catch (e) {
+    return jsonError(400, 'Could not read request body', headers, { error: String(e) });
+  }
+
+  if (!rawText || rawText.trim() === '') {
+    return jsonError(400, 'Empty request body', headers);
+  }
+
+  // ── Defensive: strip HTTP header preamble if Edge Runtime injected it ──
+  // Look for `\r\n\r\n` (HTTP header/body separator). If found AND the
+  // preamble looks like HTTP headers, skip past it.
+  const headerSep = '\r\n\r\n';
+  const sepIdx = rawText.indexOf(headerSep);
+  if (sepIdx >= 0) {
+    const preamble = rawText.substring(0, sepIdx);
+    if (/^[A-Za-z][A-Za-z0-9-]+:\s/.test(preamble)) {
+      rawText = rawText.substring(sepIdx + headerSep.length);
+    }
+  }
+
+  // ── Belt + suspenders: also trim to first `{` if leading garbage remains ──
+  const jsonStart = rawText.indexOf('{');
+  if (jsonStart > 0) {
+    rawText = rawText.substring(jsonStart);
+  }
 
   let body: any;
   try {
-    body = await req.json();
-  } catch {
-    return jsonError(400, 'Invalid JSON body', headers);
+    body = JSON.parse(rawText);
+  } catch (e) {
+    return jsonError(400, 'Body is not valid JSON', headers, {
+      received_first_100_chars: rawText.substring(0, 100),
+      received_length: rawText.length,
+      parse_error: String(e),
+    });
   }
+
+  // Auth
+  const auth = await authenticate(req, { requireOrg: false });
+  if (!auth.ok) return auth.res;
+  const { ctx } = auth;
 
   const newOrgId = body.org_id;
   if (!newOrgId || typeof newOrgId !== 'string') {
     return jsonError(400, 'org_id required (string)', headers);
   }
 
-  // Validate UUID shape (cheap defense before DB hit)
   if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(newOrgId)) {
     return jsonError(400, 'org_id must be a UUID', headers);
   }
 
-  // Verify membership in the requested org
+  // Verify membership
   const { data: membership, error } = await sb.from('org_members')
     .select(`
       id, primary_role, secondary_dashboards, permission_level,
@@ -58,7 +84,6 @@ Deno.serve(async (req) => {
   if (error) {
     return jsonError(500, 'Membership lookup failed', headers, { details: error.message });
   }
-
   if (!membership) {
     return jsonError(403, 'You are not a member of that organization', headers);
   }
