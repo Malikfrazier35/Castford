@@ -73,35 +73,21 @@
       color: var(--text-2);
       margin-bottom: 28px;
     }
-    .status {
-      font-size: 12px;
-      color: var(--text-3);
-      margin-bottom: 24px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-    }
-    .status .dot {
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background: var(--text-3);
-    }
-    .status.done .dot { background: #10b981; }
     .spinner {
       display: inline-block;
-      width: 12px;
-      height: 12px;
+      width: 14px;
+      height: 14px;
       border: 2px solid rgba(91, 127, 204, 0.2);
       border-top-color: var(--denim);
       border-radius: 50%;
       animation: spin 0.8s linear infinite;
+      vertical-align: middle;
+      margin-right: 6px;
     }
     @keyframes spin { to { transform: rotate(360deg); } }
     .btn {
       display: inline-block;
-      padding: 12px 28px;
+      padding: 12px 32px;
       background: var(--denim);
       color: #fff;
       text-decoration: none;
@@ -113,14 +99,11 @@
       transition: opacity 0.15s;
     }
     .btn:hover { opacity: 0.9; }
-    .btn[disabled] { opacity: 0.4; cursor: not-allowed; }
-    .footer-note {
-      margin-top: 24px;
-      font-size: 12px;
+    .progress-state {
+      font-size: 13px;
       color: var(--text-3);
-      line-height: 1.5;
+      margin-bottom: 24px;
     }
-    .footer-note a { color: var(--denim); text-decoration: none; }
   </style>
 </head>
 <body>
@@ -136,16 +119,11 @@
     </div>
 
     <h1 id="title">Signing you out…</h1>
-    <p id="subtitle">Clearing your session and securing your account.</p>
+    <p id="subtitle">Clearing your session.</p>
 
-    <div class="status" id="status"><span class="spinner"></span><span id="statusText">In progress</span></div>
+    <div class="progress-state" id="progressState"><span class="spinner"></span>Working…</div>
 
     <a id="signinBtn" href="/login" class="btn" style="display:none">Sign in again</a>
-
-    <div class="footer-note" id="cooldownNote" style="display:none">
-      For your security, sign-in is temporarily paused for <span id="cooldownSeconds">60</span> seconds<br>
-      to prevent automatic re-authentication.
-    </div>
   </div>
 
   <script src="https://esm.sh/@supabase/supabase-js@2.49.1"></script>
@@ -156,17 +134,15 @@
 
       var titleEl = document.getElementById('title');
       var subtitleEl = document.getElementById('subtitle');
-      var statusEl = document.getElementById('status');
-      var statusTextEl = document.getElementById('statusText');
+      var progressEl = document.getElementById('progressState');
       var signinBtn = document.getElementById('signinBtn');
-      var cooldownNote = document.getElementById('cooldownNote');
-      var cooldownSecondsEl = document.getElementById('cooldownSeconds');
 
-      // ── COOLDOWN MECHANISM ──
-      // Set a flag that auth-guard.js will respect to prevent immediate re-auth.
-      // This breaks the Apple SSO auto-redirect loop.
+      // ── INVISIBLE TECHNICAL COOLDOWN (5 sec, not user-facing) ──
+      // Just enough to prevent the Apple SSO instant-redirect chain from auto-firing.
+      // Users see no countdown — by the time they decide to click "Sign in again",
+      // the cooldown is already over.
       var COOLDOWN_KEY = 'castford_signout_cooldown_until';
-      var COOLDOWN_MS = 60 * 1000; // 60 seconds
+      var COOLDOWN_MS = 5 * 1000; // 5 seconds — invisible to user
       var cooldownUntil = Date.now() + COOLDOWN_MS;
       try { localStorage.setItem(COOLDOWN_KEY, String(cooldownUntil)); } catch (e) {}
 
@@ -176,7 +152,7 @@
         var sb = mod.createClient(SB_URL, SB_KEY);
         await sb.auth.signOut({ scope: 'global' }).catch(function() {});
 
-        // 2. Nuke ALL Castford state (auth tokens, app state, FinanceOS legacy keys)
+        // 2. Nuke ALL Castford state
         try {
           Object.keys(localStorage).forEach(function(k) {
             if (
@@ -193,7 +169,7 @@
           sessionStorage.clear();
         } catch (e) {}
 
-        // 3. Clear all auth + app cookies aggressively
+        // 3. Clear all auth + app cookies
         document.cookie.split(';').forEach(function(c) {
           var name = c.split('=')[0].trim();
           if (
@@ -202,7 +178,6 @@
             name.indexOf('castford') > -1 ||
             name.indexOf('supabase') > -1
           ) {
-            // Try multiple domain/path combinations to ensure cleanup
             ['/', '/site', '/dashboard'].forEach(function(path) {
               document.cookie = name + '=; Path=' + path + '; Expires=Thu, 01 Jan 1970 00:00:01 GMT';
               document.cookie = name + '=; Path=' + path + '; Domain=' + location.hostname + '; Expires=Thu, 01 Jan 1970 00:00:01 GMT';
@@ -215,28 +190,11 @@
         console.warn('[Logout] error during cleanup:', e);
       }
 
-      // ── SHOW SUCCESS STATE — NO AUTO-REDIRECT ──
-      titleEl.textContent = 'You\'re signed out';
+      // ── SHOW SUCCESS — IMMEDIATE BUTTON ──
+      titleEl.textContent = "You're signed out";
       subtitleEl.textContent = 'Your session has been cleared from this device.';
-      statusEl.classList.add('done');
-      statusEl.innerHTML = '<span class="dot"></span><span id="statusText">Session ended securely</span>';
-      cooldownNote.style.display = 'block';
+      progressEl.style.display = 'none';
       signinBtn.style.display = 'inline-block';
-
-      // Disable sign-in button during cooldown to prevent confused re-clicks
-      signinBtn.setAttribute('disabled', 'true');
-      signinBtn.style.pointerEvents = 'none';
-
-      var tickInterval = setInterval(function() {
-        var remaining = Math.max(0, Math.ceil((cooldownUntil - Date.now()) / 1000));
-        cooldownSecondsEl.textContent = String(remaining);
-        if (remaining === 0) {
-          clearInterval(tickInterval);
-          signinBtn.removeAttribute('disabled');
-          signinBtn.style.pointerEvents = 'auto';
-          cooldownNote.innerHTML = 'You can sign in again now.';
-        }
-      }, 250);
     })();
   </script>
 </body>
