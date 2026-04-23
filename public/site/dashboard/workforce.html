@@ -158,7 +158,7 @@ const SUPABASE_URL = 'https://crecesswagluelvkesul.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_Z5leOqWVPuuij8t0hzrxOw_GPaUJTej';
 
 const sb = createClient(SUPABASE_URL, SUPABASE_KEY, {
-  auth: { persistSession: true, storageKey: 'cf-auth', autoRefreshToken: true }
+  auth: { persistSession: true, autoRefreshToken: true }
 });
 
 const fmt = {
