@@ -29,4 +29,7 @@ castford-*.py
 *.bak-v2
 
 *.bak-phase2a
-*.bak-login-fix
+*.bak-login-fixadd-role-routes.py
+ship-workspace.py
+build-standard-dashboard.py
+x-bot/
