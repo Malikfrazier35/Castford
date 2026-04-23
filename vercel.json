@@ -35,18 +35,65 @@
     }
   ],
   "rewrites": [
-    { "source": "/login", "destination": "/site/login.html" },
-    { "source": "/pricing", "destination": "/site/pricing.html" },
-    { "source": "/security", "destination": "/site/security.html" },
-    { "source": "/privacy", "destination": "/site/privacy.html" },
-    { "source": "/terms", "destination": "/site/terms.html" },
-    { "source": "/resources", "destination": "/site/resources.html" },
-    { "source": "/integrations", "destination": "/site/integrations.html" },
-    { "source": "/solutions", "destination": "/site/solutions.html" },
-    { "source": "/about", "destination": "/site/about.html" },
-    { "source": "/contact", "destination": "/site/contact.html" },
-    { "source": "/whats-new", "destination": "/site/whats-new.html" },
-    { "source": "/xpa-planning", "destination": "/site/xpa-planning.html" },
-    { "source": "/competitors", "destination": "/site/competitors.html" }
+    {
+      "source": "/login",
+      "destination": "/site/login.html"
+    },
+    {
+      "source": "/pricing",
+      "destination": "/site/pricing.html"
+    },
+    {
+      "source": "/security",
+      "destination": "/site/security.html"
+    },
+    {
+      "source": "/privacy",
+      "destination": "/site/privacy.html"
+    },
+    {
+      "source": "/terms",
+      "destination": "/site/terms.html"
+    },
+    {
+      "source": "/resources",
+      "destination": "/site/resources.html"
+    },
+    {
+      "source": "/integrations",
+      "destination": "/site/integrations.html"
+    },
+    {
+      "source": "/solutions",
+      "destination": "/site/solutions.html"
+    },
+    {
+      "source": "/about",
+      "destination": "/site/about.html"
+    },
+    {
+      "source": "/contact",
+      "destination": "/site/contact.html"
+    },
+    {
+      "source": "/whats-new",
+      "destination": "/site/whats-new.html"
+    },
+    {
+      "source": "/xpa-planning",
+      "destination": "/site/xpa-planning.html"
+    },
+    {
+      "source": "/competitors",
+      "destination": "/site/competitors.html"
+    },
+    {
+      "source": "/controller",
+      "destination": "/site/dashboard/controller.html"
+    },
+    {
+      "source": "/fpa",
+      "destination": "/site/dashboard/fpa.html"
+    }
   ]
 }
