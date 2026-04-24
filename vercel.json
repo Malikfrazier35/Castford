@@ -112,6 +112,10 @@
       "destination": "/site/dashboard/customizer-v2.html"
     },
     {
+      "source": "/livedashboard",
+      "destination": "/site/dashboard/live-dashboard.html"
+    },
+    {
       "source": "/workforce",
       "destination": "/site/dashboard/workspace.html"
     }
