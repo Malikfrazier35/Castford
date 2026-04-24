@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="day">
+<head>
+<script>((d)=>{const t=localStorage.getItem("cf-theme");if(t)d.dataset.theme=t})(document.documentElement)</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Workspace · Castford</title>
+<meta name="robots" content="noindex">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --d:'Instrument Sans',-apple-system,sans-serif;
+  --b:'DM Sans',-apple-system,sans-serif;
+  --m:'Geist Mono','SF Mono',monospace;
+  --ease:cubic-bezier(0.4,0,0.2,1);
+  --max:1280px;
+  --warm:#C4884A;
+}
+[data-theme="day"]{
+  --bg:#FFFFFF;
+  --canvas:#FAFAF9;
+  --s1:#FFFFFF;
+  --s2:#F5F5F4;
+  --ink:#0B0E1A;
+  --t1:#1E2038;
+  --t2:#4A4F6E;
+  --t3:#6E738F;
+  --t4:#9AA0B5;
+  --bdr:rgba(91,127,204,0.10);
+  --bdr-strong:rgba(91,127,204,0.18);
+  --prime:#5B7FCC;
+  --prime-ink:#1A3F7A;
+  --prime-bg:rgba(91,127,204,0.06);
+  --gold:#C4884A;
+  --gold-bg:rgba(196,136,74,0.08);
+  --good:#1F4937;
+  --bad:#993C1D;
+  --nav-bg:rgba(255,255,255,0.92);
+  --logo-main:#1A3F7A;
+  --logo-inner:#1A3F7A;
+  --logo-core:#1A3F7A;
+  --logo-outer-o:0.08;
+  --logo-mid-o:0.15;
+  --logo-inner-fill:0.05;
+  --shadow-card:0 1px 2px rgba(0,0,0,0.02),0 4px 14px rgba(91,127,204,0.05);
+  --shadow-card-h:0 2px 4px rgba(0,0,0,0.03),0 8px 24px rgba(91,127,204,0.10);
+  --toggle-bg:#F5F5F4;
+  --lock-bg:#FAFAF9;
+}
+[data-theme="night"]{
+  --bg:#0A0F1F;
+  --canvas:#0F1628;
+  --s1:#161D30;
+  --s2:#1F2740;
+  --ink:#E8E6F0;
+  --t1:#C4C0D8;
+  --t2:#8A86A8;
+  --t3:#5E5A78;
+  --t4:#454059;
+  --bdr:rgba(155,138,255,0.10);
+  --bdr-strong:rgba(155,138,255,0.18);
+  --prime:#9B8AFF;
+  --prime-ink:#C4B8FF;
+  --prime-bg:rgba(155,138,255,0.08);
+  --gold:#D4A574;
+  --gold-bg:rgba(212,165,116,0.08);
+  --good:#4ADE80;
+  --bad:#F87171;
+  --nav-bg:rgba(10,15,31,0.92);
+  --logo-main:#9B8AFF;
+  --logo-inner:#C4B8FF;
+  --logo-core:#DDD8FF;
+  --logo-outer-o:0.10;
+  --logo-mid-o:0.18;
+  --logo-inner-fill:0.06;
+  --shadow-card:0 1px 2px rgba(0,0,0,0.3),0 4px 16px rgba(0,0,0,0.2);
+  --shadow-card-h:0 2px 4px rgba(0,0,0,0.4),0 8px 28px rgba(0,0,0,0.3);
+  --toggle-bg:#1F2740;
+  --lock-bg:#0F1628;
+}
+
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  font-family:var(--b);
+  background:var(--canvas);
+  color:var(--ink);
+  -webkit-font-smoothing:antialiased;
+  line-height:1.6;
+  min-height:100vh;
+  transition:background .4s var(--ease),color .4s var(--ease);
+}
+a{color:inherit;text-decoration:none}
+.w{max-width:var(--max);margin:0 auto;padding:0 32px}
+
+/* ─── Topbar ─── */
+nav{
+  position:sticky;top:0;z-index:100;
+  background:var(--nav-bg);
+  backdrop-filter:blur(20px) saturate(1.3);
+  -webkit-backdrop-filter:blur(20px) saturate(1.3);
+  border-bottom:0.5px solid var(--bdr);
+}
+.ni{
+  max-width:var(--max);margin:0 auto;padding:0 32px;
+  height:64px;display:flex;align-items:center;justify-content:space-between;gap:24px;
+}
+.nl{display:flex;align-items:center;gap:10px}
+.nn{font-family:var(--d);font-size:17px;font-weight:700;letter-spacing:-0.3px;line-height:1}
+.nb{
+  font-family:var(--m);font-size:9px;font-weight:500;
+  padding:3px 7px;border-radius:3px;
+  background:var(--gold-bg);color:var(--gold);
+  letter-spacing:1.4px;text-transform:uppercase;
+  margin-left:6px;
+}
+.nr{display:flex;align-items:center;gap:14px}
+.nu{display:flex;align-items:center;gap:10px;padding:4px 10px 4px 4px;border-radius:6px}
+.nu:hover{background:var(--s2)}
+.na{
+  width:30px;height:30px;border-radius:50%;
+  background:linear-gradient(135deg,var(--prime-ink),var(--prime));
+  color:#fff;display:flex;align-items:center;justify-content:center;
+  font-size:11px;font-weight:600;flex-shrink:0;
+}
+.nu-name{font-size:12.5px;color:var(--ink);font-weight:500;line-height:1.2}
+.nu-org{font-size:10px;color:var(--t3);font-family:var(--m);letter-spacing:0.4px;margin-top:2px}
+.toggle{
+  width:36px;height:20px;border-radius:10px;
+  background:var(--toggle-bg);border:0.5px solid var(--bdr);
+  cursor:pointer;position:relative;transition:background .3s;
+}
+.toggle::after{
+  content:'';position:absolute;top:2px;left:2px;width:14px;height:14px;border-radius:7px;
+  background:var(--prime);transition:transform .3s var(--ease);
+}
+[data-theme="night"] .toggle::after{transform:translateX(16px)}
+.nx{
+  font-size:11.5px;color:var(--t3);font-weight:500;
+  padding:6px 12px;border-radius:6px;cursor:pointer;
+  transition:all .15s;border:0.5px solid transparent;
+  font-family:var(--b);background:transparent;
+}
+.nx:hover{color:var(--ink);border-color:var(--bdr)}
+
+/* ─── Main ─── */
+main{padding:36px 0 80px}
+
+/* Hero */
+.hero{margin-bottom:40px;padding-bottom:32px;border-bottom:0.5px solid var(--bdr)}
+.eyebrow{
+  font-size:10px;font-family:var(--m);
+  font-weight:500;letter-spacing:2px;
+  color:var(--gold);text-transform:uppercase;
+  margin-bottom:14px;
+}
+.hero h1{
+  font-family:var(--d);font-size:clamp(36px,5vw,52px);
+  font-weight:800;letter-spacing:-1.6px;line-height:1.05;
+  color:var(--ink);margin-bottom:14px;
+}
+.hero h1 em{font-style:normal;color:var(--prime-ink);position:relative;display:inline-block}
+.hero h1 em::after{
+  content:'';position:absolute;bottom:-2px;left:0;right:0;height:2.5px;
+  background:var(--prime-ink);border-radius:0;
+  animation:ul .7s var(--ease) .8s both;
+}
+[data-theme="night"] .hero h1 em{color:var(--prime)}
+[data-theme="night"] .hero h1 em::after{background:var(--prime)}
+@keyframes ul{from{transform:scaleX(0);transform-origin:left}to{transform:scaleX(1);transform-origin:left}}
+.hero p{
+  font-size:14.5px;color:var(--t2);
+  max-width:560px;line-height:1.65;margin-bottom:22px;
+}
+.status-strip{
+  display:flex;gap:24px;flex-wrap:wrap;
+  font-size:11.5px;color:var(--t3);
+  font-family:var(--m);letter-spacing:0.3px;
+}
+.status-strip span{display:flex;align-items:center;gap:6px}
+.status-strip span::before{
+  content:'';width:5px;height:5px;border-radius:50%;
+  background:var(--gold);display:inline-block;
+}
+.status-strip .live::before{background:var(--good)}
+
+/* Section labels */
+.sect-label{
+  font-size:10px;font-family:var(--m);
+  letter-spacing:1.6px;color:var(--t3);
+  font-weight:500;text-transform:uppercase;
+  margin-bottom:18px;padding-left:10px;
+  border-left:2px solid var(--gold);
+  display:flex;align-items:center;gap:14px;
+}
+.sect-label .meta{color:var(--t4);font-size:9.5px}
+
+/* L1 tools grid */
+.l1-grid{
+  display:grid;grid-template-columns:1.6fr 1fr 1fr;gap:14px;
+  margin-bottom:48px;
+}
+.tool-card{
+  background:var(--s1);border:0.5px solid var(--bdr);
+  border-radius:10px;padding:24px 26px;
+  transition:all .25s var(--ease);
+  text-decoration:none;color:inherit;display:block;
+  box-shadow:var(--shadow-card);
+  cursor:pointer;position:relative;overflow:hidden;
+}
+.tool-card:hover{
+  border-color:var(--bdr-strong);
+  transform:translateY(-2px);
+  box-shadow:var(--shadow-card-h);
+}
+.tool-card.primary{border-left:2px solid var(--prime)}
+.tool-card .tag{
+  font-family:var(--m);font-size:9px;
+  font-weight:500;letter-spacing:1.4px;
+  color:var(--good);text-transform:uppercase;
+  margin-bottom:14px;display:flex;align-items:center;gap:6px;
+}
+.tool-card .tag::before{
+  content:'';width:5px;height:5px;border-radius:50%;
+  background:var(--good);
+}
+.tool-card h3{
+  font-family:var(--d);font-size:22px;
+  font-weight:700;letter-spacing:-0.6px;
+  color:var(--ink);margin-bottom:8px;line-height:1.2;
+}
+.tool-card.primary h3{font-size:26px;letter-spacing:-0.8px}
+.tool-card h3 em{font-style:normal;color:var(--prime-ink);font-weight:700}
+[data-theme="night"] .tool-card h3 em{color:var(--prime)}
+.tool-card p{
+  font-size:13px;color:var(--t2);
+  line-height:1.55;margin-bottom:18px;
+}
+.tool-card .meta-row{
+  display:flex;justify-content:space-between;align-items:center;
+  padding-top:14px;border-top:0.5px solid var(--bdr);
+  font-size:11px;font-family:var(--m);
+  color:var(--t3);letter-spacing:0.3px;
+}
+.tool-card .meta-row .arrow{
+  color:var(--prime-ink);font-weight:500;font-family:var(--b);
+  font-size:12px;letter-spacing:0;
+  transition:transform .2s;
+}
+[data-theme="night"] .tool-card .meta-row .arrow{color:var(--prime)}
+.tool-card:hover .meta-row .arrow{transform:translateX(4px)}
+
+/* L3 pro pack grid */
+.l3-grid{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:14px;
+}
+.pack-card{
+  background:var(--s1);border:0.5px solid var(--bdr);
+  border-radius:10px;padding:22px 22px 18px;
+  transition:all .25s var(--ease);
+  position:relative;overflow:hidden;
+  box-shadow:var(--shadow-card);display:flex;flex-direction:column;
+}
+.pack-card:hover{
+  border-color:var(--bdr-strong);
+  transform:translateY(-2px);
+  box-shadow:var(--shadow-card-h);
+}
+.pack-card.locked{background:var(--lock-bg);opacity:0.95}
+.pack-card.locked:hover{opacity:1}
+.pack-card .pack-tag{
+  font-family:var(--m);font-size:9px;
+  font-weight:500;letter-spacing:1.4px;
+  text-transform:uppercase;
+  margin-bottom:14px;
+  display:flex;align-items:center;gap:6px;
+}
+.pack-card.unlocked .pack-tag{color:var(--good)}
+.pack-card.unlocked .pack-tag::before{
+  content:'';width:5px;height:5px;border-radius:50%;background:var(--good);
+}
+.pack-card.locked .pack-tag{color:var(--t4)}
+.pack-card.locked .pack-tag::before{
+  content:'';width:6px;height:8px;
+  background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 6 8' fill='none' stroke='%239AA0B5' stroke-width='1'><rect x='1' y='3.5' width='4' height='3.5' rx='0.5'/><path d='M2 3.5V2.5a1 1 0 0 1 2 0v1'/></svg>") no-repeat center;
+}
+.pack-card h3{
+  font-family:var(--d);font-size:20px;
+  font-weight:700;letter-spacing:-0.5px;
+  color:var(--ink);margin-bottom:6px;line-height:1.2;
+}
+.pack-card .role{
+  font-size:11px;font-family:var(--m);
+  color:var(--t3);letter-spacing:0.5px;
+  text-transform:uppercase;margin-bottom:14px;
+}
+.pack-card p{
+  font-size:12px;color:var(--t2);
+  line-height:1.55;margin-bottom:18px;flex:1;
+}
+.pack-card .pack-action{
+  display:flex;justify-content:space-between;align-items:center;
+  padding-top:14px;border-top:0.5px solid var(--bdr);
+  font-family:var(--m);font-size:10.5px;
+  letter-spacing:0.3px;
+}
+.pack-card .pack-action .price{color:var(--t3)}
+.pack-card .pack-action .cta{
+  font-family:var(--b);font-weight:500;font-size:12px;
+  letter-spacing:0;
+  transition:transform .2s;
+}
+.pack-card.unlocked .pack-action .cta{color:var(--prime-ink)}
+[data-theme="night"] .pack-card.unlocked .pack-action .cta{color:var(--prime)}
+.pack-card.locked .pack-action .cta{color:var(--gold)}
+.pack-card:hover .pack-action .cta{transform:translateX(4px)}
+
+/* Footer */
+.foot{
+  margin-top:60px;padding-top:24px;
+  border-top:0.5px solid var(--bdr);
+  display:flex;justify-content:space-between;align-items:center;
+  font-size:10.5px;color:var(--t3);
+  font-family:var(--m);letter-spacing:0.3px;
+}
+.foot a{color:var(--prime-ink)}
+[data-theme="night"] .foot a{color:var(--prime)}
+.foot a:hover{text-decoration:underline}
+
+/* Responsive */
+@media(max-width:1100px){
+  .l1-grid{grid-template-columns:1fr 1fr}
+  .l1-grid .tool-card.primary{grid-column:span 2}
+  .l3-grid{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:680px){
+  .l1-grid{grid-template-columns:1fr}
+  .l1-grid .tool-card.primary{grid-column:span 1}
+  .l3-grid{grid-template-columns:1fr}
+  .hero h1{font-size:34px}
+  .nu-name,.nu-org{display:none}
+  .ni{padding:0 20px}
+  .w{padding:0 20px}
+  .status-strip{gap:14px;font-size:10.5px}
+}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.hero,.l1-grid,.l3-grid{animation:fadeUp .5s var(--ease) both}
+.l1-grid{animation-delay:.08s}
+.sect-label{animation:fadeUp .4s var(--ease) both;animation-delay:.05s}
+.l3-grid{animation-delay:.18s}
+
+@media(prefers-reduced-motion:reduce){
+  .hero,.l1-grid,.l3-grid,.sect-label{animation:none}
+  .tool-card,.pack-card{transition:none}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="ni">
+    <a href="/workspace" class="nl">
+      <svg viewBox="0 0 100 100" width="26" height="26">
+        <path d="M50 5 L90 27 L90 73 L50 95 L10 73 L10 27 Z" fill="none" stroke="var(--logo-main)" stroke-width="0.8" style="opacity:var(--logo-outer-o)"/>
+        <path d="M50 10 L85 30 L85 70 L50 90 L15 70 L15 30 Z" fill="none" stroke="var(--logo-main)" stroke-width="1.2" style="opacity:var(--logo-mid-o)"/>
+        <path d="M50 16 L80 33 L80 67 L50 84 L20 67 L20 33 Z" fill="none" stroke="var(--logo-main)" stroke-width="2.5"/>
+        <path d="M36 47 L50 39 L64 47 L64 57 L50 65 L36 57 Z" fill="var(--logo-inner)" style="opacity:var(--logo-inner-fill)"/>
+        <path d="M36 47 L50 39 L64 47 L64 57 L50 65 L36 57 Z" fill="none" stroke="var(--logo-inner)" stroke-width="1.5"/>
+        <circle cx="50" cy="52" r="3" fill="var(--logo-core)"/>
+      </svg>
+      <span class="nn">Castford</span>
+      <span class="nb">Enterprise</span>
+    </a>
+    <div class="nr">
+      <div class="nu">
+        <div class="na">MF</div>
+        <div>
+          <div class="nu-name">Malik Frazier</div>
+          <div class="nu-org">FINANCIAL HOLDING LLC</div>
+        </div>
+      </div>
+      <div class="toggle" id="themeToggle" title="Toggle day/night"></div>
+      <button class="nx" onclick="window.location.href='/logout'">Sign out</button>
+    </div>
+  </div>
+</nav>
+
+<main class="w">
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="eyebrow">YOUR WORKSPACE</div>
+    <h1>Welcome back, <em>Malik</em>.</h1>
+    <p>Your financial operating surface for FY2026. All systems are syncing in real time across seven connected sources.</p>
+    <div class="status-strip">
+      <span class="live">All systems live</span>
+      <span>7 connectors active</span>
+      <span>Last sync 53 seconds ago</span>
+      <span>3.1M records synced</span>
+    </div>
+  </section>
+
+  <!-- Section A: L1 Tools (always available) -->
+  <div class="sect-label">
+    Your Workspace
+    <span class="meta">INCLUDED IN ENTERPRISE</span>
+  </div>
+  <div class="l1-grid">
+
+    <a href="/live" class="tool-card primary">
+      <div class="tag">LIVE</div>
+      <h3>Live <em>Dashboard</em></h3>
+      <p>Real-time KPIs across revenue, margin, runway, and segment performance. Fed by your connected ledgers and refreshed every 6 hours.</p>
+      <div class="meta-row">
+        <span>$28.5M ARR · 64.2% margin · 24mo runway</span>
+        <span class="arrow">Open →</span>
+      </div>
+    </a>
+
+    <a href="/workforce" class="tool-card">
+      <div class="tag">PLANNING</div>
+      <h3>Workforce</h3>
+      <p>Headcount planning, ramp curves, and loaded cost across teams.</p>
+      <div class="meta-row">
+        <span>312 active roles</span>
+        <span class="arrow">Open →</span>
+      </div>
+    </a>
+
+    <a href="/live#copilot" class="tool-card">
+      <div class="tag">AI</div>
+      <h3>Copilot</h3>
+      <p>Ask plain-English questions across your live financial data.</p>
+      <div class="meta-row">
+        <span>Powered by Claude</span>
+        <span class="arrow">Open →</span>
+      </div>
+    </a>
+
+  </div>
+
+  <!-- Section B: L3 Pro Packs (entitlement-gated) -->
+  <div class="sect-label">
+    Pro Packs
+    <span class="meta">EXECUTIVE ROLE WORKSPACES</span>
+  </div>
+  <div class="l3-grid">
+
+    <a href="/cfo" class="pack-card unlocked">
+      <div class="pack-tag">OWNED</div>
+      <h3>CFO</h3>
+      <div class="role">Strategic finance lead</div>
+      <p>Board-ready dashboards, investor metrics, capital strategy, and the bridge view across your full financial picture.</p>
+      <div class="pack-action">
+        <span class="price">Active in your plan</span>
+        <span class="cta">Enter →</span>
+      </div>
+    </a>
+
+    <a href="/upgrade?pack=controller" class="pack-card locked">
+      <div class="pack-tag">LOCKED</div>
+      <h3>Controller</h3>
+      <div class="role">Close & compliance</div>
+      <p>Month-end close orchestration, journal entry automation, and audit trail with SOC 2 control mapping.</p>
+      <div class="pack-action">
+        <span class="price">$599/mo</span>
+        <span class="cta">Upgrade →</span>
+      </div>
+    </a>
+
+    <a href="/upgrade?pack=fpa" class="pack-card locked">
+      <div class="pack-tag">LOCKED</div>
+      <h3>FP&amp;A</h3>
+      <div class="role">Forecasting analyst</div>
+      <p>Driver-based modeling, multi-scenario sensitivity, unit economics, and a formula engine over your GL.</p>
+      <div class="pack-action">
+        <span class="price">$599/mo</span>
+        <span class="cta">Upgrade →</span>
+      </div>
+    </a>
+
+    <a href="/upgrade?pack=ceo" class="pack-card locked">
+      <div class="pack-tag">LOCKED</div>
+      <h3>CEO</h3>
+      <div class="role">Executive command</div>
+      <p>Quarterly board narrative, milestone tracking, runway extension scenarios, and a one-page command center.</p>
+      <div class="pack-action">
+        <span class="price">$599/mo</span>
+        <span class="cta">Upgrade →</span>
+      </div>
+    </a>
+
+  </div>
+
+  <!-- Footer -->
+  <div class="foot">
+    <span>CASTFORD · FINANCIAL HOLDING LLC · ENTERPRISE PLAN</span>
+    <span><a href="/billing">Billing</a> · <a href="/security">Trust Center</a> · <a href="/support">Support</a></span>
+  </div>
+
+</main>
+
+<script>
+  // Day/night theme toggle (persists in localStorage)
+  document.getElementById('themeToggle').addEventListener('click', function(){
+    var h = document.documentElement;
+    h.dataset.theme = h.dataset.theme === 'day' ? 'night' : 'day';
+    localStorage.setItem('cf-theme', h.dataset.theme);
+  });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="/site/auth-guard.js"></script>
+<script src="/site/cf-app-shell.js" defer></script>
+
+</body>
+</html>
