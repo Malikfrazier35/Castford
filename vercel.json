@@ -97,7 +97,7 @@
     },
     {
       "source": "/workspace",
-      "destination": "/site/dashboard/workspace-hub.html"
+      "destination": "/site/dashboard/landing.html"
     },
     {
       "source": "/dashboard",
