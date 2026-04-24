@@ -101,7 +101,7 @@
     },
     {
       "source": "/dashboard",
-      "destination": "/site/dashboard/cfo.html"
+      "destination": "/site/dashboard/live-dashboard.html"
     },
     {
       "source": "/live",
@@ -110,6 +110,10 @@
     {
       "source": "/customizer",
       "destination": "/site/dashboard/customizer-v2.html"
+    },
+    {
+      "source": "/cfo",
+      "destination": "/site/dashboard/cfo.html"
     },
     {
       "source": "/livedashboard",
