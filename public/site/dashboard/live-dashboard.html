@@ -1,30 +1,62 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="day">
 <head>
+<script>((d)=>{const t=localStorage.getItem("cf-theme");if(t)d.dataset.theme=t})(document.documentElement)</script>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
 <title>Castford — Dashboard</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"/>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700;9..40,800&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet"/>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 :root{
-  --bg:#f3f4f8;--surface:#ffffff;--card:#ffffff;--elevated:#eef0f5;
-  --border:#e2e5ed;--border2:#cdd2de;--border-sub:#dde1ea;
-  --t1:#0a0d15;--t2:#3a4259;--t3:#576175;--t4:#8792a8;
-  --accent:#3b82f6;--accent-dim:rgba(59,130,246,0.07);
-  --green:#10b981;--green-dim:rgba(16,185,129,0.07);
-  --red:#ef4444;--red-dim:rgba(239,68,68,0.07);
-  --amber:#f59e0b;--amber-dim:rgba(245,158,11,0.07);
-  --purple:#8b5cf6;--purple-dim:rgba(139,92,246,0.07);
-  --cyan:#06b6d4;--cyan-dim:rgba(6,182,212,0.07);
-  --radius:12px;--radius-sm:8px;
-  --shadow:0 1px 3px rgba(0,0,0,0.06),0 1px 2px rgba(0,0,0,0.04);
-  --shadow-md:0 4px 16px rgba(0,0,0,0.06);
-  --ease:cubic-bezier(0.4,0,.2,1);
+  --display:'Instrument Sans',-apple-system,sans-serif;
   --font:'DM Sans',system-ui,-apple-system,sans-serif;
-  --mono:'JetBrains Mono',monospace;
+  --mono:'Geist Mono','SF Mono',monospace;
+  --radius:10px;--radius-sm:6px;
+  --ease:cubic-bezier(0.4,0,.2,1);
+  --warm:#C4884A;
 }
+[data-theme="day"]{
+  --bg:#FAFAF9;--surface:#FFFFFF;--card:#FFFFFF;--elevated:#F5F5F4;
+  --border:rgba(91,127,204,0.10);--border2:rgba(91,127,204,0.18);--border-sub:rgba(91,127,204,0.06);
+  --t1:#0B0E1A;--t2:#4A4F6E;--t3:#6E738F;--t4:#9AA0B5;
+  --accent:#5B7FCC;--accent-ink:#1A3F7A;--accent-dim:rgba(91,127,204,0.06);
+  --gold:#C4884A;--gold-dim:rgba(196,136,74,0.08);
+  --green:#1F4937;--green-dim:rgba(31,73,55,0.08);
+  --red:#993C1D;--red-dim:rgba(153,60,29,0.08);
+  --amber:#C4884A;--amber-dim:rgba(196,136,74,0.08);
+  --purple:#5B7FCC;--purple-dim:rgba(91,127,204,0.06);
+  --cyan:#5B7FCC;--cyan-dim:rgba(91,127,204,0.06);
+  --shadow:0 1px 2px rgba(0,0,0,0.02),0 4px 14px rgba(91,127,204,0.05);
+  --shadow-md:0 2px 4px rgba(0,0,0,0.03),0 8px 24px rgba(91,127,204,0.10);
+  --logo-main:#1A3F7A;--logo-inner:#1A3F7A;--logo-core:#1A3F7A;
+  --toggle-bg:#F5F5F4;
+}
+[data-theme="night"]{
+  --bg:#0A0F1F;--surface:#161D30;--card:#161D30;--elevated:#1F2740;
+  --border:rgba(155,138,255,0.10);--border2:rgba(155,138,255,0.18);--border-sub:rgba(155,138,255,0.06);
+  --t1:#E8E6F0;--t2:#C4C0D8;--t3:#8A86A8;--t4:#5E5A78;
+  --accent:#9B8AFF;--accent-ink:#C4B8FF;--accent-dim:rgba(155,138,255,0.08);
+  --gold:#D4A574;--gold-dim:rgba(212,165,116,0.08);
+  --green:#4ADE80;--green-dim:rgba(74,222,128,0.08);
+  --red:#F87171;--red-dim:rgba(248,113,113,0.08);
+  --amber:#D4A574;--amber-dim:rgba(212,165,116,0.08);
+  --purple:#9B8AFF;--purple-dim:rgba(155,138,255,0.08);
+  --cyan:#9B8AFF;--cyan-dim:rgba(155,138,255,0.08);
+  --shadow:0 1px 2px rgba(0,0,0,0.3),0 4px 16px rgba(0,0,0,0.2);
+  --shadow-md:0 2px 4px rgba(0,0,0,0.4),0 8px 28px rgba(0,0,0,0.3);
+  --logo-main:#9B8AFF;--logo-inner:#C4B8FF;--logo-core:#DDD8FF;
+  --toggle-bg:#1F2740;
+}
+body{transition:background .4s var(--ease),color .4s var(--ease)}
 body{font-family:var(--font);background:var(--bg);color:var(--t1);-webkit-font-smoothing:antialiased;min-height:100vh;font-size:14px;}
+
+
+/* Day/night toggle */
+.theme-switch{width:36px;height:20px;border-radius:10px;background:var(--toggle-bg);border:0.5px solid var(--border);cursor:pointer;position:relative;transition:background .3s;flex-shrink:0;}
+.theme-switch::after{content:'';position:absolute;top:2px;left:2px;width:14px;height:14px;border-radius:7px;background:var(--accent);transition:transform .3s var(--ease);}
+[data-theme="night"] .theme-switch::after{transform:translateX(16px)}
 
 /* ═══ INFO BAR (top blue strip) ═══ */
 .info-bar{background:var(--accent-dim);border-bottom:1px solid rgba(59,130,246,0.1);padding:6px 24px;display:flex;align-items:center;justify-content:center;gap:8px;font-size:12px;color:var(--accent);}
@@ -35,8 +67,8 @@ body{font-family:var(--font);background:var(--bg);color:var(--t1);-webkit-font-s
 .topbar{position:sticky;top:0;z-index:100;background:var(--surface);border-bottom:1px solid var(--border);padding:0 20px;height:48px;display:flex;align-items:center;gap:12px;}
 .topbar-logo{display:flex;align-items:center;gap:8px;padding-right:12px;border-right:1px solid var(--border);margin-right:4px;}
 .topbar-logo svg{width:32px;height:32px;}
-.topbar-logo .name{font-size:15px;font-weight:800;letter-spacing:-0.02em;}
-.topbar-logo .plan-badge{font-size:9px;font-weight:800;padding:2px 6px;border-radius:4px;background:var(--purple-dim);color:var(--purple);text-transform:uppercase;letter-spacing:0.04em;}
+.topbar-logo .name{font-family:var(--display);font-size:16px;font-weight:700;letter-spacing:-0.3px;}
+.topbar-logo .plan-badge{font-family:var(--mono);font-size:9px;font-weight:500;padding:3px 7px;border-radius:3px;background:var(--gold-dim);color:var(--gold);text-transform:uppercase;letter-spacing:1.4px;}
 .topbar-breadcrumb{font-size:13px;color:var(--t3);font-weight:500;}
 .topbar-breadcrumb strong{color:var(--t1);font-weight:700;}
 .topbar-right{margin-left:auto;display:flex;align-items:center;gap:10px;}
@@ -86,7 +118,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--t1);-webkit-font-s
 /* ═══ DASHBOARD HEADER ═══ */
 .dash-header{margin-bottom:20px;}
 .dash-date{font-size:11px;color:var(--t4);font-weight:500;margin-bottom:4px;display:flex;align-items:center;gap:6px;}
-.dash-greeting{font-size:22px;font-weight:800;letter-spacing:-0.02em;display:flex;align-items:center;gap:12px;}
+.dash-greeting{font-family:var(--display);font-size:28px;font-weight:700;letter-spacing:-0.8px;display:flex;align-items:center;gap:12px;}
 .fy-badge{font-size:10px;font-weight:700;padding:3px 10px;border-radius:var(--radius-sm);background:var(--elevated);color:var(--t3);border:1px solid var(--border);}
 .ask-copilot{margin-left:auto;padding:8px 16px;border-radius:var(--radius-sm);font-size:12px;font-weight:700;border:1px solid var(--border);background:var(--surface);color:var(--accent);cursor:pointer;display:flex;align-items:center;gap:6px;transition:all 0.2s;}
 .ask-copilot:hover{border-color:var(--accent);background:var(--accent-dim);}
@@ -286,7 +318,8 @@ body{font-family:var(--font);background:var(--bg);color:var(--t1);-webkit-font-s
       <svg viewBox="0 0 16 16" fill="none" style="width:12px;height:12px;"><circle cx="7" cy="7" r="5" stroke="currentColor" stroke-width="1.5"/><path d="M11 11l3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
       Search... <kbd>⌘K</kbd>
     </div>
-    <div class="topbar-icon">
+    <div class="theme-switch" id="themeToggle" title="Toggle day/night"></div>
+      <div class="topbar-icon">
       <svg viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="4" stroke="currentColor" stroke-width="1.5"/><path d="M10 2v2M10 16v2M2 10h2M16 10h2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
     </div>
   </div>
@@ -1035,5 +1068,18 @@ renderDashboard();
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script src="/site/auth-guard.js"></script>
 <script src="/site/castford-energy.js" defer></script>
-<script src="/site/cf-app-shell.js" defer></script></body>
+<script src="/site/cf-app-shell.js" defer></script>
+<script>
+// Day/night theme toggle (persists in localStorage)
+(function(){
+  var btn = document.getElementById('themeToggle');
+  if (!btn) return;
+  btn.addEventListener('click', function(){
+    var h = document.documentElement;
+    h.dataset.theme = h.dataset.theme === 'day' ? 'night' : 'day';
+    localStorage.setItem('cf-theme', h.dataset.theme);
+  });
+})();
+</script>
+</body>
 </html>
