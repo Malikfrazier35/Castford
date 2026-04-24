@@ -615,6 +615,147 @@ body{font-family:var(--font);background:var(--bg);color:var(--t1);-webkit-font-s
   .in-grid{grid-template-columns:1fr;}
   .in-avail-grid{grid-template-columns:repeat(2,1fr);}
 }
+
+/* ═══ INVESTOR METRICS ═══ */
+.iv-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:24px;}
+.iv-tile{background:var(--surface);border:0.5px solid var(--border);border-radius:10px;padding:18px 20px;}
+.iv-tile-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;}
+.iv-tile-label{font-family:var(--mono);font-size:9.5px;letter-spacing:1.4px;color:var(--gold);font-weight:500;text-transform:uppercase;}
+.iv-tile-bench{font-family:var(--mono);font-size:9px;color:var(--t4);letter-spacing:0.5px;}
+.iv-tile-value{font-family:var(--mono);font-size:28px;font-weight:500;color:var(--t1);letter-spacing:-0.8px;line-height:1;margin-bottom:8px;}
+.iv-tile-sub{font-family:var(--font);font-size:11.5px;color:var(--t3);display:flex;align-items:center;gap:6px;}
+.iv-tile-sub .change{font-family:var(--mono);font-weight:500;}
+.iv-tile-sub .change.up{color:var(--green);}
+.iv-tile-sub .change.down{color:var(--red);}
+.iv-tile-sparkline{display:flex;align-items:flex-end;gap:2px;height:32px;margin-top:12px;padding-top:10px;border-top:0.5px solid var(--border-sub);}
+.iv-tile-sparkline div{flex:1;background:var(--accent);opacity:0.45;border-radius:1px;}
+.iv-tile-sparkline div:last-child{opacity:0.95;}
+
+.iv-cohort{background:var(--surface);border:0.5px solid var(--border);border-radius:10px;padding:18px 22px;margin-bottom:24px;overflow-x:auto;}
+.iv-cohort-head{display:flex;align-items:baseline;justify-content:space-between;padding-bottom:14px;margin-bottom:14px;border-bottom:0.5px solid var(--border);}
+.iv-cohort-title{font-family:var(--display);font-size:15px;font-weight:600;color:var(--t1);letter-spacing:-0.3px;}
+.iv-cohort-grid{display:grid;grid-template-columns:auto repeat(12,1fr);gap:3px;font-family:var(--mono);font-size:9.5px;}
+.iv-cohort-grid .row-head{padding:6px 8px;color:var(--t3);text-align:left;font-weight:500;letter-spacing:0.4px;display:flex;align-items:center;}
+.iv-cohort-grid .col-head{padding:6px 4px;color:var(--t4);text-align:center;font-weight:500;letter-spacing:0.4px;}
+.iv-cohort-grid .cell{padding:8px 4px;border-radius:3px;text-align:center;color:var(--t1);font-weight:500;letter-spacing:0.2px;}
+.iv-cohort-grid .cell.h0{background:rgba(91,127,204,0.04);color:var(--t4);}
+.iv-cohort-grid .cell.h1{background:rgba(91,127,204,0.12);}
+.iv-cohort-grid .cell.h2{background:rgba(91,127,204,0.20);}
+.iv-cohort-grid .cell.h3{background:rgba(91,127,204,0.34);color:#fff;}
+.iv-cohort-grid .cell.h4{background:rgba(91,127,204,0.50);color:#fff;}
+
+.iv-bench{display:grid;grid-template-columns:1.5fr 1fr 1fr 1fr;gap:0;background:var(--surface);border:0.5px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:24px;}
+.iv-bench-row{display:contents;}
+.iv-bench-row > div{padding:12px 18px;font-size:13px;border-bottom:0.5px solid var(--border-sub);}
+.iv-bench-row.head > div{background:var(--elevated);font-family:var(--mono);font-size:10px;letter-spacing:1.2px;color:var(--t3);text-transform:uppercase;font-weight:500;}
+.iv-bench-row:last-child > div{border-bottom:none;}
+.iv-bench-row > div:first-child{color:var(--t1);font-weight:500;}
+.iv-bench-row > div:not(:first-child){text-align:right;font-family:var(--mono);font-size:12.5px;}
+.iv-bench-row .you{color:var(--accent-ink);font-weight:600;}
+[data-theme="night"] .iv-bench-row .you{color:var(--accent);}
+.iv-bench-row .top{color:var(--green);}
+.iv-bench-row .median{color:var(--t2);}
+
+/* ═══ COMMAND CENTER ═══ */
+.cc-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:24px;}
+.cc-stat{background:var(--surface);border:0.5px solid var(--border);border-radius:10px;padding:14px 18px;display:flex;align-items:center;gap:14px;}
+.cc-stat-icon{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:14px;font-weight:600;flex-shrink:0;}
+.cc-stat-icon.crit{background:rgba(153,60,29,0.12);color:var(--red);}
+.cc-stat-icon.warn{background:var(--gold-dim);color:var(--gold);}
+.cc-stat-icon.info{background:var(--accent-dim);color:var(--accent-ink);}
+[data-theme="night"] .cc-stat-icon.info{color:var(--accent);}
+.cc-stat-icon.ok{background:var(--green-dim);color:var(--green);}
+.cc-stat-text{display:flex;flex-direction:column;gap:2px;}
+.cc-stat-num{font-family:var(--mono);font-size:22px;font-weight:500;color:var(--t1);letter-spacing:-0.5px;line-height:1;}
+.cc-stat-label{font-family:var(--mono);font-size:9.5px;letter-spacing:1.4px;color:var(--t3);font-weight:500;text-transform:uppercase;}
+
+.cc-actions{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:24px;}
+.cc-action{background:var(--surface);border:0.5px solid var(--border);border-radius:10px;padding:18px 14px;text-align:center;cursor:pointer;transition:all .2s;}
+.cc-action:hover{border-color:var(--accent);transform:translateY(-2px);box-shadow:var(--shadow-md);}
+.cc-action-icon{width:40px;height:40px;border-radius:10px;background:var(--accent-dim);color:var(--accent-ink);margin:0 auto 10px;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:16px;font-weight:600;}
+[data-theme="night"] .cc-action-icon{color:var(--accent);}
+.cc-action-name{font-family:var(--display);font-size:13px;font-weight:600;color:var(--t1);margin-bottom:3px;letter-spacing:-0.2px;}
+.cc-action-desc{font-family:var(--mono);font-size:9.5px;color:var(--t4);letter-spacing:0.4px;}
+
+.cc-alerts{background:var(--surface);border:0.5px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:24px;}
+.cc-alert{display:grid;grid-template-columns:6px 1fr auto auto;gap:14px;padding:14px 18px 14px 0;border-bottom:0.5px solid var(--border-sub);align-items:center;font-size:13px;}
+.cc-alert:last-child{border:none;}
+.cc-alert:hover{background:var(--elevated);}
+.cc-alert .strip{height:100%;min-height:38px;}
+.cc-alert.critical .strip{background:var(--red);}
+.cc-alert.warning .strip{background:var(--gold);}
+.cc-alert.info .strip{background:var(--accent);}
+.cc-alert-text{display:flex;flex-direction:column;gap:3px;}
+.cc-alert-title{color:var(--t1);font-weight:500;}
+.cc-alert-desc{font-size:11.5px;color:var(--t3);}
+.cc-alert-time{font-family:var(--mono);font-size:10.5px;color:var(--t4);letter-spacing:0.3px;}
+.cc-alert-sev{font-family:var(--mono);font-size:9px;padding:3px 8px;border-radius:3px;letter-spacing:0.7px;text-transform:uppercase;font-weight:500;margin-right:18px;}
+.cc-alert-sev.critical{background:rgba(153,60,29,0.12);color:var(--red);}
+.cc-alert-sev.warning{background:var(--gold-dim);color:var(--gold);}
+.cc-alert-sev.info{background:var(--accent-dim);color:var(--accent-ink);}
+[data-theme="night"] .cc-alert-sev.info{color:var(--accent);}
+
+.cc-activity{background:var(--surface);border:0.5px solid var(--border);border-radius:10px;padding:18px 22px;margin-bottom:24px;}
+.cc-activity-head{display:flex;align-items:baseline;justify-content:space-between;padding-bottom:14px;margin-bottom:14px;border-bottom:0.5px solid var(--border);}
+.cc-activity-title{font-family:var(--display);font-size:14px;font-weight:600;color:var(--t1);letter-spacing:-0.2px;}
+.cc-activity-list{display:flex;flex-direction:column;gap:8px;}
+.cc-activity-row{display:grid;grid-template-columns:90px 1fr;gap:14px;align-items:baseline;font-size:12px;color:var(--t2);padding:5px 0;}
+.cc-activity-row .ts{font-family:var(--mono);font-size:10.5px;color:var(--t4);letter-spacing:0.3px;}
+.cc-activity-row b{color:var(--t1);font-weight:500;}
+
+/* ═══ INTELLIGENCE ═══ */
+.it-insights{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:24px;}
+.it-card{background:var(--surface);border:0.5px solid var(--border);border-radius:10px;padding:18px 20px;position:relative;overflow:hidden;}
+.it-card.high{border-left:2.5px solid var(--accent-ink);}
+.it-card.medium{border-left:2.5px solid var(--gold);}
+.it-card.routine{border-left:2.5px solid var(--t4);}
+[data-theme="night"] .it-card.high{border-left-color:var(--accent);}
+.it-card-head{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;}
+.it-card-tag{font-family:var(--mono);font-size:9.5px;letter-spacing:1.4px;font-weight:500;text-transform:uppercase;display:flex;align-items:center;gap:5px;}
+.it-card-tag.high{color:var(--accent-ink);}
+[data-theme="night"] .it-card-tag.high{color:var(--accent);}
+.it-card-tag.medium{color:var(--gold);}
+.it-card-tag.routine{color:var(--t4);}
+.it-card-tag::before{content:'';width:5px;height:5px;border-radius:50%;background:currentColor;}
+.it-card-conf{font-family:var(--mono);font-size:10px;color:var(--t3);letter-spacing:0.3px;}
+.it-card h3{font-family:var(--display);font-size:16px;font-weight:600;color:var(--t1);margin-bottom:8px;letter-spacing:-0.3px;line-height:1.3;}
+.it-card p{font-size:12.5px;color:var(--t2);line-height:1.55;margin-bottom:14px;}
+.it-card-impact{padding-top:12px;border-top:0.5px solid var(--border);display:flex;justify-content:space-between;align-items:center;}
+.it-card-impact-label{font-family:var(--mono);font-size:9.5px;color:var(--t4);letter-spacing:0.5px;text-transform:uppercase;}
+.it-card-impact-val{font-family:var(--mono);font-size:14px;font-weight:500;color:var(--t1);letter-spacing:-0.3px;}
+.it-card-impact-val.up{color:var(--green);}
+.it-card-impact-val.down{color:var(--red);}
+
+.it-anomalies{background:var(--surface);border:0.5px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:24px;border-collapse:collapse;width:100%;}
+.it-anomalies thead{background:var(--elevated);}
+.it-anomalies th{font-family:var(--mono);font-size:10px;letter-spacing:1.2px;font-weight:500;color:var(--t3);text-transform:uppercase;padding:12px 18px;text-align:left;border-bottom:0.5px solid var(--border);}
+.it-anomalies td{padding:13px 18px;font-size:13px;color:var(--t1);border-bottom:0.5px solid var(--border-sub);}
+.it-anomalies tr:last-child td{border:none;}
+.it-anomalies .num{font-family:var(--mono);font-size:12.5px;text-align:right;}
+.it-anomalies .deviation{font-family:var(--mono);font-size:11px;}
+.it-anomalies .deviation.up{color:var(--red);}
+.it-anomalies .deviation.down{color:var(--green);}
+.it-anomalies .severity{font-family:var(--mono);font-size:9px;padding:3px 8px;border-radius:3px;letter-spacing:0.6px;text-transform:uppercase;font-weight:500;}
+.it-anomalies .severity.high{background:rgba(153,60,29,0.12);color:var(--red);}
+.it-anomalies .severity.med{background:var(--gold-dim);color:var(--gold);}
+.it-anomalies .severity.low{background:var(--elevated);color:var(--t3);}
+
+.it-narrative{background:var(--surface);border:0.5px solid var(--border);border-radius:10px;padding:22px 26px;margin-bottom:24px;}
+.it-narrative-head{display:flex;align-items:center;gap:12px;margin-bottom:16px;}
+.it-narrative-icon{width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,var(--gold),#a06832);color:#fff;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:13px;font-weight:600;}
+.it-narrative-title{font-family:var(--display);font-size:15px;font-weight:600;color:var(--t1);letter-spacing:-0.3px;}
+.it-narrative p{font-size:13.5px;line-height:1.7;color:var(--t1);margin-bottom:12px;}
+.it-narrative p:last-child{margin-bottom:0;}
+.it-narrative b{color:var(--accent-ink);font-weight:600;}
+[data-theme="night"] .it-narrative b{color:var(--accent);}
+.it-narrative .gold{color:var(--gold);font-weight:600;}
+
+@media(max-width:1100px){
+  .iv-grid{grid-template-columns:repeat(2,1fr);}
+  .cc-stats{grid-template-columns:repeat(2,1fr);}
+  .cc-actions{grid-template-columns:repeat(3,1fr);}
+  .it-insights{grid-template-columns:1fr;}
+}
 </style>
 <script src="/site/castford-shell.js" defer></script>
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
@@ -1877,23 +2018,191 @@ function renderIntegrations(){
     + '<div class="bottom-spacer"></div>';
 }
 
-function renderInvestor(){featurePage('Investor Metrics','Dashboard / Platform / <strong>Investor Metrics</strong>','◎','Board-ready metrics, KPIs, and investor reporting',[
-  {icon:'$',iconBg:'var(--accent-dim)',iconColor:'var(--accent)',label:'ARR',value:'$73.3M',dir:'up',change:'↗ +18% YoY',sub:'Annualized'},
-  {icon:'◎',iconBg:'var(--green-dim)',iconColor:'var(--green)',label:'RULE OF 40',value:'52.1',dir:'up',change:'↗ Above benchmark',sub:'Growth + margin'},
-  {icon:'⚡',iconBg:'var(--purple-dim)',iconColor:'var(--purple)',label:'NRR',value:'118%',dir:'up',change:'↗ +3% QoQ',sub:'Net revenue retention'}
-]);}
+function renderInvestor(){
+  document.getElementById('breadcrumb').innerHTML='Dashboard / <strong>Investor Metrics</strong>';
+  document.getElementById('resourcesPanel').style.display='';
+  function spark(values){
+    return values.map(function(v){return '<div style="height:'+v+'%;"></div>';}).join('');
+  }
+  document.getElementById('mainContent').innerHTML = ''
+    + '<div class="sp-header">'
+    +   '<div class="sp-title-block">'
+    +     '<div class="sp-eyebrow">BOARD-READY · Q4 2025 · GENERATED 14 MIN AGO</div>'
+    +     '<h1 class="sp-title">Investor <em>metrics</em></h1>'
+    +   '</div>'
+    +   '<div class="sp-actions">'
+    +     '<select class="sp-select"><option>Q4 2025</option><option>Q3 2025</option><option>FY2025</option></select>'
+    +     '<button class="sp-btn">Export to deck</button>'
+    +     '<button class="sp-btn primary">Generate board pack</button>'
+    +   '</div>'
+    + '</div>'
+    + '<div class="sp-sect-label">CORE SAAS METRICS <span class="sp-sect-meta">9 metrics · all benchmarked against SaaS top quartile</span></div>'
+    + '<div class="iv-grid">'
+    +   '<div class="iv-tile"><div class="iv-tile-head"><div class="iv-tile-label">ARR</div><div class="iv-tile-bench">Top quartile</div></div><div class="iv-tile-value">$73.3M</div><div class="iv-tile-sub"><span class="change up">↗ +18% YoY</span> · annualized</div><div class="iv-tile-sparkline">'+spark([42,48,52,58,62,68,72,76,82,86,90,94])+'</div></div>'
+    +   '<div class="iv-tile"><div class="iv-tile-head"><div class="iv-tile-label">NET NEW ARR</div><div class="iv-tile-bench">Top quartile</div></div><div class="iv-tile-value">$11.2M</div><div class="iv-tile-sub"><span class="change up">↗ +24%</span> · vs Q3 2025</div><div class="iv-tile-sparkline">'+spark([38,42,40,48,52,56,62,68,72,76,80,88])+'</div></div>'
+    +   '<div class="iv-tile"><div class="iv-tile-head"><div class="iv-tile-label">NET REVENUE RETENTION</div><div class="iv-tile-bench">Top decile</div></div><div class="iv-tile-value">128%</div><div class="iv-tile-sub"><span class="change up">↗ +6 pts</span> · vs prior quarter</div><div class="iv-tile-sparkline">'+spark([72,74,78,82,86,88,92,96,100,108,118,128])+'</div></div>'
+    +   '<div class="iv-tile"><div class="iv-tile-head"><div class="iv-tile-label">LOGO RETENTION</div><div class="iv-tile-bench">Median</div></div><div class="iv-tile-value">94.2%</div><div class="iv-tile-sub"><span class="change down">↘ −0.8 pts</span> · 18 of 312 churned</div><div class="iv-tile-sparkline">'+spark([88,90,92,93,94,95,95,94,94,93,94,94])+'</div></div>'
+    +   '<div class="iv-tile"><div class="iv-tile-head"><div class="iv-tile-label">RULE OF 40</div><div class="iv-tile-bench">Top quartile</div></div><div class="iv-tile-value">53.2</div><div class="iv-tile-sub"><span class="change up">↗ Healthy</span> · growth + margin</div><div class="iv-tile-sparkline">'+spark([34,36,38,42,44,46,48,50,51,52,53,53])+'</div></div>'
+    +   '<div class="iv-tile"><div class="iv-tile-head"><div class="iv-tile-label">BURN MULTIPLE</div><div class="iv-tile-bench">Top quartile</div></div><div class="iv-tile-value">0.34</div><div class="iv-tile-sub"><span class="change up">↗ Excellent</span> · &lt;1.0 = strong</div><div class="iv-tile-sparkline">'+spark([72,68,62,56,52,48,42,40,38,36,34,34])+'</div></div>'
+    +   '<div class="iv-tile"><div class="iv-tile-head"><div class="iv-tile-label">CAC PAYBACK</div><div class="iv-tile-bench">Top quartile</div></div><div class="iv-tile-value">11.4<span style="font-size:14px;color:var(--t3);">mo</span></div><div class="iv-tile-sub"><span class="change up">↗ Improving</span> · target &lt;12 months</div><div class="iv-tile-sparkline">'+spark([18,17,16,15,15,14,13,13,12,12,11,11])+'</div></div>'
+    +   '<div class="iv-tile"><div class="iv-tile-head"><div class="iv-tile-label">MAGIC NUMBER</div><div class="iv-tile-bench">Top quartile</div></div><div class="iv-tile-value">1.42</div><div class="iv-tile-sub"><span class="change up">↗ Strong</span> · &gt;0.75 = expand</div><div class="iv-tile-sparkline">'+spark([62,68,72,78,82,86,92,96,108,118,128,142])+'</div></div>'
+    +   '<div class="iv-tile"><div class="iv-tile-head"><div class="iv-tile-label">RUNWAY</div><div class="iv-tile-bench">Healthy</div></div><div class="iv-tile-value">28<span style="font-size:14px;color:var(--t3);">mo</span></div><div class="iv-tile-sub"><span class="change up">↗ Extending</span> · cash reserves</div><div class="iv-tile-sparkline">'+spark([22,22,23,24,24,25,25,26,27,27,28,28])+'</div></div>'
+    + '</div>'
+    + '<div class="sp-sect-label">COHORT RETENTION <span class="sp-sect-meta">Net dollar retention by cohort · 12 month view</span></div>'
+    + '<div class="iv-cohort">'
+    +   '<div class="iv-cohort-head"><div class="iv-cohort-title">Customer cohort retention</div><div class="trend-period">Cohorts Q1 2024 → Q4 2025 · NDR by quarter since acquisition</div></div>'
+    +   '<div class="iv-cohort-grid">'
+    +     '<div class="row-head">COHORT</div><div class="col-head">M0</div><div class="col-head">M1</div><div class="col-head">M2</div><div class="col-head">M3</div><div class="col-head">M4</div><div class="col-head">M5</div><div class="col-head">M6</div><div class="col-head">M7</div><div class="col-head">M8</div><div class="col-head">M9</div><div class="col-head">M10</div><div class="col-head">M11</div>'
+    +     '<div class="row-head">Q1 2024</div><div class="cell h2">100</div><div class="cell h2">102</div><div class="cell h2">105</div><div class="cell h3">108</div><div class="cell h3">112</div><div class="cell h3">115</div><div class="cell h3">118</div><div class="cell h4">122</div><div class="cell h4">126</div><div class="cell h4">129</div><div class="cell h4">132</div><div class="cell h4">135</div>'
+    +     '<div class="row-head">Q2 2024</div><div class="cell h2">100</div><div class="cell h2">101</div><div class="cell h2">104</div><div class="cell h3">107</div><div class="cell h3">110</div><div class="cell h3">114</div><div class="cell h3">118</div><div class="cell h4">122</div><div class="cell h4">126</div><div class="cell h4">130</div><div class="cell h0">—</div><div class="cell h0">—</div>'
+    +     '<div class="row-head">Q3 2024</div><div class="cell h2">100</div><div class="cell h2">102</div><div class="cell h2">106</div><div class="cell h3">110</div><div class="cell h3">115</div><div class="cell h3">119</div><div class="cell h4">124</div><div class="cell h4">128</div><div class="cell h0">—</div><div class="cell h0">—</div><div class="cell h0">—</div><div class="cell h0">—</div>'
+    +     '<div class="row-head">Q4 2024</div><div class="cell h2">100</div><div class="cell h2">103</div><div class="cell h2">107</div><div class="cell h3">112</div><div class="cell h3">117</div><div class="cell h4">122</div><div class="cell h0">—</div><div class="cell h0">—</div><div class="cell h0">—</div><div class="cell h0">—</div><div class="cell h0">—</div><div class="cell h0">—</div>'
+    +     '<div class="row-head">Q1 2025</div><div class="cell h2">100</div><div class="cell h2">104</div><div class="cell h3">109</div><div class="cell h3">114</div><div class="cell h0">—</div><div class="cell h0">—</div><div class="cell h0">—</div><div class="cell h0">—</div><div class="cell h0">—</div><div class="cell h0">—</div><div class="cell h0">—</div><div class="cell h0">—</div>'
+    +     '<div class="row-head">Q2 2025</div><div class="cell h2">100</div><div class="cell h3">106</div><div class="cell h0">—</div><div class="cell h0">—</div><div class="cell h0">—</div><div class="cell h0">—</div><div class="cell h0">—</div><div class="cell h0">—</div><div class="cell h0">—</div><div class="cell h0">—</div><div class="cell h0">—</div><div class="cell h0">—</div>'
+    +   '</div>'
+    + '</div>'
+    + '<div class="sp-sect-label">SAAS BENCHMARKS <span class="sp-sect-meta">Castford vs SaaS public market peers · scale-stage</span></div>'
+    + '<div class="iv-bench">'
+    +   '<div class="iv-bench-row head"><div>METRIC</div><div>YOU</div><div>MEDIAN</div><div>TOP QUARTILE</div></div>'
+    +   '<div class="iv-bench-row"><div>Revenue growth (YoY)</div><div class="you">+18%</div><div class="median">+22%</div><div class="top">+38%</div></div>'
+    +   '<div class="iv-bench-row"><div>Net revenue retention</div><div class="you">128%</div><div class="median">112%</div><div class="top">125%</div></div>'
+    +   '<div class="iv-bench-row"><div>Gross margin</div><div class="you">84.9%</div><div class="median">75%</div><div class="top">82%</div></div>'
+    +   '<div class="iv-bench-row"><div>Rule of 40</div><div class="you">53.2</div><div class="median">28</div><div class="top">52</div></div>'
+    +   '<div class="iv-bench-row"><div>Burn multiple</div><div class="you">0.34</div><div class="median">1.4</div><div class="top">0.5</div></div>'
+    +   '<div class="iv-bench-row"><div>CAC payback</div><div class="you">11.4 mo</div><div class="median">22 mo</div><div class="top">14 mo</div></div>'
+    + '</div>'
+    + '<div class="sp-footer-meta">Benchmarks sourced from public SaaS comps · refreshed monthly · all metrics calculated from live GL data</div>'
+    + '<div class="bottom-spacer"></div>';
+}
 
-function renderCommand(){featurePage('Command Center','Dashboard / Platform / <strong>Command Center</strong>','◎','Real-time operational command center with alerts and monitoring',[
-  {icon:'◎',iconBg:'var(--green-dim)',iconColor:'var(--green)',label:'SYSTEM STATUS',value:'100%',dir:'up',change:'↗ All systems operational',sub:'Uptime: 99.97%'},
-  {icon:'⚡',iconBg:'var(--amber-dim)',iconColor:'var(--amber)',label:'ACTIVE ALERTS',value:'3',dir:'down',change:'↘ 1 critical, 2 warning',sub:'Requires attention'},
-  {icon:'✓',iconBg:'var(--accent-dim)',iconColor:'var(--accent)',label:'AUTOMATIONS',value:'24',dir:'up',change:'↗ 18 active workflows',sub:'6 scheduled'}
-]);}
+function renderCommand(){
+  document.getElementById('breadcrumb').innerHTML='Dashboard / <strong>Command Center</strong>';
+  document.getElementById('resourcesPanel').style.display='';
+  document.getElementById('mainContent').innerHTML = ''
+    + '<div class="sp-header">'
+    +   '<div class="sp-title-block">'
+    +     '<div class="sp-eyebrow">REAL-TIME · 1 CRITICAL · 3 WARNINGS · ALL SYSTEMS NOMINAL</div>'
+    +     '<h1 class="sp-title">Command <em>center</em></h1>'
+    +   '</div>'
+    +   '<div class="sp-actions">'
+    +     '<button class="sp-btn">Alert rules</button>'
+    +     '<button class="sp-btn primary">+ New alert</button>'
+    +   '</div>'
+    + '</div>'
+    + '<div class="cc-stats">'
+    +   '<div class="cc-stat"><div class="cc-stat-icon crit">!</div><div class="cc-stat-text"><div class="cc-stat-num">1</div><div class="cc-stat-label">CRITICAL</div></div></div>'
+    +   '<div class="cc-stat"><div class="cc-stat-icon warn">⚠</div><div class="cc-stat-text"><div class="cc-stat-num">3</div><div class="cc-stat-label">WARNINGS</div></div></div>'
+    +   '<div class="cc-stat"><div class="cc-stat-icon info">i</div><div class="cc-stat-text"><div class="cc-stat-num">12</div><div class="cc-stat-label">INFO</div></div></div>'
+    +   '<div class="cc-stat"><div class="cc-stat-icon ok">✓</div><div class="cc-stat-text"><div class="cc-stat-num">99.94%</div><div class="cc-stat-label">UPTIME (30D)</div></div></div>'
+    + '</div>'
+    + '<div class="sp-sect-label">QUICK ACTIONS <span class="sp-sect-meta">One-click operations across the platform</span></div>'
+    + '<div class="cc-actions">'
+    +   '<div class="cc-action"><div class="cc-action-icon">▶</div><div class="cc-action-name">Run consolidation</div><div class="cc-action-desc">5 ENTITIES · ~14s</div></div>'
+    +   '<div class="cc-action"><div class="cc-action-icon">⊘</div><div class="cc-action-name">Trigger close</div><div class="cc-action-desc">JANUARY 2026</div></div>'
+    +   '<div class="cc-action"><div class="cc-action-icon">↻</div><div class="cc-action-name">Refresh forecast</div><div class="cc-action-desc">3 SCENARIOS</div></div>'
+    +   '<div class="cc-action"><div class="cc-action-icon">→</div><div class="cc-action-name">Send board pack</div><div class="cc-action-desc">PDF · 8 RECIPIENTS</div></div>'
+    +   '<div class="cc-action"><div class="cc-action-icon">↺</div><div class="cc-action-name">Sync all sources</div><div class="cc-action-desc">5 INTEGRATIONS</div></div>'
+    + '</div>'
+    + '<div class="sp-sect-label">ACTIVE ALERTS <span class="sp-sect-meta">Sorted by severity · auto-refresh every 30s</span></div>'
+    + '<div class="cc-alerts">'
+    +   '<div class="cc-alert critical"><div class="strip"></div><div class="cc-alert-text"><div class="cc-alert-title">Rippling integration token expired</div><div class="cc-alert-desc">HRIS sync has been failing for 14 hours · headcount data stale</div></div><div class="cc-alert-time">14h ago</div><div class="cc-alert-sev critical">Critical</div></div>'
+    +   '<div class="cc-alert warning"><div class="strip"></div><div class="cc-alert-text"><div class="cc-alert-title">G&A spend running 5.9% above plan</div><div class="cc-alert-desc">Legal and audit fees driving the variance · review with finance</div></div><div class="cc-alert-time">2h ago</div><div class="cc-alert-sev warning">Warning</div></div>'
+    +   '<div class="cc-alert warning"><div class="strip"></div><div class="cc-alert-text"><div class="cc-alert-title">2 close tasks past due</div><div class="cc-alert-desc">AR aging review and revenue cutoff adjustments behind schedule</div></div><div class="cc-alert-time">3h ago</div><div class="cc-alert-sev warning">Warning</div></div>'
+    +   '<div class="cc-alert warning"><div class="strip"></div><div class="cc-alert-text"><div class="cc-alert-title">Snowflake compute spend trending high</div><div class="cc-alert-desc">Running 6.9% above plan · $284K committed credits available</div></div><div class="cc-alert-time">5h ago</div><div class="cc-alert-sev warning">Warning</div></div>'
+    +   '<div class="cc-alert info"><div class="strip"></div><div class="cc-alert-text"><div class="cc-alert-title">Forecast model auto-refreshed</div><div class="cc-alert-desc">Base case updated with 142 new GL transactions · MAPE remains within target</div></div><div class="cc-alert-time">14m ago</div><div class="cc-alert-sev info">Info</div></div>'
+    +   '<div class="cc-alert info"><div class="strip"></div><div class="cc-alert-text"><div class="cc-alert-title">Two new enterprise expansions logged</div><div class="cc-alert-desc">Acme Corp upgraded to Business tier · Globex added 12 seats</div></div><div class="cc-alert-time">23m ago</div><div class="cc-alert-sev info">Info</div></div>'
+    + '</div>'
+    + '<div class="cc-activity">'
+    +   '<div class="cc-activity-head"><div class="cc-activity-title">Recent activity</div><div class="trend-period">Last 24 hours · 28 events</div></div>'
+    +   '<div class="cc-activity-list">'
+    +     '<div class="cc-activity-row"><span class="ts">14:32 EST</span><span><b>Sarah Chen</b> reconciled the Stripe payout for January 2026</span></div>'
+    +     '<div class="cc-activity-row"><span class="ts">14:18 EST</span><span><b>Auto-sync</b> pulled 142 new transactions from NetSuite</span></div>'
+    +     '<div class="cc-activity-row"><span class="ts">13:45 EST</span><span><b>Jordan Martinez</b> completed depreciation entries for Q4</span></div>'
+    +     '<div class="cc-activity-row"><span class="ts">13:12 EST</span><span><b>Malik Frazier</b> created the Q4 board scenario</span></div>'
+    +     '<div class="cc-activity-row"><span class="ts">12:48 EST</span><span><b>Forecast engine</b> regenerated base case with updated drivers</span></div>'
+    +     '<div class="cc-activity-row"><span class="ts">11:30 EST</span><span><b>Riley Patel</b> opened the AI Copilot session about COGS variance</span></div>'
+    +     '<div class="cc-activity-row"><span class="ts">10:15 EST</span><span><b>System</b> sent monthly close reminder to 4 contributors</span></div>'
+    +   '</div>'
+    + '</div>'
+    + '<div class="sp-footer-meta">Real-time monitoring active · alerts checked every 30 seconds · 28 events in last 24h</div>'
+    + '<div class="bottom-spacer"></div>';
+}
 
-function renderIntelligence(){featurePage('Intelligence','Dashboard / Platform / <strong>Intelligence</strong>','◇','AI-driven insights, anomaly detection, and predictive analytics',[
-  {icon:'◇',iconBg:'var(--purple-dim)',iconColor:'var(--purple)',label:'INSIGHTS THIS WEEK',value:'34',dir:'up',change:'↗ 8 actionable',sub:'Auto-generated'},
-  {icon:'⚡',iconBg:'var(--red-dim)',iconColor:'var(--red)',label:'ANOMALIES DETECTED',value:'5',dir:'down',change:'↘ 2 require review',sub:'Revenue + COGS'},
-  {icon:'◎',iconBg:'var(--green-dim)',iconColor:'var(--green)',label:'PREDICTION ACCURACY',value:'94.8%',dir:'up',change:'↗ +2.1% this quarter',sub:'ML model v3.2'}
-]);}
+function renderIntelligence(){
+  document.getElementById('breadcrumb').innerHTML='Dashboard / <strong>Intelligence</strong>';
+  document.getElementById('resourcesPanel').style.display='';
+  document.getElementById('mainContent').innerHTML = ''
+    + '<div class="sp-header">'
+    +   '<div class="sp-title-block">'
+    +     '<div class="sp-eyebrow">AI ANALYSIS · 6 INSIGHTS · GENERATED 14 MIN AGO</div>'
+    +     '<h1 class="sp-title">Financial <em>intelligence</em></h1>'
+    +   '</div>'
+    +   '<div class="sp-actions">'
+    +     '<button class="sp-btn">View archive</button>'
+    +     '<button class="sp-btn primary">Run new analysis</button>'
+    +   '</div>'
+    + '</div>'
+    + '<div class="sp-sect-label">AI-GENERATED INSIGHTS <span class="sp-sect-meta">6 surfaced this session · 4 high priority</span></div>'
+    + '<div class="it-insights">'
+    +   '<div class="it-card high">'
+    +     '<div class="it-card-head"><div class="it-card-tag high">HIGH PRIORITY</div><div class="it-card-conf">CONFIDENCE: 94%</div></div>'
+    +     '<h3>Snowflake credit pool unused — $78K savings opportunity</h3>'
+    +     '<p>Your annual Snowflake commit has $284K of unused credits expiring at fiscal year-end. Routing analytical queries from the standard warehouse to your committed warehouse would save approximately $78K through year-end without any service disruption.</p>'
+    +     '<div class="it-card-impact"><div class="it-card-impact-label">PROJECTED IMPACT</div><div class="it-card-impact-val up">+$78K savings</div></div>'
+    +   '</div>'
+    +   '<div class="it-card high">'
+    +     '<div class="it-card-head"><div class="it-card-tag high">HIGH PRIORITY</div><div class="it-card-conf">CONFIDENCE: 91%</div></div>'
+    +     '<h3>Enterprise expansion velocity accelerating</h3>'
+    +     '<p>Mid-market customers are upgrading to higher tiers at 2.4x the historical rate. If the trend continues, FY26 expansion ARR will exceed plan by $4.2M. Recommend reallocating customer success capacity toward this segment to accelerate the pattern.</p>'
+    +     '<div class="it-card-impact"><div class="it-card-impact-label">PROJECTED IMPACT</div><div class="it-card-impact-val up">+$4.2M ARR upside</div></div>'
+    +   '</div>'
+    +   '<div class="it-card medium">'
+    +     '<div class="it-card-head"><div class="it-card-tag medium">MEDIUM</div><div class="it-card-conf">CONFIDENCE: 86%</div></div>'
+    +     '<h3>G&A trending toward FY26 budget overage</h3>'
+    +     '<p>Q4 G&A came in 5.9% above plan, driven by legal and audit fees. Pattern suggests structural rather than one-time, projecting an FY26 overage of approximately $720K if uncorrected. Q1 expense review recommended.</p>'
+    +     '<div class="it-card-impact"><div class="it-card-impact-label">PROJECTED IMPACT</div><div class="it-card-impact-val down">−$720K vs plan</div></div>'
+    +   '</div>'
+    +   '<div class="it-card medium">'
+    +     '<div class="it-card-head"><div class="it-card-tag medium">MEDIUM</div><div class="it-card-conf">CONFIDENCE: 82%</div></div>'
+    +     '<h3>Sales cycle lengthening in mid-market segment</h3>'
+    +     '<p>Average sales cycle for $50K–$200K ACV deals extended from 38 to 48 days over the last quarter. Lead conversion stable, but revenue recognition timing will shift. Q1 ARR may show ~$340K timing variance.</p>'
+    +     '<div class="it-card-impact"><div class="it-card-impact-label">PROJECTED IMPACT</div><div class="it-card-impact-val down">−$340K Q1 timing</div></div>'
+    +   '</div>'
+    +   '<div class="it-card routine">'
+    +     '<div class="it-card-head"><div class="it-card-tag routine">ROUTINE</div><div class="it-card-conf">CONFIDENCE: 78%</div></div>'
+    +     '<h3>FX exposure increasing as EMEA grows</h3>'
+    +     '<p>EMEA revenue is now 18% of total, up from 12% YoY. EUR exposure has grown from $3.8M to $5.4M. Consider FX hedging for FY26 to lock in current rates given dollar volatility expectations.</p>'
+    +     '<div class="it-card-impact"><div class="it-card-impact-label">EXPOSURE</div><div class="it-card-impact-val">€5.0M unhedged</div></div>'
+    +   '</div>'
+    +   '<div class="it-card routine">'
+    +     '<div class="it-card-head"><div class="it-card-tag routine">ROUTINE</div><div class="it-card-conf">CONFIDENCE: 73%</div></div>'
+    +     '<h3>Customer concentration risk improving</h3>'
+    +     '<p>Top 10 customer concentration dropped from 38% to 31% of ARR over the last 12 months. Healthy diversification trend. No immediate action required, but worth highlighting in board materials as a positive signal.</p>'
+    +     '<div class="it-card-impact"><div class="it-card-impact-label">RISK CHANGE</div><div class="it-card-impact-val up">−7 pts (favorable)</div></div>'
+    +   '</div>'
+    + '</div>'
+    + '<div class="sp-sect-label">DETECTED ANOMALIES <span class="sp-sect-meta">Statistical outliers · 2σ from rolling baseline</span></div>'
+    + '<table class="it-anomalies">'
+    +   '<thead><tr><th>METRIC</th><th>OBSERVED</th><th>EXPECTED</th><th>DEVIATION</th><th>SEVERITY</th></tr></thead>'
+    +   '<tbody>'
+    +     '<tr><td>Snowflake compute spend (March)</td><td class="num">$3.42M</td><td class="num">$3.20M</td><td class="num deviation up">+6.9%</td><td><span class="severity high">High</span></td></tr>'
+    +     '<tr><td>Q4 G&A legal fees</td><td class="num">$1.21M</td><td class="num">$0.98M</td><td class="num deviation up">+23.5%</td><td><span class="severity high">High</span></td></tr>'
+    +     '<tr><td>Mid-market sales cycle (avg days)</td><td class="num">48</td><td class="num">38</td><td class="num deviation up">+26.3%</td><td><span class="severity med">Medium</span></td></tr>'
+    +     '<tr><td>EMEA revenue mix</td><td class="num">18%</td><td class="num">14%</td><td class="num deviation up">+4 pts</td><td><span class="severity med">Medium</span></td></tr>'
+    +     '<tr><td>Top 10 customer concentration</td><td class="num">31%</td><td class="num">38%</td><td class="num deviation down">−18.4%</td><td><span class="severity low">Low</span></td></tr>'
+    +     '<tr><td>Subscription expansion rate</td><td class="num">122%</td><td class="num">115%</td><td class="num deviation down">+6.1%</td><td><span class="severity low">Low</span></td></tr>'
+    +   '</tbody>'
+    + '</table>'
+    + '<div class="sp-sect-label">QUARTERLY NARRATIVE <span class="sp-sect-meta">Auto-generated synthesis · ready for board materials</span></div>'
+    + '<div class="it-narrative">'
+    +   '<div class="it-narrative-head"><div class="it-narrative-icon">AI</div><div class="it-narrative-title">Why Q4 2025 outperformed</div></div>'
+    +   '<p>Q4 2025 closed <b>$2.1M above plan</b>, driven primarily by stronger-than-expected expansion within the mid-market segment. Subscription revenue from existing customers grew <b>22% sequentially</b>, with three Tier 2 accounts upgrading to Enterprise mid-quarter. This translated to net revenue retention of <b>128%</b>, placing Castford in the top decile of public SaaS peers at this scale.</p>'
+    +   '<p>The expansion outperformance more than offset modest pressure on the cost side. <span class="gold">Hosting infrastructure and G&A both came in 6–7% above plan</span>, but improved gross margin from product mix shifts kept overall EBITDA margin within budget. The combination of <b>+18% revenue growth</b> and <b>9.2% net margin</b> produces a Rule of 40 score of <b>53.2</b> — the strongest quarter in the company\'s history.</p>'
+    +   '<p>Looking forward, the dominant signal is <b>velocity in expansion</b>: if mid-market upgrade activity continues at current pace, FY26 ARR could exceed plan by $4–5M without additional new logo acceleration. The recommended action is reallocating customer success capacity toward the mid-market segment to compound the trend.</p>'
+    + '</div>'
+    + '<div class="sp-footer-meta">All insights generated by Castford AI · grounded in 3,142 GL transactions · powered by claude-opus-4</div>'
+    + '<div class="bottom-spacer"></div>';
+}
 
 // Admin tab switcher
 function switchAdminTab(btn){
