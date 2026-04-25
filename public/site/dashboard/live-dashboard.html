@@ -1562,28 +1562,340 @@ function renderCopilot(){
     + '<div class="bottom-spacer"></div>';
 }
 
+// ── P&L STATEMENT ──────────────────────────────────────────
+// Phase 2B-1: wired to pl_summary view via CastfordData.getPnlSummary()
+// Falls back to demo numbers if (a) data layer not loaded, (b) demo mode, (c) zero rows returned.
+
+var _pnlPeriodKey = 'fy-ytd'; // 'fy-ytd' | 'q4' | 'last-12'
+var _pnlCurrency  = 'USD';
+
 function renderPnl(){
   document.getElementById('breadcrumb').innerHTML='Dashboard / <strong>P&L Statement</strong>';
   document.getElementById('resourcesPanel').style.display='';
-  document.getElementById('mainContent').innerHTML = ''
+
+  // Step 1: paint shell + loading state immediately (perceived perf)
+  document.getElementById('mainContent').innerHTML = pnlShellHTML(true);
+
+  // Step 2: kick off async data fetch
+  loadPnlAndRender();
+}
+
+function pnlShellHTML(loading){
+  var eyebrow = 'FINANCIAL · ' + pnlPeriodLabel(_pnlPeriodKey).toUpperCase();
+  return ''
     + '<div class="sp-header">'
     +   '<div class="sp-title-block">'
-    +     '<div class="sp-eyebrow">FINANCIAL · FY2025 YTD</div>'
+    +     '<div class="sp-eyebrow" id="pnlEyebrow">' + eyebrow + '</div>'
     +     '<h1 class="sp-title">P&L <em>Statement</em></h1>'
     +   '</div>'
     +   '<div class="sp-actions">'
-    +     '<select class="sp-select"><option>FY2025 YTD</option><option>Q4 2025</option><option>Last 12 months</option><option>Custom range</option></select>'
+    +     '<select class="sp-select" id="pnlPeriodSelect" onchange="onPnlPeriodChange(this.value)">'
+    +       '<option value="fy-ytd"' + (_pnlPeriodKey==='fy-ytd'?' selected':'') + '>FY YTD</option>'
+    +       '<option value="q4"' + (_pnlPeriodKey==='q4'?' selected':'') + '>Q4</option>'
+    +       '<option value="last-12"' + (_pnlPeriodKey==='last-12'?' selected':'') + '>Last 12 months</option>'
+    +       '<option value="all">All available</option>'
+    +     '</select>'
     +     '<button class="sp-btn">Export PDF</button>'
     +     '<button class="sp-btn primary" onclick="showView(\'copilot\',null)">Ask Copilot →</button>'
     +   '</div>'
     + '</div>'
-    + '<div class="sp-summary">'
-    +   '<div class="sp-sum"><div class="sp-sum-label">REVENUE</div><div class="sp-sum-value">$55.0M</div><div class="sp-sum-delta">↗ +$2.09M vs budget</div></div>'
-    +   '<div class="sp-sum"><div class="sp-sum-label">GROSS PROFIT</div><div class="sp-sum-value">$46.7M</div><div class="sp-sum-delta">↗ 84.9% margin</div></div>'
-    +   '<div class="sp-sum"><div class="sp-sum-label">OPERATING EXPENSES</div><div class="sp-sum-value">$41.7M</div><div class="sp-sum-delta down">↘ 75.8% of revenue</div></div>'
-    +   '<div class="sp-sum"><div class="sp-sum-label">NET INCOME</div><div class="sp-sum-value">$5.1M</div><div class="sp-sum-delta">↗ 9.2% margin</div></div>'
+    + '<div class="sp-summary" id="pnlSummary">' + (loading ? pnlSummarySkeleton() : '') + '</div>'
+    + '<div class="sp-sect-label">INCOME STATEMENT <span class="sp-sect-meta" id="pnlSectMeta">' + (loading ? 'Loading…' : 'Click any section to expand · all amounts in USD') + '</span></div>'
+    + '<div id="pnlTableWrap">' + (loading ? pnlTableSkeleton() : '') + '</div>'
+    + '<div class="sp-sect-label">VARIANCE HIGHLIGHTS <span class="sp-sect-meta">AI-detected · top 3 by impact</span></div>'
+    + '<div class="pnl-variance-grid" id="pnlVarianceGrid">' + (loading ? '' : '') + '</div>'
+    + '<div class="trend-card" id="pnlTrendCard"></div>'
+    + '<div class="sp-footer-meta" id="pnlFooterMeta">Loading P&amp;L data…</div>'
+    + '<div class="bottom-spacer"></div>';
+}
+
+function pnlSummarySkeleton(){
+  var tile = '<div class="sp-sum"><div class="sp-sum-label">—</div><div class="sp-sum-value" style="opacity:.4">···</div><div class="sp-sum-delta">Loading</div></div>';
+  return tile + tile + tile + tile;
+}
+
+function pnlTableSkeleton(){
+  return '<div style="padding:48px 0;text-align:center;color:var(--text-muted);font-family:\'Geist Mono\',monospace;font-size:11px;letter-spacing:1px">FETCHING P&amp;L DATA · pl_summary view</div>';
+}
+
+function pnlPeriodLabel(key){
+  var now = new Date(); var y = now.getFullYear();
+  if (key === 'fy-ytd')   return 'FY' + y + ' YTD';
+  if (key === 'q4')       return 'Q4 ' + y;
+  if (key === 'last-12')  return 'Last 12 months';
+  return 'All available data';
+}
+
+function onPnlPeriodChange(val){
+  _pnlPeriodKey = val;
+  document.getElementById('pnlEyebrow').textContent = 'FINANCIAL · ' + pnlPeriodLabel(val).toUpperCase();
+  document.getElementById('pnlSummary').innerHTML = pnlSummarySkeleton();
+  document.getElementById('pnlTableWrap').innerHTML = pnlTableSkeleton();
+  document.getElementById('pnlSectMeta').textContent = 'Loading…';
+  loadPnlAndRender();
+}
+
+async function loadPnlAndRender(){
+  // No data layer? render demo (graceful degrade)
+  if (!window.CastfordData) {
+    renderPnlDemo('Data layer not loaded — showing demo data');
+    return;
+  }
+  try {
+    if (!window.CastfordData.isInitialized()) {
+      await window.CastfordData.init();
+    }
+  } catch (e) {
+    console.warn('CastfordData init failed:', e);
+    renderPnlDemo('Data layer init failed — showing demo data');
+    return;
+  }
+
+  if (window.CastfordData.isDemoMode()) {
+    renderPnlDemo('Demo mode active — connect your GL to see real numbers');
+    return;
+  }
+
+  var range = window.CastfordData.getCurrentPeriodRange(_pnlPeriodKey);
+  var rows = await window.CastfordData.getPnlSummary({
+    startPeriod: range.startPeriod,
+    endPeriod: range.endPeriod,
+    currency: _pnlCurrency
+  });
+
+  if (!rows || rows.length === 0) {
+    // No data for selected range — try widening to 'all'
+    var allRows = await window.CastfordData.getPnlSummary({ currency: _pnlCurrency });
+    if (!allRows || allRows.length === 0) {
+      renderPnlDemo('No P&L data for org · showing demo data');
+      return;
+    }
+    renderPnlReal(allRows, 'No data in selected period · showing all available');
+    return;
+  }
+
+  renderPnlReal(rows, null);
+}
+
+// ── Transformer: pl_summary rows → income statement structure ──
+function transformPnlRows(rows){
+  // Aggregate by account_type, then by account_name (line item label)
+  // pl_summary columns: period, account_type, account_name, account_subtype, actual, budget, variance, segment, currency
+  var typeBuckets = {}; // { 'revenue': { totalActual, totalBudget, items: { 'Subscription': { actual, budget } } } }
+
+  rows.forEach(function(r){
+    var t = (r.account_type || 'unknown').toLowerCase();
+    var name = r.account_name || 'Uncategorized';
+    if (!typeBuckets[t]) typeBuckets[t] = { totalActual: 0, totalBudget: 0, items: {} };
+    if (!typeBuckets[t].items[name]) typeBuckets[t].items[name] = { actual: 0, budget: 0 };
+    typeBuckets[t].items[name].actual += Number(r.actual) || 0;
+    typeBuckets[t].items[name].budget += Number(r.budget) || 0;
+    typeBuckets[t].totalActual       += Number(r.actual) || 0;
+    typeBuckets[t].totalBudget       += Number(r.budget) || 0;
+  });
+
+  // Map account_type variants to our 3 buckets (revenue, cogs, opex) + other
+  var rev   = typeBuckets['revenue'] || typeBuckets['income'] || { totalActual:0, totalBudget:0, items:{} };
+  var cogs  = typeBuckets['cogs'] || typeBuckets['cost_of_revenue'] || typeBuckets['cost_of_goods_sold'] || { totalActual:0, totalBudget:0, items:{} };
+  var opex  = typeBuckets['expense'] || typeBuckets['operating_expense'] || typeBuckets['opex'] || { totalActual:0, totalBudget:0, items:{} };
+  var other = typeBuckets['other_income'] || typeBuckets['other_expense'] || { totalActual:0, totalBudget:0, items:{} };
+
+  var grossActual  = rev.totalActual - cogs.totalActual;
+  var grossBudget  = rev.totalBudget - cogs.totalBudget;
+  var ebitdaActual = grossActual - opex.totalActual;
+  var ebitdaBudget = grossBudget - opex.totalBudget;
+  var netActual    = ebitdaActual + other.totalActual;
+  var netBudget    = ebitdaBudget + other.totalBudget;
+
+  return {
+    revenue: rev, cogs: cogs, opex: opex, other: other,
+    gross: { actual: grossActual, budget: grossBudget },
+    grossMargin: rev.totalActual ? (grossActual / rev.totalActual * 100) : 0,
+    grossMarginBudget: rev.totalBudget ? (grossBudget / rev.totalBudget * 100) : 0,
+    ebitda: { actual: ebitdaActual, budget: ebitdaBudget },
+    netIncome: { actual: netActual, budget: netBudget },
+    netMargin: rev.totalActual ? (netActual / rev.totalActual * 100) : 0,
+    rowCount: rows.length
+  };
+}
+
+function renderPnlReal(rows, banner){
+  var pnl = transformPnlRows(rows);
+  var fmt = window.CastfordData.formatCurrency;
+  var fmtCompact = function(v){ return fmt(v, { compact: true }); };
+
+  // Summary tiles
+  var revVar = pnl.revenue.totalActual - pnl.revenue.totalBudget;
+  var opexVar = pnl.opex.totalActual - pnl.opex.totalBudget;
+  document.getElementById('pnlSummary').innerHTML = ''
+    + sumTile('REVENUE', fmtCompact(pnl.revenue.totalActual), (revVar >= 0 ? '↗ +' : '↘ ') + fmt(Math.abs(revVar), {compact:true}) + ' vs budget', revVar >= 0)
+    + sumTile('GROSS PROFIT', fmtCompact(pnl.gross.actual), '↗ ' + pnl.grossMargin.toFixed(1) + '% margin', pnl.gross.actual >= 0)
+    + sumTile('OPERATING EXPENSES', fmtCompact(pnl.opex.totalActual), (opexVar <= 0 ? '↗ ' : '↘ ') + (pnl.revenue.totalActual ? (pnl.opex.totalActual / pnl.revenue.totalActual * 100).toFixed(1) : '0') + '% of revenue', opexVar <= 0)
+    + sumTile('NET INCOME', fmtCompact(pnl.netIncome.actual), (pnl.netIncome.actual >= 0 ? '↗ ' : '↘ ') + pnl.netMargin.toFixed(1) + '% margin', pnl.netIncome.actual >= 0);
+
+  // Income statement table
+  document.getElementById('pnlTableWrap').innerHTML = renderIncomeStatementTable(pnl);
+  document.getElementById('pnlSectMeta').textContent = 'Click any section to expand · all amounts in ' + _pnlCurrency;
+
+  // Variance highlights (top 3 by absolute variance from data)
+  document.getElementById('pnlVarianceGrid').innerHTML = renderVarianceHighlights(pnl);
+
+  // 12-month trend (placeholder — Phase 2B-3 will compute from monthly rev rollup)
+  document.getElementById('pnlTrendCard').innerHTML = renderRevenueTrendCard();
+
+  // Footer
+  var orgId = window.CastfordData.getOrgId() || '—';
+  document.getElementById('pnlFooterMeta').innerHTML = 'Source: pl_summary view · ' + pnl.rowCount + ' rows · org ' + orgId.substring(0,8) + '…' + (banner ? ' · <span style="color:var(--accent-gold)">' + banner + '</span>' : '');
+}
+
+function sumTile(label, value, delta, positive){
+  var deltaClass = positive ? '' : ' class="down"';
+  return '<div class="sp-sum"><div class="sp-sum-label">' + label + '</div><div class="sp-sum-value">' + value + '</div><div class="sp-sum-delta"' + deltaClass + '>' + delta + '</div></div>';
+}
+
+function renderIncomeStatementTable(pnl){
+  var fmt = window.CastfordData.formatCurrency;
+  var H = '<table class="pnl-table"><thead><tr><th>LINE ITEM</th><th>ACTUAL</th><th>BUDGET</th><th>VARIANCE</th><th>VAR %</th></tr></thead><tbody>';
+
+  // Revenue section
+  H += sectionRow('rev', 'Revenue', pnl.revenue.totalActual, pnl.revenue.totalBudget, true);
+  H += lineItems('rev', pnl.revenue.items, true);
+
+  // COGS section
+  H += sectionRow('cogs', 'Cost of Revenue', pnl.cogs.totalActual, pnl.cogs.totalBudget, false);
+  H += lineItems('cogs', pnl.cogs.items, false);
+
+  // Gross Profit + Margin subtotals
+  H += subtotalRow('Gross Profit', pnl.gross.actual, pnl.gross.budget, true);
+  H += subtotalRow('Gross Margin %', pnl.grossMargin.toFixed(1) + '%', pnl.grossMarginBudget.toFixed(1) + '%', null, true);
+
+  // OpEx section
+  H += sectionRow('opex', 'Operating Expenses', pnl.opex.totalActual, pnl.opex.totalBudget, false);
+  H += lineItems('opex', pnl.opex.items, false);
+
+  // EBITDA
+  H += subtotalRow('EBITDA', pnl.ebitda.actual, pnl.ebitda.budget, true);
+
+  // Other I/E
+  if (pnl.other.totalActual !== 0 || pnl.other.totalBudget !== 0) {
+    H += '<tr><td>Other Income / (Expense)</td><td class="num">' + fmt(pnl.other.totalActual) + '</td><td class="num">' + fmt(pnl.other.totalBudget) + '</td>' + varianceCells(pnl.other.totalActual - pnl.other.totalBudget, pnl.other.totalBudget, true) + '</tr>';
+  }
+
+  // Net Income
+  H += '<tr class="total-row"><td>Net Income</td><td class="num">' + fmt(pnl.netIncome.actual) + '</td><td class="num">' + fmt(pnl.netIncome.budget) + '</td>' + varianceCells(pnl.netIncome.actual - pnl.netIncome.budget, pnl.netIncome.budget, true) + '</tr>';
+
+  H += '</tbody></table>';
+  return H;
+}
+
+function sectionRow(key, label, actual, budget, isRevenue){
+  var fmt = window.CastfordData.formatCurrency;
+  var v = actual - budget;
+  // For revenue, positive variance (over budget) is good. For costs, negative variance (under budget) is good.
+  var positive = isRevenue ? (v >= 0) : (v <= 0);
+  return '<tr class="section-row" onclick="togglePnlSection(this)" data-section="' + key + '">'
+    + '<td><span class="arrow">▶</span>' + label + '</td>'
+    + '<td class="num">' + fmt(actual) + '</td>'
+    + '<td class="num">' + fmt(budget) + '</td>'
+    + varianceCells(v, budget, positive)
+    + '</tr>';
+}
+
+function lineItems(parentKey, items, isRevenue){
+  var fmt = window.CastfordData.formatCurrency;
+  var H = '';
+  Object.keys(items).forEach(function(name){
+    var item = items[name];
+    var v = item.actual - item.budget;
+    var positive = isRevenue ? (v >= 0) : (v <= 0);
+    H += '<tr class="line-row" data-parent="' + parentKey + '">'
+      + '<td>' + name + '</td>'
+      + '<td class="num">' + fmt(item.actual) + '</td>'
+      + '<td class="num">' + fmt(item.budget) + '</td>'
+      + varianceCells(v, item.budget, positive)
+      + '</tr>';
+  });
+  return H;
+}
+
+function subtotalRow(label, actual, budget, positiveIfHigher, isString){
+  var fmt = window.CastfordData.formatCurrency;
+  if (isString) {
+    return '<tr class="subtotal-row"><td>' + label + '</td><td class="num">' + actual + '</td><td class="num">' + budget + '</td><td class="num"></td><td class="num"></td></tr>';
+  }
+  var v = actual - budget;
+  var positive = positiveIfHigher ? (v >= 0) : (v <= 0);
+  return '<tr class="subtotal-row"><td>' + label + '</td><td class="num">' + fmt(actual) + '</td><td class="num">' + fmt(budget) + '</td>' + varianceCells(v, budget, positive) + '</tr>';
+}
+
+function varianceCells(v, budget, positive){
+  var fmt = window.CastfordData.formatCurrency;
+  var cls = (v === 0) ? '' : (positive ? 'var-pos' : 'var-neg');
+  var sign = v > 0 ? '+' : (v < 0 ? '−' : '');
+  var pct = budget ? Math.abs(v / budget * 100).toFixed(1) : '0.0';
+  return '<td class="num ' + cls + '">' + sign + fmt(Math.abs(v)) + '</td>'
+       + '<td class="num ' + cls + '">' + sign + pct + '%</td>';
+}
+
+function renderVarianceHighlights(pnl){
+  // Find top 3 line items by absolute variance impact across all sections
+  var all = [];
+  ['revenue','cogs','opex'].forEach(function(section){
+    var items = pnl[section].items;
+    var isRev = section === 'revenue';
+    Object.keys(items).forEach(function(name){
+      var item = items[name];
+      var v = item.actual - item.budget;
+      all.push({
+        section: section,
+        name: name,
+        variance: v,
+        absVariance: Math.abs(v),
+        favorable: isRev ? (v >= 0) : (v <= 0),
+        budget: item.budget
+      });
+    });
+  });
+  all.sort(function(a,b){ return b.absVariance - a.absVariance; });
+  var top3 = all.slice(0, 3);
+  if (top3.length === 0) {
+    return '<div class="var-card" style="grid-column:1/-1;text-align:center;padding:32px"><p style="color:var(--text-muted)">No variance data available for this period.</p></div>';
+  }
+  var fmt = window.CastfordData.formatCurrency;
+  return top3.map(function(item){
+    var label = item.favorable ? (item.section === 'revenue' ? 'REVENUE BEAT' : 'COST UNDER') : (item.section === 'revenue' ? 'REVENUE MISS' : 'COST OVERRUN');
+    var amountClass = item.favorable ? 'up' : 'down';
+    var amountSign = item.favorable ? '+' : '−';
+    var qualifier = item.favorable ? 'favorable' : 'unfavorable';
+    var direction = item.variance > 0 ? 'above' : 'below';
+    return '<div class="var-card">'
+      + '<div class="var-card-label">' + label + '</div>'
+      + '<h4>' + item.name + '</h4>'
+      + '<p>' + item.name + ' came in ' + fmt(Math.abs(item.variance), {compact:true}) + ' ' + direction + ' plan'
+      + (item.budget ? ' (' + (Math.abs(item.variance / item.budget) * 100).toFixed(1) + '% variance)' : '') + '.</p>'
+      + '<div class="var-amount ' + amountClass + '">' + amountSign + fmt(item.absVariance, {compact:true}) + ' ' + qualifier + '</div>'
+      + '</div>';
+  }).join('');
+}
+
+function renderRevenueTrendCard(){
+  // Placeholder bars; Phase 2B-3 will compute from monthly rollup
+  return '<div class="trend-head"><div class="trend-title">12-month revenue trend</div><div class="trend-period">Real-time computation queued · Phase 2B-3</div></div>'
+    + '<div class="trend-bars">'
+    + [40,48,52,60,58,66,72,78,84,80,92,96].map(function(h){return '<div class="bar" style="height:'+h+'%;"></div>';}).join('')
     + '</div>'
-    + '<div class="sp-sect-label">INCOME STATEMENT <span class="sp-sect-meta">Click any section to expand · all amounts in USD</span></div>'
+    + '<div class="trend-labels"><span>Feb</span><span>Mar</span><span>Apr</span><span>May</span><span>Jun</span><span>Jul</span><span>Aug</span><span>Sep</span><span>Oct</span><span>Nov</span><span>Dec</span><span>Jan</span></div>';
+}
+
+// ── Demo fallback ──
+function renderPnlDemo(banner){
+  document.getElementById('pnlSummary').innerHTML = ''
+    + '<div class="sp-sum"><div class="sp-sum-label">REVENUE</div><div class="sp-sum-value">$55.0M</div><div class="sp-sum-delta">↗ +$2.09M vs budget</div></div>'
+    + '<div class="sp-sum"><div class="sp-sum-label">GROSS PROFIT</div><div class="sp-sum-value">$46.7M</div><div class="sp-sum-delta">↗ 84.9% margin</div></div>'
+    + '<div class="sp-sum"><div class="sp-sum-label">OPERATING EXPENSES</div><div class="sp-sum-value">$41.7M</div><div class="sp-sum-delta down">↘ 75.8% of revenue</div></div>'
+    + '<div class="sp-sum"><div class="sp-sum-label">NET INCOME</div><div class="sp-sum-value">$5.1M</div><div class="sp-sum-delta">↗ 9.2% margin</div></div>';
+
+  document.getElementById('pnlTableWrap').innerHTML = ''
     + '<table class="pnl-table">'
     +   '<thead><tr><th>LINE ITEM</th><th>ACTUAL</th><th>BUDGET</th><th>VARIANCE</th><th>VAR %</th></tr></thead>'
     +   '<tbody>'
@@ -1605,22 +1917,22 @@ function renderPnl(){
     +     '<tr><td>Other Income / (Expense)</td><td class="num">$62,550</td><td class="num">$68,000</td><td class="num var-neg">−$5,450</td><td class="num var-neg">−8.0%</td></tr>'
     +     '<tr class="total-row"><td>Net Income</td><td class="num">$5,100,000</td><td class="num">$4,800,000</td><td class="num">+$300,000</td><td class="num">+6.3%</td></tr>'
     +   '</tbody>'
-    + '</table>'
-    + '<div class="sp-sect-label">VARIANCE HIGHLIGHTS <span class="sp-sect-meta">AI-detected · top 3 by impact</span></div>'
-    + '<div class="pnl-variance-grid">'
+    + '</table>';
+
+  document.getElementById('pnlSectMeta').textContent = 'Click any section to expand · all amounts in USD';
+  document.getElementById('pnlVarianceGrid').innerHTML = ''
     +   '<div class="var-card"><div class="var-card-label">REVENUE BEAT</div><h4>Subscription expansion outperformed</h4><p>Strong upgrade activity from mid-market customers drove $1.71M above plan, primarily Q4 expansions to higher tiers.</p><div class="var-amount up">+$1.71M favorable</div></div>'
     +   '<div class="var-card"><div class="var-card-label">COST PRESSURE</div><h4>Hosting costs accelerating</h4><p>Snowflake compute and AWS spend running 6.9% above plan due to higher query volume from new enterprise accounts.</p><div class="var-amount down">−$220K unfavorable</div></div>'
-    +   '<div class="var-card"><div class="var-card-label">G&A WATCH</div><h4>Legal and audit fees elevated</h4><p>Security audit and contract renegotiations pushed G&A 5.9% above plan. Expected to normalize in Q1.</p><div class="var-amount down">−$502K unfavorable</div></div>'
-    + '</div>'
-    + '<div class="trend-card">'
+    +   '<div class="var-card"><div class="var-card-label">G&A WATCH</div><h4>Legal and audit fees elevated</h4><p>Security audit and contract renegotiations pushed G&A 5.9% above plan. Expected to normalize in Q1.</p><div class="var-amount down">−$502K unfavorable</div></div>';
+
+  document.getElementById('pnlTrendCard').innerHTML = ''
     +   '<div class="trend-head"><div class="trend-title">12-month revenue trend</div><div class="trend-period">Feb 2025 → Jan 2026 · monthly</div></div>'
     +   '<div class="trend-bars">'
     +     [40,48,52,60,58,66,72,78,84,80,92,96].map(function(h){return '<div class="bar" style="height:'+h+'%;"></div>';}).join('')
     +   '</div>'
-    +   '<div class="trend-labels"><span>Feb</span><span>Mar</span><span>Apr</span><span>May</span><span>Jun</span><span>Jul</span><span>Aug</span><span>Sep</span><span>Oct</span><span>Nov</span><span>Dec</span><span>Jan</span></div>'
-    + '</div>'
-    + '<div class="sp-footer-meta">GL data sourced from NetSuite · last sync 53 seconds ago · 162 transactions in period · 18 GL accounts</div>'
-    + '<div class="bottom-spacer"></div>';
+    +   '<div class="trend-labels"><span>Feb</span><span>Mar</span><span>Apr</span><span>May</span><span>Jun</span><span>Jul</span><span>Aug</span><span>Sep</span><span>Oct</span><span>Nov</span><span>Dec</span><span>Jan</span></div>';
+
+  document.getElementById('pnlFooterMeta').innerHTML = 'GL data sourced from NetSuite · last sync 53 seconds ago · 162 transactions in period · 18 GL accounts' + (banner ? ' · <span style="color:var(--accent-gold)">' + banner + '</span>' : '');
 }
 
 function togglePnlSection(rowEl){
@@ -2227,6 +2539,25 @@ renderDashboard();
     h.dataset.theme = h.dataset.theme === 'day' ? 'night' : 'day';
     localStorage.setItem('cf-theme', h.dataset.theme);
   });
+})();
+
+// Phase 2B-1: Bootstrap CastfordData layer once auth is ready.
+// auth-guard.js dispatches 'fos:auth' when session is confirmed.
+// We init CastfordData on that event, OR on DOMContentLoaded fallback.
+(function(){
+  var booted = false;
+  function boot(){
+    if (booted) return;
+    booted = true;
+    if (window.CastfordData && typeof window.CastfordData.init === 'function') {
+      window.CastfordData.init().catch(function(e){
+        console.warn('CastfordData init error:', e);
+      });
+    }
+  }
+  window.addEventListener('fos:auth', boot);
+  // Fallback: if no auth event fires within 1.5s, boot anyway (demo mode will trigger)
+  setTimeout(boot, 1500);
 })();
 </script>
 </body>

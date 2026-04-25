@@ -1,13 +1,17 @@
-/* Castford Dashboard Data Layer v1
+/* Castford Dashboard Data Layer v1.1
    Bi-directional enterprise data module for all dashboard pages.
-   READ: Pull real GL data from Supabase (accounts, transactions, budgets)
+   READ: Pull real GL data from Supabase (accounts, transactions, budgets, P&L)
    WRITE: Create/update budgets, log transactions, update forecasts
    DEMO: Auto-detects when no real data exists and shows demo badge
-   
+
+   v1.1 changes (Phase 2B-1):
+     - Added getPnlSummary(opts) to query pre-computed pl_summary view
+     - Added formatCurrency helper for consistent rendering across pages
+     - Added getCurrentPeriodRange helper (FY YTD calculation)
+
    Usage: <script src="/site/dashboard-data.js"></script>
    Then: const cd = await CastfordData.init();
-         const revenue = await cd.getRevenue();
-         await cd.createBudget({...});
+         const pnl = await cd.getPnlSummary({ startPeriod: '2025-01', endPeriod: '2025-12' });
 */
 
 window.CastfordData = (function() {
@@ -15,40 +19,51 @@ window.CastfordData = (function() {
 
   const SB_URL = 'https://crecesswagluelvkesul.supabase.co';
   const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNyZWNlc3N3YWdsdWVsdmtlc3VsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM4MTI5NzYsImV4cCI6MjA4OTM4ODk3Nn0.IGEEYDStt-eH9Mf2G_DzqCPfruDjN8m_ORtAcmtSAZg';
-  
+
   var sb = null;
   var session = null;
   var orgId = null;
   var demoMode = false;
+  var initialized = false;
+  var initPromise = null;
 
   async function init() {
-    if (!window.supabase) {
-      console.warn('CastfordData: Supabase client not loaded');
-      return { demoMode: true };
-    }
-    sb = window.supabase.createClient(SB_URL, SB_KEY);
-    
-    var { data } = await sb.auth.getSession();
-    session = data?.session;
-    
-    if (!session) {
-      demoMode = true;
-      injectDemoBadge();
+    // Idempotent: return same promise if already initializing
+    if (initPromise) return initPromise;
+    initPromise = (async function(){
+      if (!window.supabase) {
+        console.warn('CastfordData: Supabase client not loaded');
+        demoMode = true;
+        initialized = true;
+        return api;
+      }
+      sb = window.supabase.createClient(SB_URL, SB_KEY);
+
+      var { data } = await sb.auth.getSession();
+      session = data?.session;
+
+      if (!session) {
+        demoMode = true;
+        initialized = true;
+        injectDemoBadge();
+        return api;
+      }
+
+      // Get org from users table
+      var { data: user } = await sb.from('users').select('org_id').eq('id', session.user.id).maybeSingle();
+      orgId = user?.org_id;
+
+      // Check if real data exists
+      var { count } = await sb.from('gl_transactions').select('id', { count: 'exact', head: true }).eq('org_id', orgId);
+      if (!count || count === 0) {
+        demoMode = true;
+        injectDemoBadge();
+      }
+
+      initialized = true;
       return api;
-    }
-
-    // Get org from users table
-    var { data: user } = await sb.from('users').select('org_id').eq('id', session.user.id).maybeSingle();
-    orgId = user?.org_id;
-    
-    // Check if real data exists
-    var { count } = await sb.from('gl_transactions').select('id', { count: 'exact', head: true }).eq('org_id', orgId);
-    if (!count || count === 0) {
-      demoMode = true;
-      injectDemoBadge();
-    }
-
-    return api;
+    })();
+    return initPromise;
   }
 
   function injectDemoBadge() {
@@ -61,10 +76,50 @@ window.CastfordData = (function() {
   }
 
   // ==========================================
+  // HELPERS
+  // ==========================================
+
+  function formatCurrency(amount, opts) {
+    opts = opts || {};
+    var n = Number(amount) || 0;
+    var abs = Math.abs(n);
+    var sign = n < 0 ? '-' : '';
+    if (opts.compact) {
+      if (abs >= 1e9) return sign + '$' + (abs/1e9).toFixed(1) + 'B';
+      if (abs >= 1e6) return sign + '$' + (abs/1e6).toFixed(1) + 'M';
+      if (abs >= 1e3) return sign + '$' + (abs/1e3).toFixed(0) + 'K';
+      return sign + '$' + abs.toFixed(0);
+    }
+    return sign + '$' + abs.toLocaleString('en-US', { maximumFractionDigits: 0 });
+  }
+
+  // Returns { startPeriod: 'YYYY-MM', endPeriod: 'YYYY-MM' } for the requested range
+  function getCurrentPeriodRange(rangeKey) {
+    var now = new Date();
+    var year = now.getFullYear();
+    var month = now.getMonth() + 1; // 1-12
+    var pad = function(n){ return n < 10 ? '0'+n : ''+n; };
+
+    switch ((rangeKey || 'fy-ytd').toLowerCase()) {
+      case 'fy-ytd':
+        return { startPeriod: year + '-01', endPeriod: year + '-' + pad(month) };
+      case 'q4':
+        return { startPeriod: year + '-10', endPeriod: year + '-12' };
+      case 'last-12':
+        var d = new Date(year, month - 12, 1);
+        return { startPeriod: d.getFullYear() + '-' + pad(d.getMonth()+1), endPeriod: year + '-' + pad(month) };
+      case 'all':
+      default:
+        return { startPeriod: '2000-01', endPeriod: year + '-' + pad(month) };
+    }
+  }
+
+  // ==========================================
   // READ FUNCTIONS (bi-directional: pull)
   // ==========================================
 
   async function getAccounts(type) {
+    if (!sb || !orgId) return [];
     var q = sb.from('gl_accounts').select('*').eq('org_id', orgId).order('code');
     if (type) q = q.eq('account_type', type);
     var { data, error } = await q;
@@ -72,6 +127,7 @@ window.CastfordData = (function() {
   }
 
   async function getTransactions(opts) {
+    if (!sb || !orgId) return [];
     opts = opts || {};
     var q = sb.from('gl_transactions').select('*, gl_accounts(name, account_type)').eq('org_id', orgId).order('txn_date', { ascending: false });
     if (opts.accountId) q = q.eq('account_id', opts.accountId);
@@ -83,10 +139,30 @@ window.CastfordData = (function() {
   }
 
   async function getBudgets(period) {
+    if (!sb || !orgId) return [];
     var q = sb.from('gl_budgets').select('*, gl_accounts(name, account_type)').eq('org_id', orgId).order('period');
     if (period) q = q.eq('period', period);
     var { data, error } = await q;
     return error ? [] : data;
+  }
+
+  // NEW v1.1: Query pre-computed P&L summary view
+  // Returns rows: { period, account_type, account_name, account_subtype, actual, budget, variance, segment, currency }
+  async function getPnlSummary(opts) {
+    if (!sb || !orgId) return [];
+    opts = opts || {};
+    var q = sb.from('pl_summary').select('*').eq('org_id', orgId).order('period');
+    if (opts.startPeriod) q = q.gte('period', opts.startPeriod);
+    if (opts.endPeriod) q = q.lte('period', opts.endPeriod);
+    if (opts.accountType) q = q.eq('account_type', opts.accountType);
+    if (opts.segment) q = q.eq('segment', opts.segment);
+    if (opts.currency) q = q.eq('currency', opts.currency);
+    var { data, error } = await q;
+    if (error) {
+      console.warn('CastfordData: pl_summary query failed:', error.message);
+      return [];
+    }
+    return data || [];
   }
 
   async function getRevenue(startDate, endDate) {
@@ -114,19 +190,18 @@ window.CastfordData = (function() {
   async function getBudgetVsActuals(period) {
     var budgets = await getBudgets(period);
     var txns = await getTransactions({ startDate: period + '-01', endDate: period + '-31' });
-    
+
     var actuals = {};
     txns.forEach(function(t) {
       var aid = t.account_id;
       if (!actuals[aid]) actuals[aid] = 0;
       actuals[aid] += Math.abs(t.amount || 0);
     });
-    
+
     return budgets.map(function(b) {
       var actual = actuals[b.account_id] || 0;
       var variance = b.amount - actual;
       return {
-        account: b.gl_accounts?.name,
         account: b.gl_accounts?.name,
         type: b.gl_accounts?.account_type,
         budget: b.amount,
@@ -181,6 +256,7 @@ window.CastfordData = (function() {
   // ==========================================
 
   async function logAudit(action, details) {
+    if (!sb) return;
     try {
       await sb.from('audit_log').insert({
         user_id: session?.user?.id, org_id: orgId,
@@ -191,6 +267,7 @@ window.CastfordData = (function() {
   }
 
   async function getAuditLog(limit) {
+    if (!sb || !orgId) return [];
     var { data } = await sb.from('audit_log').select('*').eq('org_id', orgId).order('created_at', { ascending: false }).limit(limit || 50);
     return data || [];
   }
@@ -200,6 +277,7 @@ window.CastfordData = (function() {
   // ==========================================
 
   async function getVendors() {
+    if (!sb) return [];
     var { data } = await sb.from('vendor_registry').select('*').order('vendor_name');
     return data || [];
   }
@@ -209,6 +287,7 @@ window.CastfordData = (function() {
   // ==========================================
 
   async function logIncident(severity, title, description, affectedSystems) {
+    if (!sb) return { error: 'Not initialized' };
     var { data, error } = await sb.from('incident_log').insert({
       severity: severity, title: title, description: description,
       affected_systems: affectedSystems, status: 'open', reported_by: session?.user?.id
@@ -218,6 +297,7 @@ window.CastfordData = (function() {
   }
 
   async function getIncidents() {
+    if (!sb) return [];
     var { data } = await sb.from('incident_log').select('*').order('created_at', { ascending: false });
     return data || [];
   }
@@ -228,13 +308,18 @@ window.CastfordData = (function() {
 
   var api = {
     init: init,
+    isInitialized: function() { return initialized; },
     isDemoMode: function() { return demoMode; },
     getSession: function() { return session; },
     getOrgId: function() { return orgId; },
+    // helpers
+    formatCurrency: formatCurrency,
+    getCurrentPeriodRange: getCurrentPeriodRange,
     // READ
     getAccounts: getAccounts,
     getTransactions: getTransactions,
     getBudgets: getBudgets,
+    getPnlSummary: getPnlSummary,
     getRevenue: getRevenue,
     getCashFlow: getCashFlow,
     getBudgetVsActuals: getBudgetVsActuals,
