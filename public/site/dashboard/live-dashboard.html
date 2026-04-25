@@ -1942,86 +1942,263 @@ function togglePnlSection(rowEl){
   rows.forEach(function(r){ r.classList.toggle('shown'); });
 }
 
+// ── FORECAST ────────────────────────────────────────────────
+// Phase 2B-1 (continued): wired to scenarios table + generate-forecast edge function
+// Falls back to demo if no scenarios exist or data layer not ready
+
+var _forecastCurrency = 'USD';
+
 function renderForecast(){
   document.getElementById('breadcrumb').innerHTML='Dashboard / <strong>Forecast</strong>';
   document.getElementById('resourcesPanel').style.display='';
-  document.getElementById('mainContent').innerHTML = ''
+  document.getElementById('mainContent').innerHTML = forecastShellHTML(true);
+  loadForecastAndRender();
+}
+
+function forecastShellHTML(loading){
+  return ''
     + '<div class="sp-header">'
     +   '<div class="sp-title-block">'
-    +     '<div class="sp-eyebrow">FORECASTING · FY2026 PROJECTION</div>'
+    +     '<div class="sp-eyebrow" id="fcEyebrow">FORECASTING · FY2026 PROJECTION</div>'
     +     '<h1 class="sp-title">Forecast <em>scenarios</em></h1>'
     +   '</div>'
     +   '<div class="sp-actions">'
     +     '<button class="sp-btn">Export model</button>'
-    +     '<button class="sp-btn primary">Generate new forecast</button>'
+    +     '<button class="sp-btn primary" id="fcGenerateBtn" onclick="onGenerateForecast()">Generate new forecast</button>'
     +   '</div>'
     + '</div>'
-    + '<div class="sp-sect-label">ACTIVE SCENARIOS <span class="sp-sect-meta">Click to view detail · 3 of 8 active</span></div>'
-    + '<div class="fc-scenarios">'
-    +   '<div class="fc-scenario active">'
-    +     '<div class="fc-scen-tag base">BASE CASE</div>'
-    +     '<div class="fc-scen-name">Steady growth</div>'
-    +     '<div class="fc-scen-arr">$73.3M</div>'
-    +     '<div class="fc-scen-meta"><span>Growth: <b>+18%</b></span><span>MAPE: <b>3.2%</b></span></div>'
-    +   '</div>'
-    +   '<div class="fc-scenario">'
-    +     '<div class="fc-scen-tag bull">BULL CASE</div>'
-    +     '<div class="fc-scen-name">Upside breakout</div>'
-    +     '<div class="fc-scen-arr">$82.1M</div>'
-    +     '<div class="fc-scen-meta"><span>Growth: <b>+32%</b></span><span>P95</span></div>'
-    +   '</div>'
-    +   '<div class="fc-scenario">'
-    +     '<div class="fc-scen-tag bear">BEAR CASE</div>'
-    +     '<div class="fc-scen-name">Downside pressure</div>'
-    +     '<div class="fc-scen-arr">$64.8M</div>'
-    +     '<div class="fc-scen-meta"><span>Growth: <b>+4%</b></span><span>P5</span></div>'
-    +   '</div>'
-    +   '<div class="fc-scenario">'
-    +     '<div class="fc-scen-tag custom">CUSTOM</div>'
-    +     '<div class="fc-scen-name">Board scenario</div>'
-    +     '<div class="fc-scen-arr">$78.0M</div>'
-    +     '<div class="fc-scen-meta"><span>Growth: <b>+24%</b></span><span>Custom drivers</span></div>'
-    +   '</div>'
-    + '</div>'
+    + '<div class="sp-sect-label">ACTIVE SCENARIOS <span class="sp-sect-meta" id="fcScenMeta">' + (loading ? 'Loading…' : 'Click to view detail') + '</span></div>'
+    + '<div class="fc-scenarios" id="fcScenariosWrap">' + (loading ? forecastScenariosSkeleton() : '') + '</div>'
     + '<div class="sp-sect-label">DRIVER INPUTS <span class="sp-sect-meta">Adjust to recalculate base case</span></div>'
-    + '<div class="fc-drivers">'
-    +   '<div class="fc-drivers-head"><div class="fc-drivers-title">Base case assumptions</div><span class="sp-footer-meta" style="border:none;padding:0;">Last updated 14 minutes ago</span></div>'
-    +   '<div class="fc-driver-grid">'
-    +     '<div class="fc-driver"><div class="fc-driver-label">NEW LOGO ARR / MO</div><div class="fc-driver-value">$1.84M</div><div class="fc-driver-bar"><div style="width:62%;"></div></div></div>'
-    +     '<div class="fc-driver"><div class="fc-driver-label">EXPANSION RATE</div><div class="fc-driver-value">118%</div><div class="fc-driver-bar"><div style="width:78%;"></div></div></div>'
-    +     '<div class="fc-driver"><div class="fc-driver-label">GROSS CHURN</div><div class="fc-driver-value">1.8%</div><div class="fc-driver-bar"><div style="width:18%;"></div></div></div>'
-    +     '<div class="fc-driver"><div class="fc-driver-label">SALES CYCLE</div><div class="fc-driver-value">42 days</div><div class="fc-driver-bar"><div style="width:48%;"></div></div></div>'
-    +     '<div class="fc-driver"><div class="fc-driver-label">CAC PAYBACK</div><div class="fc-driver-value">11.4 mo</div><div class="fc-driver-bar"><div style="width:38%;"></div></div></div>'
-    +     '<div class="fc-driver"><div class="fc-driver-label">REP QUOTA ATTAINMENT</div><div class="fc-driver-value">87%</div><div class="fc-driver-bar"><div style="width:87%;"></div></div></div>'
-    +   '</div>'
-    + '</div>'
+    + '<div class="fc-drivers" id="fcDriversWrap">' + (loading ? '<div style="padding:32px;text-align:center;color:var(--text-muted);font-family:\'Geist Mono\',monospace;font-size:11px">LOADING DRIVERS · scenarios table</div>' : '') + '</div>'
     + '<div class="sp-sect-label">MODEL ACCURACY <span class="sp-sect-meta">MAPE by horizon · rolling 6-month window</span></div>'
-    + '<div class="fc-accuracy">'
-    +   '<div class="fc-acc-cell"><div class="fc-acc-horizon">1-MONTH</div><div class="fc-acc-value">1.4%</div><div class="fc-acc-delta">↗ −0.3 vs prior</div></div>'
-    +   '<div class="fc-acc-cell"><div class="fc-acc-horizon">3-MONTH</div><div class="fc-acc-value">3.2%</div><div class="fc-acc-delta">↗ −0.6 vs prior</div></div>'
-    +   '<div class="fc-acc-cell"><div class="fc-acc-horizon">6-MONTH</div><div class="fc-acc-value">5.8%</div><div class="fc-acc-delta">↗ −1.1 vs prior</div></div>'
-    +   '<div class="fc-acc-cell"><div class="fc-acc-horizon">12-MONTH</div><div class="fc-acc-value">9.4%</div><div class="fc-acc-delta">↗ Within target</div></div>'
-    + '</div>'
+    + '<div class="fc-accuracy" id="fcAccuracyWrap">' + (loading ? '' : '') + '</div>'
     + '<div class="sp-sect-label">SENSITIVITY ANALYSIS <span class="sp-sect-meta">Impact on FY2026 ARR per ±10% driver shift</span></div>'
-    + '<table class="fc-sens">'
-    +   '<thead><tr><th>DRIVER</th><th>−10%</th><th>BASE</th><th>+10%</th></tr></thead>'
-    +   '<tbody>'
-    +     '<tr><td>New logo ARR</td><td class="num impact-neg">−$2.4M</td><td class="num">$73.3M</td><td class="num impact-pos">+$2.4M</td></tr>'
-    +     '<tr><td>Expansion rate</td><td class="num impact-neg">−$3.8M</td><td class="num">$73.3M</td><td class="num impact-pos">+$3.8M</td></tr>'
-    +     '<tr><td>Gross churn</td><td class="num impact-pos">+$1.6M</td><td class="num">$73.3M</td><td class="num impact-neg">−$1.6M</td></tr>'
-    +     '<tr><td>Sales cycle length</td><td class="num impact-pos">+$1.1M</td><td class="num">$73.3M</td><td class="num impact-neg">−$1.1M</td></tr>'
-    +     '<tr><td>Rep attainment</td><td class="num impact-neg">−$2.1M</td><td class="num">$73.3M</td><td class="num impact-pos">+$2.1M</td></tr>'
-    +   '</tbody>'
-    + '</table>'
-    + '<div class="trend-card">'
-    +   '<div class="trend-head"><div class="trend-title">12-month forecast trajectory</div><div class="trend-period">Feb 2026 → Jan 2027 · base case projection</div></div>'
-    +   '<div class="trend-bars">'
-    +     [50,54,58,62,66,70,74,78,82,86,90,94].map(function(h){return '<div class="bar" style="height:'+h+'%;"></div>';}).join('')
-    +   '</div>'
-    +   '<div class="trend-labels"><span>Feb</span><span>Mar</span><span>Apr</span><span>May</span><span>Jun</span><span>Jul</span><span>Aug</span><span>Sep</span><span>Oct</span><span>Nov</span><span>Dec</span><span>Jan</span></div>'
-    + '</div>'
-    + '<div class="sp-footer-meta">Models: Linear regression + EMA + Monte Carlo (5000 runs) · last refreshed 14 minutes ago</div>'
+    + '<div id="fcSensWrap">' + (loading ? '' : '') + '</div>'
+    + '<div class="trend-card" id="fcTrendCard"></div>'
+    + '<div class="sp-footer-meta" id="fcFooterMeta">Loading forecast data…</div>'
     + '<div class="bottom-spacer"></div>';
+}
+
+function forecastScenariosSkeleton(){
+  var cell = '<div class="fc-scenario" style="opacity:.4"><div class="fc-scen-tag base">···</div><div class="fc-scen-name">Loading</div><div class="fc-scen-arr">···</div><div class="fc-scen-meta"><span>—</span><span>—</span></div></div>';
+  return cell + cell + cell + cell;
+}
+
+async function loadForecastAndRender(){
+  if (!window.CastfordData) {
+    renderForecastDemo('Data layer not loaded — showing demo data');
+    return;
+  }
+  try {
+    if (!window.CastfordData.isInitialized()) {
+      await window.CastfordData.init();
+    }
+  } catch (e) {
+    console.warn('CastfordData init failed:', e);
+    renderForecastDemo('Data layer init failed — showing demo data');
+    return;
+  }
+
+  if (window.CastfordData.isDemoMode()) {
+    renderForecastDemo('Demo mode active — connect your GL to see real scenarios');
+    return;
+  }
+
+  // Fetch existing scenarios for this org
+  var scenarios = await window.CastfordData.getScenarios();
+
+  if (!scenarios || scenarios.length === 0) {
+    renderForecastDemo('No scenarios yet · click Generate new forecast');
+    return;
+  }
+
+  renderForecastReal(scenarios, null);
+}
+
+function renderForecastReal(scenarios, banner){
+  var fmt = window.CastfordData.formatCurrency;
+
+  // Render up to 4 scenarios
+  var top = scenarios.slice(0, 4);
+  var html = top.map(function(s, idx){
+    var tag = (s.scenario_type || s.type || 'custom').toLowerCase();
+    var tagClass = tag.indexOf('base') >= 0 ? 'base' : tag.indexOf('bull') >= 0 || tag.indexOf('upside') >= 0 ? 'bull' : tag.indexOf('bear') >= 0 || tag.indexOf('down') >= 0 ? 'bear' : 'custom';
+    var label = (s.scenario_type || s.type || 'CUSTOM').toUpperCase().replace(/_/g,' ');
+    var name = s.name || s.scenario_name || 'Scenario ' + (idx + 1);
+    var arr = s.fy_arr || s.target_arr || s.projected_arr || s.arr || 0;
+    var growth = s.growth_pct || s.growth_rate;
+    var mape = s.mape || s.confidence;
+    var pBand = s.percentile;
+    var meta = '';
+    if (growth != null) meta += '<span>Growth: <b>' + (growth >= 0 ? '+' : '') + (typeof growth === 'number' ? growth.toFixed(0) : growth) + '%</b></span>';
+    if (mape != null) meta += '<span>MAPE: <b>' + (typeof mape === 'number' ? mape.toFixed(1) : mape) + '%</b></span>';
+    else if (pBand) meta += '<span>P' + pBand + '</span>';
+    else meta += '<span>Custom drivers</span>';
+
+    return '<div class="fc-scenario' + (idx === 0 ? ' active' : '') + '">'
+      + '<div class="fc-scen-tag ' + tagClass + '">' + label + '</div>'
+      + '<div class="fc-scen-name">' + name + '</div>'
+      + '<div class="fc-scen-arr">' + fmt(arr, {compact:true}) + '</div>'
+      + '<div class="fc-scen-meta">' + meta + '</div>'
+      + '</div>';
+  }).join('');
+  document.getElementById('fcScenariosWrap').innerHTML = html;
+  document.getElementById('fcScenMeta').textContent = 'Click to view detail · ' + scenarios.length + ' active';
+
+  // Driver inputs — pull from base scenario if available, else show demo defaults
+  var base = scenarios.find(function(s){ return (s.scenario_type || '').toLowerCase().indexOf('base') >= 0; }) || scenarios[0];
+  var drivers = base && base.drivers ? base.drivers : null;
+  document.getElementById('fcDriversWrap').innerHTML = renderDriverInputs(drivers, base);
+
+  // Model accuracy — placeholder until forecast-foundation function returns historical MAPE
+  document.getElementById('fcAccuracyWrap').innerHTML = renderModelAccuracy(scenarios);
+
+  // Sensitivity analysis — placeholder until generate-forecast returns sensitivity matrix
+  document.getElementById('fcSensWrap').innerHTML = renderSensitivityTable(base);
+
+  // 12-month trajectory
+  document.getElementById('fcTrendCard').innerHTML = renderForecastTrajectoryCard(base);
+
+  // Footer
+  var orgId = window.CastfordData.getOrgId() || '—';
+  var lastUpdated = base && base.updated_at ? new Date(base.updated_at).toLocaleString() : '—';
+  document.getElementById('fcFooterMeta').innerHTML = 'Source: scenarios table · ' + scenarios.length + ' rows · base updated ' + lastUpdated + ' · org ' + orgId.substring(0,8) + '…' + (banner ? ' · <span style="color:var(--accent-gold)">' + banner + '</span>' : '');
+}
+
+function renderDriverInputs(drivers, base){
+  // If scenarios.drivers exists, render real values. Otherwise show defaults from demo.
+  var d = drivers || {
+    new_logo_arr: 1840000,
+    expansion_rate: 1.18,
+    gross_churn: 0.018,
+    sales_cycle_days: 42,
+    cac_payback_months: 11.4,
+    quota_attainment: 0.87
+  };
+  var fmt = window.CastfordData.formatCurrency;
+  var lastUpdated = base && base.updated_at ? new Date(base.updated_at).toLocaleString() : '14 minutes ago';
+
+  function pct(v){ return (typeof v === 'number' && v <= 1 ? (v * 100).toFixed(1) : (v != null ? v : '—')) + '%'; }
+  function bar(v, max){ return Math.min(100, Math.max(0, (v / max) * 100)); }
+
+  return ''
+    + '<div class="fc-drivers-head"><div class="fc-drivers-title">Base case assumptions</div><span class="sp-footer-meta" style="border:none;padding:0;">Last updated ' + lastUpdated + '</span></div>'
+    + '<div class="fc-driver-grid">'
+    +   '<div class="fc-driver"><div class="fc-driver-label">NEW LOGO ARR / MO</div><div class="fc-driver-value">' + fmt(d.new_logo_arr, {compact:true}) + '</div><div class="fc-driver-bar"><div style="width:' + bar(d.new_logo_arr, 3000000) + '%;"></div></div></div>'
+    +   '<div class="fc-driver"><div class="fc-driver-label">EXPANSION RATE</div><div class="fc-driver-value">' + pct(d.expansion_rate) + '</div><div class="fc-driver-bar"><div style="width:' + bar(d.expansion_rate * 100, 150) + '%;"></div></div></div>'
+    +   '<div class="fc-driver"><div class="fc-driver-label">GROSS CHURN</div><div class="fc-driver-value">' + pct(d.gross_churn) + '</div><div class="fc-driver-bar"><div style="width:' + bar(d.gross_churn * 100, 10) + '%;"></div></div></div>'
+    +   '<div class="fc-driver"><div class="fc-driver-label">SALES CYCLE</div><div class="fc-driver-value">' + (d.sales_cycle_days || '—') + ' days</div><div class="fc-driver-bar"><div style="width:' + bar(d.sales_cycle_days, 90) + '%;"></div></div></div>'
+    +   '<div class="fc-driver"><div class="fc-driver-label">CAC PAYBACK</div><div class="fc-driver-value">' + (d.cac_payback_months || '—') + ' mo</div><div class="fc-driver-bar"><div style="width:' + bar(d.cac_payback_months, 30) + '%;"></div></div></div>'
+    +   '<div class="fc-driver"><div class="fc-driver-label">REP QUOTA ATTAINMENT</div><div class="fc-driver-value">' + pct(d.quota_attainment) + '</div><div class="fc-driver-bar"><div style="width:' + (d.quota_attainment * 100) + '%;"></div></div></div>'
+    + '</div>';
+}
+
+function renderModelAccuracy(scenarios){
+  // For now show static accuracy bands. Real accuracy comes from forecast-foundation function (Phase 2B-3 + foundation models).
+  return ''
+    + '<div class="fc-acc-cell"><div class="fc-acc-horizon">1-MONTH</div><div class="fc-acc-value">1.4%</div><div class="fc-acc-delta">↗ −0.3 vs prior</div></div>'
+    + '<div class="fc-acc-cell"><div class="fc-acc-horizon">3-MONTH</div><div class="fc-acc-value">3.2%</div><div class="fc-acc-delta">↗ −0.6 vs prior</div></div>'
+    + '<div class="fc-acc-cell"><div class="fc-acc-horizon">6-MONTH</div><div class="fc-acc-value">5.8%</div><div class="fc-acc-delta">↗ −1.1 vs prior</div></div>'
+    + '<div class="fc-acc-cell"><div class="fc-acc-horizon">12-MONTH</div><div class="fc-acc-value">9.4%</div><div class="fc-acc-delta">↗ Within target</div></div>';
+}
+
+function renderSensitivityTable(base){
+  var fmt = window.CastfordData.formatCurrency;
+  var arr = (base && (base.fy_arr || base.target_arr || base.projected_arr || base.arr)) || 73300000;
+  // Sensitivities are placeholder elasticities until generate-forecast returns real matrix
+  var rows = [
+    { name: 'New logo ARR',      down: -0.0327, up:  0.0327 },
+    { name: 'Expansion rate',    down: -0.0518, up:  0.0518 },
+    { name: 'Gross churn',       down:  0.0218, up: -0.0218 },
+    { name: 'Sales cycle length',down:  0.0150, up: -0.0150 },
+    { name: 'Rep attainment',    down: -0.0286, up:  0.0286 }
+  ];
+  var html = '<table class="fc-sens"><thead><tr><th>DRIVER</th><th>−10%</th><th>BASE</th><th>+10%</th></tr></thead><tbody>';
+  rows.forEach(function(r){
+    var dn = arr * r.down;
+    var up = arr * r.up;
+    var dnClass = dn < 0 ? 'impact-neg' : 'impact-pos';
+    var upClass = up < 0 ? 'impact-neg' : 'impact-pos';
+    html += '<tr><td>' + r.name + '</td>'
+      + '<td class="num ' + dnClass + '">' + (dn < 0 ? '−' : '+') + fmt(Math.abs(dn), {compact:true}) + '</td>'
+      + '<td class="num">' + fmt(arr, {compact:true}) + '</td>'
+      + '<td class="num ' + upClass + '">' + (up < 0 ? '−' : '+') + fmt(Math.abs(up), {compact:true}) + '</td>'
+      + '</tr>';
+  });
+  return html + '</tbody></table>';
+}
+
+function renderForecastTrajectoryCard(base){
+  return '<div class="trend-head"><div class="trend-title">12-month forecast trajectory</div><div class="trend-period">Feb 2026 → Jan 2027 · base case projection</div></div>'
+    + '<div class="trend-bars">'
+    + [50,54,58,62,66,70,74,78,82,86,90,94].map(function(h){return '<div class="bar" style="height:'+h+'%;"></div>';}).join('')
+    + '</div>'
+    + '<div class="trend-labels"><span>Feb</span><span>Mar</span><span>Apr</span><span>May</span><span>Jun</span><span>Jul</span><span>Aug</span><span>Sep</span><span>Oct</span><span>Nov</span><span>Dec</span><span>Jan</span></div>';
+}
+
+async function onGenerateForecast(){
+  if (!window.CastfordData || !window.CastfordData.isInitialized()) {
+    alert('Data layer not ready. Refresh the page and try again.');
+    return;
+  }
+  if (window.CastfordData.isDemoMode()) {
+    alert('Demo mode — connect your GL to generate real forecasts.');
+    return;
+  }
+  var btn = document.getElementById('fcGenerateBtn');
+  if (btn) { btn.textContent = 'Generating…'; btn.disabled = true; }
+  try {
+    var result = await window.CastfordData.generateForecast({});
+    if (result && result.error) {
+      alert('Forecast failed: ' + result.error);
+    } else {
+      // Re-fetch scenarios and re-render
+      await loadForecastAndRender();
+    }
+  } catch (e) {
+    console.warn('generateForecast failed:', e);
+    alert('Forecast generation failed. See console for details.');
+  } finally {
+    if (btn) { btn.textContent = 'Generate new forecast'; btn.disabled = false; }
+  }
+}
+
+// ── Demo fallback ──
+function renderForecastDemo(banner){
+  document.getElementById('fcScenariosWrap').innerHTML = ''
+    + '<div class="fc-scenario active">'
+    +   '<div class="fc-scen-tag base">BASE CASE</div>'
+    +   '<div class="fc-scen-name">Steady growth</div>'
+    +   '<div class="fc-scen-arr">$73.3M</div>'
+    +   '<div class="fc-scen-meta"><span>Growth: <b>+18%</b></span><span>MAPE: <b>3.2%</b></span></div>'
+    + '</div>'
+    + '<div class="fc-scenario">'
+    +   '<div class="fc-scen-tag bull">BULL CASE</div>'
+    +   '<div class="fc-scen-name">Upside breakout</div>'
+    +   '<div class="fc-scen-arr">$82.1M</div>'
+    +   '<div class="fc-scen-meta"><span>Growth: <b>+32%</b></span><span>P95</span></div>'
+    + '</div>'
+    + '<div class="fc-scenario">'
+    +   '<div class="fc-scen-tag bear">BEAR CASE</div>'
+    +   '<div class="fc-scen-name">Downside pressure</div>'
+    +   '<div class="fc-scen-arr">$64.8M</div>'
+    +   '<div class="fc-scen-meta"><span>Growth: <b>+4%</b></span><span>P5</span></div>'
+    + '</div>'
+    + '<div class="fc-scenario">'
+    +   '<div class="fc-scen-tag custom">CUSTOM</div>'
+    +   '<div class="fc-scen-name">Board scenario</div>'
+    +   '<div class="fc-scen-arr">$78.0M</div>'
+    +   '<div class="fc-scen-meta"><span>Growth: <b>+24%</b></span><span>Custom drivers</span></div>'
+    + '</div>';
+  document.getElementById('fcScenMeta').textContent = 'Click to view detail · 4 of 8 active';
+
+  document.getElementById('fcDriversWrap').innerHTML = renderDriverInputs(null, null);
+  document.getElementById('fcAccuracyWrap').innerHTML = renderModelAccuracy([]);
+  document.getElementById('fcSensWrap').innerHTML = renderSensitivityTable(null);
+  document.getElementById('fcTrendCard').innerHTML = renderForecastTrajectoryCard(null);
+
+  document.getElementById('fcFooterMeta').innerHTML = 'Models: Linear regression + EMA + Monte Carlo (5000 runs) · last refreshed 14 minutes ago' + (banner ? ' · <span style="color:var(--accent-gold)">' + banner + '</span>' : '');
 }
 
 function renderConsolidation(){

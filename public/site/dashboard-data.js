@@ -165,6 +165,45 @@ window.CastfordData = (function() {
     return data || [];
   }
 
+  // NEW v1.2: Query existing scenarios for this org
+  // Returns rows from scenarios table: { id, name, scenario_type, fy_arr, growth_pct, drivers, mape, percentile, updated_at, ... }
+  async function getScenarios(opts) {
+    if (!sb || !orgId) return [];
+    opts = opts || {};
+    var q = sb.from('scenarios').select('*').eq('org_id', orgId).order('updated_at', { ascending: false });
+    if (opts.scenarioType) q = q.eq('scenario_type', opts.scenarioType);
+    if (opts.activeOnly) q = q.eq('is_active', true);
+    if (opts.limit) q = q.limit(opts.limit);
+    var { data, error } = await q;
+    if (error) {
+      console.warn('CastfordData: scenarios query failed:', error.message);
+      return [];
+    }
+    return data || [];
+  }
+
+  // NEW v1.2: Trigger forecast generation via generate-forecast edge function
+  // Body shape can include: { scenarioName, scenarioType, drivers, horizonMonths, forecastModel }
+  async function generateForecast(body) {
+    if (!sb || !orgId) return { error: 'Not initialized' };
+    if (demoMode) return { error: 'Demo mode — connect your GL to generate forecasts' };
+    body = body || {};
+    body.org_id = orgId;
+    try {
+      var { data, error } = await sb.functions.invoke('generate-forecast', { body: body });
+      if (error) {
+        console.warn('generate-forecast invocation failed:', error);
+        return { error: error.message || 'Function invocation failed' };
+      }
+      logAudit('forecast_generated', { scenario_name: body.scenarioName, model: body.forecastModel });
+      return data;
+    } catch (e) {
+      console.warn('generate-forecast threw:', e);
+      return { error: String(e) };
+    }
+  }
+
+
   async function getRevenue(startDate, endDate) {
     var txns = await getTransactions({ startDate: startDate, endDate: endDate });
     var revenue = 0, expenses = 0;
@@ -320,6 +359,8 @@ window.CastfordData = (function() {
     getTransactions: getTransactions,
     getBudgets: getBudgets,
     getPnlSummary: getPnlSummary,
+    getScenarios: getScenarios,
+    generateForecast: generateForecast,
     getRevenue: getRevenue,
     getCashFlow: getCashFlow,
     getBudgetVsActuals: getBudgetVsActuals,
