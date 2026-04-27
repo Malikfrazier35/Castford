@@ -95,9 +95,10 @@ async function findProductByMetadata(slug) {
 }
 
 async function findPriceByLookupKey(lookupKey) {
+  // Note: do NOT expand 'data.product' — when expanded, price.product becomes the
+  // full product object instead of an ID string, breaking the equality check below.
   const result = await stripe.prices.list({
-    lookup_keys: [lookupKey],
-    expand: ['data.product']
+    lookup_keys: [lookupKey]
   });
   return result.data && result.data.length > 0 ? result.data[0] : null;
 }
