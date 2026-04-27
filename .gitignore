@@ -39,3 +39,4 @@ castford-diagnose-and-fix.py
 .env.local
 *.bak
 *.bak-old
+FETCH_HEAD
