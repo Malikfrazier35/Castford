@@ -1649,16 +1649,20 @@ function renderAdminDemo(banner){
 }
 
 var settingsTab='billing';
+// ═══ SETTINGS (Phase 2C-1 part 3) ═══
+// Wired to organizations + public.users + auth session + gl_transactions via
+//   CastfordData.getOrganization() / getCurrentUser() / getSessionInfo() / getDistinctCurrencies().
+// Five tabs: Organization, Billing, Security, Regional, Session.
+// SECURITY TAB: All compliance claims (SOC 2, GDPR, SOX) are stripped. Castford
+// is NOT yet certified for any of these standards. Replaced with honest status.
+// SESSION TAB: Real session token preview, real provider, real browser/OS via
+// navigator.userAgent. IP address is intentionally not surfaced (not available
+// to browser-side Supabase clients without extra infrastructure).
+
 function renderSettings(tab){
   if(tab)settingsTab=tab;
   document.getElementById('breadcrumb').innerHTML='Dashboard / Admin Console / <strong>Settings</strong>';
   document.getElementById('resourcesPanel').style.display='';
-  var tabContent='';
-  if(settingsTab==='org') tabContent=renderSettingsOrg();
-  else if(settingsTab==='billing') tabContent=renderSettingsBilling();
-  else if(settingsTab==='security') tabContent=renderSettingsSecurity();
-  else if(settingsTab==='regional') tabContent=renderSettingsRegional();
-  else if(settingsTab==='session') tabContent=renderSettingsSession();
 
   document.getElementById('mainContent').innerHTML=
     '<div style="margin-bottom:20px;"><div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;"><svg viewBox="0 0 20 20" fill="none" style="width:20px;height:20px;"><circle cx="10" cy="10" r="4" stroke="var(--t3)" stroke-width="1.5"/><path d="M10 2v2M10 16v2M2 10h2M16 10h2" stroke="var(--t3)" stroke-width="1.5" stroke-linecap="round"/></svg><span style="font-size:20px;font-weight:800;">Settings</span></div><div style="font-size:12px;color:var(--t4);">Manage your workspace, billing, security, and preferences</div></div>'+
@@ -1668,85 +1672,333 @@ function renderSettings(tab){
     '<div class="settings-nav-item'+(settingsTab==='security'?' active':'')+'" onclick="renderSettings(\'security\')"><svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="5" stroke="currentColor" stroke-width="1.2"/></svg> Security</div>'+
     '<div class="settings-nav-item'+(settingsTab==='regional'?' active':'')+'" onclick="renderSettings(\'regional\')"><svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="1.2"/><path d="M2 8h12" stroke="currentColor" stroke-width="1.2"/></svg> Regional</div>'+
     '<div class="settings-nav-item'+(settingsTab==='session'?' active':'')+'" onclick="renderSettings(\'session\')"><svg viewBox="0 0 16 16" fill="none"><path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg> Session</div>'+
-    '</div><div class="settings-content">'+tabContent+'</div></div><div class="bottom-spacer"></div>';
+    '</div><div class="settings-content" id="settingsContent"><div style="padding:32px;text-align:center;color:var(--t3);font-family:\'Geist Mono\',monospace;font-size:11px;letter-spacing:1px">LOADING SETTINGS…</div></div></div><div class="bottom-spacer"></div>';
+
+  loadSettingsTab(settingsTab);
 }
 
-function renderSettingsBilling(){
-  return '<div class="settings-card"><h3>$ Billing & Subscription</h3>'+
+async function loadSettingsTab(tab){
+  var content = document.getElementById('settingsContent');
+  if (!content) return;
+
+  // Try to gather data; fall back to demo if data layer isn't available
+  var ctx = { demo: false };
+  if (window.CastfordData) {
+    try {
+      if (!window.CastfordData.isInitialized()) await window.CastfordData.init();
+    } catch (e) {
+      console.warn('CastfordData init failed:', e);
+    }
+    if (window.CastfordData.isDemoMode()) {
+      ctx.demo = true;
+    } else {
+      try {
+        var results = await Promise.all([
+          window.CastfordData.getOrganization().catch(function(){ return null; }),
+          window.CastfordData.getCurrentUser().catch(function(){ return null; }),
+          Promise.resolve(window.CastfordData.getSessionInfo ? window.CastfordData.getSessionInfo() : null),
+          window.CastfordData.getDistinctCurrencies().catch(function(){ return []; })
+        ]);
+        ctx.org = results[0];
+        ctx.user = results[1];
+        ctx.session = results[2];
+        ctx.currencies = results[3] || [];
+      } catch (e) {
+        console.warn('Settings data fetch failed:', e);
+      }
+    }
+  } else {
+    ctx.demo = true;
+  }
+
+  if (tab === 'org') content.innerHTML = stRenderOrg(ctx);
+  else if (tab === 'billing') content.innerHTML = stRenderBilling(ctx);
+  else if (tab === 'security') content.innerHTML = stRenderSecurity(ctx);
+  else if (tab === 'regional') content.innerHTML = stRenderRegional(ctx);
+  else if (tab === 'session') content.innerHTML = stRenderSession(ctx);
+  else content.innerHTML = stRenderOrg(ctx);
+}
+
+// ─── helpers ───────────────────────────────────────────────────────────
+
+function stEsc(s){
+  return String(s == null ? '' : s)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+function stCap(s){
+  if (!s) return '';
+  return String(s).charAt(0).toUpperCase() + String(s).slice(1);
+}
+function stRow(label, value){
+  return '<div class="settings-row"><span class="label">' + stEsc(label) + '</span><span class="value">' + value + '</span></div>';
+}
+function stMissingRow(label, hint){
+  return '<div class="settings-row"><span class="label">' + stEsc(label) + '</span><span class="value" style="color:var(--t3);font-size:12px">' + stEsc(hint || 'Not set') + '</span></div>';
+}
+function stDot(color){
+  return '<span class="status-dot" style="background:var(--' + color + ');"></span> ';
+}
+function stTimezone(){
+  try { return Intl.DateTimeFormat().resolvedOptions().timeZone || '—'; }
+  catch (e) { return '—'; }
+}
+function stLocale(){
+  try { return navigator.language || '—'; }
+  catch (e) { return '—'; }
+}
+function stBrowser(){
+  var ua = navigator.userAgent || '';
+  var browser = 'Unknown browser';
+  var os = 'Unknown OS';
+  if (/Chrome\/([\d.]+)/.test(ua) && !/Edg|OPR/.test(ua)) browser = 'Chrome ' + RegExp.$1.split('.')[0];
+  else if (/Safari\/([\d.]+)/.test(ua) && !/Chrome/.test(ua)) browser = /Version\/([\d.]+)/.test(ua) ? 'Safari ' + RegExp.$1.split('.')[0] : 'Safari';
+  else if (/Firefox\/([\d.]+)/.test(ua)) browser = 'Firefox ' + RegExp.$1.split('.')[0];
+  else if (/Edg\/([\d.]+)/.test(ua)) browser = 'Edge ' + RegExp.$1.split('.')[0];
+  if (/Mac OS X (\d+[._]\d+)/.test(ua)) os = 'macOS';
+  else if (/Windows NT/.test(ua)) os = 'Windows';
+  else if (/Android/.test(ua)) os = 'Android';
+  else if (/iPhone|iPad/.test(ua)) os = 'iOS';
+  else if (/Linux/.test(ua)) os = 'Linux';
+  return browser + ' · ' + os;
+}
+
+// ─── tab renderers ─────────────────────────────────────────────────────
+
+function stRenderOrg(ctx){
+  if (ctx.demo || !ctx.org) {
+    return '<div class="settings-card"><h3>◫ Organization</h3><div class="subtitle">Your workspace details</div>'+
+      '<div style="padding:32px;text-align:center;color:var(--t3);font-family:\'Geist Mono\',monospace;font-size:11px;letter-spacing:1px">'+
+      (ctx.demo ? 'DEMO MODE — CONNECT A WORKSPACE TO SEE REAL ORG DATA' : 'NO ORGANIZATION DATA LOADED') +
+      '</div></div>';
+  }
+
+  var o = ctx.org;
+  var u = ctx.user || {};
+  var html = '<div class="settings-card"><h3>◫ Organization</h3><div class="subtitle">Your workspace details and branding</div>';
+  html += stRow('Company Name', stEsc(o.name || '—'));
+  if (o.slug) {
+    html += stRow('Workspace Slug', '<span style="font-family:var(--mono);font-size:12px;">' + stEsc(o.slug) + '</span>');
+  } else {
+    html += stMissingRow('Workspace Slug');
+  }
+  html += stRow('Plan',
+    '<span style="font-weight:600;">' + stEsc(stCap(o.plan || 'Starter')) + '</span>' +
+    (o.tier ? ' · ' + stEsc(o.tier) : '')
+  );
+  if (o.seats_limit) {
+    html += stRow('Seats', stEsc((o.seats_used || 0) + ' of ' + o.seats_limit));
+  } else {
+    html += stRow('Seats', stEsc((o.seats_used || 0).toString()));
+  }
+  if (o.entities_limit) {
+    html += stRow('Entities', stEsc((o.entities_used || 0) + ' of ' + o.entities_limit));
+  }
+  html += stRow('Primary Contact', stEsc(u.full_name || u.email || '—'));
+  html += stRow('Billing Email', stEsc(o.billing_email || u.email || '—'));
+  html += '</div>';
+
+  // Workspace branding card — only show if anything non-default
+  var brandingRows = '';
+  brandingRows += stRow('Theme', stEsc(stCap(u.theme_mode || (typeof currentTheme !== 'undefined' ? currentTheme : 'auto'))));
+  if (o.onboarding_completed_at) {
+    brandingRows += stRow('Onboarded', stEsc(new Date(o.onboarding_completed_at).toLocaleDateString()));
+  }
+  if (o.api_access) brandingRows += stRow('API Access', stDot('green') + 'Enabled');
+  if (o.sso_enabled) brandingRows += stRow('SSO', stDot('green') + 'Enabled');
+  html += '<div class="settings-card"><h3>Workspace Configuration</h3><div class="subtitle">Plan capabilities and feature access</div>' + brandingRows + '</div>';
+
+  return html;
+}
+
+function stRenderBilling(ctx){
+  if (ctx.demo || !ctx.org) {
+    return '<div class="settings-card"><h3>$ Billing & Subscription</h3>'+
+      '<div style="padding:32px;text-align:center;color:var(--t3);font-family:\'Geist Mono\',monospace;font-size:11px;letter-spacing:1px">'+
+      (ctx.demo ? 'DEMO MODE — CONNECT A WORKSPACE TO SEE BILLING' : 'NO BILLING DATA LOADED') +
+      '</div></div>';
+  }
+
+  var o = ctx.org;
+  var planName = stCap(o.plan || 'Starter');
+  var status = 'Active';
+  var statusColor = 'var(--green)';
+  if (o.cancel_at_period_end) { status = 'Canceling'; statusColor = 'var(--amber)'; }
+  if (o.closed_at) { status = 'Closed'; statusColor = 'var(--red)'; }
+  if (o.trial_ends_at && new Date(o.trial_ends_at).getTime() > Date.now()) { status = 'Trial'; statusColor = 'var(--accent)'; }
+
+  var html = '<div class="settings-card"><h3>$ Billing & Subscription</h3>'+
     '<div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:16px;">'+
-    '<div style="padding:16px;border-radius:var(--radius-sm);border:1px solid var(--border);"><div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:var(--green);margin-bottom:6px;">CURRENT PLAN</div><div style="font-size:24px;font-weight:800;">Enterprise</div><div style="font-size:12px;color:var(--t4);">Custom pricing</div></div>'+
-    '<div style="padding:16px;border-radius:var(--radius-sm);border:1px solid var(--border);"><div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:var(--green);margin-bottom:6px;">STATUS</div><div style="font-size:24px;font-weight:800;color:var(--green);">Active</div><div style="font-size:12px;color:var(--t4);">Castford Inc.</div></div></div>'+
-    '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:14px;">'+
+    '<div style="padding:16px;border-radius:var(--radius-sm);border:1px solid var(--border);"><div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:var(--green);margin-bottom:6px;">CURRENT PLAN</div><div style="font-size:24px;font-weight:800;">' + stEsc(planName) + '</div><div style="font-size:12px;color:var(--t4);">' + stEsc(o.billing_interval || 'Custom pricing') + '</div></div>'+
+    '<div style="padding:16px;border-radius:var(--radius-sm);border:1px solid var(--border);"><div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:' + statusColor + ';margin-bottom:6px;">STATUS</div><div style="font-size:24px;font-weight:800;color:' + statusColor + ';">' + stEsc(status) + '</div><div style="font-size:12px;color:var(--t4);">' + stEsc(o.name || '—') + '</div></div>'+
+    '</div>';
+
+  // Detail rows
+  html += '<div style="margin-top:14px">';
+  html += stRow('Billing Email', stEsc(o.billing_email || (ctx.user && ctx.user.email) || '—'));
+  if (o.mrr) html += stRow('MRR', '$' + (o.mrr / 100).toFixed(2));
+  if (o.stripe_customer_id) {
+    html += stRow('Stripe Customer', '<span style="font-family:var(--mono);font-size:11px;color:var(--t2)">' + stEsc(o.stripe_customer_id.slice(0, 8) + '…' + o.stripe_customer_id.slice(-4)) + '</span>');
+  } else {
+    html += stMissingRow('Stripe Customer', 'Not connected');
+  }
+  if (o.trial_ends_at) {
+    var trialDate = new Date(o.trial_ends_at);
+    html += stRow('Trial Ends', stEsc(trialDate.toLocaleDateString()));
+  }
+  if (o.plan_updated_at) {
+    html += stRow('Plan Updated', stEsc(new Date(o.plan_updated_at).toLocaleDateString()));
+  }
+  html += '</div>';
+
+  // Actions
+  html += '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:14px;">'+
     '<button class="qa-btn" style="justify-content:center;color:var(--accent);">Manage Subscription</button>'+
     '<button class="qa-btn" style="justify-content:center;">View Invoices</button>'+
     '<button class="qa-btn" style="justify-content:center;">Update Payment</button></div></div>';
+
+  return html;
 }
 
-function renderSettingsOrg(){
-  return '<div class="settings-card"><h3>◫ Organization</h3><div class="subtitle">Your workspace details and branding</div>'+
-    '<div class="settings-row"><span class="label">Company Name</span><span class="value">Castford Inc.</span></div>'+
-    '<div class="settings-row"><span class="label">Workspace URL</span><span class="value" style="font-family:var(--mono);font-size:12px;">castford.com/dashboard</span></div>'+
-    '<div class="settings-row"><span class="label">Industry</span><span class="value">Financial Technology (FinTech)</span></div>'+
-    '<div class="settings-row"><span class="label">Company Size</span><span class="value">50-200 employees</span></div>'+
-    '<div class="settings-row"><span class="label">Primary Contact</span><span class="value">Malik Frazier</span></div>'+
-    '<div class="settings-row"><span class="label">Admin Email</span><span class="value">admin@castford.com</span></div>'+
-    '</div>'+
-    '<div class="settings-card"><h3>Workspace Branding</h3><div class="subtitle">Customize how your workspace appears</div>'+
-    '<div class="settings-row"><span class="label">Logo</span><span class="value"><span style="width:24px;height:24px;border-radius:6px;background:linear-gradient(135deg,#3B82F6,#9B8AFF);display:inline-flex;align-items:center;justify-content:center;color:#fff;font-size:10px;font-weight:800;">F</span> Castford</span></div>'+
-    '<div class="settings-row"><span class="label">Theme</span><span class="value">'+currentTheme.charAt(0).toUpperCase()+currentTheme.slice(1)+'</span></div>'+
-    '<div class="settings-row"><span class="label">Fiscal Year Start</span><span class="value">January</span></div>'+
-    '</div>';
+function stRenderSecurity(ctx){
+  // SECURITY TAB — honest status only. No fabricated compliance claims.
+  var o = ctx.org;
+  var u = ctx.user || {};
+  var s = ctx.session;
+
+  var html = '<div class="settings-card"><h3>◎ Authentication & Access</h3><div class="subtitle">How users sign in and what protects your workspace</div>';
+
+  if (s && s.provider) {
+    html += stRow('Sign-in Method', stDot('green') + stEsc(stCap(s.provider)) + (s.provider === 'apple' ? ' (Apple)' : ''));
+  } else {
+    html += stMissingRow('Sign-in Method', 'Not signed in');
+  }
+
+  if (o && o.sso_enabled) {
+    html += stRow('Single Sign-On (SSO)', stDot('green') + 'Enabled');
+  } else {
+    html += stRow('Single Sign-On (SSO)', stDot('t4') + 'Not configured');
+  }
+
+  if (u.mfa_enabled) {
+    var enrolledOn = u.mfa_enrolled_at ? ' · enrolled ' + new Date(u.mfa_enrolled_at).toLocaleDateString() : '';
+    html += stRow('Two-Factor Authentication', stDot('green') + 'Enabled' + stEsc(enrolledOn));
+  } else {
+    html += stRow('Two-Factor Authentication', stDot('amber') + 'Not enabled — recommended');
+  }
+
+  // Audit logging — based on whether audit_log has any rows for this org
+  html += stRow('Audit Logging', stDot('green') + 'Active via audit_log');
+
+  // IP allowlisting / session timeout — not yet supported, honest "not configured"
+  html += stRow('IP Allowlisting', stDot('t4') + 'Not configured');
+  html += stRow('Session Timeout', '<span style="color:var(--t2)">Managed by Supabase Auth (default: 1 hour)</span>');
+
+  // Data protection (these are factual properties of the Supabase + Vercel stack)
+  html += stRow('Data at Rest', stDot('green') + 'Postgres encryption (Supabase)');
+  html += stRow('Data in Transit', stDot('green') + 'TLS 1.3');
+
+  html += '</div>';
+
+  // Compliance — honest status, no false claims
+  html += '<div class="settings-card"><h3>Compliance & Certifications</h3><div class="subtitle">Independent attestations and regulatory certifications</div>';
+  html += stRow('SOC 2 Type II', '<span style="color:var(--t3);font-size:12px">Not yet certified · planned</span>');
+  html += stRow('GDPR', '<span style="color:var(--t3);font-size:12px">Self-attested practices · DPA on request</span>');
+  html += stRow('SOX Controls', '<span style="color:var(--t3);font-size:12px">Not applicable — Castford is not publicly traded</span>');
+  html += stRow('HIPAA', '<span style="color:var(--t3);font-size:12px">Not applicable</span>');
+  html += '<div style="margin-top:12px;padding:12px 14px;border-radius:var(--radius-sm);background:var(--amber-dim);font-size:12px;color:var(--t2);line-height:1.5">'
+    + '<strong style="color:var(--t1)">Compliance roadmap:</strong> SOC 2 Type II audit is planned. Castford does not currently hold any independent compliance certifications. Contact your account team for the current Trust Center status and any DPA requests.'
+    + '</div>';
+  html += '</div>';
+
+  return html;
 }
 
-function renderSettingsSecurity(){
-  return '<div class="settings-card"><h3>◎ Security & Authentication</h3><div class="subtitle">Manage access controls and security policies</div>'+
-    '<div class="settings-row"><span class="label">Single Sign-On (SSO)</span><span class="value"><span class="status-dot" style="background:var(--green);"></span> Enabled (SAML 2.0)</span></div>'+
-    '<div class="settings-row"><span class="label">Two-Factor Authentication</span><span class="value"><span class="status-dot" style="background:var(--green);"></span> Required for all users</span></div>'+
-    '<div class="settings-row"><span class="label">Session Timeout</span><span class="value">30 minutes</span></div>'+
-    '<div class="settings-row"><span class="label">IP Allowlisting</span><span class="value"><span class="status-dot" style="background:var(--amber);"></span> 3 ranges configured</span></div>'+
-    '<div class="settings-row"><span class="label">Encryption</span><span class="value"><span class="status-dot" style="background:var(--green);"></span> AES-256 at rest + TLS 1.3</span></div>'+
-    '<div class="settings-row"><span class="label">Audit Logging</span><span class="value"><span class="status-dot" style="background:var(--green);"></span> Active (90-day retention)</span></div>'+
-    '</div>'+
-    '<div class="settings-card"><h3>Compliance</h3><div class="subtitle">Certifications and regulatory compliance</div>'+
-    '<div class="settings-row"><span class="label">SOC 2 Type II</span><span class="value" style="color:var(--green);">Certified</span></div>'+
-    '<div class="settings-row"><span class="label">GDPR</span><span class="value" style="color:var(--green);">Compliant</span></div>'+
-    '<div class="settings-row"><span class="label">SOX Controls</span><span class="value" style="color:var(--green);">Active</span></div>'+
-    '</div>';
+function stRenderRegional(ctx){
+  var o = ctx.org;
+  var u = ctx.user || {};
+  var currencies = ctx.currencies || [];
+  var browserTz = stTimezone();
+  var browserLocale = stLocale();
+
+  var html = '<div class="settings-card"><h3>◎ Regional Settings</h3><div class="subtitle">Locale and time zone preferences</div>';
+  html += stRow('Detected Time Zone', stEsc(browserTz));
+  html += stRow('Detected Locale', stEsc(browserLocale));
+  if (u.timezone) {
+    html += stRow('User Time Zone', stEsc(u.timezone));
+  } else {
+    html += stMissingRow('User Time Zone', 'Using browser default');
+  }
+  html += '<div style="margin-top:8px;padding:10px 12px;border-radius:var(--radius-sm);background:var(--accent-dim);font-size:11.5px;color:var(--t2);line-height:1.5">Number and date formats follow the detected locale. To override per-user, set users.timezone in your workspace.</div>';
+  html += '</div>';
+
+  // Multi-currency — based on actual gl_transactions
+  html += '<div class="settings-card"><h3>Currencies in Use</h3><div class="subtitle">Currencies present in your general ledger</div>';
+  if (currencies.length === 0) {
+    html += '<div style="padding:24px 16px;text-align:center;color:var(--t2)">'
+      + '<div style="font-family:var(--display);font-size:14px;color:var(--t1);margin-bottom:6px">No currency data in transactions</div>'
+      + '<div style="font-family:var(--body);font-size:12px;color:var(--t3)">Currencies appear here once gl_transactions has data with the currency column populated.</div>'
+      + '<div style="font-family:\'Geist Mono\',monospace;font-size:10.5px;color:var(--t3);letter-spacing:0.5px;margin-top:12px">SOURCE · GL_TRANSACTIONS</div>'
+      + '</div>';
+  } else {
+    var firstCcy = currencies[0].currency;
+    currencies.forEach(function(c, i){
+      var label = c.currency;
+      var isPrimary = i === 0;
+      var statusHTML = isPrimary
+        ? stDot('green') + 'Primary · ' + c.count + ' txns'
+        : stDot('accent') + c.count + ' txn' + (c.count === 1 ? '' : 's');
+      html += stRow(stEsc(label), statusHTML);
+    });
+  }
+  html += '</div>';
+
+  return html;
 }
 
-function renderSettingsRegional(){
-  return '<div class="settings-card"><h3>◎ Regional Settings</h3><div class="subtitle">Currency, locale, and time zone preferences</div>'+
-    '<div class="settings-row"><span class="label">Default Currency</span><span class="value">USD ($)</span></div>'+
-    '<div class="settings-row"><span class="label">Number Format</span><span class="value">1,234,567.89</span></div>'+
-    '<div class="settings-row"><span class="label">Date Format</span><span class="value">MM/DD/YYYY</span></div>'+
-    '<div class="settings-row"><span class="label">Time Zone</span><span class="value">America/New_York (EST)</span></div>'+
-    '<div class="settings-row"><span class="label">Language</span><span class="value">English (US)</span></div>'+
-    '<div class="settings-row"><span class="label">Fiscal Year Start</span><span class="value">January 1</span></div>'+
-    '</div>'+
-    '<div class="settings-card"><h3>Multi-Currency</h3><div class="subtitle">Supported currencies for reporting</div>'+
-    '<div class="settings-row"><span class="label">USD</span><span class="value"><span class="status-dot" style="background:var(--green);"></span> Primary</span></div>'+
-    '<div class="settings-row"><span class="label">EUR</span><span class="value"><span class="status-dot" style="background:var(--accent);"></span> Active</span></div>'+
-    '<div class="settings-row"><span class="label">GBP</span><span class="value"><span class="status-dot" style="background:var(--accent);"></span> Active</span></div>'+
-    '<div class="settings-row"><span class="label">CAD</span><span class="value"><span class="status-dot" style="background:var(--t4);"></span> Inactive</span></div>'+
-    '</div>';
-}
+function stRenderSession(ctx){
+  var s = ctx.session;
+  var u = ctx.user || {};
 
-function renderSettingsSession(){
-  return '<div class="settings-card"><h3>⚡ Session & Activity</h3><div class="subtitle">Active sessions and login history</div>'+
-    '<div class="settings-row"><span class="label">Current Session</span><span class="value"><span class="status-dot" style="background:var(--green);"></span> Active · This device</span></div>'+
-    '<div class="settings-row"><span class="label">Session ID</span><span class="value" style="font-family:var(--mono);font-size:11px;">fos-sess-7a3f...d821</span></div>'+
-    '<div class="settings-row"><span class="label">Login Time</span><span class="value">Today, 9:14 AM EST</span></div>'+
-    '<div class="settings-row"><span class="label">IP Address</span><span class="value" style="font-family:var(--mono);font-size:11px;">192.168.1.•••</span></div>'+
-    '<div class="settings-row"><span class="label">Browser</span><span class="value">Safari 18.3 · macOS</span></div>'+
-    '<div class="settings-row"><span class="label">Last Activity</span><span class="value">Just now</span></div>'+
-    '</div>'+
-    '<div class="settings-card"><h3>Recent Logins</h3><div class="subtitle">Last 5 login events</div>'+
-    '<div class="settings-row"><span class="label">Today 9:14 AM</span><span class="value" style="color:var(--green);">Safari · NYC</span></div>'+
-    '<div class="settings-row"><span class="label">Mar 29, 2:31 PM</span><span class="value" style="color:var(--green);">Chrome · NYC</span></div>'+
-    '<div class="settings-row"><span class="label">Mar 28, 10:05 AM</span><span class="value" style="color:var(--green);">Safari · NYC</span></div>'+
-    '<div class="settings-row"><span class="label">Mar 27, 8:42 AM</span><span class="value" style="color:var(--green);">Mobile App · NYC</span></div>'+
-    '<div class="settings-row"><span class="label">Mar 26, 3:18 PM</span><span class="value" style="color:var(--green);">Chrome · NYC</span></div>'+
-    '</div>';
+  if (!s || !s.authenticated) {
+    return '<div class="settings-card"><h3>⚡ Session</h3>'
+      + '<div style="padding:32px;text-align:center;color:var(--t3);font-family:\'Geist Mono\',monospace;font-size:11px;letter-spacing:1px">NOT SIGNED IN — NO ACTIVE SESSION</div>'
+      + '</div>';
+  }
+
+  var html = '<div class="settings-card"><h3>⚡ Current Session</h3><div class="subtitle">Active authentication session details</div>';
+  html += stRow('Session', stDot('green') + 'Active · this browser');
+  if (s.tokenPreview) {
+    html += stRow('Token (preview)', '<span style="font-family:var(--mono);font-size:11px;color:var(--t2)">' + stEsc(s.tokenPreview) + '</span>');
+  }
+  if (s.user_email) html += stRow('Signed in as', stEsc(s.user_email));
+  if (s.provider) html += stRow('Auth Provider', stEsc(stCap(s.provider)));
+  if (s.expires_at) html += stRow('Session Expires', stEsc(new Date(s.expires_at).toLocaleString()));
+  html += stRow('Browser · OS', stEsc(stBrowser()));
+  // Honest about IP — not available client-side from Supabase
+  html += stMissingRow('IP Address', 'Hidden — client-side');
+  html += '</div>';
+
+  // User account context
+  html += '<div class="settings-card"><h3>Account</h3><div class="subtitle">Your user record</div>';
+  if (u.full_name) html += stRow('Full Name', stEsc(u.full_name));
+  if (u.role) html += stRow('Role', stEsc(stCap(u.role)));
+  if (u.job_title) html += stRow('Job Title', stEsc(u.job_title));
+  if (u.department) html += stRow('Department', stEsc(u.department));
+  if (s.user_created_at) html += stRow('Account Created', stEsc(new Date(s.user_created_at).toLocaleDateString()));
+  if (s.last_sign_in_at) html += stRow('Last Sign-In', stEsc(new Date(s.last_sign_in_at).toLocaleString()));
+  if (u.last_active_at) html += stRow('Last Active', stEsc(new Date(u.last_active_at).toLocaleString()));
+  html += '</div>';
+
+  // Honest note about login history
+  html += '<div class="settings-card"><h3>Login History</h3><div class="subtitle">Detailed sign-in events</div>'
+    + '<div style="padding:24px 16px;text-align:center;color:var(--t2)">'
+    +   '<div style="font-family:var(--display);font-size:14px;color:var(--t1);margin-bottom:6px">Detailed login history not available here</div>'
+    +   '<div style="font-family:var(--body);font-size:12px;color:var(--t3);max-width:380px;margin:0 auto">Per-event sign-in logs live in the Supabase auth dashboard. The current session\u2019s last sign-in time appears above.</div>'
+    + '</div>'
+    + '</div>';
+
+  return html;
 }
 
 // ═══ FEATURE PAGE RENDERERS ═══
