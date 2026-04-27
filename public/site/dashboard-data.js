@@ -510,6 +510,61 @@ window.CastfordData = (function() {
     };
   }
 
+  // ai_reports — most recent insights/recommendations for the org
+  async function getAiReports(opts) {
+    opts = opts || {};
+    var limit = opts.limit || 6;
+    if (!sb || demoMode || !orgId) return [];
+    var { data } = await sb
+      .from('ai_reports')
+      .select('id, report_type, title, summary, content, metrics, recommendations, status, auto_generated, generated_at, viewed_at, created_at')
+      .eq('org_id', orgId)
+      .order('generated_at', { ascending: false, nullsFirst: false })
+      .order('created_at', { ascending: false })
+      .limit(limit);
+    return data || [];
+  }
+
+  // financial_alerts — anomalies/variance alerts ordered by severity
+  async function getFinancialAlerts(opts) {
+    opts = opts || {};
+    var limit = opts.limit || 10;
+    var statusFilter = opts.status || 'active';
+    if (!sb || demoMode || !orgId) return [];
+    var q = sb
+      .from('financial_alerts')
+      .select('id, alert_type, severity, title, description, metric_name, current_value, expected_value, deviation_pct, period, status, created_at')
+      .eq('org_id', orgId)
+      .order('created_at', { ascending: false })
+      .limit(limit * 3);  // fetch wider then sort by severity in JS
+    if (statusFilter && statusFilter !== 'all') {
+      q = q.eq('status', statusFilter);
+    }
+    var { data } = await q;
+    var rows = data || [];
+    // sort by severity rank then created_at desc
+    var rank = { critical: 0, high: 1, medium: 2, low: 3 };
+    rows.sort(function(a, b){
+      var ra = rank[a.severity] === undefined ? 99 : rank[a.severity];
+      var rb = rank[b.severity] === undefined ? 99 : rank[b.severity];
+      if (ra !== rb) return ra - rb;
+      return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+    });
+    return rows.slice(0, limit);
+  }
+
+  // generated_reports — most recent narrative/summary report for the org
+  async function getLatestGeneratedReport() {
+    if (!sb || demoMode || !orgId) return null;
+    var { data } = await sb
+      .from('generated_reports')
+      .select('id, report_type, title, period, content, summary_text, generated_by, status, created_at')
+      .eq('org_id', orgId)
+      .order('created_at', { ascending: false })
+      .limit(1);
+    return (data && data[0]) || null;
+  }
+
   // ==========================================
   // API surface
   // ==========================================
@@ -548,6 +603,9 @@ window.CastfordData = (function() {
     getLatestCopilotConversation: getLatestCopilotConversation,
     getCopilotUsageSummary: getCopilotUsageSummary,
     getCopilotDataScope: getCopilotDataScope,
+    getAiReports: getAiReports,
+    getFinancialAlerts: getFinancialAlerts,
+    getLatestGeneratedReport: getLatestGeneratedReport,
     // WRITE
     createBudget: createBudget,
     updateBudget: updateBudget,
