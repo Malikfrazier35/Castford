@@ -565,6 +565,78 @@ window.CastfordData = (function() {
     return (data && data[0]) || null;
   }
 
+  // command_center_configs — get the active config for the org
+  async function getCommandCenterConfig() {
+    if (!sb || demoMode || !orgId) return null;
+    var { data } = await sb
+      .from('command_center_configs')
+      .select('id, client_name, command_center, current_version, brand_config, enabled_modules, kpi_config, layout_config, industry_vertical, tier, health_score, last_upgrade_at, next_upgrade_planned, updated_at')
+      .eq('org_id', orgId)
+      .order('updated_at', { ascending: false })
+      .limit(1);
+    return (data && data[0]) || null;
+  }
+
+  // notifications — list unread or recent notifications for the org
+  async function getNotifications(opts) {
+    opts = opts || {};
+    var limit = opts.limit || 20;
+    if (!sb || demoMode || !orgId) return [];
+    var q = sb
+      .from('notifications')
+      .select('id, channel, title, body, link, alert_id, read, sent_at, read_at')
+      .eq('org_id', orgId)
+      .order('sent_at', { ascending: false, nullsFirst: false })
+      .limit(limit);
+    if (opts.unread === true) q = q.eq('read', false);
+    var { data } = await q;
+    return data || [];
+  }
+
+  // audit_log — recent activity for the org
+  async function getRecentActivity(opts) {
+    opts = opts || {};
+    var limit = opts.limit || 12;
+    if (!sb || demoMode || !orgId) return [];
+    var q = sb
+      .from('audit_log')
+      .select('id, user_id, action, resource_type, resource_id, metadata, created_at')
+      .eq('org_id', orgId)
+      .order('created_at', { ascending: false })
+      .limit(limit);
+    if (opts.hoursWindow) {
+      var cutoff = new Date(Date.now() - opts.hoursWindow * 3600 * 1000).toISOString();
+      q = q.gte('created_at', cutoff);
+    }
+    var { data } = await q;
+    return data || [];
+  }
+
+  // Composite: counts for the four stat tiles on Command Center
+  async function getCommandCenterStats() {
+    if (!sb || demoMode || !orgId) {
+      return { critical: 0, warnings: 0, unreadNotifications: 0, eventsLast7d: 0, lastEventAt: null };
+    }
+    var sevenDaysAgo = new Date(Date.now() - 7 * 86400 * 1000).toISOString();
+    var critResp = await sb.from('financial_alerts').select('id', { count: 'exact', head: true })
+      .eq('org_id', orgId).eq('status', 'active').eq('severity', 'critical');
+    var warnResp = await sb.from('financial_alerts').select('id', { count: 'exact', head: true })
+      .eq('org_id', orgId).eq('status', 'active').in('severity', ['high','medium']);
+    var notifResp = await sb.from('notifications').select('id', { count: 'exact', head: true })
+      .eq('org_id', orgId).eq('read', false);
+    var eventsResp = await sb.from('audit_log').select('id', { count: 'exact', head: true })
+      .eq('org_id', orgId).gte('created_at', sevenDaysAgo);
+    var latestResp = await sb.from('audit_log').select('created_at')
+      .eq('org_id', orgId).order('created_at', { ascending: false }).limit(1);
+    return {
+      critical: critResp.count || 0,
+      warnings: warnResp.count || 0,
+      unreadNotifications: notifResp.count || 0,
+      eventsLast7d: eventsResp.count || 0,
+      lastEventAt: (latestResp.data && latestResp.data[0]) ? latestResp.data[0].created_at : null
+    };
+  }
+
   // ==========================================
   // API surface
   // ==========================================
@@ -606,6 +678,10 @@ window.CastfordData = (function() {
     getAiReports: getAiReports,
     getFinancialAlerts: getFinancialAlerts,
     getLatestGeneratedReport: getLatestGeneratedReport,
+    getCommandCenterConfig: getCommandCenterConfig,
+    getNotifications: getNotifications,
+    getRecentActivity: getRecentActivity,
+    getCommandCenterStats: getCommandCenterStats,
     // WRITE
     createBudget: createBudget,
     updateBudget: updateBudget,

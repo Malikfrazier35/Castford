@@ -3354,13 +3354,26 @@ function renderInvestor(){
     + '<div class="bottom-spacer"></div>';
 }
 
+// ═══ COMMAND CENTER (Phase 2B-3 part 3) ═══
+// Wired to financial_alerts + notifications + audit_log + close_periods + integrations via
+//   CastfordData.getCommandCenterStats() / getFinancialAlerts() / getRecentActivity() /
+//   getCurrentClosePeriod() / getIntegrations().
+// Four sections: Stats tiles, Quick Actions (static UI), Active Alerts, Recent Activity.
+// Falls back to demo if (a) data layer not loaded, (b) demo mode.
+// Each section degrades independently.
+
 function renderCommand(){
   document.getElementById('breadcrumb').innerHTML='Dashboard / <strong>Command Center</strong>';
   document.getElementById('resourcesPanel').style.display='';
-  document.getElementById('mainContent').innerHTML = ''
+  document.getElementById('mainContent').innerHTML = cmdShellHTML(true);
+  loadCommandAndRender();
+}
+
+function cmdShellHTML(loading){
+  return ''
     + '<div class="sp-header">'
     +   '<div class="sp-title-block">'
-    +     '<div class="sp-eyebrow">REAL-TIME · 1 CRITICAL · 3 WARNINGS · ALL SYSTEMS NOMINAL</div>'
+    +     '<div class="sp-eyebrow" id="cmdEyebrow">' + (loading ? 'REAL-TIME · LOADING…' : 'REAL-TIME MONITORING') + '</div>'
     +     '<h1 class="sp-title">Command <em>center</em></h1>'
     +   '</div>'
     +   '<div class="sp-actions">'
@@ -3368,43 +3381,296 @@ function renderCommand(){
     +     '<button class="sp-btn primary">+ New alert</button>'
     +   '</div>'
     + '</div>'
-    + '<div class="cc-stats">'
-    +   '<div class="cc-stat"><div class="cc-stat-icon crit">!</div><div class="cc-stat-text"><div class="cc-stat-num">1</div><div class="cc-stat-label">CRITICAL</div></div></div>'
-    +   '<div class="cc-stat"><div class="cc-stat-icon warn">⚠</div><div class="cc-stat-text"><div class="cc-stat-num">3</div><div class="cc-stat-label">WARNINGS</div></div></div>'
-    +   '<div class="cc-stat"><div class="cc-stat-icon info">i</div><div class="cc-stat-text"><div class="cc-stat-num">12</div><div class="cc-stat-label">INFO</div></div></div>'
-    +   '<div class="cc-stat"><div class="cc-stat-icon ok">✓</div><div class="cc-stat-text"><div class="cc-stat-num">99.94%</div><div class="cc-stat-label">UPTIME (30D)</div></div></div>'
-    + '</div>'
-    + '<div class="sp-sect-label">QUICK ACTIONS <span class="sp-sect-meta">One-click operations across the platform</span></div>'
-    + '<div class="cc-actions">'
-    +   '<div class="cc-action"><div class="cc-action-icon">▶</div><div class="cc-action-name">Run consolidation</div><div class="cc-action-desc">5 ENTITIES · ~14s</div></div>'
-    +   '<div class="cc-action"><div class="cc-action-icon">⊘</div><div class="cc-action-name">Trigger close</div><div class="cc-action-desc">JANUARY 2026</div></div>'
-    +   '<div class="cc-action"><div class="cc-action-icon">↻</div><div class="cc-action-name">Refresh forecast</div><div class="cc-action-desc">3 SCENARIOS</div></div>'
-    +   '<div class="cc-action"><div class="cc-action-icon">→</div><div class="cc-action-name">Send board pack</div><div class="cc-action-desc">PDF · 8 RECIPIENTS</div></div>'
-    +   '<div class="cc-action"><div class="cc-action-icon">↺</div><div class="cc-action-name">Sync all sources</div><div class="cc-action-desc">5 INTEGRATIONS</div></div>'
-    + '</div>'
-    + '<div class="sp-sect-label">ACTIVE ALERTS <span class="sp-sect-meta">Sorted by severity · auto-refresh every 30s</span></div>'
-    + '<div class="cc-alerts">'
-    +   '<div class="cc-alert critical"><div class="strip"></div><div class="cc-alert-text"><div class="cc-alert-title">Rippling integration token expired</div><div class="cc-alert-desc">HRIS sync has been failing for 14 hours · headcount data stale</div></div><div class="cc-alert-time">14h ago</div><div class="cc-alert-sev critical">Critical</div></div>'
-    +   '<div class="cc-alert warning"><div class="strip"></div><div class="cc-alert-text"><div class="cc-alert-title">G&A spend running 5.9% above plan</div><div class="cc-alert-desc">Legal and audit fees driving the variance · review with finance</div></div><div class="cc-alert-time">2h ago</div><div class="cc-alert-sev warning">Warning</div></div>'
-    +   '<div class="cc-alert warning"><div class="strip"></div><div class="cc-alert-text"><div class="cc-alert-title">2 close tasks past due</div><div class="cc-alert-desc">AR aging review and revenue cutoff adjustments behind schedule</div></div><div class="cc-alert-time">3h ago</div><div class="cc-alert-sev warning">Warning</div></div>'
-    +   '<div class="cc-alert warning"><div class="strip"></div><div class="cc-alert-text"><div class="cc-alert-title">Snowflake compute spend trending high</div><div class="cc-alert-desc">Running 6.9% above plan · $284K committed credits available</div></div><div class="cc-alert-time">5h ago</div><div class="cc-alert-sev warning">Warning</div></div>'
-    +   '<div class="cc-alert info"><div class="strip"></div><div class="cc-alert-text"><div class="cc-alert-title">Forecast model auto-refreshed</div><div class="cc-alert-desc">Base case updated with 142 new GL transactions · MAPE remains within target</div></div><div class="cc-alert-time">14m ago</div><div class="cc-alert-sev info">Info</div></div>'
-    +   '<div class="cc-alert info"><div class="strip"></div><div class="cc-alert-text"><div class="cc-alert-title">Two new enterprise expansions logged</div><div class="cc-alert-desc">Acme Corp upgraded to Business tier · Globex added 12 seats</div></div><div class="cc-alert-time">23m ago</div><div class="cc-alert-sev info">Info</div></div>'
-    + '</div>'
+    + '<div class="cc-stats" id="cmdStatsWrap">' + (loading ? cmdStatsSkeleton() : '') + '</div>'
+    + '<div class="sp-sect-label">QUICK ACTIONS <span class="sp-sect-meta" id="cmdActionsMeta">' + (loading ? 'Loading…' : 'One-click operations across the platform') + '</span></div>'
+    + '<div class="cc-actions" id="cmdActionsWrap">' + (loading ? '' : '') + '</div>'
+    + '<div class="sp-sect-label">ACTIVE ALERTS <span class="sp-sect-meta" id="cmdAlertsMeta">' + (loading ? 'Loading…' : '') + '</span></div>'
+    + '<div class="cc-alerts" id="cmdAlertsWrap">' + (loading ? cmdAlertsSkeleton() : '') + '</div>'
     + '<div class="cc-activity">'
-    +   '<div class="cc-activity-head"><div class="cc-activity-title">Recent activity</div><div class="trend-period">Last 24 hours · 28 events</div></div>'
-    +   '<div class="cc-activity-list">'
-    +     '<div class="cc-activity-row"><span class="ts">14:32 EST</span><span><b>Sarah Chen</b> reconciled the Stripe payout for January 2026</span></div>'
-    +     '<div class="cc-activity-row"><span class="ts">14:18 EST</span><span><b>Auto-sync</b> pulled 142 new transactions from NetSuite</span></div>'
-    +     '<div class="cc-activity-row"><span class="ts">13:45 EST</span><span><b>Jordan Martinez</b> completed depreciation entries for Q4</span></div>'
-    +     '<div class="cc-activity-row"><span class="ts">13:12 EST</span><span><b>Malik Frazier</b> created the Q4 board scenario</span></div>'
-    +     '<div class="cc-activity-row"><span class="ts">12:48 EST</span><span><b>Forecast engine</b> regenerated base case with updated drivers</span></div>'
-    +     '<div class="cc-activity-row"><span class="ts">11:30 EST</span><span><b>Riley Patel</b> opened the AI Copilot session about COGS variance</span></div>'
-    +     '<div class="cc-activity-row"><span class="ts">10:15 EST</span><span><b>System</b> sent monthly close reminder to 4 contributors</span></div>'
-    +   '</div>'
+    +   '<div class="cc-activity-head"><div class="cc-activity-title">Recent activity</div><div class="trend-period" id="cmdActivityMeta">' + (loading ? 'Loading…' : '') + '</div></div>'
+    +   '<div class="cc-activity-list" id="cmdActivityWrap">' + (loading ? cmdActivitySkeleton() : '') + '</div>'
     + '</div>'
-    + '<div class="sp-footer-meta">Real-time monitoring active · alerts checked every 30 seconds · 28 events in last 24h</div>'
+    + '<div class="sp-footer-meta" id="cmdFooterMeta">Loading command center…</div>'
     + '<div class="bottom-spacer"></div>';
+}
+
+function cmdStatsSkeleton(){
+  var tile = '<div class="cc-stat" style="opacity:.5"><div class="cc-stat-icon">·</div><div class="cc-stat-text"><div class="cc-stat-num">···</div><div class="cc-stat-label">LOADING</div></div></div>';
+  return tile + tile + tile + tile;
+}
+
+function cmdAlertsSkeleton(){
+  return '<div style="padding:32px 0;text-align:center;color:var(--t3);font-family:\'Geist Mono\',monospace;font-size:11px;letter-spacing:1px">FETCHING ACTIVE ALERTS…</div>';
+}
+
+function cmdActivitySkeleton(){
+  return '<div style="padding:24px 0;text-align:center;color:var(--t3);font-family:\'Geist Mono\',monospace;font-size:11px;letter-spacing:1px">FETCHING RECENT ACTIVITY…</div>';
+}
+
+async function loadCommandAndRender(){
+  if (!window.CastfordData) {
+    renderCommandDemo('Data layer not loaded — showing sample command center');
+    return;
+  }
+  try {
+    if (!window.CastfordData.isInitialized()) {
+      await window.CastfordData.init();
+    }
+  } catch (e) {
+    console.warn('CastfordData init failed:', e);
+    renderCommandDemo('Data layer init failed — showing sample command center');
+    return;
+  }
+
+  if (window.CastfordData.isDemoMode()) {
+    renderCommandDemo('Demo mode active — connect your workspace to see real command center');
+    return;
+  }
+
+  var stats = null, alerts = [], activity = [], closePeriod = null, integrations = [];
+  try {
+    var results = await Promise.all([
+      window.CastfordData.getCommandCenterStats().catch(function(){ return null; }),
+      window.CastfordData.getFinancialAlerts({ limit: 8, status: 'active' }).catch(function(){ return []; }),
+      window.CastfordData.getRecentActivity({ limit: 12 }).catch(function(){ return []; }),
+      window.CastfordData.getCurrentClosePeriod().catch(function(){ return null; }),
+      window.CastfordData.getIntegrations().catch(function(){ return []; })
+    ]);
+    stats = results[0];
+    alerts = results[1] || [];
+    activity = results[2] || [];
+    closePeriod = results[3];
+    integrations = results[4] || [];
+  } catch (e) {
+    console.warn('Command Center fetch failed:', e);
+    renderCommandDemo('Data fetch failed — showing sample command center');
+    return;
+  }
+
+  // Eyebrow
+  if (stats) {
+    var ebParts = [];
+    if (stats.critical > 0) ebParts.push(stats.critical + ' CRITICAL');
+    if (stats.warnings > 0) ebParts.push(stats.warnings + ' WARNING' + (stats.warnings === 1 ? '' : 'S'));
+    if (stats.unreadNotifications > 0) ebParts.push(stats.unreadNotifications + ' UNREAD');
+    if (ebParts.length === 0) ebParts.push('ALL CLEAR');
+    document.getElementById('cmdEyebrow').textContent = 'REAL-TIME · ' + ebParts.join(' · ');
+  } else {
+    document.getElementById('cmdEyebrow').textContent = 'REAL-TIME MONITORING';
+  }
+
+  cmdRenderStats(stats);
+  cmdRenderActions(closePeriod, integrations);
+  cmdRenderAlerts(alerts);
+  cmdRenderActivity(activity);
+
+  // Footer
+  var orgId = window.CastfordData.getOrgId() || '—';
+  var orgIdShort = orgId === '—' ? '—' : orgId.slice(0, 8) + '…';
+  document.getElementById('cmdFooterMeta').textContent =
+    'Source: financial_alerts + notifications + audit_log + close_periods + integrations · ' +
+    alerts.length + ' alert' + (alerts.length === 1 ? '' : 's') + ' · ' +
+    activity.length + ' event' + (activity.length === 1 ? '' : 's') + ' · org ' + orgIdShort;
+}
+
+// ─── helpers ───────────────────────────────────────────────────────────
+
+function cmdEscapeHTML(s){
+  return String(s == null ? '' : s)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+
+function cmdRelTime(ts){
+  if (!ts) return '—';
+  var d = new Date(ts);
+  if (isNaN(d.getTime())) return '—';
+  var s = Math.max(0, Math.floor((Date.now() - d.getTime()) / 1000));
+  if (s < 60) return s + 's ago';
+  if (s < 3600) return Math.floor(s/60) + 'm ago';
+  if (s < 86400) return Math.floor(s/3600) + 'h ago';
+  return Math.floor(s/86400) + 'd ago';
+}
+
+function cmdAlertSeverityClass(severity){
+  return ({
+    critical: 'critical', high: 'warning', medium: 'warning', low: 'info'
+  })[severity] || 'info';
+}
+
+function cmdAlertSeverityLabel(severity){
+  return ({
+    critical: 'Critical', high: 'Warning', medium: 'Warning', low: 'Info'
+  })[severity] || (severity || 'Info');
+}
+
+function cmdActionDescriptionFromAuditAction(action, resourceType){
+  if (!action) return 'System action';
+  var verbMap = {
+    'forecast.generated': 'Forecast engine regenerated base case',
+    'forecast.updated': 'Forecast updated',
+    'sync.completed': 'Auto-sync completed',
+    'sync.failed': 'Auto-sync failed',
+    'integration.connected': 'New integration connected',
+    'integration.disconnected': 'Integration disconnected',
+    'close.opened': 'Close period opened',
+    'close.locked': 'Close period locked',
+    'transaction.imported': 'Transactions imported',
+    'budget.updated': 'Budget updated',
+    'scenario.created': 'New scenario created',
+    'team.invited': 'Team member invited',
+    'team.joined': 'Team member joined'
+  };
+  if (verbMap[action]) return verbMap[action];
+  // Generic fallback: humanize action like "resource.verb" → "resource verb"
+  var parts = action.split('.');
+  if (parts.length === 2) {
+    var verb = parts[1].replace(/_/g,' ');
+    var noun = parts[0].replace(/_/g,' ');
+    return verb.charAt(0).toUpperCase() + verb.slice(1) + ' on ' + noun;
+  }
+  return action.replace(/[._]/g,' ');
+}
+
+// ─── section renderers ─────────────────────────────────────────────────
+
+function cmdRenderStats(stats){
+  var wrap = document.getElementById('cmdStatsWrap');
+  var s = stats || { critical: 0, warnings: 0, unreadNotifications: 0, eventsLast7d: 0, lastEventAt: null };
+  var critIcon = s.critical > 0 ? '!' : '·';
+  var warnIcon = s.warnings > 0 ? '⚠' : '·';
+  var infoIcon = s.unreadNotifications > 0 ? 'i' : '·';
+  var okIcon = '✓';
+  var critClass = s.critical > 0 ? 'crit' : 'ok';
+  var warnClass = s.warnings > 0 ? 'warn' : 'ok';
+  var infoClass = s.unreadNotifications > 0 ? 'info' : 'ok';
+  var eventLabel = s.lastEventAt ? ('LAST ' + cmdRelTime(s.lastEventAt).toUpperCase()) : 'EVENTS / 7D';
+  wrap.innerHTML = ''
+    + '<div class="cc-stat"><div class="cc-stat-icon ' + critClass + '">' + critIcon + '</div><div class="cc-stat-text"><div class="cc-stat-num">' + s.critical + '</div><div class="cc-stat-label">CRITICAL</div></div></div>'
+    + '<div class="cc-stat"><div class="cc-stat-icon ' + warnClass + '">' + warnIcon + '</div><div class="cc-stat-text"><div class="cc-stat-num">' + s.warnings + '</div><div class="cc-stat-label">WARNINGS</div></div></div>'
+    + '<div class="cc-stat"><div class="cc-stat-icon ' + infoClass + '">' + infoIcon + '</div><div class="cc-stat-text"><div class="cc-stat-num">' + s.unreadNotifications + '</div><div class="cc-stat-label">UNREAD NOTIF.</div></div></div>'
+    + '<div class="cc-stat"><div class="cc-stat-icon ok">' + okIcon + '</div><div class="cc-stat-text"><div class="cc-stat-num">' + s.eventsLast7d + '</div><div class="cc-stat-label">' + eventLabel + '</div></div></div>';
+}
+
+function cmdRenderActions(closePeriod, integrations){
+  var wrap = document.getElementById('cmdActionsWrap');
+  var connected = (integrations || []).filter(function(i){ return i.status === 'connected' || i.status === 'active'; }).length;
+
+  // Quick actions remain UI affordances. We surface light data context in the
+  // descriptions where it adds signal (period, integration count) but the
+  // buttons themselves are non-functional placeholders for future actions.
+  var closeLabel = closePeriod
+    ? (closePeriod.period ? closePeriod.period.toUpperCase() : 'ACTIVE PERIOD')
+    : 'NO ACTIVE PERIOD';
+  var integLabel = connected > 0
+    ? (connected + ' INTEGRATION' + (connected === 1 ? '' : 'S'))
+    : 'NONE CONNECTED';
+
+  wrap.innerHTML = ''
+    + '<div class="cc-action"><div class="cc-action-icon">▶</div><div class="cc-action-name">Run consolidation</div><div class="cc-action-desc">All entities</div></div>'
+    + '<div class="cc-action"><div class="cc-action-icon">⊘</div><div class="cc-action-name">Trigger close</div><div class="cc-action-desc">' + cmdEscapeHTML(closeLabel) + '</div></div>'
+    + '<div class="cc-action"><div class="cc-action-icon">↻</div><div class="cc-action-name">Refresh forecast</div><div class="cc-action-desc">All scenarios</div></div>'
+    + '<div class="cc-action"><div class="cc-action-icon">→</div><div class="cc-action-name">Send board pack</div><div class="cc-action-desc">PDF · email</div></div>'
+    + '<div class="cc-action"><div class="cc-action-icon">↺</div><div class="cc-action-name">Sync all sources</div><div class="cc-action-desc">' + cmdEscapeHTML(integLabel) + '</div></div>';
+
+  document.getElementById('cmdActionsMeta').textContent = 'One-click operations · static UI placeholders';
+}
+
+function cmdRenderAlerts(alerts){
+  var wrap = document.getElementById('cmdAlertsWrap');
+  var meta = document.getElementById('cmdAlertsMeta');
+
+  if (!alerts || alerts.length === 0) {
+    meta.textContent = 'All clear · no active alerts';
+    wrap.innerHTML = '<div style="padding:48px 16px;text-align:center;color:var(--t2);border:1px solid var(--border);border-radius:4px;background:var(--surface)">'
+      + '<div style="font-family:var(--display);font-size:16px;color:var(--t1);margin-bottom:6px">All systems nominal</div>'
+      + '<div style="font-family:\'Geist Mono\',monospace;font-size:11px;color:var(--t3);letter-spacing:0.5px">NO ACTIVE FINANCIAL_ALERTS</div>'
+      + '</div>';
+    return;
+  }
+
+  meta.textContent = alerts.length + ' active · sorted by severity';
+  var html = '';
+  alerts.forEach(function(a){
+    var cls = cmdAlertSeverityClass(a.severity);
+    var lbl = cmdAlertSeverityLabel(a.severity);
+    var title = a.title || a.metric_name || 'Alert';
+    var desc = a.description || ((a.current_value && a.expected_value)
+      ? 'Actual ' + a.current_value + ' vs expected ' + a.expected_value
+      : '');
+    html += '<div class="cc-alert ' + cls + '">'
+      + '<div class="strip"></div>'
+      + '<div class="cc-alert-text">'
+      +   '<div class="cc-alert-title">' + cmdEscapeHTML(title) + '</div>'
+      +   (desc ? '<div class="cc-alert-desc">' + cmdEscapeHTML(desc) + '</div>' : '')
+      + '</div>'
+      + '<div class="cc-alert-time">' + cmdRelTime(a.created_at) + '</div>'
+      + '<div class="cc-alert-sev ' + cls + '">' + cmdEscapeHTML(lbl) + '</div>'
+      + '</div>';
+  });
+  wrap.innerHTML = html;
+}
+
+function cmdRenderActivity(activity){
+  var wrap = document.getElementById('cmdActivityWrap');
+  var meta = document.getElementById('cmdActivityMeta');
+
+  if (!activity || activity.length === 0) {
+    meta.textContent = 'No recent activity';
+    wrap.innerHTML = '<div style="padding:32px 0;text-align:center;color:var(--t3);font-family:\'Geist Mono\',monospace;font-size:11px;letter-spacing:1px">NO ENTRIES IN AUDIT_LOG</div>';
+    return;
+  }
+
+  meta.textContent = activity.length + ' event' + (activity.length === 1 ? '' : 's') + ' shown · audit_log';
+
+  var html = '';
+  activity.forEach(function(row){
+    var actor = row.user_id ? 'User' : 'System';
+    var description = cmdActionDescriptionFromAuditAction(row.action, row.resource_type);
+    var ts = cmdRelTime(row.created_at);
+    html += '<div class="cc-activity-row">'
+      + '<span class="ts">' + cmdEscapeHTML(ts) + '</span>'
+      + '<span><b>' + cmdEscapeHTML(actor) + '</b> · ' + cmdEscapeHTML(description) + '</span>'
+      + '</div>';
+  });
+  wrap.innerHTML = html;
+}
+
+// ─── demo render ───────────────────────────────────────────────────────
+
+function renderCommandDemo(banner){
+  document.getElementById('cmdEyebrow').textContent = 'REAL-TIME · DEMO DATA';
+
+  document.getElementById('cmdStatsWrap').innerHTML = ''
+    + '<div class="cc-stat"><div class="cc-stat-icon crit">!</div><div class="cc-stat-text"><div class="cc-stat-num">1</div><div class="cc-stat-label">CRITICAL (sample)</div></div></div>'
+    + '<div class="cc-stat"><div class="cc-stat-icon warn">⚠</div><div class="cc-stat-text"><div class="cc-stat-num">3</div><div class="cc-stat-label">WARNINGS (sample)</div></div></div>'
+    + '<div class="cc-stat"><div class="cc-stat-icon info">i</div><div class="cc-stat-text"><div class="cc-stat-num">12</div><div class="cc-stat-label">UNREAD (sample)</div></div></div>'
+    + '<div class="cc-stat"><div class="cc-stat-icon ok">✓</div><div class="cc-stat-text"><div class="cc-stat-num">28</div><div class="cc-stat-label">EVENTS / 7D (sample)</div></div></div>';
+
+  document.getElementById('cmdActionsMeta').textContent = 'One-click operations · static UI placeholders';
+  document.getElementById('cmdActionsWrap').innerHTML = ''
+    + '<div class="cc-action"><div class="cc-action-icon">▶</div><div class="cc-action-name">Run consolidation</div><div class="cc-action-desc">All entities</div></div>'
+    + '<div class="cc-action"><div class="cc-action-icon">⊘</div><div class="cc-action-name">Trigger close</div><div class="cc-action-desc">SAMPLE PERIOD</div></div>'
+    + '<div class="cc-action"><div class="cc-action-icon">↻</div><div class="cc-action-name">Refresh forecast</div><div class="cc-action-desc">All scenarios</div></div>'
+    + '<div class="cc-action"><div class="cc-action-icon">→</div><div class="cc-action-name">Send board pack</div><div class="cc-action-desc">PDF · email</div></div>'
+    + '<div class="cc-action"><div class="cc-action-icon">↺</div><div class="cc-action-name">Sync all sources</div><div class="cc-action-desc">SAMPLE</div></div>';
+
+  document.getElementById('cmdAlertsMeta').textContent = '4 sample alerts';
+  document.getElementById('cmdAlertsWrap').innerHTML = ''
+    + '<div class="cc-alert critical"><div class="strip"></div><div class="cc-alert-text"><div class="cc-alert-title">Sample critical alert</div><div class="cc-alert-desc">Illustrative · with real data this would describe a budget breach or system issue</div></div><div class="cc-alert-time">14h ago</div><div class="cc-alert-sev critical">Critical</div></div>'
+    + '<div class="cc-alert warning"><div class="strip"></div><div class="cc-alert-text"><div class="cc-alert-title">Sample warning</div><div class="cc-alert-desc">Illustrative · with real data this would describe a budget variance</div></div><div class="cc-alert-time">2h ago</div><div class="cc-alert-sev warning">Warning</div></div>'
+    + '<div class="cc-alert warning"><div class="strip"></div><div class="cc-alert-text"><div class="cc-alert-title">Sample close-task warning</div><div class="cc-alert-desc">Illustrative · close tasks past due would surface here</div></div><div class="cc-alert-time">3h ago</div><div class="cc-alert-sev warning">Warning</div></div>'
+    + '<div class="cc-alert info"><div class="strip"></div><div class="cc-alert-text"><div class="cc-alert-title">Sample info notice</div><div class="cc-alert-desc">Illustrative · routine system updates would land here</div></div><div class="cc-alert-time">14m ago</div><div class="cc-alert-sev info">Info</div></div>';
+
+  document.getElementById('cmdActivityMeta').textContent = 'Sample activity · illustrative only';
+  document.getElementById('cmdActivityWrap').innerHTML = ''
+    + '<div class="cc-activity-row"><span class="ts">just now</span><span><b>System</b> · sample activity entry</span></div>'
+    + '<div class="cc-activity-row"><span class="ts">14m ago</span><span><b>Auto-sync</b> · sample activity entry</span></div>'
+    + '<div class="cc-activity-row"><span class="ts">23m ago</span><span><b>Forecast engine</b> · sample activity entry</span></div>'
+    + '<div class="cc-activity-row"><span class="ts">1h ago</span><span><b>System</b> · sample activity entry</span></div>'
+    + '<div class="cc-activity-row"><span class="ts">3h ago</span><span><b>System</b> · sample activity entry</span></div>';
+
+  document.getElementById('cmdFooterMeta').textContent = (banner || 'Demo data') + ' · Connect a workspace to see real alerts and activity';
 }
 
 // ═══ INTELLIGENCE (Phase 2B-3 part 2) ═══
