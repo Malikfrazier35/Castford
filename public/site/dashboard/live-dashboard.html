@@ -2600,10 +2600,15 @@ function renderTeamDemo(banner){
 function renderIntegrations(){
   document.getElementById('breadcrumb').innerHTML='Dashboard / <strong>Integrations</strong>';
   document.getElementById('resourcesPanel').style.display='';
-  document.getElementById('mainContent').innerHTML = ''
+  document.getElementById('mainContent').innerHTML = integrationsShellHTML(true);
+  loadIntegrationsAndRender();
+}
+
+function integrationsShellHTML(loading){
+  return ''
     + '<div class="sp-header">'
     +   '<div class="sp-title-block">'
-    +     '<div class="sp-eyebrow">DATA SOURCES · 5 CONNECTED · 1 NEEDS ATTENTION</div>'
+    +     '<div class="sp-eyebrow" id="intEyebrow">DATA SOURCES · LOADING…</div>'
     +     '<h1 class="sp-title">Connected <em>integrations</em></h1>'
     +   '</div>'
     +   '<div class="sp-actions">'
@@ -2611,66 +2616,229 @@ function renderIntegrations(){
     +     '<button class="sp-btn primary">+ Add integration</button>'
     +   '</div>'
     + '</div>'
-    + '<div class="sp-summary">'
-    +   '<div class="sp-sum"><div class="sp-sum-label">CONNECTED SOURCES</div><div class="sp-sum-value">5</div><div class="sp-sum-delta">Across 5 categories</div></div>'
-    +   '<div class="sp-sum"><div class="sp-sum-label">RECORDS SYNCED</div><div class="sp-sum-value">3.4M</div><div class="sp-sum-delta">↗ +47K today</div></div>'
-    +   '<div class="sp-sum"><div class="sp-sum-label">LAST SYNC</div><div class="sp-sum-value">53s</div><div class="sp-sum-delta">All sources current</div></div>'
-    +   '<div class="sp-sum"><div class="sp-sum-label">SYNC FAILURES (24H)</div><div class="sp-sum-value">2</div><div class="sp-sum-delta down">Rippling token expired</div></div>'
-    + '</div>'
-    + '<div class="sp-sect-label">CONNECTED <span class="sp-sect-meta">5 active integrations · auto-sync every 6 hours</span></div>'
-    + '<div class="in-grid">'
-    +   '<div class="in-card connected">'
-    +     '<div class="in-card-head"><div class="in-card-logo">N</div><div class="in-card-status live">Live</div></div>'
-    +     '<div class="in-card-name">NetSuite</div>'
-    +     '<div class="in-card-desc">General ledger and chart of accounts source of truth.</div>'
-    +     '<div class="in-card-stats"><span><b>847,000</b> records</span><span>Synced 53s ago</span></div>'
-    +   '</div>'
-    +   '<div class="in-card connected">'
-    +     '<div class="in-card-head"><div class="in-card-logo">SF</div><div class="in-card-status live">Live</div></div>'
-    +     '<div class="in-card-name">Salesforce</div>'
-    +     '<div class="in-card-desc">CRM data for pipeline, opportunities, and customer attribution.</div>'
-    +     '<div class="in-card-stats"><span><b>124,000</b> records</span><span>Synced 1 min ago</span></div>'
-    +   '</div>'
-    +   '<div class="in-card connected">'
-    +     '<div class="in-card-head"><div class="in-card-logo">S</div><div class="in-card-status live">Live</div></div>'
-    +     '<div class="in-card-name">Stripe</div>'
-    +     '<div class="in-card-desc">Subscription billing and payment processing data.</div>'
-    +     '<div class="in-card-stats"><span><b>38,000</b> records</span><span>Synced 2 min ago</span></div>'
-    +   '</div>'
-    +   '<div class="in-card connected">'
-    +     '<div class="in-card-head"><div class="in-card-logo">SN</div><div class="in-card-status live">Live</div></div>'
-    +     '<div class="in-card-name">Snowflake</div>'
-    +     '<div class="in-card-desc">Data warehouse for analytics and product usage metrics.</div>'
-    +     '<div class="in-card-stats"><span><b>2.1M</b> records</span><span>Synced 4 min ago</span></div>'
-    +   '</div>'
-    +   '<div class="in-card error">'
-    +     '<div class="in-card-head"><div class="in-card-logo">R</div><div class="in-card-status warn">Token expired</div></div>'
-    +     '<div class="in-card-name">Rippling</div>'
-    +     '<div class="in-card-desc">HRIS for headcount, payroll, and benefits data.</div>'
-    +     '<div class="in-card-stats"><span><b>312</b> records</span><span>Last sync 14 hours ago</span></div>'
-    +   '</div>'
-    +   '<div class="in-card connected">'
-    +     '<div class="in-card-head"><div class="in-card-logo">P</div><div class="in-card-status live">Live</div></div>'
-    +     '<div class="in-card-name">Plaid</div>'
-    +     '<div class="in-card-desc">Bank feed aggregation across 4 accounts and 5 entities.</div>'
-    +     '<div class="in-card-stats"><span><b>18,400</b> records</span><span>Synced 6 min ago</span></div>'
-    +   '</div>'
-    + '</div>'
-    + '<div class="sp-sect-label">AVAILABLE TO CONNECT <span class="sp-sect-meta">8 integrations ready · click to connect</span></div>'
-    + '<div class="in-available">'
-    +   '<div class="in-avail-grid">'
-    +     '<div class="in-avail"><div class="in-avail-logo">QB</div><div class="in-avail-name">QuickBooks</div></div>'
-    +     '<div class="in-avail"><div class="in-avail-logo">X</div><div class="in-avail-name">Xero</div></div>'
-    +     '<div class="in-avail"><div class="in-avail-logo">G</div><div class="in-avail-name">Gusto</div></div>'
-    +     '<div class="in-avail"><div class="in-avail-logo">H</div><div class="in-avail-name">HubSpot</div></div>'
-    +     '<div class="in-avail"><div class="in-avail-logo">B</div><div class="in-avail-name">Brex</div></div>'
-    +     '<div class="in-avail"><div class="in-avail-logo">M</div><div class="in-avail-name">Mercury</div></div>'
-    +     '<div class="in-avail"><div class="in-avail-logo">RA</div><div class="in-avail-name">Ramp</div></div>'
-    +     '<div class="in-avail"><div class="in-avail-logo">A</div><div class="in-avail-name">Airbase</div></div>'
-    +   '</div>'
-    + '</div>'
-    + '<div class="sp-footer-meta">Sync schedule: every 6 hours · webhook events processed in real-time · 3.4M total records · 99.94% uptime (30d)</div>'
+    + '<div class="sp-summary" id="intSummary">' + (loading ? integrationsSummarySkeleton() : '') + '</div>'
+    + '<div class="sp-sect-label">CONNECTED <span class="sp-sect-meta" id="intConnectedMeta">' + (loading ? 'Loading…' : '') + '</span></div>'
+    + '<div id="intConnectedWrap">' + (loading ? integrationsCardsSkeleton() : '') + '</div>'
+    + '<div class="sp-sect-label" id="intAvailLabel" style="display:none">AVAILABLE TO CONNECT <span class="sp-sect-meta" id="intAvailMeta"></span></div>'
+    + '<div id="intAvailWrap"></div>'
+    + '<div class="sp-footer-meta" id="intFooterMeta">Loading integrations…</div>'
     + '<div class="bottom-spacer"></div>';
+}
+
+function integrationsSummarySkeleton(){
+  var t = '<div class="sp-sum"><div class="sp-sum-label">LOADING</div><div class="sp-sum-value" style="opacity:.4">···</div><div class="sp-sum-delta">&nbsp;</div></div>';
+  return t + t + t + t;
+}
+
+function integrationsCardsSkeleton(){
+  return '<div style="padding:48px 0;text-align:center;color:var(--t3);font-family:\'Geist Mono\',monospace;font-size:11px;letter-spacing:1px">FETCHING INTEGRATIONS · integrations + connector_registry</div>';
+}
+
+async function loadIntegrationsAndRender(){
+  if (!window.CastfordData) {
+    renderIntegrationsDemo('Data layer not loaded — showing sample integrations');
+    return;
+  }
+  try {
+    if (!window.CastfordData.isInitialized()) {
+      await window.CastfordData.init();
+    }
+  } catch (e) {
+    console.warn('CastfordData init failed:', e);
+    renderIntegrationsDemo('Data layer init failed — showing sample integrations');
+    return;
+  }
+
+  if (window.CastfordData.isDemoMode()) {
+    renderIntegrationsDemo('Demo mode active — connect your workspace to see real integrations');
+    return;
+  }
+
+  var integrations = await window.CastfordData.getIntegrations();
+  var catalog = await window.CastfordData.getConnectorRegistry();
+
+  if (!integrations || integrations.length === 0) {
+    renderIntegrationsDemo('No integrations connected yet · showing available connectors', catalog || []);
+    return;
+  }
+
+  renderIntegrationsReal(integrations, catalog || [], null);
+}
+
+function intInitials(name){
+  if (!name) return '·';
+  var parts = name.replace(/[^A-Za-z0-9 ]/g,'').trim().split(/\s+/);
+  if (parts.length >= 2) return (parts[0][0] + parts[1][0]).toUpperCase();
+  return name.substring(0, 2).toUpperCase();
+}
+
+function intRelTime(ts){
+  if (!ts) return 'never';
+  var d = new Date(ts);
+  if (isNaN(d.getTime())) return 'never';
+  var diff = Math.max(0, Date.now() - d.getTime());
+  var s = Math.floor(diff/1000);
+  if (s < 60) return s + 's ago';
+  var m = Math.floor(s/60);
+  if (m < 60) return m + ' min ago';
+  var h = Math.floor(m/60);
+  if (h < 24) return h + ' hr ago';
+  var dd = Math.floor(h/24);
+  return dd + ' day' + (dd===1?'':'s') + ' ago';
+}
+
+function intCompact(n){
+  if (n == null || isNaN(n)) return '0';
+  if (n >= 1e6) return (n/1e6).toFixed(1).replace(/\.0$/,'') + 'M';
+  if (n >= 1e3) return (n/1e3).toFixed(1).replace(/\.0$/,'') + 'K';
+  return String(n);
+}
+
+function intStatusClass(s){
+  if (s === 'connected') return 'connected';
+  if (s === 'syncing')  return 'connected';
+  if (s === 'error')    return 'error';
+  return 'connected';
+}
+
+function intStatusBadge(s){
+  if (s === 'connected') return '<div class="in-card-status live">Live</div>';
+  if (s === 'syncing')   return '<div class="in-card-status live">Syncing</div>';
+  if (s === 'error')     return '<div class="in-card-status warn">Error</div>';
+  return '<div class="in-card-status">Disconnected</div>';
+}
+
+function renderIntegrationsReal(integrations, catalog, banner){
+  var connectedCount = integrations.filter(function(i){ return i.status === 'connected' || i.status === 'syncing'; }).length;
+  var errorCount = integrations.filter(function(i){ return i.status === 'error'; }).length;
+  var totalRecords = integrations.reduce(function(sum, i){ return sum + (i.records_synced || 0); }, 0);
+  var lastSyncTimes = integrations.map(function(i){ return i.last_sync_at; }).filter(Boolean);
+  var mostRecentSync = lastSyncTimes.length ? lastSyncTimes.sort().reverse()[0] : null;
+
+  var categories = {};
+  integrations.forEach(function(i){
+    var cat = (i.connector && i.connector.category) || 'other';
+    categories[cat] = true;
+  });
+  var catCount = Object.keys(categories).length;
+
+  // Eyebrow + summary tiles
+  var eb = 'DATA SOURCES · ' + connectedCount + ' CONNECTED';
+  if (errorCount) eb += ' · ' + errorCount + ' NEEDS ATTENTION';
+  document.getElementById('intEyebrow').textContent = eb;
+
+  document.getElementById('intSummary').innerHTML = ''
+    + '<div class="sp-sum"><div class="sp-sum-label">CONNECTED SOURCES</div><div class="sp-sum-value">' + connectedCount + '</div><div class="sp-sum-delta">Across ' + catCount + ' categor' + (catCount===1?'y':'ies') + '</div></div>'
+    + '<div class="sp-sum"><div class="sp-sum-label">RECORDS SYNCED</div><div class="sp-sum-value">' + intCompact(totalRecords) + '</div><div class="sp-sum-delta">All time</div></div>'
+    + '<div class="sp-sum"><div class="sp-sum-label">LAST SYNC</div><div class="sp-sum-value">' + intRelTime(mostRecentSync) + '</div><div class="sp-sum-delta">Most recent source</div></div>'
+    + '<div class="sp-sum"><div class="sp-sum-label">SYNC FAILURES</div><div class="sp-sum-value">' + errorCount + '</div><div class="sp-sum-delta' + (errorCount?' down':'') + '">' + (errorCount ? 'Review required' : 'All sources healthy') + '</div></div>';
+
+  // Connected cards
+  document.getElementById('intConnectedMeta').textContent = connectedCount + ' active integration' + (connectedCount===1?'':'s') + ' · auto-sync on schedule';
+  var cardsHTML = '';
+  integrations.forEach(function(i){
+    var c = i.connector || {};
+    var displayName = c.display_name || i.provider || 'Unknown';
+    var category = c.category || 'integration';
+    var initials = intInitials(displayName);
+    var statusCls = intStatusClass(i.status);
+    var statusBadge = intStatusBadge(i.status);
+    var recordsCnt = intCompact(i.records_synced || 0);
+    var syncedAt = intRelTime(i.last_sync_at);
+    var desc = i.last_error
+      ? i.last_error
+      : (category.charAt(0).toUpperCase() + category.slice(1) + ' source · ' + (i.tables_synced && i.tables_synced.length ? i.tables_synced.length + ' tables synced' : 'auto-sync ' + (i.sync_schedule || 'daily')));
+    cardsHTML += '<div class="in-card ' + statusCls + '">'
+      + '<div class="in-card-head"><div class="in-card-logo">' + initials + '</div>' + statusBadge + '</div>'
+      + '<div class="in-card-name">' + displayName + '</div>'
+      + '<div class="in-card-desc">' + desc + '</div>'
+      + '<div class="in-card-stats"><span><b>' + recordsCnt + '</b> records</span><span>Synced ' + syncedAt + '</span></div>'
+      + '</div>';
+  });
+  document.getElementById('intConnectedWrap').innerHTML = '<div class="in-grid">' + cardsHTML + '</div>';
+
+  // Available to connect (catalog minus already connected)
+  var connectedProviders = {};
+  integrations.forEach(function(i){ connectedProviders[i.provider] = true; });
+  var available = catalog.filter(function(c){ return !connectedProviders[c.provider] && c.status !== 'deprecated'; });
+  if (available.length > 0) {
+    document.getElementById('intAvailLabel').style.display = '';
+    document.getElementById('intAvailMeta').textContent = available.length + ' integration' + (available.length===1?'':'s') + ' ready · click to connect';
+    var availHTML = '';
+    available.forEach(function(c){
+      availHTML += '<div class="in-avail">'
+        + '<div class="in-avail-logo">' + intInitials(c.display_name || c.provider) + '</div>'
+        + '<div class="in-avail-name">' + (c.display_name || c.provider) + '</div>'
+        + '</div>';
+    });
+    document.getElementById('intAvailWrap').innerHTML = '<div class="in-available"><div class="in-avail-grid">' + availHTML + '</div></div>';
+  }
+
+  // Footer attribution
+  var orgId = window.CastfordData.getOrgId() || '—';
+  var orgIdShort = orgId === '—' ? '—' : orgId.slice(0, 8) + '…';
+  var footerText = 'Source: integrations + connector_registry · ' + connectedCount + ' connected · ' + intCompact(totalRecords) + ' records · org ' + orgIdShort;
+  if (banner) footerText = banner + ' · ' + footerText;
+  document.getElementById('intFooterMeta').textContent = footerText;
+}
+
+function renderIntegrationsDemo(banner, catalog){
+  document.getElementById('intEyebrow').textContent = 'DATA SOURCES · 0 CONNECTED (DEMO)';
+  document.getElementById('intSummary').innerHTML = ''
+    + '<div class="sp-sum"><div class="sp-sum-label">CONNECTED SOURCES</div><div class="sp-sum-value">0</div><div class="sp-sum-delta">No live connections</div></div>'
+    + '<div class="sp-sum"><div class="sp-sum-label">RECORDS SYNCED</div><div class="sp-sum-value">—</div><div class="sp-sum-delta">Connect to begin sync</div></div>'
+    + '<div class="sp-sum"><div class="sp-sum-label">LAST SYNC</div><div class="sp-sum-value">—</div><div class="sp-sum-delta">No history</div></div>'
+    + '<div class="sp-sum"><div class="sp-sum-label">SYNC FAILURES</div><div class="sp-sum-value">0</div><div class="sp-sum-delta">No active integrations</div></div>';
+
+  document.getElementById('intConnectedMeta').textContent = 'No integrations yet · sample placeholders below';
+  document.getElementById('intConnectedWrap').innerHTML = '<div class="in-grid">'
+    + '<div class="in-card" style="opacity:.55">'
+    +   '<div class="in-card-head"><div class="in-card-logo">G</div><div class="in-card-status">Sample</div></div>'
+    +   '<div class="in-card-name">Sample GL source</div>'
+    +   '<div class="in-card-desc">General ledger and chart of accounts source of truth.</div>'
+    +   '<div class="in-card-stats"><span><b>—</b> records</span><span>Not connected</span></div>'
+    + '</div>'
+    + '<div class="in-card" style="opacity:.55">'
+    +   '<div class="in-card-head"><div class="in-card-logo">B</div><div class="in-card-status">Sample</div></div>'
+    +   '<div class="in-card-name">Sample bank feed</div>'
+    +   '<div class="in-card-desc">Bank account aggregation across operating accounts.</div>'
+    +   '<div class="in-card-stats"><span><b>—</b> records</span><span>Not connected</span></div>'
+    + '</div>'
+    + '<div class="in-card" style="opacity:.55">'
+    +   '<div class="in-card-head"><div class="in-card-logo">P</div><div class="in-card-status">Sample</div></div>'
+    +   '<div class="in-card-name">Sample payments</div>'
+    +   '<div class="in-card-desc">Subscription billing and payment processor data.</div>'
+    +   '<div class="in-card-stats"><span><b>—</b> records</span><span>Not connected</span></div>'
+    + '</div>'
+    + '</div>';
+
+  // If we got a real catalog, render that. Otherwise show generic placeholders.
+  document.getElementById('intAvailLabel').style.display = '';
+  if (catalog && catalog.length > 0) {
+    document.getElementById('intAvailMeta').textContent = catalog.length + ' connector' + (catalog.length===1?'':'s') + ' available · click to connect';
+    var availHTML = '';
+    catalog.forEach(function(c){
+      availHTML += '<div class="in-avail">'
+        + '<div class="in-avail-logo">' + intInitials(c.display_name || c.provider) + '</div>'
+        + '<div class="in-avail-name">' + (c.display_name || c.provider) + '</div>'
+        + '</div>';
+    });
+    document.getElementById('intAvailWrap').innerHTML = '<div class="in-available"><div class="in-avail-grid">' + availHTML + '</div></div>';
+  } else {
+    document.getElementById('intAvailMeta').textContent = 'Sample connector catalog · live list loads with workspace';
+    document.getElementById('intAvailWrap').innerHTML = '<div class="in-available"><div class="in-avail-grid">'
+      + '<div class="in-avail"><div class="in-avail-logo">QB</div><div class="in-avail-name">QuickBooks</div></div>'
+      + '<div class="in-avail"><div class="in-avail-logo">X</div><div class="in-avail-name">Xero</div></div>'
+      + '<div class="in-avail"><div class="in-avail-logo">N</div><div class="in-avail-name">NetSuite</div></div>'
+      + '<div class="in-avail"><div class="in-avail-logo">SF</div><div class="in-avail-name">Salesforce</div></div>'
+      + '<div class="in-avail"><div class="in-avail-logo">H</div><div class="in-avail-name">HubSpot</div></div>'
+      + '<div class="in-avail"><div class="in-avail-logo">S</div><div class="in-avail-name">Stripe</div></div>'
+      + '<div class="in-avail"><div class="in-avail-logo">P</div><div class="in-avail-name">Plaid</div></div>'
+      + '<div class="in-avail"><div class="in-avail-logo">G</div><div class="in-avail-name">Gusto</div></div>'
+      + '</div></div>';
+  }
+
+  document.getElementById('intFooterMeta').textContent = (banner || 'Demo data') + ' · Connect a source from the catalog to begin auto-sync';
 }
 
 function renderInvestor(){

@@ -368,15 +368,27 @@ window.CastfordData = (function() {
     return data || [];
   }
 
-  // integrations — what's currently connected
+  // integrations — what's currently connected (joined to connector_registry by provider text)
   async function getIntegrations() {
     if (!sb || demoMode || !orgId) return [];
     var { data } = await sb
       .from('integrations')
-      .select('id, connector_id, status, last_sync_at, record_count, error_message, connector:connector_id ( id, name, category, icon )')
+      .select('id, provider, status, config, last_sync_at, records_synced, last_error, sync_schedule, tables_synced, next_sync_at, provider_version, created_at, updated_at')
       .eq('org_id', orgId)
-      .order('last_sync_at', { ascending: false });
-    return data || [];
+      .order('last_sync_at', { ascending: false, nullsFirst: false });
+    if (!data || data.length === 0) return [];
+    // join to connector_registry on provider
+    var providers = Array.from(new Set(data.map(function(r) { return r.provider; })));
+    var { data: catalog } = await sb
+      .from('connector_registry')
+      .select('provider, display_name, category, auth_type, logo_url, docs_url, status')
+      .in('provider', providers);
+    var catMap = {};
+    (catalog || []).forEach(function(c) { catMap[c.provider] = c; });
+    return data.map(function(r) {
+      r.connector = catMap[r.provider] || null;
+      return r;
+    });
   }
 
   // connector_registry — all available connectors (the catalog)
@@ -384,8 +396,9 @@ window.CastfordData = (function() {
     if (!sb) return [];
     var { data } = await sb
       .from('connector_registry')
-      .select('id, name, category, icon, description, status')
-      .order('category', { ascending: true });
+      .select('id, provider, display_name, category, auth_type, status, logo_url, docs_url')
+      .order('category', { ascending: true })
+      .order('display_name', { ascending: true });
     return data || [];
   }
 
