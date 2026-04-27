@@ -2385,13 +2385,22 @@ function renderClose(){
     + '<div class="bottom-spacer"></div>';
 }
 
+// ═══ TEAM (Phase 2B-2) ═══
+// wired to org_members + users + org_invitations via CastfordData.getTeamMembers() / getOrgInvitations()
+// Falls back to demo if (a) data layer not loaded, (b) demo mode, (c) zero rows returned.
+
 function renderTeam(){
   document.getElementById('breadcrumb').innerHTML='Dashboard / <strong>Team</strong>';
   document.getElementById('resourcesPanel').style.display='';
-  document.getElementById('mainContent').innerHTML = ''
+  document.getElementById('mainContent').innerHTML = teamShellHTML(true);
+  loadTeamAndRender();
+}
+
+function teamShellHTML(loading){
+  return ''
     + '<div class="sp-header">'
     +   '<div class="sp-title-block">'
-    +     '<div class="sp-eyebrow">WORKSPACE · 8 MEMBERS · 2 PENDING</div>'
+    +     '<div class="sp-eyebrow" id="teamEyebrow">WORKSPACE · LOADING…</div>'
     +     '<h1 class="sp-title">Team <em>members</em></h1>'
     +   '</div>'
     +   '<div class="sp-actions">'
@@ -2399,36 +2408,193 @@ function renderTeam(){
     +     '<button class="sp-btn primary">+ Invite member</button>'
     +   '</div>'
     + '</div>'
-    + '<div class="tm-summary">'
-    +   '<div class="tm-sum-card"><div class="tm-sum-text"><div class="tm-sum-num">8</div><div class="tm-sum-label">ACTIVE MEMBERS</div></div><div class="tm-sum-icon">●</div></div>'
-    +   '<div class="tm-sum-card"><div class="tm-sum-text"><div class="tm-sum-num">2</div><div class="tm-sum-label">PENDING INVITES</div></div><div class="tm-sum-icon">⏰</div></div>'
-    +   '<div class="tm-sum-card"><div class="tm-sum-text"><div class="tm-sum-num">4</div><div class="tm-sum-label">ROLES IN USE</div></div><div class="tm-sum-icon">⚐</div></div>'
-    +   '<div class="tm-sum-card"><div class="tm-sum-text"><div class="tm-sum-num">14</div><div class="tm-sum-label">SEATS REMAINING</div></div><div class="tm-sum-icon">▤</div></div>'
-    + '</div>'
-    + '<div class="sp-sect-label">MEMBER DIRECTORY <span class="sp-sect-meta">8 active across 4 roles</span></div>'
+    + '<div class="tm-summary" id="teamSummary">' + (loading ? teamSummarySkeleton() : '') + '</div>'
+    + '<div class="sp-sect-label">MEMBER DIRECTORY <span class="sp-sect-meta" id="teamSectMeta">' + (loading ? 'Loading…' : '') + '</span></div>'
+    + '<div id="teamMembersWrap">' + (loading ? teamTableSkeleton() : '') + '</div>'
+    + '<div class="sp-sect-label" id="teamInvLabel" style="display:none">PENDING INVITATIONS <span class="sp-sect-meta" id="teamInvMeta"></span></div>'
+    + '<div id="teamInvitesWrap"></div>'
+    + '<div class="sp-footer-meta" id="teamFooterMeta">Loading team…</div>'
+    + '<div class="bottom-spacer"></div>';
+}
+
+function teamSummarySkeleton(){
+  var tile = '<div class="tm-sum-card"><div class="tm-sum-text"><div class="tm-sum-num" style="opacity:.4">···</div><div class="tm-sum-label">LOADING</div></div><div class="tm-sum-icon">·</div></div>';
+  return tile + tile + tile + tile;
+}
+
+function teamTableSkeleton(){
+  return '<div style="padding:48px 0;text-align:center;color:var(--t3);font-family:\'Geist Mono\',monospace;font-size:11px;letter-spacing:1px">FETCHING TEAM · org_members + users</div>';
+}
+
+async function loadTeamAndRender(){
+  if (!window.CastfordData) {
+    renderTeamDemo('Data layer not loaded — showing demo data');
+    return;
+  }
+  try {
+    if (!window.CastfordData.isInitialized()) {
+      await window.CastfordData.init();
+    }
+  } catch (e) {
+    console.warn('CastfordData init failed:', e);
+    renderTeamDemo('Data layer init failed — showing demo data');
+    return;
+  }
+
+  if (window.CastfordData.isDemoMode()) {
+    renderTeamDemo('Demo mode active — connect your workspace to see real team members');
+    return;
+  }
+
+  var members = await window.CastfordData.getTeamMembers();
+  var invites = await window.CastfordData.getOrgInvitations();
+
+  if (!members || members.length === 0) {
+    renderTeamDemo('No team members for org · showing demo data');
+    return;
+  }
+
+  renderTeamReal(members, invites || [], null);
+}
+
+function teamInitials(name, email){
+  if (name && name.trim()) {
+    var parts = name.trim().split(/\s+/);
+    return ((parts[0]||'').charAt(0) + (parts[1]||'').charAt(0)).toUpperCase() || '?';
+  }
+  if (email) return email.charAt(0).toUpperCase() + (email.split('@')[0].charAt(1) || '').toUpperCase();
+  return '?';
+}
+
+function teamLastActive(ts){
+  if (!ts) return 'Never';
+  var diff = (Date.now() - new Date(ts).getTime()) / 1000;
+  if (diff < 60) return 'Just now';
+  if (diff < 3600) return Math.floor(diff/60) + ' min ago';
+  if (diff < 86400) return Math.floor(diff/3600) + ' hours ago';
+  if (diff < 604800) return Math.floor(diff/86400) + ' days ago';
+  return new Date(ts).toLocaleDateString('en-US', { month:'short', day:'numeric' });
+}
+
+function teamStatusDot(lastActiveAt){
+  if (!lastActiveAt) return 'offline';
+  var diff = (Date.now() - new Date(lastActiveAt).getTime()) / 1000;
+  if (diff < 300) return 'online';      // <5 min
+  if (diff < 1800) return 'idle';       // <30 min
+  return 'offline';
+}
+
+function teamStatusLabel(dot){
+  if (dot === 'online') return 'Online now';
+  if (dot === 'idle') return 'Idle';
+  return 'Offline';
+}
+
+function renderTeamReal(members, invites, banner){
+  var activeCount = members.filter(function(m){ return m.status !== 'suspended'; }).length;
+  var roles = {};
+  members.forEach(function(m){ roles[m.role || 'member'] = true; });
+  var rolesInUse = Object.keys(roles).length;
+  var pendingCount = invites.length;
+  var seatsRemaining = Math.max(0, 22 - activeCount); // assumes 22-seat plan; can be wired to plan_limits later
+
+  // Summary tiles
+  document.getElementById('teamEyebrow').textContent = 'WORKSPACE · ' + activeCount + ' MEMBER' + (activeCount===1?'':'S') + (pendingCount ? ' · ' + pendingCount + ' PENDING' : '');
+  document.getElementById('teamSummary').innerHTML = ''
+    + '<div class="tm-sum-card"><div class="tm-sum-text"><div class="tm-sum-num">' + activeCount + '</div><div class="tm-sum-label">ACTIVE MEMBERS</div></div><div class="tm-sum-icon">●</div></div>'
+    + '<div class="tm-sum-card"><div class="tm-sum-text"><div class="tm-sum-num">' + pendingCount + '</div><div class="tm-sum-label">PENDING INVITES</div></div><div class="tm-sum-icon">⏰</div></div>'
+    + '<div class="tm-sum-card"><div class="tm-sum-text"><div class="tm-sum-num">' + rolesInUse + '</div><div class="tm-sum-label">ROLES IN USE</div></div><div class="tm-sum-icon">⚐</div></div>'
+    + '<div class="tm-sum-card"><div class="tm-sum-text"><div class="tm-sum-num">' + seatsRemaining + '</div><div class="tm-sum-label">SEATS REMAINING</div></div><div class="tm-sum-icon">▤</div></div>';
+
+  // Member table
+  document.getElementById('teamSectMeta').textContent = activeCount + ' active across ' + rolesInUse + ' role' + (rolesInUse===1?'':'s');
+  var tbody = '';
+  members.forEach(function(m){
+    var u = m.users || {};
+    var name = u.full_name || u.email || 'Unknown';
+    var email = u.email || '';
+    var role = (m.role || 'member').toLowerCase();
+    var dot = teamStatusDot(m.last_active_at);
+    tbody += '<tr>'
+      + '<td><div class="person"><div class="avatar-lg">' + teamInitials(u.full_name, u.email) + '</div><div class="person-info"><b>' + name + '</b><span>' + email + '</span></div></div></td>'
+      + '<td><span class="role ' + role + '">' + (role.charAt(0).toUpperCase() + role.slice(1)) + '</span></td>'
+      + '<td><span class="status-dot ' + dot + '">' + teamStatusLabel(dot) + '</span></td>'
+      + '<td><span class="last-active">' + teamLastActive(m.last_active_at) + '</span></td>'
+      + '<td></td></tr>';
+  });
+  document.getElementById('teamMembersWrap').innerHTML = ''
+    + '<table class="tm-table">'
+    +   '<thead><tr><th>MEMBER</th><th>ROLE</th><th>STATUS</th><th>LAST ACTIVE</th><th></th></tr></thead>'
+    +   '<tbody>' + tbody + '</tbody>'
+    + '</table>';
+
+  // Invitations
+  if (pendingCount > 0) {
+    document.getElementById('teamInvLabel').style.display = '';
+    document.getElementById('teamInvMeta').textContent = pendingCount + ' awaiting acceptance';
+    var invBody = '';
+    invites.forEach(function(inv){
+      var role = (inv.role || 'member').toLowerCase();
+      invBody += '<tr>'
+        + '<td><div class="person"><div class="avatar-lg" style="background:var(--elevated);color:var(--t3);">?</div><div class="person-info"><b>' + (inv.email || '') + '</b><span>Pending</span></div></div></td>'
+        + '<td><span class="role">' + (role.charAt(0).toUpperCase() + role.slice(1)) + '</span></td>'
+        + '<td><span class="last-active">' + (inv.invited_by || '—') + '</span></td>'
+        + '<td><span class="last-active">' + teamLastActive(inv.created_at) + '</span></td>'
+        + '<td></td></tr>';
+    });
+    document.getElementById('teamInvitesWrap').innerHTML = ''
+      + '<table class="tm-table">'
+      +   '<thead><tr><th>EMAIL</th><th>ROLE</th><th>INVITED BY</th><th>SENT</th><th></th></tr></thead>'
+      +   '<tbody>' + invBody + '</tbody>'
+      + '</table>';
+  }
+
+  // Footer attribution
+  var orgId = window.CastfordData.getOrgId() || '—';
+  var orgIdShort = orgId === '—' ? '—' : orgId.slice(0, 8) + '…';
+  var footerText = 'Source: org_members + users · ' + members.length + ' member' + (members.length===1?'':'s');
+  if (pendingCount) footerText += ' · ' + pendingCount + ' invitation' + (pendingCount===1?'':'s');
+  footerText += ' · org ' + orgIdShort;
+  if (banner) footerText = banner + ' · ' + footerText;
+  document.getElementById('teamFooterMeta').textContent = footerText;
+}
+
+function renderTeamDemo(banner){
+  document.getElementById('teamEyebrow').textContent = 'WORKSPACE · 8 MEMBERS · 2 PENDING (DEMO)';
+  document.getElementById('teamSummary').innerHTML = ''
+    + '<div class="tm-sum-card"><div class="tm-sum-text"><div class="tm-sum-num">8</div><div class="tm-sum-label">ACTIVE MEMBERS</div></div><div class="tm-sum-icon">●</div></div>'
+    + '<div class="tm-sum-card"><div class="tm-sum-text"><div class="tm-sum-num">2</div><div class="tm-sum-label">PENDING INVITES</div></div><div class="tm-sum-icon">⏰</div></div>'
+    + '<div class="tm-sum-card"><div class="tm-sum-text"><div class="tm-sum-num">4</div><div class="tm-sum-label">ROLES IN USE</div></div><div class="tm-sum-icon">⚐</div></div>'
+    + '<div class="tm-sum-card"><div class="tm-sum-text"><div class="tm-sum-num">14</div><div class="tm-sum-label">SEATS REMAINING</div></div><div class="tm-sum-icon">▤</div></div>';
+
+  document.getElementById('teamSectMeta').textContent = '8 active across 4 roles (sample data)';
+  document.getElementById('teamMembersWrap').innerHTML = ''
     + '<table class="tm-table">'
     +   '<thead><tr><th>MEMBER</th><th>ROLE</th><th>STATUS</th><th>LAST ACTIVE</th><th></th></tr></thead>'
     +   '<tbody>'
-    +     '<tr><td><div class="person"><div class="avatar-lg">MF</div><div class="person-info"><b>Malik Frazier</b><span>malik@vaultline.app</span></div></div></td><td><span class="role owner">Owner</span></td><td><span class="status-dot online">Online now</span></td><td><span class="last-active">Just now</span></td><td></td></tr>'
-    +     '<tr><td><div class="person"><div class="avatar-lg">SC</div><div class="person-info"><b>Sarah Chen</b><span>sarah@castford.com</span></div></div></td><td><span class="role admin">Admin</span></td><td><span class="status-dot online">Online now</span></td><td><span class="last-active">2 min ago</span></td><td></td></tr>'
-    +     '<tr><td><div class="person"><div class="avatar-lg">JM</div><div class="person-info"><b>Jordan Martinez</b><span>jordan@castford.com</span></div></div></td><td><span class="role admin">Admin</span></td><td><span class="status-dot idle">Idle</span></td><td><span class="last-active">23 min ago</span></td><td></td></tr>'
-    +     '<tr><td><div class="person"><div class="avatar-lg">RP</div><div class="person-info"><b>Riley Patel</b><span>riley@castford.com</span></div></div></td><td><span class="role">Editor</span></td><td><span class="status-dot online">Online now</span></td><td><span class="last-active">8 min ago</span></td><td></td></tr>'
-    +     '<tr><td><div class="person"><div class="avatar-lg">DK</div><div class="person-info"><b>David Kim</b><span>david@castford.com</span></div></div></td><td><span class="role">Editor</span></td><td><span class="status-dot offline">Offline</span></td><td><span class="last-active">2 hours ago</span></td><td></td></tr>'
-    +     '<tr><td><div class="person"><div class="avatar-lg">EN</div><div class="person-info"><b>Emma Nakamura</b><span>emma@castford.com</span></div></div></td><td><span class="role">Editor</span></td><td><span class="status-dot offline">Offline</span></td><td><span class="last-active">Yesterday</span></td><td></td></tr>'
-    +     '<tr><td><div class="person"><div class="avatar-lg">AT</div><div class="person-info"><b>Alex Thompson</b><span>alex@castford.com</span></div></div></td><td><span class="role">Viewer</span></td><td><span class="status-dot offline">Offline</span></td><td><span class="last-active">3 days ago</span></td><td></td></tr>'
-    +     '<tr><td><div class="person"><div class="avatar-lg">PV</div><div class="person-info"><b>Priya Venkatesh</b><span>priya@castford.com</span></div></div></td><td><span class="role">Viewer</span></td><td><span class="status-dot offline">Offline</span></td><td><span class="last-active">1 week ago</span></td><td></td></tr>'
+    +     '<tr><td><div class="person"><div class="avatar-lg">MF</div><div class="person-info"><b>Malik Frazier</b><span>malik@castford.com</span></div></div></td><td><span class="role owner">Owner</span></td><td><span class="status-dot online">Online now</span></td><td><span class="last-active">Just now</span></td><td></td></tr>'
+    +     '<tr><td><div class="person"><div class="avatar-lg">SC</div><div class="person-info"><b>Sample Member</b><span>sample1@example.com</span></div></div></td><td><span class="role admin">Admin</span></td><td><span class="status-dot online">Online now</span></td><td><span class="last-active">2 min ago</span></td><td></td></tr>'
+    +     '<tr><td><div class="person"><div class="avatar-lg">JM</div><div class="person-info"><b>Sample Member</b><span>sample2@example.com</span></div></div></td><td><span class="role admin">Admin</span></td><td><span class="status-dot idle">Idle</span></td><td><span class="last-active">23 min ago</span></td><td></td></tr>'
+    +     '<tr><td><div class="person"><div class="avatar-lg">RP</div><div class="person-info"><b>Sample Member</b><span>sample3@example.com</span></div></div></td><td><span class="role">Editor</span></td><td><span class="status-dot online">Online now</span></td><td><span class="last-active">8 min ago</span></td><td></td></tr>'
+    +     '<tr><td><div class="person"><div class="avatar-lg">DK</div><div class="person-info"><b>Sample Member</b><span>sample4@example.com</span></div></div></td><td><span class="role">Editor</span></td><td><span class="status-dot offline">Offline</span></td><td><span class="last-active">2 hours ago</span></td><td></td></tr>'
+    +     '<tr><td><div class="person"><div class="avatar-lg">EN</div><div class="person-info"><b>Sample Member</b><span>sample5@example.com</span></div></div></td><td><span class="role">Editor</span></td><td><span class="status-dot offline">Offline</span></td><td><span class="last-active">Yesterday</span></td><td></td></tr>'
+    +     '<tr><td><div class="person"><div class="avatar-lg">AT</div><div class="person-info"><b>Sample Member</b><span>sample6@example.com</span></div></div></td><td><span class="role">Viewer</span></td><td><span class="status-dot offline">Offline</span></td><td><span class="last-active">3 days ago</span></td><td></td></tr>'
+    +     '<tr><td><div class="person"><div class="avatar-lg">PV</div><div class="person-info"><b>Sample Member</b><span>sample7@example.com</span></div></div></td><td><span class="role">Viewer</span></td><td><span class="status-dot offline">Offline</span></td><td><span class="last-active">1 week ago</span></td><td></td></tr>'
     +   '</tbody>'
-    + '</table>'
-    + '<div class="sp-sect-label">PENDING INVITATIONS <span class="sp-sect-meta">2 awaiting acceptance</span></div>'
+    + '</table>';
+
+  document.getElementById('teamInvLabel').style.display = '';
+  document.getElementById('teamInvMeta').textContent = '2 awaiting acceptance (sample)';
+  document.getElementById('teamInvitesWrap').innerHTML = ''
     + '<table class="tm-table">'
     +   '<thead><tr><th>EMAIL</th><th>ROLE</th><th>INVITED BY</th><th>SENT</th><th></th></tr></thead>'
     +   '<tbody>'
-    +     '<tr><td><div class="person"><div class="avatar-lg" style="background:var(--elevated);color:var(--t3);">?</div><div class="person-info"><b>marcus@example.com</b><span>Pending</span></div></div></td><td><span class="role">Editor</span></td><td><span class="last-active">Malik F.</span></td><td><span class="last-active">2 days ago</span></td><td></td></tr>'
-    +     '<tr><td><div class="person"><div class="avatar-lg" style="background:var(--elevated);color:var(--t3);">?</div><div class="person-info"><b>natalie@example.com</b><span>Pending</span></div></div></td><td><span class="role">Viewer</span></td><td><span class="last-active">Sarah Chen</span></td><td><span class="last-active">5 days ago</span></td><td></td></tr>'
+    +     '<tr><td><div class="person"><div class="avatar-lg" style="background:var(--elevated);color:var(--t3);">?</div><div class="person-info"><b>sample-invite-1@example.com</b><span>Pending</span></div></div></td><td><span class="role">Editor</span></td><td><span class="last-active">Malik F.</span></td><td><span class="last-active">2 days ago</span></td><td></td></tr>'
+    +     '<tr><td><div class="person"><div class="avatar-lg" style="background:var(--elevated);color:var(--t3);">?</div><div class="person-info"><b>sample-invite-2@example.com</b><span>Pending</span></div></div></td><td><span class="role">Viewer</span></td><td><span class="last-active">Sample</span></td><td><span class="last-active">5 days ago</span></td><td></td></tr>'
     +   '</tbody>'
-    + '</table>'
-    + '<div class="sp-footer-meta">Workspace plan: Enterprise · 8 of 22 seats used · audit log enabled · SSO active</div>'
-    + '<div class="bottom-spacer"></div>';
+    + '</table>';
+
+  document.getElementById('teamFooterMeta').textContent = (banner || 'Demo data') + ' · Workspace plan: Enterprise · 8 of 22 seats used';
 }
 
 function renderIntegrations(){

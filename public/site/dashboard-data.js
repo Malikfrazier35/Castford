@@ -342,6 +342,54 @@ window.CastfordData = (function() {
   }
 
   // ==========================================
+  // PHASE 2B-2: TEAM + INTEGRATIONS
+  // ==========================================
+
+  // org_members joined with users — the real source of truth for who's on the team
+  async function getTeamMembers() {
+    if (!sb || demoMode || !orgId) return [];
+    var { data } = await sb
+      .from('org_members')
+      .select('user_id, role, status, last_active_at, joined_at, users:user_id ( id, email, full_name, avatar_url )')
+      .eq('org_id', orgId)
+      .order('joined_at', { ascending: true });
+    return data || [];
+  }
+
+  // org_invitations — pending invites awaiting acceptance
+  async function getOrgInvitations() {
+    if (!sb || demoMode || !orgId) return [];
+    var { data } = await sb
+      .from('org_invitations')
+      .select('id, email, role, invited_by, created_at, status')
+      .eq('org_id', orgId)
+      .eq('status', 'pending')
+      .order('created_at', { ascending: false });
+    return data || [];
+  }
+
+  // integrations — what's currently connected
+  async function getIntegrations() {
+    if (!sb || demoMode || !orgId) return [];
+    var { data } = await sb
+      .from('integrations')
+      .select('id, connector_id, status, last_sync_at, record_count, error_message, connector:connector_id ( id, name, category, icon )')
+      .eq('org_id', orgId)
+      .order('last_sync_at', { ascending: false });
+    return data || [];
+  }
+
+  // connector_registry — all available connectors (the catalog)
+  async function getConnectorRegistry() {
+    if (!sb) return [];
+    var { data } = await sb
+      .from('connector_registry')
+      .select('id, name, category, icon, description, status')
+      .order('category', { ascending: true });
+    return data || [];
+  }
+
+  // ==========================================
   // API surface
   // ==========================================
 
@@ -367,6 +415,11 @@ window.CastfordData = (function() {
     getAuditLog: getAuditLog,
     getVendors: getVendors,
     getIncidents: getIncidents,
+    // Phase 2B-2
+    getTeamMembers: getTeamMembers,
+    getOrgInvitations: getOrgInvitations,
+    getIntegrations: getIntegrations,
+    getConnectorRegistry: getConnectorRegistry,
     // WRITE
     createBudget: createBudget,
     updateBudget: updateBudget,
