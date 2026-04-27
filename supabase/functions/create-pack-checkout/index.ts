@@ -207,8 +207,10 @@ Deno.serve(async (req: Request) => {
   }
 
   // ─── Audit log (best-effort, never block the response) ────────────
+  // Note: supabase-js .insert() returns errors in the response — does NOT throw.
+  // Capture the error and log to function output so we can see it in Supabase logs.
   try {
-    await supabaseAdmin.from('audit_log').insert({
+    const { error: auditErr } = await supabaseAdmin.from('audit_log').insert({
       user_id: user.id,
       org_id: org.id,
       action: 'pro_pack.checkout_started',
@@ -216,7 +218,12 @@ Deno.serve(async (req: Request) => {
       resource_id: session.id,
       metadata: { pack_slug: packSlug, interval, price_id: priceId }
     });
-  } catch (_) { /* swallow */ }
+    if (auditErr) {
+      console.error('[create-pack-checkout] audit_log insert failed:', JSON.stringify(auditErr));
+    }
+  } catch (e: any) {
+    console.error('[create-pack-checkout] audit_log threw:', e?.message || String(e));
+  }
 
   return new Response(JSON.stringify({
     url: session.url,
