@@ -182,6 +182,10 @@ Deno.serve(async (req: Request) => {
       // Tax & promo
       automatic_tax: { enabled: true },
       tax_id_collection: { enabled: true },
+      // Required when using `customer` + `automatic_tax`: collect billing address
+      // during Checkout and copy it back to the Customer so future checkouts pre-fill.
+      billing_address_collection: 'required',
+      customer_update: { address: 'auto', name: 'auto' },
       allow_promotion_codes: true,
       // Metadata for webhook reconciliation in part 3
       metadata: {
