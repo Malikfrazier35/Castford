@@ -3297,61 +3297,519 @@ function renderIntegrationsDemo(banner, catalog){
   document.getElementById('intFooterMeta').textContent = (banner || 'Demo data') + ' · Connect a source from the catalog to begin auto-sync';
 }
 
+// ═══ INVESTOR METRICS (Phase 2B-3 part 4) ═══
+// Wired to gl_transactions + gl_accounts + industry_benchmarks + customer_metrics via
+//   CastfordData.getInvestorMonthlySeries() / getIndustryBenchmarks() / getCustomerMetricsRows().
+// Three sections: Core SaaS Metrics tiles, Cohort Retention, SaaS Benchmarks.
+// Note: revenue_metrics is service-role-only and NOT readable from the browser; we
+// compute MRR/ARR/burn/etc. directly from gl_transactions monthly aggregates.
+// Tiles that require customer subscription data (NRR, Logo Retention, CAC payback)
+// or cash accounts (Runway) show explanatory empty states when source data is absent.
+
 function renderInvestor(){
   document.getElementById('breadcrumb').innerHTML='Dashboard / <strong>Investor Metrics</strong>';
   document.getElementById('resourcesPanel').style.display='';
-  function spark(values){
-    return values.map(function(v){return '<div style="height:'+v+'%;"></div>';}).join('');
+  document.getElementById('mainContent').innerHTML = ivShellHTML(true);
+  loadInvestorAndRender();
+}
+
+function ivSpark(values){
+  if (!values || values.length === 0) {
+    return '<div style="height:0%"></div>';
   }
-  document.getElementById('mainContent').innerHTML = ''
+  // Normalize to 0-100% based on min/max with at least 10% floor for visibility
+  var max = Math.max.apply(null, values);
+  var min = Math.min.apply(null, values);
+  var range = (max - min) || 1;
+  return values.map(function(v){
+    var pct = 10 + ((v - min) / range) * 88;
+    return '<div style="height:' + pct.toFixed(1) + '%;"></div>';
+  }).join('');
+}
+
+function ivShellHTML(loading){
+  return ''
     + '<div class="sp-header">'
     +   '<div class="sp-title-block">'
-    +     '<div class="sp-eyebrow">BOARD-READY · Q4 2025 · GENERATED 14 MIN AGO</div>'
+    +     '<div class="sp-eyebrow" id="ivEyebrow">' + (loading ? 'BOARD-READY · LOADING…' : 'BOARD-READY METRICS') + '</div>'
     +     '<h1 class="sp-title">Investor <em>metrics</em></h1>'
     +   '</div>'
     +   '<div class="sp-actions">'
-    +     '<select class="sp-select"><option>Q4 2025</option><option>Q3 2025</option><option>FY2025</option></select>'
     +     '<button class="sp-btn">Export to deck</button>'
     +     '<button class="sp-btn primary">Generate board pack</button>'
     +   '</div>'
     + '</div>'
-    + '<div class="sp-sect-label">CORE SAAS METRICS <span class="sp-sect-meta">9 metrics · all benchmarked against SaaS top quartile</span></div>'
-    + '<div class="iv-grid">'
-    +   '<div class="iv-tile"><div class="iv-tile-head"><div class="iv-tile-label">ARR</div><div class="iv-tile-bench">Top quartile</div></div><div class="iv-tile-value">$73.3M</div><div class="iv-tile-sub"><span class="change up">↗ +18% YoY</span> · annualized</div><div class="iv-tile-sparkline">'+spark([42,48,52,58,62,68,72,76,82,86,90,94])+'</div></div>'
-    +   '<div class="iv-tile"><div class="iv-tile-head"><div class="iv-tile-label">NET NEW ARR</div><div class="iv-tile-bench">Top quartile</div></div><div class="iv-tile-value">$11.2M</div><div class="iv-tile-sub"><span class="change up">↗ +24%</span> · vs Q3 2025</div><div class="iv-tile-sparkline">'+spark([38,42,40,48,52,56,62,68,72,76,80,88])+'</div></div>'
-    +   '<div class="iv-tile"><div class="iv-tile-head"><div class="iv-tile-label">NET REVENUE RETENTION</div><div class="iv-tile-bench">Top decile</div></div><div class="iv-tile-value">128%</div><div class="iv-tile-sub"><span class="change up">↗ +6 pts</span> · vs prior quarter</div><div class="iv-tile-sparkline">'+spark([72,74,78,82,86,88,92,96,100,108,118,128])+'</div></div>'
-    +   '<div class="iv-tile"><div class="iv-tile-head"><div class="iv-tile-label">LOGO RETENTION</div><div class="iv-tile-bench">Median</div></div><div class="iv-tile-value">94.2%</div><div class="iv-tile-sub"><span class="change down">↘ −0.8 pts</span> · 18 of 312 churned</div><div class="iv-tile-sparkline">'+spark([88,90,92,93,94,95,95,94,94,93,94,94])+'</div></div>'
-    +   '<div class="iv-tile"><div class="iv-tile-head"><div class="iv-tile-label">RULE OF 40</div><div class="iv-tile-bench">Top quartile</div></div><div class="iv-tile-value">53.2</div><div class="iv-tile-sub"><span class="change up">↗ Healthy</span> · growth + margin</div><div class="iv-tile-sparkline">'+spark([34,36,38,42,44,46,48,50,51,52,53,53])+'</div></div>'
-    +   '<div class="iv-tile"><div class="iv-tile-head"><div class="iv-tile-label">BURN MULTIPLE</div><div class="iv-tile-bench">Top quartile</div></div><div class="iv-tile-value">0.34</div><div class="iv-tile-sub"><span class="change up">↗ Excellent</span> · &lt;1.0 = strong</div><div class="iv-tile-sparkline">'+spark([72,68,62,56,52,48,42,40,38,36,34,34])+'</div></div>'
-    +   '<div class="iv-tile"><div class="iv-tile-head"><div class="iv-tile-label">CAC PAYBACK</div><div class="iv-tile-bench">Top quartile</div></div><div class="iv-tile-value">11.4<span style="font-size:14px;color:var(--t3);">mo</span></div><div class="iv-tile-sub"><span class="change up">↗ Improving</span> · target &lt;12 months</div><div class="iv-tile-sparkline">'+spark([18,17,16,15,15,14,13,13,12,12,11,11])+'</div></div>'
-    +   '<div class="iv-tile"><div class="iv-tile-head"><div class="iv-tile-label">MAGIC NUMBER</div><div class="iv-tile-bench">Top quartile</div></div><div class="iv-tile-value">1.42</div><div class="iv-tile-sub"><span class="change up">↗ Strong</span> · &gt;0.75 = expand</div><div class="iv-tile-sparkline">'+spark([62,68,72,78,82,86,92,96,108,118,128,142])+'</div></div>'
-    +   '<div class="iv-tile"><div class="iv-tile-head"><div class="iv-tile-label">RUNWAY</div><div class="iv-tile-bench">Healthy</div></div><div class="iv-tile-value">28<span style="font-size:14px;color:var(--t3);">mo</span></div><div class="iv-tile-sub"><span class="change up">↗ Extending</span> · cash reserves</div><div class="iv-tile-sparkline">'+spark([22,22,23,24,24,25,25,26,27,27,28,28])+'</div></div>'
-    + '</div>'
-    + '<div class="sp-sect-label">COHORT RETENTION <span class="sp-sect-meta">Net dollar retention by cohort · 12 month view</span></div>'
-    + '<div class="iv-cohort">'
-    +   '<div class="iv-cohort-head"><div class="iv-cohort-title">Customer cohort retention</div><div class="trend-period">Cohorts Q1 2024 → Q4 2025 · NDR by quarter since acquisition</div></div>'
-    +   '<div class="iv-cohort-grid">'
-    +     '<div class="row-head">COHORT</div><div class="col-head">M0</div><div class="col-head">M1</div><div class="col-head">M2</div><div class="col-head">M3</div><div class="col-head">M4</div><div class="col-head">M5</div><div class="col-head">M6</div><div class="col-head">M7</div><div class="col-head">M8</div><div class="col-head">M9</div><div class="col-head">M10</div><div class="col-head">M11</div>'
-    +     '<div class="row-head">Q1 2024</div><div class="cell h2">100</div><div class="cell h2">102</div><div class="cell h2">105</div><div class="cell h3">108</div><div class="cell h3">112</div><div class="cell h3">115</div><div class="cell h3">118</div><div class="cell h4">122</div><div class="cell h4">126</div><div class="cell h4">129</div><div class="cell h4">132</div><div class="cell h4">135</div>'
-    +     '<div class="row-head">Q2 2024</div><div class="cell h2">100</div><div class="cell h2">101</div><div class="cell h2">104</div><div class="cell h3">107</div><div class="cell h3">110</div><div class="cell h3">114</div><div class="cell h3">118</div><div class="cell h4">122</div><div class="cell h4">126</div><div class="cell h4">130</div><div class="cell h0">—</div><div class="cell h0">—</div>'
-    +     '<div class="row-head">Q3 2024</div><div class="cell h2">100</div><div class="cell h2">102</div><div class="cell h2">106</div><div class="cell h3">110</div><div class="cell h3">115</div><div class="cell h3">119</div><div class="cell h4">124</div><div class="cell h4">128</div><div class="cell h0">—</div><div class="cell h0">—</div><div class="cell h0">—</div><div class="cell h0">—</div>'
-    +     '<div class="row-head">Q4 2024</div><div class="cell h2">100</div><div class="cell h2">103</div><div class="cell h2">107</div><div class="cell h3">112</div><div class="cell h3">117</div><div class="cell h4">122</div><div class="cell h0">—</div><div class="cell h0">—</div><div class="cell h0">—</div><div class="cell h0">—</div><div class="cell h0">—</div><div class="cell h0">—</div>'
-    +     '<div class="row-head">Q1 2025</div><div class="cell h2">100</div><div class="cell h2">104</div><div class="cell h3">109</div><div class="cell h3">114</div><div class="cell h0">—</div><div class="cell h0">—</div><div class="cell h0">—</div><div class="cell h0">—</div><div class="cell h0">—</div><div class="cell h0">—</div><div class="cell h0">—</div><div class="cell h0">—</div>'
-    +     '<div class="row-head">Q2 2025</div><div class="cell h2">100</div><div class="cell h3">106</div><div class="cell h0">—</div><div class="cell h0">—</div><div class="cell h0">—</div><div class="cell h0">—</div><div class="cell h0">—</div><div class="cell h0">—</div><div class="cell h0">—</div><div class="cell h0">—</div><div class="cell h0">—</div><div class="cell h0">—</div>'
-    +   '</div>'
-    + '</div>'
-    + '<div class="sp-sect-label">SAAS BENCHMARKS <span class="sp-sect-meta">Castford vs SaaS public market peers · scale-stage</span></div>'
-    + '<div class="iv-bench">'
-    +   '<div class="iv-bench-row head"><div>METRIC</div><div>YOU</div><div>MEDIAN</div><div>TOP QUARTILE</div></div>'
-    +   '<div class="iv-bench-row"><div>Revenue growth (YoY)</div><div class="you">+18%</div><div class="median">+22%</div><div class="top">+38%</div></div>'
-    +   '<div class="iv-bench-row"><div>Net revenue retention</div><div class="you">128%</div><div class="median">112%</div><div class="top">125%</div></div>'
-    +   '<div class="iv-bench-row"><div>Gross margin</div><div class="you">84.9%</div><div class="median">75%</div><div class="top">82%</div></div>'
-    +   '<div class="iv-bench-row"><div>Rule of 40</div><div class="you">53.2</div><div class="median">28</div><div class="top">52</div></div>'
-    +   '<div class="iv-bench-row"><div>Burn multiple</div><div class="you">0.34</div><div class="median">1.4</div><div class="top">0.5</div></div>'
-    +   '<div class="iv-bench-row"><div>CAC payback</div><div class="you">11.4 mo</div><div class="median">22 mo</div><div class="top">14 mo</div></div>'
-    + '</div>'
-    + '<div class="sp-footer-meta">Benchmarks sourced from public SaaS comps · refreshed monthly · all metrics calculated from live GL data</div>'
+    + '<div class="sp-sect-label">CORE SAAS METRICS <span class="sp-sect-meta" id="ivTilesMeta">' + (loading ? 'Loading…' : '') + '</span></div>'
+    + '<div class="iv-grid" id="ivTilesWrap">' + (loading ? ivTilesSkeleton() : '') + '</div>'
+    + '<div class="sp-sect-label">COHORT RETENTION <span class="sp-sect-meta" id="ivCohortMeta">' + (loading ? 'Loading…' : '') + '</span></div>'
+    + '<div id="ivCohortWrap">' + (loading ? ivCohortSkeleton() : '') + '</div>'
+    + '<div class="sp-sect-label">SAAS BENCHMARKS <span class="sp-sect-meta" id="ivBenchMeta">' + (loading ? 'Loading…' : '') + '</span></div>'
+    + '<div id="ivBenchWrap">' + (loading ? ivBenchSkeleton() : '') + '</div>'
+    + '<div class="sp-footer-meta" id="ivFooterMeta">Loading investor metrics…</div>'
     + '<div class="bottom-spacer"></div>';
+}
+
+function ivTilesSkeleton(){
+  var tile = '<div class="iv-tile" style="opacity:.5"><div class="iv-tile-head"><div class="iv-tile-label">LOADING</div><div class="iv-tile-bench">···</div></div><div class="iv-tile-value">···</div><div class="iv-tile-sub">···</div></div>';
+  return tile + tile + tile + tile + tile + tile + tile + tile + tile;
+}
+
+function ivCohortSkeleton(){
+  return '<div style="padding:32px 0;text-align:center;color:var(--t3);font-family:\'Geist Mono\',monospace;font-size:11px;letter-spacing:1px">FETCHING COHORT DATA…</div>';
+}
+
+function ivBenchSkeleton(){
+  return '<div style="padding:32px 0;text-align:center;color:var(--t3);font-family:\'Geist Mono\',monospace;font-size:11px;letter-spacing:1px">FETCHING INDUSTRY BENCHMARKS…</div>';
+}
+
+async function loadInvestorAndRender(){
+  if (!window.CastfordData) {
+    renderInvestorDemo('Data layer not loaded — showing sample investor metrics');
+    return;
+  }
+  try {
+    if (!window.CastfordData.isInitialized()) {
+      await window.CastfordData.init();
+    }
+  } catch (e) {
+    console.warn('CastfordData init failed:', e);
+    renderInvestorDemo('Data layer init failed — showing sample investor metrics');
+    return;
+  }
+
+  if (window.CastfordData.isDemoMode()) {
+    renderInvestorDemo('Demo mode active — connect your workspace to see real investor metrics');
+    return;
+  }
+
+  var monthly = [], benchmarks = [], cmetrics = [];
+  try {
+    var results = await Promise.all([
+      window.CastfordData.getInvestorMonthlySeries().catch(function(){ return []; }),
+      window.CastfordData.getIndustryBenchmarks('saas').catch(function(){ return []; }),
+      window.CastfordData.getCustomerMetricsRows().catch(function(){ return []; })
+    ]);
+    monthly = results[0] || [];
+    benchmarks = results[1] || [];
+    cmetrics = results[2] || [];
+  } catch (e) {
+    console.warn('Investor metrics fetch failed:', e);
+    renderInvestorDemo('Data fetch failed — showing sample investor metrics');
+    return;
+  }
+
+  if (monthly.length === 0) {
+    renderInvestorDemo('No GL transactions found — showing sample investor metrics');
+    return;
+  }
+
+  // Eyebrow
+  var latestPeriod = monthly[monthly.length - 1].period;
+  document.getElementById('ivEyebrow').textContent =
+    'BOARD-READY · LATEST ' + latestPeriod.toUpperCase() + ' · ' + monthly.length + ' MONTH' + (monthly.length === 1 ? '' : 'S') + ' OF DATA';
+
+  ivRenderTiles(monthly, benchmarks);
+  ivRenderCohort(cmetrics);
+  ivRenderBenchmarks(monthly, benchmarks);
+
+  // Footer
+  var orgId = window.CastfordData.getOrgId() || '—';
+  var orgIdShort = orgId === '—' ? '—' : orgId.slice(0, 8) + '…';
+  document.getElementById('ivFooterMeta').textContent =
+    'Source: gl_transactions + gl_accounts + industry_benchmarks + customer_metrics · ' +
+    monthly.length + ' months · ' +
+    benchmarks.length + ' benchmark' + (benchmarks.length === 1 ? '' : 's') + ' · ' +
+    cmetrics.length + ' customer metric' + (cmetrics.length === 1 ? '' : 's') + ' · org ' + orgIdShort;
+}
+
+// ─── helpers ───────────────────────────────────────────────────────────
+
+function ivEscapeHTML(s){
+  return String(s == null ? '' : s)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+
+function ivFmtCurrency(v){
+  v = parseFloat(v || 0);
+  if (Math.abs(v) >= 1000000000) return '$' + (v/1000000000).toFixed(1) + 'B';
+  if (Math.abs(v) >= 1000000) return '$' + (v/1000000).toFixed(1) + 'M';
+  if (Math.abs(v) >= 1000) return '$' + (v/1000).toFixed(0) + 'K';
+  return '$' + v.toFixed(0);
+}
+
+function ivFmtPercent(v, decimals){
+  if (decimals === undefined) decimals = 1;
+  return (parseFloat(v || 0) * 100).toFixed(decimals) + '%';
+}
+
+function ivFmtNumber(v, decimals){
+  if (decimals === undefined) decimals = 1;
+  return parseFloat(v || 0).toFixed(decimals);
+}
+
+function ivBenchTier(your, p25, p50, p75, higherIsBetter){
+  if (your === null || your === undefined || isNaN(your)) return 'No data';
+  if (higherIsBetter === false) {
+    if (your <= p75) return 'Top quartile';
+    if (your <= p50) return 'Above median';
+    if (your <= p25) return 'Median';
+    return 'Below median';
+  }
+  if (your >= p75) return 'Top quartile';
+  if (your >= p50) return 'Above median';
+  if (your >= p25) return 'Median';
+  return 'Below median';
+}
+
+function ivBenchMap(benchmarks){
+  // Build lookup: metric → {p25, p50, p75, unit}
+  var map = {};
+  benchmarks.forEach(function(b){
+    map[b.metric] = {
+      p25: parseFloat(b.percentile_25),
+      p50: parseFloat(b.percentile_50),
+      p75: parseFloat(b.percentile_75),
+      unit: b.unit
+    };
+  });
+  return map;
+}
+
+// Build an empty-state tile (dimmed, with explanatory copy)
+function ivEmptyTile(label, sub){
+  return '<div class="iv-tile" style="opacity:.55">'
+    + '<div class="iv-tile-head"><div class="iv-tile-label">' + ivEscapeHTML(label) + '</div><div class="iv-tile-bench">No data</div></div>'
+    + '<div class="iv-tile-value" style="color:var(--t3)">—</div>'
+    + '<div class="iv-tile-sub" style="color:var(--t3)">' + ivEscapeHTML(sub) + '</div>'
+    + '</div>';
+}
+
+// Build a real KPI tile
+function ivRealTile(opts){
+  var changeClass = opts.changeDirection === 'up' ? 'up' : (opts.changeDirection === 'down' ? 'down' : '');
+  var arrow = opts.changeDirection === 'up' ? '↗ ' : (opts.changeDirection === 'down' ? '↘ ' : '');
+  var subHTML = opts.changeText
+    ? '<span class="change ' + changeClass + '">' + arrow + ivEscapeHTML(opts.changeText) + '</span>' + (opts.subSuffix ? ' · ' + ivEscapeHTML(opts.subSuffix) : '')
+    : ivEscapeHTML(opts.subText || '');
+  return '<div class="iv-tile">'
+    + '<div class="iv-tile-head"><div class="iv-tile-label">' + ivEscapeHTML(opts.label) + '</div><div class="iv-tile-bench">' + ivEscapeHTML(opts.bench || '') + '</div></div>'
+    + '<div class="iv-tile-value">' + opts.value + '</div>'
+    + '<div class="iv-tile-sub">' + subHTML + '</div>'
+    + (opts.spark ? '<div class="iv-tile-sparkline">' + opts.spark + '</div>' : '')
+    + '</div>';
+}
+
+// ─── section renderers ─────────────────────────────────────────────────
+
+function ivRenderTiles(monthly, benchmarks){
+  var wrap = document.getElementById('ivTilesWrap');
+  var meta = document.getElementById('ivTilesMeta');
+  var bm = ivBenchMap(benchmarks);
+
+  var latest = monthly[monthly.length - 1];
+  var prior = monthly.length > 1 ? monthly[monthly.length - 2] : null;
+
+  // Sparkline series — use last 12 months of revenue for ARR/ARR-related tiles
+  var revSeries = monthly.slice(-12).map(function(m){ return m.revenue; });
+  var netSeries = monthly.slice(-12).map(function(m){ return m.netIncome; });
+  var marginSeries = monthly.slice(-12).map(function(m){ return m.netMargin; });
+  var grossMarginSeries = monthly.slice(-12).map(function(m){ return m.grossMargin; });
+  var subSeries = monthly.slice(-12).map(function(m){ return m.subscriptionRevenue; });
+
+  // ─── Computed KPIs ───────────────────────────────────────────────
+  // ARR — annualize latest month revenue (×12)
+  var arr = latest.revenue * 12;
+  var priorArr = prior ? prior.revenue * 12 : 0;
+  var arrChangePct = (prior && prior.revenue) ? ((latest.revenue - prior.revenue) / prior.revenue) * 100 : 0;
+
+  // Net New ARR — month-over-month delta annualized
+  var netNewArr = prior ? (latest.revenue - prior.revenue) * 12 : 0;
+
+  // Subscription ARR (if subscription revenue is broken out)
+  var subArr = latest.subscriptionRevenue * 12;
+
+  // Revenue growth — MoM annualized (since we have <12 months of data, no YoY possible)
+  var monthlyGrowth = (prior && prior.revenue) ? (latest.revenue - prior.revenue) / prior.revenue : 0;
+  var annualizedGrowth = monthlyGrowth * 12;  // simple annualization
+
+  // Net margin
+  var netMargin = latest.netMargin;
+
+  // Gross margin
+  var grossMargin = latest.grossMargin;
+
+  // Rule of 40 — annualized growth (in percentage points) + net margin (in percentage points)
+  var ruleOf40 = (annualizedGrowth * 100) + (netMargin * 100);
+
+  // Magic Number — Net New ARR / Sales & Marketing spend (latest month's SG&A)
+  var magicNumber = (latest.salesMarketing > 0) ? (netNewArr / 4) / latest.salesMarketing : null;
+  // Note: standard formula is (Net New ARR for the quarter) / (S&M for prior quarter).
+  // We approximate as (Net New ARR / 4) / (latest month S&M), which is a reasonable proxy
+  // when only month-level data is available.
+
+  // Burn Multiple — only meaningful when burning cash. Latest is profitable → N/A.
+  var burnMultiple = null;
+  if (latest.netIncome < 0 && netNewArr > 0) {
+    burnMultiple = Math.abs(latest.netIncome) / netNewArr;
+  }
+
+  // ─── Render each tile ────────────────────────────────────────────
+  var tiles = [];
+
+  // 1. ARR
+  tiles.push(ivRealTile({
+    label: 'ARR',
+    bench: ivBenchTier(annualizedGrowth * 100, bm.revenue_growth_yoy && bm.revenue_growth_yoy.p25, bm.revenue_growth_yoy && bm.revenue_growth_yoy.p50, bm.revenue_growth_yoy && bm.revenue_growth_yoy.p75, true),
+    value: ivFmtCurrency(arr),
+    changeDirection: arrChangePct >= 0 ? 'up' : 'down',
+    changeText: (arrChangePct >= 0 ? '+' : '') + arrChangePct.toFixed(1) + '% MoM',
+    subSuffix: 'annualized',
+    spark: ivSpark(revSeries)
+  }));
+
+  // 2. Net New ARR
+  tiles.push(ivRealTile({
+    label: 'NET NEW ARR',
+    bench: netNewArr > 0 ? 'Growing' : 'Contracting',
+    value: ivFmtCurrency(netNewArr),
+    changeDirection: netNewArr >= 0 ? 'up' : 'down',
+    changeText: (netNewArr >= 0 ? '+' : '') + ivFmtCurrency(netNewArr),
+    subSuffix: 'vs prior month annualized',
+    spark: ivSpark(monthly.slice(-12).map(function(m, i, arr){
+      return i === 0 ? 0 : (m.revenue - arr[i-1].revenue) * 12;
+    }).slice(1))
+  }));
+
+  // 3. NRR — empty state
+  tiles.push(ivEmptyTile('NET REVENUE RETENTION', 'Connect customer subscription data'));
+
+  // 4. Logo Retention — empty state
+  tiles.push(ivEmptyTile('LOGO RETENTION', 'Connect customer subscription data'));
+
+  // 5. Rule of 40
+  var ruleOf40Tier = ivBenchTier(ruleOf40, bm.rule_of_40 && bm.rule_of_40.p25, bm.rule_of_40 && bm.rule_of_40.p50, bm.rule_of_40 && bm.rule_of_40.p75, true);
+  tiles.push(ivRealTile({
+    label: 'RULE OF 40',
+    bench: ruleOf40Tier,
+    value: ruleOf40.toFixed(1),
+    changeDirection: ruleOf40 >= 40 ? 'up' : 'down',
+    changeText: ruleOf40 >= 40 ? 'Healthy' : 'Below target',
+    subSuffix: 'growth + margin',
+    spark: ivSpark(monthly.slice(-12).map(function(m, i, arr){
+      var g = i === 0 ? 0 : (m.revenue - arr[i-1].revenue) / arr[i-1].revenue * 12 * 100;
+      return g + m.netMargin * 100;
+    }))
+  }));
+
+  // 6. Burn Multiple — N/A if profitable
+  if (burnMultiple === null) {
+    tiles.push(ivEmptyTile('BURN MULTIPLE', latest.netIncome >= 0 ? 'Profitable · burn multiple N/A' : 'Insufficient data'));
+  } else {
+    var burnTier = ivBenchTier(burnMultiple, bm.burn_multiple && bm.burn_multiple.p25, bm.burn_multiple && bm.burn_multiple.p50, bm.burn_multiple && bm.burn_multiple.p75, false);
+    tiles.push(ivRealTile({
+      label: 'BURN MULTIPLE',
+      bench: burnTier,
+      value: burnMultiple.toFixed(2),
+      changeDirection: burnMultiple < 1 ? 'up' : 'down',
+      changeText: burnMultiple < 1 ? 'Strong' : 'Watch',
+      subSuffix: '<1.0 = strong',
+      spark: ''
+    }));
+  }
+
+  // 7. CAC Payback — empty state
+  tiles.push(ivEmptyTile('CAC PAYBACK', 'Connect customer count + S&M spend'));
+
+  // 8. Magic Number — computable from S&M + new ARR
+  if (magicNumber !== null && magicNumber > 0) {
+    tiles.push(ivRealTile({
+      label: 'MAGIC NUMBER',
+      bench: magicNumber > 1 ? 'Strong · expand' : 'Below target',
+      value: magicNumber.toFixed(2),
+      changeDirection: magicNumber > 0.75 ? 'up' : 'down',
+      changeText: magicNumber > 0.75 ? 'Efficient' : 'Watch',
+      subSuffix: '>0.75 = expand',
+      spark: ''
+    }));
+  } else {
+    tiles.push(ivEmptyTile('MAGIC NUMBER', 'Need S&M spend + net new ARR'));
+  }
+
+  // 9. Runway — empty state (no asset accounts)
+  tiles.push(ivEmptyTile('RUNWAY', 'Add cash accounts to compute'));
+
+  wrap.innerHTML = tiles.join('');
+
+  var realCount = tiles.filter(function(t){ return t.indexOf('opacity:.55') === -1; }).length;
+  meta.textContent = realCount + ' of 9 tiles · ' + (9 - realCount) + ' need additional source data';
+}
+
+function ivRenderCohort(cmetrics){
+  var wrap = document.getElementById('ivCohortWrap');
+  var meta = document.getElementById('ivCohortMeta');
+
+  if (!cmetrics || cmetrics.length === 0) {
+    meta.textContent = 'No customer cohort data yet';
+    wrap.innerHTML = '<div style="padding:48px 16px;text-align:center;color:var(--t2);border:1px solid var(--border);border-radius:4px;background:var(--surface)">'
+      + '<div style="font-family:var(--display);font-size:16px;color:var(--t1);margin-bottom:6px">No customer cohort data yet</div>'
+      + '<div style="font-family:var(--body);font-size:13px;color:var(--t3);max-width:520px;margin:0 auto">Cohort retention requires per-customer subscription data. Connect a billing system or seed customer_metrics with cohort observations to populate this section.</div>'
+      + '<div style="font-family:\'Geist Mono\',monospace;font-size:10.5px;color:var(--t3);letter-spacing:0.5px;margin-top:12px">SOURCE · CUSTOMER_METRICS</div>'
+      + '</div>';
+    return;
+  }
+
+  // If we ever have customer_metrics rows, render a simple table view of recent cohort observations.
+  meta.textContent = cmetrics.length + ' customer metric' + (cmetrics.length === 1 ? '' : 's');
+  var rows = cmetrics.slice(0, 12).map(function(m){
+    return '<div class="iv-bench-row">'
+      + '<div>' + ivEscapeHTML(m.metric_key || '—') + '</div>'
+      + '<div class="you">' + ivEscapeHTML((m.metric_value || 0) + (m.metric_unit ? ' ' + m.metric_unit : '')) + '</div>'
+      + '<div class="median">' + ivEscapeHTML(m.period || '—') + '</div>'
+      + '<div class="top">' + ivEscapeHTML(m.source || '—') + '</div>'
+      + '</div>';
+  }).join('');
+  wrap.innerHTML = '<div class="iv-bench">'
+    + '<div class="iv-bench-row head"><div>METRIC</div><div>VALUE</div><div>PERIOD</div><div>SOURCE</div></div>'
+    + rows
+    + '</div>';
+}
+
+function ivRenderBenchmarks(monthly, benchmarks){
+  var wrap = document.getElementById('ivBenchWrap');
+  var meta = document.getElementById('ivBenchMeta');
+  var bm = ivBenchMap(benchmarks);
+
+  if (!benchmarks || benchmarks.length === 0) {
+    meta.textContent = 'No benchmarks loaded';
+    wrap.innerHTML = '<div style="padding:48px 16px;text-align:center;color:var(--t2);border:1px solid var(--border);border-radius:4px;background:var(--surface)">'
+      + '<div style="font-family:var(--display);font-size:16px;color:var(--t1);margin-bottom:6px">No benchmarks available</div>'
+      + '<div style="font-family:\'Geist Mono\',monospace;font-size:10.5px;color:var(--t3);letter-spacing:0.5px">INDUSTRY_BENCHMARKS IS EMPTY</div>'
+      + '</div>';
+    return;
+  }
+
+  meta.textContent = 'Castford vs SaaS public market peers · ' + benchmarks.length + ' metrics loaded';
+
+  var latest = monthly[monthly.length - 1];
+  var prior = monthly.length > 1 ? monthly[monthly.length - 2] : null;
+  var monthlyGrowth = (prior && prior.revenue) ? (latest.revenue - prior.revenue) / prior.revenue : 0;
+  var annualizedGrowth = monthlyGrowth * 12;
+  var ruleOf40 = (annualizedGrowth * 100) + (latest.netMargin * 100);
+
+  var rows = [];
+
+  // Revenue growth
+  if (bm.revenue_growth_yoy) {
+    rows.push({
+      label: 'Revenue growth (annualized MoM)',
+      you: (annualizedGrowth * 100).toFixed(0) + '%',
+      p50: bm.revenue_growth_yoy.p50.toFixed(0) + '%',
+      p75: bm.revenue_growth_yoy.p75.toFixed(0) + '%'
+    });
+  }
+  // NRR — empty
+  if (bm.ndr) {
+    rows.push({
+      label: 'Net revenue retention',
+      you: '—',
+      p50: bm.ndr.p50.toFixed(0) + '%',
+      p75: bm.ndr.p75.toFixed(0) + '%',
+      missing: 'customer_metrics'
+    });
+  }
+  // Gross margin
+  if (bm.gross_margin) {
+    rows.push({
+      label: 'Gross margin',
+      you: (latest.grossMargin * 100).toFixed(1) + '%',
+      p50: bm.gross_margin.p50.toFixed(0) + '%',
+      p75: bm.gross_margin.p75.toFixed(0) + '%'
+    });
+  }
+  // Rule of 40
+  if (bm.rule_of_40) {
+    rows.push({
+      label: 'Rule of 40',
+      you: ruleOf40.toFixed(1),
+      p50: bm.rule_of_40.p50.toFixed(0),
+      p75: bm.rule_of_40.p75.toFixed(0)
+    });
+  }
+  // Burn multiple
+  if (bm.burn_multiple) {
+    rows.push({
+      label: 'Burn multiple',
+      you: latest.netIncome >= 0 ? 'N/A · profitable' : '—',
+      p50: bm.burn_multiple.p50.toFixed(2),
+      p75: bm.burn_multiple.p75.toFixed(2)
+    });
+  }
+  // Net margin
+  if (bm.net_margin) {
+    rows.push({
+      label: 'Net margin',
+      you: (latest.netMargin * 100).toFixed(1) + '%',
+      p50: bm.net_margin.p50.toFixed(0) + '%',
+      p75: bm.net_margin.p75.toFixed(0) + '%'
+    });
+  }
+
+  var rowsHTML = rows.map(function(r){
+    var youCellExtra = r.missing ? ' style="color:var(--t3);font-size:10.5px"' : '';
+    var youValue = r.missing ? 'Connect ' + r.missing : r.you;
+    return '<div class="iv-bench-row">'
+      + '<div>' + ivEscapeHTML(r.label) + '</div>'
+      + '<div class="you"' + youCellExtra + '>' + ivEscapeHTML(youValue) + '</div>'
+      + '<div class="median">' + ivEscapeHTML(r.p50) + '</div>'
+      + '<div class="top">' + ivEscapeHTML(r.p75) + '</div>'
+      + '</div>';
+  }).join('');
+
+  wrap.innerHTML = '<div class="iv-bench">'
+    + '<div class="iv-bench-row head"><div>METRIC</div><div>YOU</div><div>MEDIAN</div><div>TOP QUARTILE</div></div>'
+    + rowsHTML
+    + '</div>';
+}
+
+// ─── demo render ───────────────────────────────────────────────────────
+
+function renderInvestorDemo(banner){
+  document.getElementById('ivEyebrow').textContent = 'BOARD-READY · DEMO DATA';
+  document.getElementById('ivTilesMeta').textContent = '9 sample tiles · illustrative only';
+  document.getElementById('ivCohortMeta').textContent = 'Sample cohort data';
+  document.getElementById('ivBenchMeta').textContent = 'Sample benchmarks';
+
+  function spark(values){ return values.map(function(v){return '<div style="height:'+v+'%;"></div>';}).join(''); }
+  var sampleTile = function(label, value, sub){
+    return '<div class="iv-tile"><div class="iv-tile-head"><div class="iv-tile-label">' + label + '</div><div class="iv-tile-bench">Sample</div></div><div class="iv-tile-value">' + value + '</div><div class="iv-tile-sub">' + sub + '</div><div class="iv-tile-sparkline">'+spark([42,48,52,58,62,68,72,76,82,86,90,94])+'</div></div>';
+  };
+
+  document.getElementById('ivTilesWrap').innerHTML =
+    sampleTile('ARR (sample)', '$73.3M', 'Illustrative · annualized') +
+    sampleTile('NET NEW ARR (sample)', '$11.2M', 'Illustrative · vs prior') +
+    sampleTile('NET REVENUE RETENTION (sample)', '128%', 'Illustrative · vs prior') +
+    sampleTile('LOGO RETENTION (sample)', '94.2%', 'Illustrative · 18 of 312 churned') +
+    sampleTile('RULE OF 40 (sample)', '53.2', 'Illustrative · growth + margin') +
+    sampleTile('BURN MULTIPLE (sample)', '0.34', 'Illustrative · &lt;1.0 = strong') +
+    sampleTile('CAC PAYBACK (sample)', '11.4 mo', 'Illustrative · target &lt;12 mo') +
+    sampleTile('MAGIC NUMBER (sample)', '1.42', 'Illustrative · &gt;0.75 = expand') +
+    sampleTile('RUNWAY (sample)', '28 mo', 'Illustrative · cash reserves');
+
+  document.getElementById('ivCohortWrap').innerHTML = '<div style="padding:32px 16px;text-align:center;color:var(--t2);border:1px solid var(--border);border-radius:4px;background:var(--surface)">'
+    + '<div style="font-family:var(--display);font-size:16px;color:var(--t1);margin-bottom:6px">Cohort heatmap (sample)</div>'
+    + '<div style="font-family:var(--body);font-size:13px;color:var(--t3)">With real customer subscription data, this section displays cohort net dollar retention by month-since-acquisition.</div>'
+    + '</div>';
+
+  document.getElementById('ivBenchWrap').innerHTML = '<div class="iv-bench">'
+    + '<div class="iv-bench-row head"><div>METRIC</div><div>YOU</div><div>MEDIAN</div><div>TOP QUARTILE</div></div>'
+    + '<div class="iv-bench-row"><div>Revenue growth (sample)</div><div class="you">+18%</div><div class="median">+22%</div><div class="top">+38%</div></div>'
+    + '<div class="iv-bench-row"><div>Net revenue retention (sample)</div><div class="you">128%</div><div class="median">112%</div><div class="top">125%</div></div>'
+    + '<div class="iv-bench-row"><div>Gross margin (sample)</div><div class="you">84.9%</div><div class="median">75%</div><div class="top">82%</div></div>'
+    + '<div class="iv-bench-row"><div>Rule of 40 (sample)</div><div class="you">53.2</div><div class="median">28</div><div class="top">52</div></div>'
+    + '</div>';
+
+  document.getElementById('ivFooterMeta').textContent = (banner || 'Demo data') + ' · Connect a workspace and seed gl_transactions to compute real metrics';
 }
 
 // ═══ COMMAND CENTER (Phase 2B-3 part 3) ═══

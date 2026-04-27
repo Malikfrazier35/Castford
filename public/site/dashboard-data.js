@@ -637,6 +637,84 @@ window.CastfordData = (function() {
     };
   }
 
+  // Investor metrics monthly time series — aggregates gl_transactions by period
+  // and computes revenue/COGS/opex/net income with subtype splits useful for
+  // SaaS metrics (subscription, S&M spend).
+  async function getInvestorMonthlySeries() {
+    if (!sb || demoMode || !orgId) return [];
+    var { data, error } = await sb
+      .from('gl_transactions')
+      .select('period, amount, account:gl_accounts(account_type, account_subtype, name)')
+      .eq('org_id', orgId);
+    if (error || !data) return [];
+
+    var bucket = {};
+    data.forEach(function(tx){
+      var p = tx.period;
+      if (!p || !tx.account) return;
+      if (!bucket[p]) bucket[p] = { revenue: 0, cogs: 0, opex: 0, otherIncome: 0, otherExpense: 0, salesMarketing: 0, subscription: 0 };
+      var amt = Math.abs(parseFloat(tx.amount || 0));
+      var type = tx.account.account_type;
+      var subtype = tx.account.account_subtype;
+      if (type === 'revenue') {
+        bucket[p].revenue += amt;
+        if (subtype === 'subscription') bucket[p].subscription += amt;
+      } else if (type === 'cost_of_revenue') {
+        bucket[p].cogs += amt;
+      } else if (type === 'expense') {
+        bucket[p].opex += amt;
+        if (subtype === 'sales' || subtype === 'marketing') bucket[p].salesMarketing += amt;
+      } else if (type === 'other_income') {
+        bucket[p].otherIncome += amt;
+      } else if (type === 'other_expense') {
+        bucket[p].otherExpense += amt;
+      }
+    });
+
+    var periods = Object.keys(bucket).sort();
+    return periods.map(function(p){
+      var m = bucket[p];
+      var grossProfit = m.revenue - m.cogs;
+      var operatingIncome = grossProfit - m.opex;
+      var netIncome = operatingIncome + m.otherIncome - m.otherExpense;
+      return {
+        period: p,
+        revenue: m.revenue,
+        cogs: m.cogs,
+        opex: m.opex,
+        grossProfit: grossProfit,
+        grossMargin: m.revenue ? grossProfit / m.revenue : 0,
+        operatingIncome: operatingIncome,
+        netIncome: netIncome,
+        netMargin: m.revenue ? netIncome / m.revenue : 0,
+        salesMarketing: m.salesMarketing,
+        subscriptionRevenue: m.subscription
+      };
+    });
+  }
+
+  // industry_benchmarks for given industry (default: saas)
+  async function getIndustryBenchmarks(industry) {
+    if (!sb) return [];
+    var { data } = await sb
+      .from('industry_benchmarks')
+      .select('metric, percentile_25, percentile_50, percentile_75, unit, industry, year')
+      .eq('industry', industry || 'saas');
+    return data || [];
+  }
+
+  // customer_metrics — subscription/cohort metrics if populated
+  async function getCustomerMetricsRows() {
+    if (!sb || demoMode || !orgId) return [];
+    var { data } = await sb
+      .from('customer_metrics')
+      .select('id, metric_key, metric_value, metric_unit, period, period_start, period_end, source, metadata')
+      .eq('org_id', orgId)
+      .order('period_end', { ascending: false, nullsFirst: false })
+      .limit(50);
+    return data || [];
+  }
+
   // ==========================================
   // API surface
   // ==========================================
@@ -682,6 +760,9 @@ window.CastfordData = (function() {
     getNotifications: getNotifications,
     getRecentActivity: getRecentActivity,
     getCommandCenterStats: getCommandCenterStats,
+    getInvestorMonthlySeries: getInvestorMonthlySeries,
+    getIndustryBenchmarks: getIndustryBenchmarks,
+    getCustomerMetricsRows: getCustomerMetricsRows,
     // WRITE
     createBudget: createBudget,
     updateBudget: updateBudget,
