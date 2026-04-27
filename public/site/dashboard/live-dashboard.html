@@ -2463,13 +2463,24 @@ function renderConsolidation(){
     + '<div class="bottom-spacer"></div>';
 }
 
+// ═══ SCENARIOS (Phase 2B-3 part 5) ═══
+// Wired to scenarios + budget_versions via CastfordData.getScenarios() / getBudgetVersions().
+// Two sections: Active Scenarios grid, Assumptions detail.
+// Falls back to demo if (a) data layer not loaded, (b) demo mode.
+// When 0 scenarios exist, shows clear empty state with CTA (does NOT show fake scenarios).
+
 function renderScenarios(){
   document.getElementById('breadcrumb').innerHTML='Dashboard / <strong>Scenarios</strong>';
   document.getElementById('resourcesPanel').style.display='';
-  document.getElementById('mainContent').innerHTML = ''
+  document.getElementById('mainContent').innerHTML = scShellHTML(true);
+  loadScenariosAndRender();
+}
+
+function scShellHTML(loading){
+  return ''
     + '<div class="sp-header">'
     +   '<div class="sp-title-block">'
-    +     '<div class="sp-eyebrow">PLANNING · 8 SAVED SCENARIOS</div>'
+    +     '<div class="sp-eyebrow" id="scEyebrow">' + (loading ? 'PLANNING · LOADING…' : 'PLANNING') + '</div>'
     +     '<h1 class="sp-title">Scenario <em>library</em></h1>'
     +   '</div>'
     +   '<div class="sp-actions">'
@@ -2477,63 +2488,308 @@ function renderScenarios(){
     +     '<button class="sp-btn primary">+ New scenario</button>'
     +   '</div>'
     + '</div>'
-    + '<div class="sp-sect-label">ACTIVE SCENARIOS <span class="sp-sect-meta">Click any to view detail</span></div>'
-    + '<div class="sc-grid">'
-    +   '<div class="sc-card active">'
-    +     '<div class="sc-eyebrow"><span>BOARD APPROVED</span><span class="stat">● Active</span></div>'
-    +     '<h3>Q4 board scenario</h3>'
-    +     '<div class="desc">Conservative growth with 2 enterprise deals slipping to Q1.</div>'
-    +     '<div class="sc-stats"><div class="sc-stat"><div class="sc-stat-label">FY26 ARR</div><div class="sc-stat-val up">$78.0M</div></div><div class="sc-stat"><div class="sc-stat-label">VS BASE</div><div class="sc-stat-val up">+6.4%</div></div><div class="sc-stat"><div class="sc-stat-label">RUNWAY</div><div class="sc-stat-val">28 mo</div></div></div>'
-    +   '</div>'
-    +   '<div class="sc-card">'
-    +     '<div class="sc-eyebrow"><span>HIRING PUSH</span><span class="stat">● Active</span></div>'
-    +     '<h3>20% headcount expansion</h3>'
-    +     '<div class="desc">Aggressive hiring across engineering and sales for FY26.</div>'
-    +     '<div class="sc-stats"><div class="sc-stat"><div class="sc-stat-label">FY26 ARR</div><div class="sc-stat-val up">$84.2M</div></div><div class="sc-stat"><div class="sc-stat-label">VS BASE</div><div class="sc-stat-val up">+14.9%</div></div><div class="sc-stat"><div class="sc-stat-label">RUNWAY</div><div class="sc-stat-val down">18 mo</div></div></div>'
-    +   '</div>'
-    +   '<div class="sc-card">'
-    +     '<div class="sc-eyebrow"><span>RECESSION</span><span class="stat">● Active</span></div>'
-    +     '<h3>Downturn protection</h3>'
-    +     '<div class="desc">Revenue contracts 8%, customer churn doubles, hiring freeze.</div>'
-    +     '<div class="sc-stats"><div class="sc-stat"><div class="sc-stat-label">FY26 ARR</div><div class="sc-stat-val down">$62.4M</div></div><div class="sc-stat"><div class="sc-stat-label">VS BASE</div><div class="sc-stat-val down">−14.9%</div></div><div class="sc-stat"><div class="sc-stat-label">RUNWAY</div><div class="sc-stat-val">31 mo</div></div></div>'
-    +   '</div>'
-    +   '<div class="sc-card">'
-    +     '<div class="sc-eyebrow"><span>DRAFT</span><span class="stat draft">○ Draft</span></div>'
-    +     '<h3>EMEA expansion</h3>'
-    +     '<div class="desc">Open Berlin and Paris offices, 12 new hires across EMEA.</div>'
-    +     '<div class="sc-stats"><div class="sc-stat"><div class="sc-stat-label">FY26 ARR</div><div class="sc-stat-val up">$81.6M</div></div><div class="sc-stat"><div class="sc-stat-label">VS BASE</div><div class="sc-stat-val up">+11.3%</div></div><div class="sc-stat"><div class="sc-stat-label">RUNWAY</div><div class="sc-stat-val">22 mo</div></div></div>'
-    +   '</div>'
-    +   '<div class="sc-card">'
-    +     '<div class="sc-eyebrow"><span>DRAFT</span><span class="stat draft">○ Draft</span></div>'
-    +     '<h3>Pricing model change</h3>'
-    +     '<div class="desc">Move to consumption-based pricing for enterprise tier.</div>'
-    +     '<div class="sc-stats"><div class="sc-stat"><div class="sc-stat-label">FY26 ARR</div><div class="sc-stat-val up">$80.5M</div></div><div class="sc-stat"><div class="sc-stat-label">VS BASE</div><div class="sc-stat-val up">+9.8%</div></div><div class="sc-stat"><div class="sc-stat-label">RUNWAY</div><div class="sc-stat-val">26 mo</div></div></div>'
-    +   '</div>'
-    +   '<div class="sc-card">'
-    +     '<div class="sc-eyebrow"><span>DRAFT</span><span class="stat draft">○ Draft</span></div>'
-    +     '<h3>M&A target</h3>'
-    +     '<div class="desc">Acquire smaller competitor for $12M, integrate by Q3.</div>'
-    +     '<div class="sc-stats"><div class="sc-stat"><div class="sc-stat-label">FY26 ARR</div><div class="sc-stat-val up">$92.4M</div></div><div class="sc-stat"><div class="sc-stat-label">VS BASE</div><div class="sc-stat-val up">+26.1%</div></div><div class="sc-stat"><div class="sc-stat-label">RUNWAY</div><div class="sc-stat-val down">14 mo</div></div></div>'
-    +   '</div>'
-    + '</div>'
-    + '<div class="sp-sect-label">ASSUMPTIONS · BOARD SCENARIO <span class="sp-sect-meta">Editable · changes recalculate downstream</span></div>'
-    + '<div class="sc-detail">'
-    +   '<div class="sc-detail-head">'
-    +     '<div class="sc-detail-title">Q4 board scenario · driver overrides</div>'
-    +     '<div class="sc-detail-meta">6 changes from base · last edited 2 hours ago</div>'
-    +   '</div>'
-    +   '<div class="sc-assumptions">'
-    +     '<div class="head">DRIVER</div><div class="head">BASE</div><div class="head">SCENARIO</div><div class="head">DELTA</div>'
-    +     '<div class="row">New logo ARR / month</div><div class="num">$1.84M</div><div class="num">$1.62M</div><div class="delta down">−$220K</div>'
-    +     '<div class="row">Expansion rate</div><div class="num">118%</div><div class="num">122%</div><div class="delta up">+4 pts</div>'
-    +     '<div class="row">Gross churn</div><div class="num">1.8%</div><div class="num">2.1%</div><div class="delta down">+0.3 pts</div>'
-    +     '<div class="row">Sales cycle (days)</div><div class="num">42</div><div class="num">48</div><div class="delta down">+6 days</div>'
-    +     '<div class="row">CAC payback (months)</div><div class="num">11.4</div><div class="num">12.8</div><div class="delta down">+1.4 mo</div>'
-    +     '<div class="row">Headcount end of year</div><div class="num">142</div><div class="num">148</div><div class="delta up">+6 hires</div>'
-    +   '</div>'
-    + '</div>'
-    + '<div class="sp-footer-meta">Scenarios stored in Supabase · all calculations versioned · 8 saved scenarios available</div>'
+    + '<div class="sp-sect-label">ACTIVE SCENARIOS <span class="sp-sect-meta" id="scGridMeta">' + (loading ? 'Loading…' : '') + '</span></div>'
+    + '<div id="scGridWrap">' + (loading ? scGridSkeleton() : '') + '</div>'
+    + '<div class="sp-sect-label">ASSUMPTIONS <span class="sp-sect-meta" id="scDetailMeta">' + (loading ? 'Loading…' : '') + '</span></div>'
+    + '<div id="scDetailWrap">' + (loading ? scDetailSkeleton() : '') + '</div>'
+    + '<div class="sp-footer-meta" id="scFooterMeta">Loading scenarios…</div>'
     + '<div class="bottom-spacer"></div>';
+}
+
+function scGridSkeleton(){
+  return '<div style="padding:32px 0;text-align:center;color:var(--t3);font-family:\'Geist Mono\',monospace;font-size:11px;letter-spacing:1px">FETCHING SCENARIOS…</div>';
+}
+
+function scDetailSkeleton(){
+  return '<div style="padding:24px 0;text-align:center;color:var(--t3);font-family:\'Geist Mono\',monospace;font-size:11px;letter-spacing:1px">FETCHING ASSUMPTIONS…</div>';
+}
+
+async function loadScenariosAndRender(){
+  if (!window.CastfordData) {
+    renderScenariosDemo('Data layer not loaded — showing sample scenarios');
+    return;
+  }
+  try {
+    if (!window.CastfordData.isInitialized()) {
+      await window.CastfordData.init();
+    }
+  } catch (e) {
+    console.warn('CastfordData init failed:', e);
+    renderScenariosDemo('Data layer init failed — showing sample scenarios');
+    return;
+  }
+
+  if (window.CastfordData.isDemoMode()) {
+    renderScenariosDemo('Demo mode active — connect your workspace to see real scenarios');
+    return;
+  }
+
+  var scenarios = [], budgets = [];
+  try {
+    var results = await Promise.all([
+      window.CastfordData.getScenarios().catch(function(){ return []; }),
+      window.CastfordData.getBudgetVersions({ limit: 5 }).catch(function(){ return []; })
+    ]);
+    scenarios = results[0] || [];
+    budgets = results[1] || [];
+  } catch (e) {
+    console.warn('Scenarios fetch failed:', e);
+    renderScenariosDemo('Data fetch failed — showing sample scenarios');
+    return;
+  }
+
+  // Eyebrow
+  if (scenarios.length === 0) {
+    document.getElementById('scEyebrow').textContent = 'PLANNING · NO SCENARIOS YET';
+  } else {
+    var activeCount = scenarios.filter(function(s){ return s.status === 'active' || s.status === 'approved'; }).length;
+    document.getElementById('scEyebrow').textContent = 'PLANNING · ' + scenarios.length + ' SCENARIO' + (scenarios.length === 1 ? '' : 'S') +
+      (activeCount > 0 ? ' · ' + activeCount + ' ACTIVE' : '');
+  }
+
+  scRenderGrid(scenarios, budgets);
+  scRenderDetail(scenarios, budgets);
+
+  // Footer
+  var orgId = window.CastfordData.getOrgId() || '—';
+  var orgIdShort = orgId === '—' ? '—' : orgId.slice(0, 8) + '…';
+  document.getElementById('scFooterMeta').textContent =
+    'Source: scenarios + budget_versions · ' +
+    scenarios.length + ' scenario' + (scenarios.length === 1 ? '' : 's') + ' · ' +
+    budgets.length + ' budget version' + (budgets.length === 1 ? '' : 's') + ' · org ' + orgIdShort;
+}
+
+// ─── helpers ───────────────────────────────────────────────────────────
+
+function scEscapeHTML(s){
+  return String(s == null ? '' : s)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+
+function scStatusBadge(status){
+  var s = (status || 'draft').toLowerCase();
+  if (s === 'active') return '<span class="stat">● Active</span>';
+  if (s === 'approved') return '<span class="stat">● Approved</span>';
+  if (s === 'archived') return '<span class="stat draft">○ Archived</span>';
+  return '<span class="stat draft">○ Draft</span>';
+}
+
+function scTypeLabel(scenarioType){
+  if (!scenarioType) return 'SCENARIO';
+  return String(scenarioType).replace(/[_-]/g, ' ').toUpperCase();
+}
+
+function scFmtCurrency(v){
+  v = parseFloat(v || 0);
+  if (Math.abs(v) >= 1000000000) return '$' + (v/1000000000).toFixed(1) + 'B';
+  if (Math.abs(v) >= 1000000) return '$' + (v/1000000).toFixed(1) + 'M';
+  if (Math.abs(v) >= 1000) return '$' + (v/1000).toFixed(0) + 'K';
+  return '$' + v.toFixed(0);
+}
+
+function scFmtDelta(deltaPct){
+  if (deltaPct === null || deltaPct === undefined || isNaN(deltaPct)) return '—';
+  var sign = deltaPct >= 0 ? '+' : '';
+  return sign + parseFloat(deltaPct).toFixed(1) + '%';
+}
+
+function scExtractStat(scenario, key, fallback){
+  if (!scenario || !scenario.results) return fallback;
+  var r = scenario.results;
+  // Try multiple key patterns (results may use snake_case or camelCase)
+  var variants = [key, key.replace(/_/g, ''), key.replace(/_([a-z])/g, function(_, c){ return c.toUpperCase(); })];
+  for (var i = 0; i < variants.length; i++) {
+    if (r[variants[i]] !== undefined && r[variants[i]] !== null) return r[variants[i]];
+  }
+  return fallback;
+}
+
+// ─── section renderers ─────────────────────────────────────────────────
+
+function scRenderGrid(scenarios, budgets){
+  var wrap = document.getElementById('scGridWrap');
+  var meta = document.getElementById('scGridMeta');
+
+  if (!scenarios || scenarios.length === 0) {
+    meta.textContent = 'No scenarios saved yet';
+    wrap.innerHTML = '<div style="padding:64px 24px;text-align:center;color:var(--t2);border:1px solid var(--border);border-radius:4px;background:var(--surface)">'
+      + '<div style="font-family:var(--display);font-size:20px;color:var(--t1);margin-bottom:8px">No scenarios yet</div>'
+      + '<div style="font-family:var(--body);font-size:13px;line-height:1.6;max-width:520px;margin:0 auto;color:var(--t3)">'
+      +   'Build your first scenario to model FY26 outcomes — board case, hiring push, downturn protection, M&A, or anything else worth comparing against base. Castford uses your driver overrides plus the GL to calculate downstream ARR, runway, and net income.'
+      + '</div>'
+      + '<div style="font-family:\'Geist Mono\',monospace;font-size:10.5px;color:var(--t3);letter-spacing:0.5px;margin-top:16px">SOURCE · SCENARIOS</div>'
+      + '</div>';
+    return;
+  }
+
+  meta.textContent = scenarios.length + ' total · click any to view detail';
+
+  // Find a base reference for VS BASE comparison: use approved budget_version if available
+  var baseRevenue = null;
+  var approvedBudget = budgets.find(function(b){ return b.status === 'approved'; }) || budgets[0];
+  if (approvedBudget) baseRevenue = parseFloat(approvedBudget.total_revenue || 0);
+
+  var html = '';
+  scenarios.forEach(function(s){
+    var typeLabel = scTypeLabel(s.scenario_type);
+    var badge = scStatusBadge(s.status);
+    var isActive = (s.status === 'active' || s.status === 'approved');
+    var cardClass = isActive ? 'sc-card active' : 'sc-card';
+
+    // Stats from results jsonb
+    var fyArr = scExtractStat(s, 'fy_arr', null);
+    var runway = scExtractStat(s, 'runway_months', null);
+    var vsBaseStat = scExtractStat(s, 'vs_base_pct', null);
+
+    // If results doesn't carry vs_base, compute it from baseRevenue when both available
+    if ((vsBaseStat === null || vsBaseStat === undefined) && baseRevenue && fyArr) {
+      vsBaseStat = ((parseFloat(fyArr) - baseRevenue) / baseRevenue) * 100;
+    }
+
+    var fyArrCell = (fyArr !== null && fyArr !== undefined)
+      ? scFmtCurrency(fyArr)
+      : '—';
+    var fyArrClass = (fyArr !== null && fyArr !== undefined && baseRevenue)
+      ? (parseFloat(fyArr) >= baseRevenue ? 'up' : 'down')
+      : '';
+    var vsBaseCell = (vsBaseStat !== null && vsBaseStat !== undefined && !isNaN(vsBaseStat))
+      ? scFmtDelta(vsBaseStat)
+      : 'No base';
+    var vsBaseClass = (vsBaseStat !== null && vsBaseStat !== undefined && !isNaN(vsBaseStat))
+      ? (parseFloat(vsBaseStat) >= 0 ? 'up' : 'down')
+      : '';
+    var runwayCell = (runway !== null && runway !== undefined)
+      ? (runway + ' mo')
+      : '—';
+
+    html += '<div class="' + cardClass + '">'
+      + '<div class="sc-eyebrow"><span>' + scEscapeHTML(typeLabel) + '</span>' + badge + '</div>'
+      + '<h3>' + scEscapeHTML(s.name || 'Untitled scenario') + '</h3>'
+      + '<div class="desc">' + scEscapeHTML(s.description || 'No description provided.') + '</div>'
+      + '<div class="sc-stats">'
+      +   '<div class="sc-stat"><div class="sc-stat-label">FY ARR</div><div class="sc-stat-val ' + fyArrClass + '">' + fyArrCell + '</div></div>'
+      +   '<div class="sc-stat"><div class="sc-stat-label">VS BASE</div><div class="sc-stat-val ' + vsBaseClass + '">' + vsBaseCell + '</div></div>'
+      +   '<div class="sc-stat"><div class="sc-stat-label">RUNWAY</div><div class="sc-stat-val">' + runwayCell + '</div></div>'
+      + '</div>'
+      + '</div>';
+  });
+
+  wrap.innerHTML = '<div class="sc-grid">' + html + '</div>';
+}
+
+function scRenderDetail(scenarios, budgets){
+  var wrap = document.getElementById('scDetailWrap');
+  var meta = document.getElementById('scDetailMeta');
+
+  if (!scenarios || scenarios.length === 0) {
+    meta.textContent = 'Create a scenario to see driver overrides';
+    wrap.innerHTML = '<div style="padding:48px 16px;text-align:center;color:var(--t2);border:1px solid var(--border);border-radius:4px;background:var(--surface)">'
+      + '<div style="font-family:var(--display);font-size:16px;color:var(--t1);margin-bottom:6px">Driver overrides appear here</div>'
+      + '<div style="font-family:var(--body);font-size:13px;line-height:1.5;color:var(--t3);max-width:480px;margin:0 auto">When a scenario exists, Castford compares its assumptions jsonb against the approved budget_version and shows the deltas inline.</div>'
+      + '</div>';
+    return;
+  }
+
+  // Pick the active scenario, or the first one if none are active
+  var primary = scenarios.find(function(s){ return s.status === 'active' || s.status === 'approved'; }) || scenarios[0];
+  var assumptions = primary.assumptions || {};
+  var keys = Object.keys(assumptions);
+
+  if (keys.length === 0) {
+    meta.textContent = 'Showing: ' + (primary.name || 'Untitled') + ' · no overrides';
+    wrap.innerHTML = '<div style="padding:32px 16px;text-align:center;color:var(--t2);border:1px solid var(--border);border-radius:4px;background:var(--surface);font-family:\'Geist Mono\',monospace;font-size:11px;color:var(--t3);letter-spacing:0.5px">SCENARIO HAS NO ASSUMPTIONS YET</div>';
+    return;
+  }
+
+  // Find base for comparison
+  var approvedBudget = budgets.find(function(b){ return b.status === 'approved'; }) || budgets[0];
+  var baseAssumptions = (approvedBudget && approvedBudget.metadata && approvedBudget.metadata.assumptions) || {};
+
+  var rows = '';
+  keys.forEach(function(k){
+    var scenarioVal = assumptions[k];
+    var baseVal = baseAssumptions[k];
+    var delta = '—';
+    var deltaClass = '';
+    if (typeof scenarioVal === 'number' && typeof baseVal === 'number') {
+      var d = scenarioVal - baseVal;
+      delta = (d >= 0 ? '+' : '') + d;
+      deltaClass = d >= 0 ? 'up' : 'down';
+    }
+    var prettyKey = k.replace(/[_]/g, ' ').replace(/\b\w/g, function(c){ return c.toUpperCase(); });
+    rows += '<div class="row">' + scEscapeHTML(prettyKey) + '</div>'
+      + '<div class="num">' + scEscapeHTML(baseVal === undefined ? '—' : String(baseVal)) + '</div>'
+      + '<div class="num">' + scEscapeHTML(scenarioVal === undefined ? '—' : String(scenarioVal)) + '</div>'
+      + '<div class="delta ' + deltaClass + '">' + scEscapeHTML(delta) + '</div>';
+  });
+
+  meta.textContent = 'Showing: ' + (primary.name || 'Untitled') + ' · ' + keys.length + ' driver' + (keys.length === 1 ? '' : 's');
+
+  var lastEdited = primary.updated_at
+    ? 'last edited ' + new Date(primary.updated_at).toLocaleDateString()
+    : 'recent edit';
+
+  wrap.innerHTML = '<div class="sc-detail">'
+    + '<div class="sc-detail-head">'
+    +   '<div class="sc-detail-title">' + scEscapeHTML(primary.name || 'Untitled scenario') + ' · driver overrides</div>'
+    +   '<div class="sc-detail-meta">' + keys.length + ' driver' + (keys.length === 1 ? '' : 's') + ' · ' + lastEdited + '</div>'
+    + '</div>'
+    + '<div class="sc-assumptions">'
+    +   '<div class="head">DRIVER</div><div class="head">BASE</div><div class="head">SCENARIO</div><div class="head">DELTA</div>'
+    +   rows
+    + '</div>'
+    + '</div>';
+}
+
+// ─── demo render ───────────────────────────────────────────────────────
+
+function renderScenariosDemo(banner){
+  document.getElementById('scEyebrow').textContent = 'PLANNING · DEMO DATA';
+  document.getElementById('scGridMeta').textContent = '6 sample scenarios · illustrative only';
+  document.getElementById('scDetailMeta').textContent = 'Sample driver overrides';
+
+  document.getElementById('scGridWrap').innerHTML = '<div class="sc-grid">'
+    + '<div class="sc-card active">'
+    +   '<div class="sc-eyebrow"><span>BOARD APPROVED (sample)</span><span class="stat">● Active</span></div>'
+    +   '<h3>Sample board scenario</h3>'
+    +   '<div class="desc">Illustrative · with real data this would show the approved scenario for the period.</div>'
+    +   '<div class="sc-stats"><div class="sc-stat"><div class="sc-stat-label">FY ARR</div><div class="sc-stat-val up">$78.0M</div></div><div class="sc-stat"><div class="sc-stat-label">VS BASE</div><div class="sc-stat-val up">+6.4%</div></div><div class="sc-stat"><div class="sc-stat-label">RUNWAY</div><div class="sc-stat-val">28 mo</div></div></div>'
+    + '</div>'
+    + '<div class="sc-card">'
+    +   '<div class="sc-eyebrow"><span>HIRING PUSH (sample)</span><span class="stat">● Active</span></div>'
+    +   '<h3>Sample hiring expansion</h3>'
+    +   '<div class="desc">Illustrative · would model an aggressive hiring plan against your GL drivers.</div>'
+    +   '<div class="sc-stats"><div class="sc-stat"><div class="sc-stat-label">FY ARR</div><div class="sc-stat-val up">$84.2M</div></div><div class="sc-stat"><div class="sc-stat-label">VS BASE</div><div class="sc-stat-val up">+14.9%</div></div><div class="sc-stat"><div class="sc-stat-label">RUNWAY</div><div class="sc-stat-val down">18 mo</div></div></div>'
+    + '</div>'
+    + '<div class="sc-card">'
+    +   '<div class="sc-eyebrow"><span>RECESSION (sample)</span><span class="stat">● Active</span></div>'
+    +   '<h3>Sample downturn protection</h3>'
+    +   '<div class="desc">Illustrative · would stress test against revenue contraction and elevated churn.</div>'
+    +   '<div class="sc-stats"><div class="sc-stat"><div class="sc-stat-label">FY ARR</div><div class="sc-stat-val down">$62.4M</div></div><div class="sc-stat"><div class="sc-stat-label">VS BASE</div><div class="sc-stat-val down">−14.9%</div></div><div class="sc-stat"><div class="sc-stat-label">RUNWAY</div><div class="sc-stat-val">31 mo</div></div></div>'
+    + '</div>'
+    + '<div class="sc-card">'
+    +   '<div class="sc-eyebrow"><span>DRAFT (sample)</span><span class="stat draft">○ Draft</span></div>'
+    +   '<h3>Sample expansion plan</h3>'
+    +   '<div class="desc">Illustrative · draft scenario for new market entry.</div>'
+    +   '<div class="sc-stats"><div class="sc-stat"><div class="sc-stat-label">FY ARR</div><div class="sc-stat-val up">$81.6M</div></div><div class="sc-stat"><div class="sc-stat-label">VS BASE</div><div class="sc-stat-val up">+11.3%</div></div><div class="sc-stat"><div class="sc-stat-label">RUNWAY</div><div class="sc-stat-val">22 mo</div></div></div>'
+    + '</div>'
+    + '</div>';
+
+  document.getElementById('scDetailWrap').innerHTML = '<div class="sc-detail">'
+    + '<div class="sc-detail-head">'
+    +   '<div class="sc-detail-title">Sample scenario · driver overrides</div>'
+    +   '<div class="sc-detail-meta">Illustrative only</div>'
+    + '</div>'
+    + '<div class="sc-assumptions">'
+    +   '<div class="head">DRIVER</div><div class="head">BASE</div><div class="head">SCENARIO</div><div class="head">DELTA</div>'
+    +   '<div class="row">Sample driver A</div><div class="num">100</div><div class="num">85</div><div class="delta down">−15</div>'
+    +   '<div class="row">Sample driver B</div><div class="num">42</div><div class="num">48</div><div class="delta up">+6</div>'
+    +   '<div class="row">Sample driver C</div><div class="num">1.8</div><div class="num">2.1</div><div class="delta down">+0.3</div>'
+    + '</div>'
+    + '</div>';
+
+  document.getElementById('scFooterMeta').textContent = (banner || 'Demo data') + ' · Create a scenario in the scenarios table to see real driver overrides';
 }
 
 function renderClose(){

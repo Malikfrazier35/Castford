@@ -182,6 +182,23 @@ window.CastfordData = (function() {
     return data || [];
   }
 
+  // budget_versions — used as the "base" reference for scenario comparisons
+  async function getBudgetVersions(opts) {
+    opts = opts || {};
+    if (!sb || demoMode || !orgId) return [];
+    var q = sb
+      .from('budget_versions')
+      .select('id, name, fiscal_year, status, total_revenue, total_opex, total_net_income, notes, metadata, approved_at, updated_at, created_at')
+      .eq('org_id', orgId)
+      .order('updated_at', { ascending: false });
+    if (opts.fiscalYear) q = q.eq('fiscal_year', opts.fiscalYear);
+    if (opts.status) q = q.eq('status', opts.status);
+    if (opts.limit) q = q.limit(opts.limit);
+    var { data } = await q;
+    return data || [];
+  }
+
+
   // NEW v1.2: Trigger forecast generation via generate-forecast edge function
   // Body shape can include: { scenarioName, scenarioType, drivers, horizonMonths, forecastModel }
   async function generateForecast(body) {
@@ -763,6 +780,7 @@ window.CastfordData = (function() {
     getInvestorMonthlySeries: getInvestorMonthlySeries,
     getIndustryBenchmarks: getIndustryBenchmarks,
     getCustomerMetricsRows: getCustomerMetricsRows,
+    getBudgetVersions: getBudgetVersions,
     // WRITE
     createBudget: createBudget,
     updateBudget: updateBudget,
