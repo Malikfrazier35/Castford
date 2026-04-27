@@ -1093,258 +1093,406 @@ function renderDashboard(){
   `;
 }
 
+// ═══ ADMIN CONSOLE (Phase 2C-1 part 1) ═══
+// Wired to organizations + org_members + public.users + gl_accounts + gl_transactions
+// + integrations + audit_log via:
+//   CastfordData.getOrganization() / getAdminCounts() / getTeamMembers() / getRecentActivity()
+// Five sections: Header chip, Platform Metrics tiles, Team Activity + Weekly Usage,
+// Bi-directional Controls (empty states), Real-Time Activity Feed.
+// Sections that have no backing source data (Dashboard Assignments, Directives,
+// Escalations) show empty states with explanatory copy — no fake users.
+
 function renderAdmin(){
-  document.getElementById('breadcrumb').innerHTML='Dashboard / Forecast Optimizer / Team / <strong>Admin Console</strong>';
+  document.getElementById('breadcrumb').innerHTML='Dashboard / <strong>Admin Console</strong>';
   document.getElementById('resourcesPanel').style.display='';
-  document.getElementById('mainContent').innerHTML=`
-    <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px;">
-      <div style="width:40px;height:40px;border-radius:12px;background:var(--amber-dim);display:flex;align-items:center;justify-content:center;font-size:18px;">◎</div>
-      <div>
-        <div style="font-size:20px;font-weight:800;display:flex;align-items:center;gap:8px;">Admin Console <span style="font-size:10px;font-weight:700;padding:3px 8px;border-radius:4px;background:var(--purple-dim);color:var(--purple);">ADMIN</span></div>
-        <div style="font-size:12px;color:var(--t4);">● 5 active users · 12 events today · All systems operational</div>
-      </div>
-      <div style="margin-left:auto;display:flex;gap:8px;">
-        <button class="qa-btn">Export Log</button>
-        <button class="qa-btn" style="background:var(--accent);color:#fff;border-color:var(--accent);">+ Invite User</button>
-      </div>
-    </div>
+  document.getElementById('mainContent').innerHTML = adShellHTML(true);
+  loadAdminAndRender();
+}
 
-    <div class="view-tabs">
-      <button class="view-tab active" onclick="switchAdminTab(this)">◫ Overview</button>
-      <button class="view-tab" onclick="switchAdminTab(this)">⚙ Users & Roles</button>
-      <button class="view-tab" onclick="switchAdminTab(this)">$ Revenue</button>
-      <button class="view-tab" onclick="switchAdminTab(this)">✧ System Health</button>
-      <button class="view-tab" onclick="switchAdminTab(this)">◎ Workspace</button>
-    </div>
+function adShellHTML(loading){
+  return ''
+    + '<div style="display:flex;align-items:center;gap:12px;margin-bottom:20px;">'
+    +   '<div style="width:40px;height:40px;border-radius:12px;background:var(--amber-dim);display:flex;align-items:center;justify-content:center;font-size:18px;">◎</div>'
+    +   '<div>'
+    +     '<div style="font-size:20px;font-weight:800;display:flex;align-items:center;gap:8px;">Admin Console <span id="adPlanBadge" style="font-size:10px;font-weight:700;padding:3px 8px;border-radius:4px;background:var(--purple-dim);color:var(--purple);">' + (loading ? '···' : 'ADMIN') + '</span></div>'
+    +     '<div id="adHeaderMeta" style="font-size:12px;color:var(--t4);">' + (loading ? 'Loading admin context…' : '') + '</div>'
+    +   '</div>'
+    +   '<div style="margin-left:auto;display:flex;gap:8px;">'
+    +     '<button class="qa-btn">Export Log</button>'
+    +     '<button class="qa-btn" style="background:var(--accent);color:#fff;border-color:var(--accent);">+ Invite User</button>'
+    +   '</div>'
+    + '</div>'
+    + '<div class="view-tabs">'
+    +   '<button class="view-tab active">◫ Overview</button>'
+    +   '<button class="view-tab">⚙ Users & Roles</button>'
+    +   '<button class="view-tab">$ Revenue</button>'
+    +   '<button class="view-tab">✧ System Health</button>'
+    +   '<button class="view-tab">◎ Workspace</button>'
+    + '</div>'
+    + '<div class="section-label">PLATFORM METRICS</div>'
+    + '<div class="admin-grid" id="adMetricsWrap">' + (loading ? adMetricsSkeleton() : '') + '</div>'
+    + '<div class="section-label">TEAM HEALTH & USAGE</div>'
+    + '<div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">'
+    +   '<div id="adTeamWrap">' + (loading ? adTeamSkeleton() : '') + '</div>'
+    +   '<div id="adUsageWrap">' + (loading ? adUsageSkeleton() : '') + '</div>'
+    + '</div>'
+    + '<div class="section-label" style="margin-top:20px;">TEAM DASHBOARD PRODUCTS</div>'
+    + '<div id="adAssignmentsWrap">' + (loading ? adAssignmentsSkeleton() : '') + '</div>'
+    + '<div class="section-label" style="margin-top:20px;">BI-DIRECTIONAL CONTROLS</div>'
+    + '<div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">'
+    +   '<div id="adDirectivesWrap">' + (loading ? adControlsSkeleton('Directives') : '') + '</div>'
+    +   '<div id="adEscalationsWrap">' + (loading ? adControlsSkeleton('Escalations') : '') + '</div>'
+    + '</div>'
+    + '<div class="section-label" style="margin-top:20px;">CORPORATE ACTIVITY TRACKING</div>'
+    + '<div id="adFeedWrap">' + (loading ? adFeedSkeleton() : '') + '</div>'
+    + '<div class="bottom-spacer"></div>';
+}
 
-    <div class="section-label">PLATFORM METRICS</div>
-    <div class="admin-grid">
-      <div class="admin-card">
-        <div class="admin-icon">⚡</div>
-        <div class="admin-label">PLAN</div>
-        <div class="admin-value">Enterprise</div>
-        <div class="admin-meta green">Active</div>
-      </div>
-      <div class="admin-card">
-        <div class="admin-icon">👥</div>
-        <div class="admin-label">TEAM MEMBERS</div>
-        <div class="admin-value">6</div>
-        <div class="admin-meta green">+2 this month</div>
-      </div>
-      <div class="admin-card">
-        <div class="admin-icon">⚙</div>
-        <div class="admin-label">EDGE FUNCTIONS</div>
-        <div class="admin-value">16</div>
-        <div class="admin-meta green">All healthy</div>
-      </div>
-      <div class="admin-card">
-        <div class="admin-icon">📊</div>
-        <div class="admin-label">GL ACCOUNTS</div>
-        <div class="admin-value">18</div>
-        <div class="admin-meta blue">Active</div>
-      </div>
-      <div class="admin-card">
-        <div class="admin-icon">↕</div>
-        <div class="admin-label">TRANSACTIONS</div>
-        <div class="admin-value" style="font-size:24px;">3.1K</div>
-        <div class="admin-meta blue">9 months</div>
-      </div>
-      <div class="admin-card">
-        <div class="admin-icon">🔗</div>
-        <div class="admin-label">INTEGRATIONS</div>
-        <div class="admin-value">7</div>
-        <div class="admin-meta green">All synced</div>
-      </div>
-    </div>
+function adMetricsSkeleton(){
+  var tile = '<div class="admin-card" style="opacity:.5"><div class="admin-icon">···</div><div class="admin-label">LOADING</div><div class="admin-value">···</div><div class="admin-meta">···</div></div>';
+  return tile + tile + tile + tile + tile + tile;
+}
+function adTeamSkeleton(){
+  return '<div class="team-list"><div class="team-list-header"><h3>Team Activity</h3><span style="font-size:11px;color:var(--t4);">Loading…</span></div><div style="padding:24px 0;text-align:center;color:var(--t3);font-family:\'Geist Mono\',monospace;font-size:11px;letter-spacing:1px">FETCHING TEAM…</div></div>';
+}
+function adUsageSkeleton(){
+  return '<div class="chart-card"><div class="chart-title">Weekly Usage</div><div class="chart-subtitle">Loading…</div><div style="padding:32px 0;text-align:center;color:var(--t3);font-family:\'Geist Mono\',monospace;font-size:11px;letter-spacing:1px">FETCHING ACTIVITY…</div></div>';
+}
+function adAssignmentsSkeleton(){
+  return '<div class="team-list"><div class="team-list-header"><h3>Dashboard Assignments</h3><span style="font-size:11px;color:var(--t4);">Loading…</span></div><div style="padding:24px 0;text-align:center;color:var(--t3);font-family:\'Geist Mono\',monospace;font-size:11px;letter-spacing:1px">FETCHING ASSIGNMENTS…</div></div>';
+}
+function adControlsSkeleton(label){
+  return '<div class="chart-card"><div class="chart-title">' + label + '</div><div style="padding:24px 0;text-align:center;color:var(--t3);font-family:\'Geist Mono\',monospace;font-size:11px;letter-spacing:1px">LOADING…</div></div>';
+}
+function adFeedSkeleton(){
+  return '<div class="chart-card"><div class="chart-title">Real-Time Activity Feed</div><div style="padding:24px 0;text-align:center;color:var(--t3);font-family:\'Geist Mono\',monospace;font-size:11px;letter-spacing:1px">FETCHING ACTIVITY…</div></div>';
+}
 
-    <div class="section-label">TEAM HEALTH & USAGE</div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
-      <div class="team-list">
-        <div class="team-list-header">
-          <h3>Team Activity <span class="live-tag">LIVE</span></h3>
-          <span style="font-size:11px;color:var(--t4);">5 active now</span>
-        </div>
-        <div class="team-member">
-          <div class="avatar" style="background:linear-gradient(135deg,#3B82F6,#2563EB);">AM</div>
-          <div class="info"><div class="name">Alex Morgan</div><div class="dept">Finance · Now</div></div>
-          <span class="role-badge" style="background:var(--green-dim);color:var(--green);">Owner</span>
-        </div>
-        <div class="team-member">
-          <div class="avatar" style="background:linear-gradient(135deg,#9B8AFF,#7C3AED);">SC</div>
-          <div class="info"><div class="name">Sarah Chen</div><div class="dept">FP&A · 2 min ago</div></div>
-          <span class="role-badge" style="background:var(--accent-dim);color:var(--accent);">Admin</span>
-        </div>
-        <div class="team-member">
-          <div class="avatar" style="background:linear-gradient(135deg,#EC4899,#DB2777);">PP</div>
-          <div class="info"><div class="name">Priya Patel</div><div class="dept">Accounting · 15 min ago</div></div>
-          <span class="role-badge" style="background:var(--amber-dim);color:var(--amber);">Manager</span>
-        </div>
-        <div class="team-member">
-          <div class="avatar" style="background:linear-gradient(135deg,#F59E0B,#D97706);">JR</div>
-          <div class="info"><div class="name">James Rodriguez</div><div class="dept">Operations · 1 hr ago</div></div>
-          <span class="role-badge" style="background:var(--cyan-dim);color:var(--cyan);">Budget Owner</span>
-        </div>
-        <div class="team-member">
-          <div class="avatar" style="background:linear-gradient(135deg,#06B6D4,#2D5BA0);">DK</div>
-          <div class="info"><div class="name">David Kim</div><div class="dept">RevOps · 3 hr ago</div></div>
-          <span class="role-badge" style="background:var(--elevated);color:var(--t3);">Viewer</span>
-        </div>
-      </div>
-      <div class="chart-card">
-        <div class="chart-title">Weekly Usage</div>
-        <div class="chart-subtitle">Logins, queries & exports</div>
-        <div class="chart-area" style="height:120px;">
-          ${[60,45,70,55,80,35,20].map(h=>`<div class="chart-bar" style="height:${h}%;background:var(--accent);opacity:0.6;"></div>`).join('')}
-        </div>
-        <div class="chart-legend" style="margin-top:8px;">
-          <span><span class="dot" style="background:var(--accent);"></span> Logins</span>
-          <span><span class="dot" style="background:var(--green);"></span> AI Queries</span>
-          <span><span class="dot" style="background:var(--purple);"></span> Exports</span>
-        </div>
-      </div>
-    </div>
-    <!-- Team Dashboard Assignments -->
-    <div class="section-label" style="margin-top:20px;">TEAM DASHBOARD PRODUCTS</div>
-    <div class="team-list">
-      <div class="team-list-header">
-        <h3>Dashboard Assignments</h3>
-        <span style="font-size:11px;color:var(--accent);font-weight:600;cursor:pointer;">Assign All</span>
-      </div>
-      <div class="team-member">
-        <div class="avatar" style="background:linear-gradient(135deg,#3B82F6,#2563EB);">AM</div>
-        <div class="info"><div class="name">Alex Morgan</div><div class="dept">Owner · Finance</div></div>
-        <span style="font-size:10px;font-weight:700;padding:3px 8px;border-radius:4px;background:rgba(59,130,246,0.08);color:#3B82F6;margin-left:auto;">◎ ClearView</span>
-        <span style="font-size:10px;color:var(--accent);cursor:pointer;margin-left:8px;font-weight:600;">Preview</span>
-      </div>
-      <div class="team-member">
-        <div class="avatar" style="background:linear-gradient(135deg,#9B8AFF,#7C3AED);">SC</div>
-        <div class="info"><div class="name">Sarah Chen</div><div class="dept">Admin · FP&A</div></div>
-        <span style="font-size:10px;font-weight:700;padding:3px 8px;border-radius:4px;background:rgba(129,140,248,0.12);color:#818CF8;margin-left:auto;">◆ Boardroom</span>
-        <span style="font-size:10px;color:var(--accent);cursor:pointer;margin-left:8px;font-weight:600;">Preview</span>
-      </div>
-      <div class="team-member">
-        <div class="avatar" style="background:linear-gradient(135deg,#EC4899,#DB2777);">PP</div>
-        <div class="info"><div class="name">Priya Patel</div><div class="dept">Manager · Accounting</div></div>
-        <span style="font-size:10px;font-weight:700;padding:3px 8px;border-radius:4px;background:rgba(34,211,238,0.1);color:#5B7FCC;margin-left:auto;">◑ NightOwl</span>
-        <span style="font-size:10px;color:var(--accent);cursor:pointer;margin-left:8px;font-weight:600;">Preview</span>
-      </div>
-      <div class="team-member">
-        <div class="avatar" style="background:linear-gradient(135deg,#F59E0B,#D97706);">JR</div>
-        <div class="info"><div class="name">James Rodriguez</div><div class="dept">Budget Owner · Ops</div></div>
-        <span style="font-size:10px;font-weight:700;padding:3px 8px;border-radius:4px;background:rgba(52,211,153,0.12);color:#2D5BA0;margin-left:auto;">◇ Canopy</span>
-        <span style="font-size:10px;color:var(--accent);cursor:pointer;margin-left:8px;font-weight:600;">Preview</span>
-      </div>
-      <div class="team-member">
-        <div class="avatar" style="background:linear-gradient(135deg,#06B6D4,#2D5BA0);">DK</div>
-        <div class="info"><div class="name">David Kim</div><div class="dept">Viewer · RevOps</div></div>
-        <span style="font-size:10px;font-weight:700;padding:3px 8px;border-radius:4px;background:rgba(217,119,6,0.1);color:#D97706;margin-left:auto;">◈ Emberstone</span>
-        <span style="font-size:10px;color:var(--accent);cursor:pointer;margin-left:8px;font-weight:600;">Preview</span>
-      </div>
-    </div>
+async function loadAdminAndRender(){
+  if (!window.CastfordData) { renderAdminDemo('Data layer not loaded — showing sample admin console'); return; }
+  try {
+    if (!window.CastfordData.isInitialized()) await window.CastfordData.init();
+  } catch (e) {
+    console.warn('CastfordData init failed:', e);
+    renderAdminDemo('Data layer init failed — showing sample admin console');
+    return;
+  }
+  if (window.CastfordData.isDemoMode()) { renderAdminDemo('Demo mode active — connect your workspace to see real admin console'); return; }
 
-    <!-- Bi-directional Admin Controls -->
-    <div class="section-label" style="margin-top:20px;">BI-DIRECTIONAL CONTROLS</div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
-      <div class="chart-card">
-        <div class="chart-title">Admin → Team (Directives)</div>
-        <div class="chart-subtitle">Outbound controls and task assignments</div>
-        <div style="margin-top:12px;">
-          <div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--border);font-size:12px;">
-            <span style="width:6px;height:6px;border-radius:50%;background:var(--red);flex-shrink:0;"></span>
-            <span style="font-weight:600;flex:1;">Urgent: Complete Q1 close reconciliation</span>
-            <span style="font-size:10px;color:var(--t4);">→ Sarah Chen</span>
-            <span style="font-size:9px;font-weight:700;padding:2px 6px;border-radius:3px;background:var(--amber-dim);color:var(--amber);">PENDING</span>
-          </div>
-          <div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--border);font-size:12px;">
-            <span style="width:6px;height:6px;border-radius:50%;background:var(--amber);flex-shrink:0;"></span>
-            <span style="font-weight:600;flex:1;">Review variance report before board sync</span>
-            <span style="font-size:10px;color:var(--t4);">→ Priya Patel</span>
-            <span style="font-size:9px;font-weight:700;padding:2px 6px;border-radius:3px;background:var(--green-dim);color:var(--green);">ACK</span>
-          </div>
-          <div style="display:flex;align-items:center;gap:8px;padding:8px 0;font-size:12px;">
-            <span style="width:6px;height:6px;border-radius:50%;background:var(--accent);flex-shrink:0;"></span>
-            <span style="font-weight:600;flex:1;">Update forecast model assumptions</span>
-            <span style="font-size:10px;color:var(--t4);">→ All Managers</span>
-            <span style="font-size:9px;font-weight:700;padding:2px 6px;border-radius:3px;background:var(--green-dim);color:var(--green);">DONE</span>
-          </div>
-        </div>
-        <div style="margin-top:12px;display:flex;gap:8px;">
-          <button class="qa-btn" style="color:var(--accent);">+ New Directive</button>
-          <button class="qa-btn">Broadcast Alert</button>
-        </div>
-      </div>
-      <div class="chart-card">
-        <div class="chart-title">Team → Admin (Escalations)</div>
-        <div class="chart-subtitle">Inbound reports, requests, and escalations</div>
-        <div style="margin-top:12px;">
-          <div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--border);font-size:12px;">
-            <span style="width:6px;height:6px;border-radius:50%;background:var(--red);flex-shrink:0;"></span>
-            <span style="font-weight:600;flex:1;">Escalation: NetSuite sync discrepancy $142K</span>
-            <span style="font-size:10px;color:var(--t4);">← James R.</span>
-            <span style="font-size:9px;font-weight:700;padding:2px 6px;border-radius:3px;background:var(--red-dim);color:var(--red);">URGENT</span>
-          </div>
-          <div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--border);font-size:12px;">
-            <span style="width:6px;height:6px;border-radius:50%;background:var(--amber);flex-shrink:0;"></span>
-            <span style="font-weight:600;flex:1;">Request: Access to Consolidation module</span>
-            <span style="font-size:10px;color:var(--t4);">← David Kim</span>
-            <span style="font-size:9px;font-weight:700;padding:2px 6px;border-radius:3px;background:var(--amber-dim);color:var(--amber);">REVIEW</span>
-          </div>
-          <div style="display:flex;align-items:center;gap:8px;padding:8px 0;font-size:12px;">
-            <span style="width:6px;height:6px;border-radius:50%;background:var(--green);flex-shrink:0;"></span>
-            <span style="font-weight:600;flex:1;">Report: Monthly close completed early</span>
-            <span style="font-size:10px;color:var(--t4);">← Priya Patel</span>
-            <span style="font-size:9px;font-weight:700;padding:2px 6px;border-radius:3px;background:var(--green-dim);color:var(--green);">NOTED</span>
-          </div>
-        </div>
-        <div style="margin-top:12px;display:flex;gap:8px;">
-          <button class="qa-btn" style="color:var(--accent);">View All Escalations</button>
-          <button class="qa-btn">Audit Trail</button>
-        </div>
-      </div>
-    </div>
+  var org = null, counts = {}, members = [], activity = [];
+  try {
+    var results = await Promise.all([
+      window.CastfordData.getOrganization().catch(function(){ return null; }),
+      window.CastfordData.getAdminCounts().catch(function(){ return {}; }),
+      window.CastfordData.getTeamMembers().catch(function(){ return []; }),
+      window.CastfordData.getRecentActivity({ limit: 8 }).catch(function(){ return []; })
+    ]);
+    org = results[0];
+    counts = results[1] || {};
+    members = results[2] || [];
+    activity = results[3] || [];
+  } catch (e) {
+    console.warn('Admin fetch failed:', e);
+    renderAdminDemo('Data fetch failed — showing sample admin console');
+    return;
+  }
 
-    <!-- Corporate Tracking -->
-    <div class="section-label" style="margin-top:20px;">CORPORATE ACTIVITY TRACKING</div>
-    <div class="chart-card">
-      <div class="chart-title">Real-Time Activity Feed <span class="live-badge">LIVE</span></div>
-      <div class="chart-subtitle">All user actions across dashboards — visible to Admin and Owner roles</div>
-      <div style="margin-top:12px;">
-        <div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);font-size:12px;">
-          <span style="font-size:10px;color:var(--t4);font-family:var(--mono);width:70px;flex-shrink:0;">2 min ago</span>
-          <div class="avatar" style="width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,#9B8AFF,#7C3AED);font-size:8px;font-weight:700;color:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;">SC</div>
-          <span style="font-weight:600;">Sarah Chen</span>
-          <span style="color:var(--t3);">exported</span>
-          <span style="font-weight:600;color:var(--accent);">Q1 Board Deck</span>
-          <span style="margin-left:auto;font-size:10px;font-weight:700;padding:2px 6px;border-radius:3px;background:rgba(129,140,248,0.12);color:#818CF8;">◆ Boardroom</span>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);font-size:12px;">
-          <span style="font-size:10px;color:var(--t4);font-family:var(--mono);width:70px;flex-shrink:0;">15 min ago</span>
-          <div class="avatar" style="width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,#EC4899,#DB2777);font-size:8px;font-weight:700;color:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;">PP</div>
-          <span style="font-weight:600;">Priya Patel</span>
-          <span style="color:var(--t3);">completed task</span>
-          <span style="font-weight:600;color:var(--green);">March Accruals</span>
-          <span style="margin-left:auto;font-size:10px;font-weight:700;padding:2px 6px;border-radius:3px;background:rgba(34,211,238,0.1);color:#5B7FCC;">◑ NightOwl</span>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);font-size:12px;">
-          <span style="font-size:10px;color:var(--t4);font-family:var(--mono);width:70px;flex-shrink:0;">1 hr ago</span>
-          <div class="avatar" style="width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,#F59E0B,#D97706);font-size:8px;font-weight:700;color:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;">JR</div>
-          <span style="font-weight:600;">James Rodriguez</span>
-          <span style="color:var(--t3);">escalated</span>
-          <span style="font-weight:600;color:var(--red);">NetSuite Discrepancy</span>
-          <span style="margin-left:auto;font-size:10px;font-weight:700;padding:2px 6px;border-radius:3px;background:rgba(52,211,153,0.12);color:#2D5BA0;">◇ Canopy</span>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;padding:8px 0;font-size:12px;">
-          <span style="font-size:10px;color:var(--t4);font-family:var(--mono);width:70px;flex-shrink:0;">3 hr ago</span>
-          <div class="avatar" style="width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,#06B6D4,#2D5BA0);font-size:8px;font-weight:700;color:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;">DK</div>
-          <span style="font-weight:600;">David Kim</span>
-          <span style="color:var(--t3);">viewed</span>
-          <span style="font-weight:600;color:var(--accent);">Revenue Dashboard</span>
-          <span style="margin-left:auto;font-size:10px;font-weight:700;padding:2px 6px;border-radius:3px;background:rgba(217,119,6,0.1);color:#D97706;">◈ Emberstone</span>
-        </div>
-      </div>
-    </div>
-    <div class="bottom-spacer"></div>
-  `;
+  adRenderHeader(org, counts);
+  adRenderMetrics(org, counts);
+  adRenderTeam(members);
+  adRenderUsage(counts);
+  adRenderAssignments();
+  adRenderDirectives();
+  adRenderEscalations();
+  adRenderFeed(activity, members);
+}
+
+// ─── helpers ───────────────────────────────────────────────────────────
+
+function adEscapeHTML(s){
+  return String(s == null ? '' : s)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+
+function adInitials(name, email){
+  if (name && name.trim()) {
+    var parts = name.trim().split(/\s+/);
+    if (parts.length >= 2) return (parts[0][0] + parts[parts.length-1][0]).toUpperCase();
+    return parts[0].slice(0, 2).toUpperCase();
+  }
+  if (email) return email.slice(0, 2).toUpperCase();
+  return '··';
+}
+
+function adRelativeTime(iso){
+  if (!iso) return '—';
+  var t = new Date(iso).getTime();
+  if (isNaN(t)) return '—';
+  var diff = Date.now() - t;
+  if (diff < 60000) return 'just now';
+  if (diff < 3600000) return Math.floor(diff/60000) + ' min ago';
+  if (diff < 86400000) return Math.floor(diff/3600000) + ' hr ago';
+  if (diff < 7*86400000) return Math.floor(diff/86400000) + ' d ago';
+  return new Date(iso).toLocaleDateString();
+}
+
+function adFmtNumber(n){
+  n = parseFloat(n || 0);
+  if (n >= 1000000) return (n/1000000).toFixed(1) + 'M';
+  if (n >= 1000) return (n/1000).toFixed(1) + 'K';
+  return Math.round(n).toString();
+}
+
+function adRoleBadge(role){
+  var r = (role || '').toLowerCase();
+  if (r === 'owner') return '<span class="role-badge" style="background:var(--green-dim);color:var(--green);">Owner</span>';
+  if (r === 'admin') return '<span class="role-badge" style="background:var(--accent-dim);color:var(--accent);">Admin</span>';
+  if (r === 'manager' || r === 'cfo' || r === 'controller') return '<span class="role-badge" style="background:var(--amber-dim);color:var(--amber);">' + adEscapeHTML(role) + '</span>';
+  if (r === 'budget owner' || r === 'budget_owner') return '<span class="role-badge" style="background:var(--cyan-dim);color:var(--cyan);">Budget Owner</span>';
+  if (r === 'viewer') return '<span class="role-badge" style="background:var(--elevated);color:var(--t3);">Viewer</span>';
+  return '<span class="role-badge" style="background:var(--elevated);color:var(--t3);">' + adEscapeHTML(role || 'Member') + '</span>';
+}
+
+// ─── section renderers ───────────────────────────────────────────────────────
+
+function adRenderHeader(org, counts){
+  var planLabel = org && org.plan ? String(org.plan).toUpperCase() : 'STARTER';
+  document.getElementById('adPlanBadge').textContent = planLabel;
+  var bits = [];
+  bits.push((counts.teamMembers || 0) + ' team member' + ((counts.teamMembers || 0) === 1 ? '' : 's'));
+  bits.push((counts.eventsLast24h || 0) + ' event' + ((counts.eventsLast24h || 0) === 1 ? '' : 's') + ' / 24h');
+  if (org && org.name) bits.unshift(org.name);
+  document.getElementById('adHeaderMeta').textContent = '● ' + bits.join(' · ');
+}
+
+function adRenderMetrics(org, counts){
+  var seatsLabel = org && org.seats_used !== null && org.seats_limit !== null
+    ? (org.seats_used || 0) + ' of ' + (org.seats_limit || '∞')
+    : 'No limit';
+  var seatsMeta = org && org.seats_limit && org.seats_used >= org.seats_limit ? 'red' : 'green';
+
+  var planValue = org && org.plan ? (org.plan.charAt(0).toUpperCase() + org.plan.slice(1)) : '—';
+  var planMeta = org && org.plan ? 'Active' : 'No org';
+
+  var html = ''
+    + '<div class="admin-card">'
+    +   '<div class="admin-icon">⚡</div>'
+    +   '<div class="admin-label">PLAN</div>'
+    +   '<div class="admin-value">' + adEscapeHTML(planValue) + '</div>'
+    +   '<div class="admin-meta green">' + adEscapeHTML(planMeta) + '</div>'
+    + '</div>'
+    + '<div class="admin-card">'
+    +   '<div class="admin-icon">👥</div>'
+    +   '<div class="admin-label">TEAM MEMBERS</div>'
+    +   '<div class="admin-value">' + (counts.teamMembers || 0) + '</div>'
+    +   '<div class="admin-meta ' + seatsMeta + '">' + adEscapeHTML(seatsLabel) + '</div>'
+    + '</div>'
+    + '<div class="admin-card">'
+    +   '<div class="admin-icon">📊</div>'
+    +   '<div class="admin-label">GL ACCOUNTS</div>'
+    +   '<div class="admin-value">' + (counts.glAccounts || 0) + '</div>'
+    +   '<div class="admin-meta ' + ((counts.glAccounts || 0) > 0 ? 'green' : 'blue') + '">' + ((counts.glAccounts || 0) > 0 ? 'Active' : 'Empty') + '</div>'
+    + '</div>'
+    + '<div class="admin-card">'
+    +   '<div class="admin-icon">↕</div>'
+    +   '<div class="admin-label">TRANSACTIONS</div>'
+    +   '<div class="admin-value" style="font-size:24px;">' + adFmtNumber(counts.glTransactions || 0) + '</div>'
+    +   '<div class="admin-meta blue">All time</div>'
+    + '</div>'
+    + '<div class="admin-card">'
+    +   '<div class="admin-icon">🔗</div>'
+    +   '<div class="admin-label">INTEGRATIONS</div>'
+    +   '<div class="admin-value">' + (counts.integrations || 0) + '</div>'
+    +   '<div class="admin-meta ' + ((counts.integrations || 0) > 0 ? 'green' : 'blue') + '">' + ((counts.integrations || 0) > 0 ? 'Connected' : 'None yet') + '</div>'
+    + '</div>'
+    + '<div class="admin-card">'
+    +   '<div class="admin-icon">⚙</div>'
+    +   '<div class="admin-label">EVENTS / 7D</div>'
+    +   '<div class="admin-value">' + (counts.eventsLast7d || 0) + '</div>'
+    +   '<div class="admin-meta ' + ((counts.eventsLast24h || 0) > 0 ? 'green' : 'blue') + '">' + (counts.eventsLast24h || 0) + ' last 24h</div>'
+    + '</div>';
+
+  document.getElementById('adMetricsWrap').innerHTML = html;
+}
+
+function adRenderTeam(members){
+  var wrap = document.getElementById('adTeamWrap');
+  var rows;
+  if (!members || members.length === 0) {
+    rows = '<div style="padding:24px 16px;text-align:center;color:var(--t2)">'
+      + '<div style="font-family:var(--display);font-size:14px;color:var(--t1);margin-bottom:6px">No team members yet</div>'
+      + '<div style="font-family:var(--body);font-size:12px;color:var(--t3)">Click <strong>+ Invite User</strong> above to add your first teammate.</div>'
+      + '</div>';
+  } else {
+    rows = members.slice(0, 5).map(function(m){
+      var u = m.users || {};
+      var name = u.full_name || u.email || 'Unnamed';
+      var dept = u.department || u.job_title || (m.role ? String(m.role).toUpperCase() : '');
+      var lastActive = adRelativeTime(m.last_active_at);
+      var initials = adInitials(u.full_name, u.email);
+      // Use accent-tinted gradient for avatar (no hardcoded brand-violating colors)
+      var roleLabel = m.role || 'Member';
+      return '<div class="team-member">'
+        + '<div class="avatar" style="background:linear-gradient(135deg,var(--accent),var(--accent-ink));color:#fff;">' + adEscapeHTML(initials) + '</div>'
+        + '<div class="info"><div class="name">' + adEscapeHTML(name) + '</div><div class="dept">' + adEscapeHTML(dept || '') + (dept ? ' · ' : '') + adEscapeHTML(lastActive) + '</div></div>'
+        + adRoleBadge(roleLabel)
+        + '</div>';
+    }).join('');
+  }
+  var activeCount = (members || []).filter(function(m){
+    return m.last_active_at && (Date.now() - new Date(m.last_active_at).getTime() < 24*3600*1000);
+  }).length;
+  wrap.innerHTML = '<div class="team-list">'
+    + '<div class="team-list-header">'
+    +   '<h3>Team Activity <span class="live-tag">LIVE</span></h3>'
+    +   '<span style="font-size:11px;color:var(--t4);">' + activeCount + ' active in 24h</span>'
+    + '</div>'
+    + rows
+    + '</div>';
+}
+
+function adRenderUsage(counts){
+  var wrap = document.getElementById('adUsageWrap');
+  var events7d = counts.eventsLast7d || 0;
+  // Without a per-day breakdown query, show an honest summary tile rather than fabricated bars.
+  if (events7d === 0) {
+    wrap.innerHTML = '<div class="chart-card">'
+      + '<div class="chart-title">Weekly Usage</div>'
+      + '<div class="chart-subtitle">Logins, queries & exports tracked in audit_log</div>'
+      + '<div style="padding:32px 0;text-align:center;color:var(--t2)">'
+      +   '<div style="font-family:var(--display);font-size:14px;color:var(--t1);margin-bottom:6px">No activity tracked in the last 7 days</div>'
+      +   '<div style="font-family:var(--body);font-size:12px;color:var(--t3);max-width:280px;margin:0 auto">Activity events from page views, exports, and AI queries will appear here once team members start using the workspace.</div>'
+      +   '<div style="font-family:\'Geist Mono\',monospace;font-size:10.5px;color:var(--t3);letter-spacing:0.5px;margin-top:12px">SOURCE · AUDIT_LOG</div>'
+      + '</div>'
+      + '</div>';
+    return;
+  }
+  // We have events but no per-day breakdown loaded — render a single-bar summary
+  wrap.innerHTML = '<div class="chart-card">'
+    + '<div class="chart-title">Weekly Usage</div>'
+    + '<div class="chart-subtitle">Total events from audit_log · last 7 days</div>'
+    + '<div style="display:flex;align-items:center;justify-content:center;padding:24px 0;gap:24px">'
+    +   '<div style="font-family:\'Geist Mono\',monospace;font-size:42px;color:var(--accent);font-weight:600">' + events7d + '</div>'
+    +   '<div style="text-align:left">'
+    +     '<div style="font-family:var(--body);font-size:12px;color:var(--t1);font-weight:600">events tracked</div>'
+    +     '<div style="font-family:var(--body);font-size:11px;color:var(--t3)">' + (counts.eventsLast24h || 0) + ' in the last 24h</div>'
+    +   '</div>'
+    + '</div>'
+    + '</div>';
+}
+
+function adRenderAssignments(){
+  // No backing table (dashboard_assignments). Honest empty state.
+  document.getElementById('adAssignmentsWrap').innerHTML = '<div class="team-list">'
+    + '<div class="team-list-header">'
+    +   '<h3>Dashboard Assignments</h3>'
+    +   '<span style="font-size:11px;color:var(--t4);">Coming soon</span>'
+    + '</div>'
+    + '<div style="padding:24px 16px;text-align:center;color:var(--t2)">'
+    +   '<div style="font-family:var(--display);font-size:14px;color:var(--t1);margin-bottom:6px">Per-user dashboard assignments</div>'
+    +   '<div style="font-family:var(--body);font-size:12px;color:var(--t3);max-width:480px;margin:0 auto">Pin specific dashboards to specific seats. Available once the dashboard_assignments source is wired to the workspace.</div>'
+    + '</div>'
+    + '</div>';
+}
+
+function adRenderDirectives(){
+  document.getElementById('adDirectivesWrap').innerHTML = '<div class="chart-card">'
+    + '<div class="chart-title">Admin → Team (Directives)</div>'
+    + '<div class="chart-subtitle">Outbound controls and task assignments</div>'
+    + '<div style="padding:24px 0;text-align:center;color:var(--t2)">'
+    +   '<div style="font-family:var(--display);font-size:13px;color:var(--t1);margin-bottom:4px">No active directives</div>'
+    +   '<div style="font-family:var(--body);font-size:12px;color:var(--t3);max-width:320px;margin:0 auto">Issue directives or broadcast alerts to selected seats. Directives appear here once created.</div>'
+    + '</div>'
+    + '<div style="margin-top:8px;display:flex;gap:8px;">'
+    +   '<button class="qa-btn" style="color:var(--accent);">+ New Directive</button>'
+    +   '<button class="qa-btn">Broadcast Alert</button>'
+    + '</div>'
+    + '</div>';
+}
+
+function adRenderEscalations(){
+  document.getElementById('adEscalationsWrap').innerHTML = '<div class="chart-card">'
+    + '<div class="chart-title">Team → Admin (Escalations)</div>'
+    + '<div class="chart-subtitle">Inbound reports, requests, and escalations</div>'
+    + '<div style="padding:24px 0;text-align:center;color:var(--t2)">'
+    +   '<div style="font-family:var(--display);font-size:13px;color:var(--t1);margin-bottom:4px">No active escalations</div>'
+    +   '<div style="font-family:var(--body);font-size:12px;color:var(--t3);max-width:320px;margin:0 auto">Team requests, access escalations, and report submissions will appear here when raised.</div>'
+    + '</div>'
+    + '<div style="margin-top:8px;display:flex;gap:8px;">'
+    +   '<button class="qa-btn" style="color:var(--accent);">View All Escalations</button>'
+    +   '<button class="qa-btn">Audit Trail</button>'
+    + '</div>'
+    + '</div>';
+}
+
+function adRenderFeed(activity, members){
+  var wrap = document.getElementById('adFeedWrap');
+  // Build a userId → user map for fast lookup
+  var userMap = {};
+  (members || []).forEach(function(m){ if (m.user_id && m.users) userMap[m.user_id] = m.users; });
+
+  if (!activity || activity.length === 0) {
+    wrap.innerHTML = '<div class="chart-card">'
+      + '<div class="chart-title">Real-Time Activity Feed <span class="live-badge">LIVE</span></div>'
+      + '<div class="chart-subtitle">All user actions across dashboards — visible to Admin and Owner roles</div>'
+      + '<div style="padding:32px 0;text-align:center;color:var(--t2)">'
+      +   '<div style="font-family:var(--display);font-size:14px;color:var(--t1);margin-bottom:6px">No recent activity</div>'
+      +   '<div style="font-family:var(--body);font-size:12px;color:var(--t3);max-width:340px;margin:0 auto">Page views, exports, forecasts, and other user actions will stream here once team members start using the workspace.</div>'
+      +   '<div style="font-family:\'Geist Mono\',monospace;font-size:10.5px;color:var(--t3);letter-spacing:0.5px;margin-top:12px">SOURCE · AUDIT_LOG</div>'
+      + '</div>'
+      + '</div>';
+    return;
+  }
+
+  var rows = activity.slice(0, 8).map(function(a, idx){
+    var u = a.user_id ? userMap[a.user_id] : null;
+    var actor = u && u.full_name ? u.full_name : (u && u.email ? u.email : 'System');
+    var initials = u ? adInitials(u.full_name, u.email) : 'SY';
+    var when = adRelativeTime(a.created_at);
+    var verb = a.action || 'event';
+    var target = a.entity_type || a.resource_type || '';
+    var border = idx < activity.slice(0, 8).length - 1 ? 'border-bottom:1px solid var(--border);' : '';
+    return '<div style="display:flex;align-items:center;gap:10px;padding:8px 0;' + border + 'font-size:12px;">'
+      + '<span style="font-size:10px;color:var(--t4);font-family:var(--mono);width:70px;flex-shrink:0;">' + adEscapeHTML(when) + '</span>'
+      + '<div class="avatar" style="width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent-ink));font-size:8px;font-weight:700;color:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;">' + adEscapeHTML(initials) + '</div>'
+      + '<span style="font-weight:600;">' + adEscapeHTML(actor) + '</span>'
+      + '<span style="color:var(--t3);">' + adEscapeHTML(verb) + '</span>'
+      + (target ? '<span style="font-weight:600;color:var(--accent);">' + adEscapeHTML(target) + '</span>' : '')
+      + '</div>';
+  }).join('');
+
+  wrap.innerHTML = '<div class="chart-card">'
+    + '<div class="chart-title">Real-Time Activity Feed <span class="live-badge">LIVE</span></div>'
+    + '<div class="chart-subtitle">' + activity.length + ' event' + (activity.length === 1 ? '' : 's') + ' from audit_log · most recent first</div>'
+    + '<div style="margin-top:12px;">' + rows + '</div>'
+    + '</div>';
+}
+
+// ─── demo render ───────────────────────────────────────────────────────
+
+function renderAdminDemo(banner){
+  document.getElementById('adPlanBadge').textContent = 'DEMO';
+  document.getElementById('adHeaderMeta').textContent = banner || '● Sample admin console · connect a workspace to see real data';
+
+  // Sample metrics tiles
+  var t = function(icon, label, value, meta){
+    return '<div class="admin-card"><div class="admin-icon">' + icon + '</div><div class="admin-label">' + label + ' (sample)</div><div class="admin-value">' + value + '</div><div class="admin-meta blue">' + meta + '</div></div>';
+  };
+  document.getElementById('adMetricsWrap').innerHTML =
+    t('⚡', 'PLAN', 'Enterprise', 'Active') +
+    t('👥', 'TEAM MEMBERS', '6', 'Sample') +
+    t('📊', 'GL ACCOUNTS', '18', 'Sample') +
+    t('↕', 'TRANSACTIONS', '3.1K', 'Sample') +
+    t('🔗', 'INTEGRATIONS', '7', 'Sample') +
+    t('⚙', 'EVENTS / 7D', '142', 'Sample');
+
+  document.getElementById('adTeamWrap').innerHTML = '<div class="team-list"><div class="team-list-header"><h3>Team Activity (sample)</h3><span style="font-size:11px;color:var(--t4);">illustrative</span></div><div style="padding:32px 0;text-align:center;color:var(--t3);font-family:\'Geist Mono\',monospace;font-size:11px;letter-spacing:1px">SAMPLE TEAM DATA — CONNECT A WORKSPACE</div></div>';
+  document.getElementById('adUsageWrap').innerHTML = '<div class="chart-card"><div class="chart-title">Weekly Usage (sample)</div><div class="chart-subtitle">Illustrative</div><div style="padding:32px 0;text-align:center;color:var(--t3);font-family:\'Geist Mono\',monospace;font-size:11px;letter-spacing:1px">SAMPLE USAGE</div></div>';
+  document.getElementById('adAssignmentsWrap').innerHTML = '<div class="team-list"><div class="team-list-header"><h3>Dashboard Assignments (sample)</h3></div><div style="padding:24px 0;text-align:center;color:var(--t3);font-family:\'Geist Mono\',monospace;font-size:11px;letter-spacing:1px">ILLUSTRATIVE ASSIGNMENTS</div></div>';
+  document.getElementById('adDirectivesWrap').innerHTML = '<div class="chart-card"><div class="chart-title">Directives (sample)</div><div style="padding:24px 0;text-align:center;color:var(--t3);font-family:\'Geist Mono\',monospace;font-size:11px;letter-spacing:1px">SAMPLE</div></div>';
+  document.getElementById('adEscalationsWrap').innerHTML = '<div class="chart-card"><div class="chart-title">Escalations (sample)</div><div style="padding:24px 0;text-align:center;color:var(--t3);font-family:\'Geist Mono\',monospace;font-size:11px;letter-spacing:1px">SAMPLE</div></div>';
+  document.getElementById('adFeedWrap').innerHTML = '<div class="chart-card"><div class="chart-title">Real-Time Activity Feed (sample)</div><div style="padding:24px 0;text-align:center;color:var(--t3);font-family:\'Geist Mono\',monospace;font-size:11px;letter-spacing:1px">SAMPLE FEED</div></div>';
 }
 
 var settingsTab='billing';

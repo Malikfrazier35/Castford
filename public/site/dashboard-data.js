@@ -363,14 +363,29 @@ window.CastfordData = (function() {
   // ==========================================
 
   // org_members joined with users — the real source of truth for who's on the team
+  // SCHEMA: org_members has primary_role/status/accepted_at; we expose them as
+  // role/last_active_at/joined_at for backward-compatible callers (Team page).
   async function getTeamMembers() {
     if (!sb || demoMode || !orgId) return [];
-    var { data } = await sb
+    var { data, error } = await sb
       .from('org_members')
-      .select('user_id, role, status, last_active_at, joined_at, users:user_id ( id, email, full_name, avatar_url )')
+      .select('user_id, primary_role, permission_level, seat_type, status, accepted_at, created_at, users:user_id ( id, email, full_name, avatar_url, last_active_at, job_title, department )')
       .eq('org_id', orgId)
-      .order('joined_at', { ascending: true });
-    return data || [];
+      .order('created_at', { ascending: true });
+    if (error || !data) return [];
+    // Normalize shape so existing render code keeps working
+    return data.map(function(row){
+      return {
+        user_id: row.user_id,
+        role: row.primary_role,
+        permission_level: row.permission_level,
+        seat_type: row.seat_type,
+        status: row.status,
+        last_active_at: row.users && row.users.last_active_at ? row.users.last_active_at : row.accepted_at,
+        joined_at: row.accepted_at || row.created_at,
+        users: row.users || null
+      };
+    });
   }
 
   // org_invitations — pending invites awaiting acceptance
@@ -732,6 +747,49 @@ window.CastfordData = (function() {
     return data || [];
   }
 
+  // organizations — fetch the active org row (plan, seats, mrr, etc.)
+  async function getOrganization() {
+    if (!sb || demoMode || !orgId) return null;
+    var { data } = await sb
+      .from('organizations')
+      .select('id, name, slug, plan, tier, seats_used, seats_limit, entities_used, entities_limit, mrr, billing_interval, billing_email, sso_enabled, api_access, integrations_limit, copilot_limit, trial_ends_at, plan_updated_at, onboarding_completed_at')
+      .eq('id', orgId)
+      .maybeSingle();
+    return data || null;
+  }
+
+  // Composite counts used by the Admin Console tile row.
+  // Runs queries in parallel; tolerates failures (returns 0 on per-query error).
+  async function getAdminCounts() {
+    if (!sb || demoMode || !orgId) {
+      return { teamMembers: 0, glAccounts: 0, glTransactions: 0, integrations: 0, eventsLast24h: 0, eventsLast7d: 0 };
+    }
+    var since24 = new Date(Date.now() - 24 * 3600 * 1000).toISOString();
+    var since7d = new Date(Date.now() - 7 * 86400 * 1000).toISOString();
+    var members = sb.from('org_members').select('id', { count: 'exact', head: true }).eq('org_id', orgId);
+    var accounts = sb.from('gl_accounts').select('id', { count: 'exact', head: true }).eq('org_id', orgId);
+    var txns = sb.from('gl_transactions').select('id', { count: 'exact', head: true }).eq('org_id', orgId);
+    var ints = sb.from('integrations').select('id', { count: 'exact', head: true }).eq('org_id', orgId);
+    var ev24 = sb.from('audit_log').select('id', { count: 'exact', head: true }).eq('org_id', orgId).gte('created_at', since24);
+    var ev7d = sb.from('audit_log').select('id', { count: 'exact', head: true }).eq('org_id', orgId).gte('created_at', since7d);
+    var results = await Promise.all([
+      members.then(function(r){ return r.count || 0; }, function(){ return 0; }),
+      accounts.then(function(r){ return r.count || 0; }, function(){ return 0; }),
+      txns.then(function(r){ return r.count || 0; }, function(){ return 0; }),
+      ints.then(function(r){ return r.count || 0; }, function(){ return 0; }),
+      ev24.then(function(r){ return r.count || 0; }, function(){ return 0; }),
+      ev7d.then(function(r){ return r.count || 0; }, function(){ return 0; })
+    ]);
+    return {
+      teamMembers: results[0],
+      glAccounts: results[1],
+      glTransactions: results[2],
+      integrations: results[3],
+      eventsLast24h: results[4],
+      eventsLast7d: results[5]
+    };
+  }
+
   // ==========================================
   // API surface
   // ==========================================
@@ -781,6 +839,8 @@ window.CastfordData = (function() {
     getIndustryBenchmarks: getIndustryBenchmarks,
     getCustomerMetricsRows: getCustomerMetricsRows,
     getBudgetVersions: getBudgetVersions,
+    getOrganization: getOrganization,
+    getAdminCounts: getAdminCounts,
     // WRITE
     createBudget: createBudget,
     updateBudget: updateBudget,
