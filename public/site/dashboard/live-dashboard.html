@@ -3407,13 +3407,26 @@ function renderCommand(){
     + '<div class="bottom-spacer"></div>';
 }
 
+// ═══ INTELLIGENCE (Phase 2B-3 part 2) ═══
+// Wired to ai_reports + financial_alerts + generated_reports via
+//   CastfordData.getAiReports() / getFinancialAlerts() / getLatestGeneratedReport().
+// Three sections: Insights cards (ai_reports), Anomalies table (financial_alerts),
+//   Quarterly narrative (generated_reports — synthesized from content jsonb if summary_text empty).
+// Falls back to demo if (a) data layer not loaded, (b) demo mode.
+// Each section has its own real/empty/demo state so partial data still renders.
+
 function renderIntelligence(){
   document.getElementById('breadcrumb').innerHTML='Dashboard / <strong>Intelligence</strong>';
   document.getElementById('resourcesPanel').style.display='';
-  document.getElementById('mainContent').innerHTML = ''
+  document.getElementById('mainContent').innerHTML = intelShellHTML(true);
+  loadIntelAndRender();
+}
+
+function intelShellHTML(loading){
+  return ''
     + '<div class="sp-header">'
     +   '<div class="sp-title-block">'
-    +     '<div class="sp-eyebrow">AI ANALYSIS · 6 INSIGHTS · GENERATED 14 MIN AGO</div>'
+    +     '<div class="sp-eyebrow" id="intelEyebrow">' + (loading ? 'AI ANALYSIS · LOADING…' : 'AI ANALYSIS') + '</div>'
     +     '<h1 class="sp-title">Financial <em>intelligence</em></h1>'
     +   '</div>'
     +   '<div class="sp-actions">'
@@ -3421,66 +3434,348 @@ function renderIntelligence(){
     +     '<button class="sp-btn primary">Run new analysis</button>'
     +   '</div>'
     + '</div>'
-    + '<div class="sp-sect-label">AI-GENERATED INSIGHTS <span class="sp-sect-meta">6 surfaced this session · 4 high priority</span></div>'
-    + '<div class="it-insights">'
-    +   '<div class="it-card high">'
-    +     '<div class="it-card-head"><div class="it-card-tag high">HIGH PRIORITY</div><div class="it-card-conf">CONFIDENCE: 94%</div></div>'
-    +     '<h3>Snowflake credit pool unused — $78K savings opportunity</h3>'
-    +     '<p>Your annual Snowflake commit has $284K of unused credits expiring at fiscal year-end. Routing analytical queries from the standard warehouse to your committed warehouse would save approximately $78K through year-end without any service disruption.</p>'
-    +     '<div class="it-card-impact"><div class="it-card-impact-label">PROJECTED IMPACT</div><div class="it-card-impact-val up">+$78K savings</div></div>'
-    +   '</div>'
-    +   '<div class="it-card high">'
-    +     '<div class="it-card-head"><div class="it-card-tag high">HIGH PRIORITY</div><div class="it-card-conf">CONFIDENCE: 91%</div></div>'
-    +     '<h3>Enterprise expansion velocity accelerating</h3>'
-    +     '<p>Mid-market customers are upgrading to higher tiers at 2.4x the historical rate. If the trend continues, FY26 expansion ARR will exceed plan by $4.2M. Recommend reallocating customer success capacity toward this segment to accelerate the pattern.</p>'
-    +     '<div class="it-card-impact"><div class="it-card-impact-label">PROJECTED IMPACT</div><div class="it-card-impact-val up">+$4.2M ARR upside</div></div>'
-    +   '</div>'
-    +   '<div class="it-card medium">'
-    +     '<div class="it-card-head"><div class="it-card-tag medium">MEDIUM</div><div class="it-card-conf">CONFIDENCE: 86%</div></div>'
-    +     '<h3>G&A trending toward FY26 budget overage</h3>'
-    +     '<p>Q4 G&A came in 5.9% above plan, driven by legal and audit fees. Pattern suggests structural rather than one-time, projecting an FY26 overage of approximately $720K if uncorrected. Q1 expense review recommended.</p>'
-    +     '<div class="it-card-impact"><div class="it-card-impact-label">PROJECTED IMPACT</div><div class="it-card-impact-val down">−$720K vs plan</div></div>'
-    +   '</div>'
-    +   '<div class="it-card medium">'
-    +     '<div class="it-card-head"><div class="it-card-tag medium">MEDIUM</div><div class="it-card-conf">CONFIDENCE: 82%</div></div>'
-    +     '<h3>Sales cycle lengthening in mid-market segment</h3>'
-    +     '<p>Average sales cycle for $50K–$200K ACV deals extended from 38 to 48 days over the last quarter. Lead conversion stable, but revenue recognition timing will shift. Q1 ARR may show ~$340K timing variance.</p>'
-    +     '<div class="it-card-impact"><div class="it-card-impact-label">PROJECTED IMPACT</div><div class="it-card-impact-val down">−$340K Q1 timing</div></div>'
-    +   '</div>'
-    +   '<div class="it-card routine">'
-    +     '<div class="it-card-head"><div class="it-card-tag routine">ROUTINE</div><div class="it-card-conf">CONFIDENCE: 78%</div></div>'
-    +     '<h3>FX exposure increasing as EMEA grows</h3>'
-    +     '<p>EMEA revenue is now 18% of total, up from 12% YoY. EUR exposure has grown from $3.8M to $5.4M. Consider FX hedging for FY26 to lock in current rates given dollar volatility expectations.</p>'
-    +     '<div class="it-card-impact"><div class="it-card-impact-label">EXPOSURE</div><div class="it-card-impact-val">€5.0M unhedged</div></div>'
-    +   '</div>'
-    +   '<div class="it-card routine">'
-    +     '<div class="it-card-head"><div class="it-card-tag routine">ROUTINE</div><div class="it-card-conf">CONFIDENCE: 73%</div></div>'
-    +     '<h3>Customer concentration risk improving</h3>'
-    +     '<p>Top 10 customer concentration dropped from 38% to 31% of ARR over the last 12 months. Healthy diversification trend. No immediate action required, but worth highlighting in board materials as a positive signal.</p>'
-    +     '<div class="it-card-impact"><div class="it-card-impact-label">RISK CHANGE</div><div class="it-card-impact-val up">−7 pts (favorable)</div></div>'
-    +   '</div>'
+    + '<div class="sp-sect-label">AI-GENERATED INSIGHTS <span class="sp-sect-meta" id="intelInsightsMeta">' + (loading ? 'Loading…' : '') + '</span></div>'
+    + '<div class="it-insights" id="intelInsightsWrap">' + (loading ? intelInsightsSkeleton() : '') + '</div>'
+    + '<div class="sp-sect-label">DETECTED ANOMALIES <span class="sp-sect-meta" id="intelAnomMeta">' + (loading ? 'Loading…' : '') + '</span></div>'
+    + '<div id="intelAnomWrap">' + (loading ? intelAnomSkeleton() : '') + '</div>'
+    + '<div class="sp-sect-label">QUARTERLY NARRATIVE <span class="sp-sect-meta" id="intelNarrMeta">' + (loading ? 'Loading…' : '') + '</span></div>'
+    + '<div id="intelNarrWrap">' + (loading ? intelNarrSkeleton() : '') + '</div>'
+    + '<div class="sp-footer-meta" id="intelFooterMeta">Loading intelligence…</div>'
+    + '<div class="bottom-spacer"></div>';
+}
+
+function intelInsightsSkeleton(){
+  return '<div style="grid-column:1/-1;padding:32px 0;text-align:center;color:var(--t3);font-family:\'Geist Mono\',monospace;font-size:11px;letter-spacing:1px">FETCHING AI INSIGHTS…</div>';
+}
+
+function intelAnomSkeleton(){
+  return '<div style="padding:32px 0;text-align:center;color:var(--t3);font-family:\'Geist Mono\',monospace;font-size:11px;letter-spacing:1px">FETCHING ANOMALIES FROM FINANCIAL_ALERTS…</div>';
+}
+
+function intelNarrSkeleton(){
+  return '<div style="padding:32px 0;text-align:center;color:var(--t3);font-family:\'Geist Mono\',monospace;font-size:11px;letter-spacing:1px">FETCHING LATEST REPORT…</div>';
+}
+
+async function loadIntelAndRender(){
+  if (!window.CastfordData) {
+    renderIntelDemo('Data layer not loaded — showing sample intelligence');
+    return;
+  }
+  try {
+    if (!window.CastfordData.isInitialized()) {
+      await window.CastfordData.init();
+    }
+  } catch (e) {
+    console.warn('CastfordData init failed:', e);
+    renderIntelDemo('Data layer init failed — showing sample intelligence');
+    return;
+  }
+
+  if (window.CastfordData.isDemoMode()) {
+    renderIntelDemo('Demo mode active — connect your workspace to see real intelligence');
+    return;
+  }
+
+  // Fetch all three sources in parallel; each section degrades independently
+  var insights = [], alerts = [], report = null;
+  try {
+    var results = await Promise.all([
+      window.CastfordData.getAiReports({ limit: 6 }).catch(function(){ return []; }),
+      window.CastfordData.getFinancialAlerts({ limit: 10, status: 'active' }).catch(function(){ return []; }),
+      window.CastfordData.getLatestGeneratedReport().catch(function(){ return null; })
+    ]);
+    insights = results[0] || [];
+    alerts = results[1] || [];
+    report = results[2];
+  } catch (e) {
+    console.warn('Intelligence fetch failed:', e);
+    renderIntelDemo('Data fetch failed — showing sample intelligence');
+    return;
+  }
+
+  // Eyebrow summarizes overall freshness
+  var sourcesActive = (insights.length > 0 ? 1 : 0) + (alerts.length > 0 ? 1 : 0) + (report ? 1 : 0);
+  var latestTs = null;
+  if (insights.length && insights[0].generated_at) latestTs = insights[0].generated_at;
+  if (alerts.length && (!latestTs || new Date(alerts[0].created_at) > new Date(latestTs))) latestTs = alerts[0].created_at;
+  if (report && report.created_at && (!latestTs || new Date(report.created_at) > new Date(latestTs))) latestTs = report.created_at;
+  document.getElementById('intelEyebrow').textContent =
+    'AI ANALYSIS · ' + sourcesActive + ' OF 3 SOURCES ACTIVE' +
+    (latestTs ? ' · UPDATED ' + intelRelTime(latestTs).toUpperCase() : '');
+
+  intelRenderInsights(insights);
+  intelRenderAnomalies(alerts);
+  intelRenderNarrative(report);
+
+  // Footer
+  var orgId = window.CastfordData.getOrgId() || '—';
+  var orgIdShort = orgId === '—' ? '—' : orgId.slice(0, 8) + '…';
+  document.getElementById('intelFooterMeta').textContent =
+    'Source: ai_reports + financial_alerts + generated_reports · ' +
+    insights.length + ' insight' + (insights.length === 1 ? '' : 's') + ' · ' +
+    alerts.length + ' alert' + (alerts.length === 1 ? '' : 's') + ' · ' +
+    (report ? '1 report' : '0 reports') + ' · org ' + orgIdShort;
+}
+
+// ─── helpers ───────────────────────────────────────────────────────────
+
+function intelEscapeHTML(s){
+  return String(s == null ? '' : s)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+
+function intelRelTime(ts){
+  if (!ts) return '—';
+  var d = new Date(ts);
+  if (isNaN(d.getTime())) return '—';
+  var s = Math.max(0, Math.floor((Date.now() - d.getTime()) / 1000));
+  if (s < 60) return s + 's ago';
+  if (s < 3600) return Math.floor(s/60) + 'm ago';
+  if (s < 86400) return Math.floor(s/3600) + 'h ago';
+  return Math.floor(s/86400) + 'd ago';
+}
+
+function intelFormatCurrency(v){
+  v = parseFloat(v || 0);
+  if (Math.abs(v) >= 1000000) return '$' + (v/1000000).toFixed(1) + 'M';
+  if (Math.abs(v) >= 1000) return '$' + (v/1000).toFixed(0) + 'K';
+  return '$' + v.toFixed(0);
+}
+
+function intelSeverityCardClass(severity){
+  return ({
+    critical: 'high', high: 'high', medium: 'medium', low: 'routine'
+  })[severity] || 'routine';
+}
+
+function intelSeverityCellClass(severity){
+  return ({
+    critical: 'high', high: 'high', medium: 'med', low: 'low'
+  })[severity] || 'low';
+}
+
+function intelSeverityLabel(severity){
+  return ({
+    critical: 'CRITICAL', high: 'HIGH PRIORITY', medium: 'MEDIUM', low: 'ROUTINE'
+  })[severity] || (severity || 'INFO').toUpperCase();
+}
+
+// ─── section renderers ─────────────────────────────────────────────────
+
+function intelRenderInsights(insights){
+  var meta = document.getElementById('intelInsightsMeta');
+  var wrap = document.getElementById('intelInsightsWrap');
+
+  if (!insights || insights.length === 0) {
+    meta.textContent = 'No AI insights generated yet';
+    wrap.innerHTML = '<div style="grid-column:1/-1;padding:48px 16px;text-align:center;color:var(--t2);border:1px solid var(--border);border-radius:4px;background:var(--surface)">'
+      + '<div style="font-family:var(--display);font-size:18px;color:var(--t1);margin-bottom:8px">No AI insights yet</div>'
+      + '<div style="font-family:var(--body);font-size:13px;line-height:1.6;max-width:520px;margin:0 auto;color:var(--t3)">'
+      +   'Click <b>Run new analysis</b> to have Castford analyze your GL data and surface recommendations grounded in your numbers.'
+      + '</div>'
+      + '</div>';
+    return;
+  }
+
+  var highPriority = insights.filter(function(r){ return r.report_type === 'recommendation' || r.status === 'high' || r.status === 'urgent'; }).length;
+  meta.textContent = insights.length + ' surfaced · ' + highPriority + ' high priority';
+
+  var html = '';
+  insights.forEach(function(r){
+    var sev = (r.metrics && r.metrics.severity) || (r.content && r.content.severity) || r.status || 'medium';
+    var cardClass = intelSeverityCardClass(sev);
+    var tagLabel = intelSeverityLabel(sev);
+    var conf = (r.metrics && r.metrics.confidence) || (r.content && r.content.confidence);
+    var confStr = conf ? 'CONFIDENCE: ' + (conf > 1 ? Math.round(conf) : Math.round(conf*100)) + '%' : '';
+    var impact = (r.metrics && (r.metrics.impact_label || r.metrics.projected_impact)) ||
+                 (r.content && (r.content.impact_label || r.content.projected_impact)) || '';
+    var impactClass = (r.metrics && r.metrics.impact_direction) || (r.content && r.content.impact_direction) || '';
+
+    html += '<div class="it-card ' + cardClass + '">'
+      + '<div class="it-card-head">'
+      +   '<div class="it-card-tag ' + cardClass + '">' + intelEscapeHTML(tagLabel) + '</div>'
+      +   (confStr ? '<div class="it-card-conf">' + intelEscapeHTML(confStr) + '</div>' : '')
+      + '</div>'
+      + '<h3>' + intelEscapeHTML(r.title || 'Untitled insight') + '</h3>'
+      + '<p>' + intelEscapeHTML(r.summary || '(no summary text)') + '</p>'
+      + (impact
+          ? '<div class="it-card-impact"><div class="it-card-impact-label">PROJECTED IMPACT</div><div class="it-card-impact-val' + (impactClass ? ' ' + impactClass : '') + '">' + intelEscapeHTML(impact) + '</div></div>'
+          : '')
+      + '</div>';
+  });
+  wrap.innerHTML = html;
+}
+
+function intelRenderAnomalies(alerts){
+  var meta = document.getElementById('intelAnomMeta');
+  var wrap = document.getElementById('intelAnomWrap');
+
+  if (!alerts || alerts.length === 0) {
+    meta.textContent = 'No active anomalies detected';
+    wrap.innerHTML = '<div style="padding:48px 16px;text-align:center;color:var(--t2);border:1px solid var(--border);border-radius:4px;background:var(--surface)">'
+      + '<div style="font-family:var(--display);font-size:16px;color:var(--t1);margin-bottom:6px">All metrics within range</div>'
+      + '<div style="font-family:\'Geist Mono\',monospace;font-size:11px;color:var(--t3);letter-spacing:0.5px">NO ACTIVE FINANCIAL_ALERTS · MONITORING CONTINUES</div>'
+      + '</div>';
+    return;
+  }
+
+  var highCount = alerts.filter(function(a){ return a.severity === 'critical' || a.severity === 'high'; }).length;
+  meta.textContent = alerts.length + ' active · ' + highCount + ' high priority';
+
+  var rows = '';
+  alerts.forEach(function(a){
+    var observed = intelFormatCurrency(a.current_value);
+    var expected = intelFormatCurrency(a.expected_value);
+    var devNum = parseFloat(a.deviation_pct || 0);
+    var devClass = devNum >= 0 ? 'up' : 'down';
+    var devStr = (devNum >= 0 ? '+' : '') + devNum.toFixed(1) + '%';
+    var sevClass = intelSeverityCellClass(a.severity);
+    var sevText = (a.severity || 'low').charAt(0).toUpperCase() + (a.severity || 'low').slice(1);
+    var metricLabel = a.metric_name || (a.title ? a.title.split(':')[0] : '—');
+
+    rows += '<tr>'
+      + '<td>' + intelEscapeHTML(metricLabel) + '</td>'
+      + '<td class="num">' + observed + '</td>'
+      + '<td class="num">' + expected + '</td>'
+      + '<td class="num deviation ' + devClass + '">' + devStr + '</td>'
+      + '<td><span class="severity ' + sevClass + '">' + intelEscapeHTML(sevText) + '</span></td>'
+      + '</tr>';
+  });
+
+  wrap.innerHTML = '<table class="it-anomalies">'
+    + '<thead><tr><th>METRIC</th><th>OBSERVED</th><th>EXPECTED</th><th>DEVIATION</th><th>SEVERITY</th></tr></thead>'
+    + '<tbody>' + rows + '</tbody>'
+    + '</table>';
+}
+
+function intelRenderNarrative(report){
+  var meta = document.getElementById('intelNarrMeta');
+  var wrap = document.getElementById('intelNarrWrap');
+
+  if (!report) {
+    meta.textContent = 'No reports generated yet';
+    wrap.innerHTML = '<div style="padding:48px 16px;text-align:center;color:var(--t2);border:1px solid var(--border);border-radius:4px;background:var(--surface)">'
+      + '<div style="font-family:var(--display);font-size:16px;color:var(--t1);margin-bottom:6px">No reports yet</div>'
+      + '<div style="font-family:\'Geist Mono\',monospace;font-size:11px;color:var(--t3);letter-spacing:0.5px">GENERATED_REPORTS IS EMPTY · RUN A REPORT TO POPULATE</div>'
+      + '</div>';
+    return;
+  }
+
+  meta.textContent = 'Generated ' + intelRelTime(report.created_at) + ' · ' + intelEscapeHTML(report.generated_by || 'system');
+
+  var paragraphs = '';
+
+  // Prefer summary_text if present, otherwise synthesize from content jsonb
+  if (report.summary_text && report.summary_text.trim().length > 0) {
+    var lines = report.summary_text.split(/\n\n+/).filter(function(l){ return l.trim(); });
+    lines.forEach(function(line){
+      paragraphs += '<p>' + intelEscapeHTML(line.trim()) + '</p>';
+    });
+  } else if (report.content) {
+    // Synthesize from content jsonb (KPIs, budget_comparison, active_alerts)
+    var c = report.content;
+    var k = c.kpis || {};
+    var b = c.budget_comparison || {};
+    var alerts = Array.isArray(c.active_alerts) ? c.active_alerts : [];
+
+    if (k.revenue || k.net_income) {
+      var rev = intelFormatCurrency(k.revenue || 0);
+      var ni = intelFormatCurrency(k.net_income || 0);
+      var gm = k.gross_margin ? (parseFloat(k.gross_margin)).toFixed(1) + '%' : '—';
+      var nm = k.net_margin ? (parseFloat(k.net_margin)).toFixed(1) + '%' : '—';
+      paragraphs += '<p>Period <b>' + intelEscapeHTML(c.period || report.period || '—') + '</b> closed with revenue of <b>' + rev + '</b> across ' + (k.transactions || '—') + ' transactions and ' + (k.accounts || '—') + ' GL accounts. Gross margin landed at <b>' + gm + '</b>, net income at <b>' + ni + '</b> with a net margin of <b>' + nm + '</b>.</p>';
+    }
+
+    if (b.actual_revenue || b.actual_opex) {
+      var revVar = parseFloat(b.revenue_variance || 0);
+      var opexVar = parseFloat(b.opex_variance || 0);
+      var revDir = revVar >= 0 ? 'above' : 'below';
+      var opexDir = opexVar <= 0 ? 'below' : 'above';
+      paragraphs += '<p>Revenue came in <b>' + intelFormatCurrency(Math.abs(revVar)) + '</b> ' + revDir + ' plan (' + intelFormatCurrency(b.actual_revenue) + ' actual vs ' + intelFormatCurrency(b.budget_revenue) + ' budget). Operating expenses ran <b>' + intelFormatCurrency(Math.abs(opexVar)) + '</b> ' + opexDir + ' plan (' + intelFormatCurrency(b.actual_opex) + ' actual vs ' + intelFormatCurrency(b.budget_opex) + ' budget).</p>';
+    }
+
+    if (alerts.length > 0) {
+      var critCount = alerts.filter(function(a){ return a.severity === 'critical'; }).length;
+      var highCount = alerts.filter(function(a){ return a.severity === 'high'; }).length;
+      var topAlert = alerts[0];
+      var alertDesc = topAlert.description ? ' (' + intelEscapeHTML(topAlert.description) + ')' : '';
+      paragraphs += '<p><b>' + alerts.length + ' active alert' + (alerts.length === 1 ? '' : 's') + '</b> are flagged this period';
+      if (critCount > 0 || highCount > 0) {
+        paragraphs += ', including ' + (critCount > 0 ? '<b>' + critCount + ' critical</b>' : '') +
+          (critCount > 0 && highCount > 0 ? ' and ' : '') +
+          (highCount > 0 ? '<b>' + highCount + ' high-priority</b>' : '') + ' items';
+      }
+      paragraphs += '. Lead alert: <span class="gold">' + intelEscapeHTML(topAlert.title || 'Unnamed alert') + '</span>' + alertDesc + '. See the Anomalies section above for the full list.</p>';
+    }
+
+    if (!paragraphs) {
+      paragraphs = '<p>This report has structured content but no narrative summary yet. Run a fresh analysis to synthesize the period into prose.</p>';
+    }
+  } else {
+    paragraphs = '<p>This report has no narrative content. Run a fresh analysis to generate a synthesis.</p>';
+  }
+
+  var heading = (report.title || 'Period synthesis');
+  wrap.innerHTML = '<div class="it-narrative">'
+    + '<div class="it-narrative-head"><div class="it-narrative-icon">AI</div><div class="it-narrative-title">' + intelEscapeHTML(heading) + '</div></div>'
+    + paragraphs
+    + '</div>';
+}
+
+// ─── demo render ───────────────────────────────────────────────────────
+
+function renderIntelDemo(banner){
+  document.getElementById('intelEyebrow').textContent = 'AI ANALYSIS · DEMO DATA';
+  document.getElementById('intelInsightsMeta').textContent = '6 sample insights · 4 high priority';
+  document.getElementById('intelAnomMeta').textContent = '6 sample anomalies';
+  document.getElementById('intelNarrMeta').textContent = 'Sample synthesis · illustrative only';
+
+  document.getElementById('intelInsightsWrap').innerHTML = ''
+    + '<div class="it-card high">'
+    +   '<div class="it-card-head"><div class="it-card-tag high">HIGH PRIORITY</div><div class="it-card-conf">CONFIDENCE: 94%</div></div>'
+    +   '<h3>Sample insight: cloud credit pool unused</h3>'
+    +   '<p>This is illustrative content. With real data, Castford would analyze your GL transactions and surface concrete savings opportunities here, grounded in your committed spend.</p>'
+    +   '<div class="it-card-impact"><div class="it-card-impact-label">SAMPLE IMPACT</div><div class="it-card-impact-val up">illustrative</div></div>'
     + '</div>'
-    + '<div class="sp-sect-label">DETECTED ANOMALIES <span class="sp-sect-meta">Statistical outliers · 2σ from rolling baseline</span></div>'
+    + '<div class="it-card high">'
+    +   '<div class="it-card-head"><div class="it-card-tag high">HIGH PRIORITY</div><div class="it-card-conf">CONFIDENCE: 91%</div></div>'
+    +   '<h3>Sample insight: expansion velocity</h3>'
+    +   '<p>Sample content. With real data, Castford would highlight customer-segment trends from your subscription metrics and recommend reallocations.</p>'
+    +   '<div class="it-card-impact"><div class="it-card-impact-label">SAMPLE IMPACT</div><div class="it-card-impact-val up">illustrative</div></div>'
+    + '</div>'
+    + '<div class="it-card medium">'
+    +   '<div class="it-card-head"><div class="it-card-tag medium">MEDIUM</div><div class="it-card-conf">CONFIDENCE: 86%</div></div>'
+    +   '<h3>Sample insight: G&A trending over budget</h3>'
+    +   '<p>Sample content. With real data, Castford would compare your actual operating expenses against budget and project a forward variance.</p>'
+    +   '<div class="it-card-impact"><div class="it-card-impact-label">SAMPLE IMPACT</div><div class="it-card-impact-val down">illustrative</div></div>'
+    + '</div>'
+    + '<div class="it-card routine">'
+    +   '<div class="it-card-head"><div class="it-card-tag routine">ROUTINE</div><div class="it-card-conf">CONFIDENCE: 78%</div></div>'
+    +   '<h3>Sample insight: FX exposure trend</h3>'
+    +   '<p>Sample content. With real data, Castford would track your international revenue mix and flag hedging considerations.</p>'
+    +   '<div class="it-card-impact"><div class="it-card-impact-label">SAMPLE EXPOSURE</div><div class="it-card-impact-val">illustrative</div></div>'
+    + '</div>';
+
+  document.getElementById('intelAnomWrap').innerHTML = ''
     + '<table class="it-anomalies">'
     +   '<thead><tr><th>METRIC</th><th>OBSERVED</th><th>EXPECTED</th><th>DEVIATION</th><th>SEVERITY</th></tr></thead>'
     +   '<tbody>'
-    +     '<tr><td>Snowflake compute spend (March)</td><td class="num">$3.42M</td><td class="num">$3.20M</td><td class="num deviation up">+6.9%</td><td><span class="severity high">High</span></td></tr>'
-    +     '<tr><td>Q4 G&A legal fees</td><td class="num">$1.21M</td><td class="num">$0.98M</td><td class="num deviation up">+23.5%</td><td><span class="severity high">High</span></td></tr>'
-    +     '<tr><td>Mid-market sales cycle (avg days)</td><td class="num">48</td><td class="num">38</td><td class="num deviation up">+26.3%</td><td><span class="severity med">Medium</span></td></tr>'
-    +     '<tr><td>EMEA revenue mix</td><td class="num">18%</td><td class="num">14%</td><td class="num deviation up">+4 pts</td><td><span class="severity med">Medium</span></td></tr>'
-    +     '<tr><td>Top 10 customer concentration</td><td class="num">31%</td><td class="num">38%</td><td class="num deviation down">−18.4%</td><td><span class="severity low">Low</span></td></tr>'
-    +     '<tr><td>Subscription expansion rate</td><td class="num">122%</td><td class="num">115%</td><td class="num deviation down">+6.1%</td><td><span class="severity low">Low</span></td></tr>'
+    +     '<tr><td>Sample metric A</td><td class="num">$3.4M</td><td class="num">$3.2M</td><td class="num deviation up">+6.9%</td><td><span class="severity high">High</span></td></tr>'
+    +     '<tr><td>Sample metric B</td><td class="num">$1.2M</td><td class="num">$1.0M</td><td class="num deviation up">+23.5%</td><td><span class="severity high">High</span></td></tr>'
+    +     '<tr><td>Sample metric C</td><td class="num">48</td><td class="num">38</td><td class="num deviation up">+26.3%</td><td><span class="severity med">Medium</span></td></tr>'
+    +     '<tr><td>Sample metric D</td><td class="num">31%</td><td class="num">38%</td><td class="num deviation down">−18.4%</td><td><span class="severity low">Low</span></td></tr>'
     +   '</tbody>'
-    + '</table>'
-    + '<div class="sp-sect-label">QUARTERLY NARRATIVE <span class="sp-sect-meta">Auto-generated synthesis · ready for board materials</span></div>'
+    + '</table>';
+
+  document.getElementById('intelNarrWrap').innerHTML = ''
     + '<div class="it-narrative">'
-    +   '<div class="it-narrative-head"><div class="it-narrative-icon">AI</div><div class="it-narrative-title">Why Q4 2025 outperformed</div></div>'
-    +   '<p>Q4 2025 closed <b>$2.1M above plan</b>, driven primarily by stronger-than-expected expansion within the mid-market segment. Subscription revenue from existing customers grew <b>22% sequentially</b>, with three Tier 2 accounts upgrading to Enterprise mid-quarter. This translated to net revenue retention of <b>128%</b>, placing Castford in the top decile of public SaaS peers at this scale.</p>'
-    +   '<p>The expansion outperformance more than offset modest pressure on the cost side. <span class="gold">Hosting infrastructure and G&A both came in 6–7% above plan</span>, but improved gross margin from product mix shifts kept overall EBITDA margin within budget. The combination of <b>+18% revenue growth</b> and <b>9.2% net margin</b> produces a Rule of 40 score of <b>53.2</b> — the strongest quarter in the company\'s history.</p>'
-    +   '<p>Looking forward, the dominant signal is <b>velocity in expansion</b>: if mid-market upgrade activity continues at current pace, FY26 ARR could exceed plan by $4–5M without additional new logo acceleration. The recommended action is reallocating customer success capacity toward the mid-market segment to compound the trend.</p>'
-    + '</div>'
-    + '<div class="sp-footer-meta">All insights generated by Castford AI · grounded in 3,142 GL transactions · powered by claude-opus-4</div>'
-    + '<div class="bottom-spacer"></div>';
+    +   '<div class="it-narrative-head"><div class="it-narrative-icon">AI</div><div class="it-narrative-title">Sample period synthesis</div></div>'
+    +   '<p>This is sample narrative content. With real data, Castford would synthesize a board-ready summary from your monthly KPIs, budget variance, and active alerts.</p>'
+    +   '<p>The real version reads from your <code>generated_reports</code> table, falling back to a synthesized narrative built from <code>content.kpis</code>, <code>content.budget_comparison</code>, and <code>content.active_alerts</code> when no pre-written summary exists.</p>'
+    + '</div>';
+
+  document.getElementById('intelFooterMeta').textContent = (banner || 'Demo data') + ' · Connect a workspace and run an analysis to populate ai_reports + generated_reports';
 }
 
 // Admin tab switcher
