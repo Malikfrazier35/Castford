@@ -1469,13 +1469,25 @@ function featurePage(title,breadcrumb,icon,desc,metrics){
     '<div class="bottom-spacer"></div>';
 }
 
+// ═══ COPILOT (Phase 2B-3) ═══
+// Wired to copilot_conversations + ai_query_log + gl_accounts/gl_transactions
+//   via CastfordData.getLatestCopilotConversation() / getCopilotUsageSummary() / getCopilotDataScope().
+// Right pane (Live data context) reuses getPnlSummary() + getIntegrations().
+// Falls back to demo if (a) data layer not loaded, (b) demo mode.
+// Empty state used when no conversations exist (right pane still shows real KPIs).
+
 function renderCopilot(){
   document.getElementById('breadcrumb').innerHTML='Dashboard / <strong>AI Copilot</strong>';
   document.getElementById('resourcesPanel').style.display='none';
-  document.getElementById('mainContent').innerHTML = ''
+  document.getElementById('mainContent').innerHTML = copilotShellHTML(true);
+  loadCopilotAndRender();
+}
+
+function copilotShellHTML(loading){
+  return ''
     + '<div class="sp-header">'
     +   '<div class="sp-title-block">'
-    +     '<div class="sp-eyebrow">AI · POWERED BY CLAUDE</div>'
+    +     '<div class="sp-eyebrow" id="copilotEyebrow">AI · POWERED BY CLAUDE</div>'
     +     '<h1 class="sp-title">Castford <em>Copilot</em></h1>'
     +   '</div>'
     +   '<div class="sp-actions">'
@@ -1487,26 +1499,9 @@ function renderCopilot(){
     +   '<div class="cp-pane">'
     +     '<div class="cp-pane-head">'
     +       '<div class="cp-pane-title">Conversation</div>'
-    +       '<div class="cp-pane-meta">Thread started 14 min ago · 4 messages</div>'
+    +       '<div class="cp-pane-meta" id="copilotChatMeta">' + (loading ? 'Loading…' : '') + '</div>'
     +     '</div>'
-    +     '<div class="cp-chat" id="copilotChat">'
-    +       '<div class="cp-msg user">'
-    +         '<div class="cp-avatar">MF</div>'
-    +         '<div class="cp-bubble">Why did COGS spike in March compared to plan?</div>'
-    +       '</div>'
-    +       '<div class="cp-msg ai">'
-    +         '<div class="cp-avatar">AI</div>'
-    +         '<div class="cp-bubble">March COGS came in at <strong>$3.42M</strong> versus the <strong>$3.20M</strong> plan — <strong>6.9% over</strong>. Two drivers: <span class="cite">Snowflake-2024-03</span> compute spend ran $145K above forecast due to higher query volume from new enterprise accounts, and AWS egress fees (<span class="cite">AWS-EGR-Q1</span>) added $75K from increased API traffic. Both line items are scaling linearly with new customer onboarding, so I would expect the trend to continue without optimization.</div>'
-    +       '</div>'
-    +       '<div class="cp-msg user">'
-    +         '<div class="cp-avatar">MF</div>'
-    +         '<div class="cp-bubble">Is there a Snowflake credit pool we could shift queries to?</div>'
-    +       '</div>'
-    +       '<div class="cp-msg ai">'
-    +         '<div class="cp-avatar">AI</div>'
-    +         '<div class="cp-bubble">Yes — your annual Snowflake commit (<span class="cite">SNFLK-COMMIT-2026</span>) has <strong>$284K of unused credits</strong> through end of fiscal year. Routing the analytical queries currently hitting the standard warehouse to your committed warehouse would save approximately <strong>$78K through year-end</strong>. Want me to draft a recommendation for the data engineering team?</div>'
-    +       '</div>'
-    +     '</div>'
+    +     '<div class="cp-chat" id="copilotChat">' + (loading ? copilotChatSkeleton() : '') + '</div>'
     +     '<div class="cp-input">'
     +       '<div class="cp-suggest">'
     +         '<button>Explain this month\'s variance</button>'
@@ -1524,42 +1519,258 @@ function renderCopilot(){
     +   '<div class="cp-pane">'
     +     '<div class="cp-pane-head">'
     +       '<div class="cp-pane-title">Live data context</div>'
-    +       '<div class="cp-pane-meta">7 sources</div>'
+    +       '<div class="cp-pane-meta" id="copilotCtxMeta">' + (loading ? 'Loading…' : '') + '</div>'
     +     '</div>'
-    +     '<div class="cp-context">'
-    +       '<div class="cp-ctx-section">'
-    +         '<div class="cp-ctx-label">CURRENT KPIS</div>'
-    +         '<div class="cp-ctx-row"><span class="key">Revenue (YTD)</span><span class="val">$55.0M</span></div>'
-    +         '<div class="cp-ctx-row"><span class="key">Gross margin</span><span class="val">84.9%</span></div>'
-    +         '<div class="cp-ctx-row"><span class="key">Net income</span><span class="val">$5.1M</span></div>'
-    +         '<div class="cp-ctx-row"><span class="key">Runway</span><span class="val">24 mo</span></div>'
-    +         '<div class="cp-ctx-row"><span class="key">ARR growth</span><span class="val">+18% YoY</span></div>'
-    +       '</div>'
-    +       '<div class="cp-ctx-section">'
-    +         '<div class="cp-ctx-label">DATA SCOPE</div>'
-    +         '<div class="cp-ctx-row"><span class="key">GL accounts</span><span class="val">18</span></div>'
-    +         '<div class="cp-ctx-row"><span class="key">Transactions in scope</span><span class="val">3,142</span></div>'
-    +         '<div class="cp-ctx-row"><span class="key">Period</span><span class="val">FY2025</span></div>'
-    +         '<div class="cp-ctx-row"><span class="key">Last sync</span><span class="val">53s ago</span></div>'
-    +       '</div>'
-    +       '<div class="cp-ctx-section">'
-    +         '<div class="cp-ctx-label">CONNECTED SOURCES</div>'
-    +         '<div class="cp-ctx-source"><span>NetSuite</span><span class="live">847K records</span></div>'
-    +         '<div class="cp-ctx-source"><span>Salesforce</span><span class="live">124K records</span></div>'
-    +         '<div class="cp-ctx-source"><span>Stripe</span><span class="live">38K records</span></div>'
-    +         '<div class="cp-ctx-source"><span>Snowflake</span><span class="live">2.1M records</span></div>'
-    +         '<div class="cp-ctx-source"><span>Rippling</span><span class="live">312 records</span></div>'
-    +       '</div>'
-    +       '<div class="cp-ctx-section">'
-    +         '<div class="cp-ctx-label">SESSION USAGE</div>'
-    +         '<div class="cp-ctx-row"><span class="key">Tokens used</span><span class="val">12,840</span></div>'
-    +         '<div class="cp-ctx-row"><span class="key">Model</span><span class="val">claude-opus-4</span></div>'
-    +         '<div class="cp-ctx-row"><span class="key">Avg response</span><span class="val">1.8s</span></div>'
-    +       '</div>'
-    +     '</div>'
+    +     '<div class="cp-context" id="copilotContext">' + (loading ? copilotContextSkeleton() : '') + '</div>'
     +   '</div>'
     + '</div>'
+    + '<div class="sp-footer-meta" id="copilotFooterMeta">Loading copilot context…</div>'
     + '<div class="bottom-spacer"></div>';
+}
+
+function copilotChatSkeleton(){
+  return '<div style="padding:32px 12px;color:var(--t3);font-family:\'Geist Mono\',monospace;font-size:11px;letter-spacing:1px;text-align:center">FETCHING LATEST CONVERSATION…</div>';
+}
+
+function copilotContextSkeleton(){
+  return '<div style="padding:24px 12px;color:var(--t3);font-family:\'Geist Mono\',monospace;font-size:11px;letter-spacing:1px;text-align:center">LOADING DATA SCOPE…</div>';
+}
+
+async function loadCopilotAndRender(){
+  if (!window.CastfordData) {
+    renderCopilotDemo('Data layer not loaded — showing sample copilot context');
+    return;
+  }
+  try {
+    if (!window.CastfordData.isInitialized()) {
+      await window.CastfordData.init();
+    }
+  } catch (e) {
+    console.warn('CastfordData init failed:', e);
+    renderCopilotDemo('Data layer init failed — showing sample copilot context');
+    return;
+  }
+
+  if (window.CastfordData.isDemoMode()) {
+    renderCopilotDemo('Demo mode active — connect your workspace to see real copilot');
+    return;
+  }
+
+  // Fetch all four data sources in parallel
+  var conversation = null, usage = null, scope = null, pnl = null, integrations = [];
+  try {
+    var results = await Promise.all([
+      window.CastfordData.getLatestCopilotConversation(),
+      window.CastfordData.getCopilotUsageSummary(),
+      window.CastfordData.getCopilotDataScope(),
+      window.CastfordData.getPnlSummary().catch(function(){ return null; }),
+      window.CastfordData.getIntegrations().catch(function(){ return []; })
+    ]);
+    conversation = results[0];
+    usage = results[1] || { totalTokens: 0, totalCostCents: 0, queryCount: 0, latestModel: null, latestAt: null };
+    scope = results[2] || { glAccountsCount: 0, txCount: 0, latestTxAt: null, period: 'FY' + new Date().getFullYear() };
+    pnl = results[3];
+    integrations = results[4] || [];
+  } catch (e) {
+    console.warn('Copilot data fetch failed:', e);
+    renderCopilotDemo('Data fetch failed — showing sample copilot context');
+    return;
+  }
+
+  renderCopilotReal(conversation, usage, scope, pnl, integrations);
+}
+
+// ─── helpers ───────────────────────────────────────────────────────────
+
+function copilotEscapeHTML(s){
+  return String(s == null ? '' : s)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+
+function copilotRelTime(ts){
+  if (!ts) return '—';
+  var d = new Date(ts);
+  if (isNaN(d.getTime())) return '—';
+  var s = Math.max(0, Math.floor((Date.now() - d.getTime()) / 1000));
+  if (s < 60) return s + 's ago';
+  if (s < 3600) return Math.floor(s/60) + 'm ago';
+  if (s < 86400) return Math.floor(s/3600) + 'h ago';
+  return Math.floor(s/86400) + 'd ago';
+}
+
+function copilotFormatTokens(n){
+  if (!n) return '0';
+  if (n < 1000) return String(n);
+  if (n < 1000000) return (n/1000).toFixed(n < 10000 ? 1 : 0) + 'K';
+  return (n/1000000).toFixed(1) + 'M';
+}
+
+function copilotFormatCurrency(centsOrDollars, isCents){
+  var v = isCents ? (parseFloat(centsOrDollars||0) / 100) : parseFloat(centsOrDollars||0);
+  if (Math.abs(v) >= 1000000) return '$' + (v/1000000).toFixed(1) + 'M';
+  if (Math.abs(v) >= 1000) return '$' + (v/1000).toFixed(0) + 'K';
+  return '$' + v.toFixed(2);
+}
+
+// ─── real render ───────────────────────────────────────────────────────
+
+function renderCopilotReal(conversation, usage, scope, pnl, integrations){
+  // Eyebrow
+  var modelName = (conversation && conversation.model) || usage.latestModel || 'claude-opus-4.7';
+  document.getElementById('copilotEyebrow').textContent = 'AI · ' + modelName.toUpperCase();
+
+  // Chat thread
+  if (conversation && Array.isArray(conversation.messages) && conversation.messages.length > 0) {
+    var msgs = conversation.messages;
+    var chatHTML = '';
+    msgs.forEach(function(m){
+      var role = (m.role || '').toLowerCase();
+      var isUser = (role === 'user' || role === 'human');
+      var content = copilotEscapeHTML(m.content || m.text || '');
+      var avatar = isUser ? 'YOU' : 'AI';
+      chatHTML += '<div class="cp-msg ' + (isUser ? 'user' : 'ai') + '">'
+        + '<div class="cp-avatar">' + avatar + '</div>'
+        + '<div class="cp-bubble">' + content + '</div>'
+        + '</div>';
+    });
+    document.getElementById('copilotChat').innerHTML = chatHTML;
+    document.getElementById('copilotChatMeta').textContent =
+      'Thread: "' + copilotEscapeHTML((conversation.title || 'Untitled')) + '" · ' +
+      msgs.length + ' message' + (msgs.length === 1 ? '' : 's') + ' · ' +
+      copilotRelTime(conversation.updated_at);
+  } else {
+    // No conversation yet — empty state, NOT fake demo content
+    document.getElementById('copilotChat').innerHTML = ''
+      + '<div style="padding:48px 16px;text-align:center;color:var(--t2);">'
+      +   '<div style="font-family:var(--display);font-size:18px;color:var(--t1);margin-bottom:8px">No conversations yet</div>'
+      +   '<div style="font-family:var(--body);font-size:13px;line-height:1.6;max-width:440px;margin:0 auto;color:var(--t3)">'
+      +     'Ask Castford anything about your financials. Suggested prompts below, or type your own question.'
+      +   '</div>'
+      + '</div>';
+    document.getElementById('copilotChatMeta').textContent = 'Empty thread · type below to start';
+  }
+
+  // Right pane — Live data context
+  var ctxHTML = '';
+
+  // CURRENT KPIs
+  ctxHTML += '<div class="cp-ctx-section">'
+    + '<div class="cp-ctx-label">CURRENT KPIs</div>';
+  if (pnl && (pnl.revenue || pnl.gross_margin || pnl.net_income)) {
+    var rev = pnl.revenue || 0, gm = pnl.gross_margin_pct || pnl.gross_margin || 0, ni = pnl.net_income || 0;
+    ctxHTML += '<div class="cp-ctx-row"><span class="key">Revenue (YTD)</span><span class="val">' + copilotFormatCurrency(rev) + '</span></div>'
+      + '<div class="cp-ctx-row"><span class="key">Gross margin</span><span class="val">' + (gm > 1 ? gm.toFixed(1) : (gm*100).toFixed(1)) + '%</span></div>'
+      + '<div class="cp-ctx-row"><span class="key">Net income</span><span class="val">' + copilotFormatCurrency(ni) + '</span></div>';
+  } else {
+    ctxHTML += '<div class="cp-ctx-row"><span class="key">P&L summary</span><span class="val">No data yet</span></div>';
+  }
+  ctxHTML += '</div>';
+
+  // DATA SCOPE
+  ctxHTML += '<div class="cp-ctx-section">'
+    + '<div class="cp-ctx-label">DATA SCOPE</div>'
+    + '<div class="cp-ctx-row"><span class="key">GL accounts</span><span class="val">' + (scope.glAccountsCount || 0) + '</span></div>'
+    + '<div class="cp-ctx-row"><span class="key">Transactions in scope</span><span class="val">' + (scope.txCount || 0).toLocaleString() + '</span></div>'
+    + '<div class="cp-ctx-row"><span class="key">Period</span><span class="val">' + copilotEscapeHTML(scope.period) + '</span></div>'
+    + '<div class="cp-ctx-row"><span class="key">Last transaction</span><span class="val">' + (scope.latestTxAt ? copilotRelTime(scope.latestTxAt) : '—') + '</span></div>'
+    + '</div>';
+
+  // CONNECTED SOURCES
+  ctxHTML += '<div class="cp-ctx-section">'
+    + '<div class="cp-ctx-label">CONNECTED SOURCES</div>';
+  var connected = (integrations || []).filter(function(i){ return i.status === 'connected' || i.status === 'active'; });
+  if (connected.length === 0) {
+    ctxHTML += '<div style="font-family:var(--mono);font-size:10.5px;color:var(--t3);padding:6px 0;letter-spacing:0.3px">NO INTEGRATIONS CONNECTED · GO TO INTEGRATIONS TO CONNECT A SOURCE</div>';
+  } else {
+    connected.slice(0, 6).forEach(function(i){
+      var label = i.display_name || i.provider || 'Source';
+      var records = i.records_synced ? (i.records_synced.toLocaleString() + ' records') : 'connected';
+      ctxHTML += '<div class="cp-ctx-source"><span>' + copilotEscapeHTML(label) + '</span><span class="live">' + copilotEscapeHTML(records) + '</span></div>';
+    });
+  }
+  ctxHTML += '</div>';
+
+  // SESSION USAGE
+  ctxHTML += '<div class="cp-ctx-section">'
+    + '<div class="cp-ctx-label">SESSION USAGE</div>';
+  if (usage.queryCount > 0) {
+    ctxHTML += '<div class="cp-ctx-row"><span class="key">Queries (last 200)</span><span class="val">' + usage.queryCount + '</span></div>'
+      + '<div class="cp-ctx-row"><span class="key">Tokens used</span><span class="val">' + copilotFormatTokens(usage.totalTokens) + '</span></div>'
+      + '<div class="cp-ctx-row"><span class="key">Cost</span><span class="val">' + copilotFormatCurrency(usage.totalCostCents, true) + '</span></div>'
+      + '<div class="cp-ctx-row"><span class="key">Last model</span><span class="val">' + copilotEscapeHTML(usage.latestModel || '—') + '</span></div>';
+  } else {
+    ctxHTML += '<div class="cp-ctx-row"><span class="key">Queries</span><span class="val">0 yet</span></div>'
+      + '<div class="cp-ctx-row"><span class="key">Model</span><span class="val">' + copilotEscapeHTML(modelName) + '</span></div>';
+  }
+  ctxHTML += '</div>';
+
+  document.getElementById('copilotContext').innerHTML = ctxHTML;
+  document.getElementById('copilotCtxMeta').textContent = (3 + (connected.length ? 1 : 0)) + ' sections · live';
+
+  // Footer
+  var orgId = window.CastfordData.getOrgId() || '—';
+  var orgIdShort = orgId === '—' ? '—' : orgId.slice(0, 8) + '…';
+  var convCount = conversation ? '1 active thread' : '0 threads yet';
+  var integCount = connected.length + ' integration' + (connected.length === 1 ? '' : 's') + ' connected';
+  document.getElementById('copilotFooterMeta').textContent =
+    'Source: copilot_conversations + ai_query_log + gl_* + integrations · ' + convCount + ' · ' + integCount + ' · org ' + orgIdShort;
+}
+
+// ─── demo render ───────────────────────────────────────────────────────
+
+function renderCopilotDemo(banner){
+  document.getElementById('copilotEyebrow').textContent = 'AI · DEMO DATA';
+
+  document.getElementById('copilotChatMeta').textContent = 'Sample thread · 4 messages';
+  document.getElementById('copilotChat').innerHTML = ''
+    + '<div class="cp-msg user">'
+    +   '<div class="cp-avatar">YOU</div>'
+    +   '<div class="cp-bubble">Why did COGS spike in March compared to plan?</div>'
+    + '</div>'
+    + '<div class="cp-msg ai">'
+    +   '<div class="cp-avatar">AI</div>'
+    +   '<div class="cp-bubble">In a real run, this is where Castford would explain the variance using your GL data. Connect a workspace and ask a question to see live answers grounded in your numbers.</div>'
+    + '</div>'
+    + '<div class="cp-msg user">'
+    +   '<div class="cp-avatar">YOU</div>'
+    +   '<div class="cp-bubble">What\'s our runway?</div>'
+    + '</div>'
+    + '<div class="cp-msg ai">'
+    +   '<div class="cp-avatar">AI</div>'
+    +   '<div class="cp-bubble">Sample answer: with the cash position and burn rate from your GL, Castford would compute runway in months and show the underlying assumptions. This is illustrative only.</div>'
+    + '</div>';
+
+  document.getElementById('copilotContext').innerHTML = ''
+    + '<div class="cp-ctx-section">'
+    +   '<div class="cp-ctx-label">CURRENT KPIs (sample)</div>'
+    +   '<div class="cp-ctx-row"><span class="key">Revenue (YTD)</span><span class="val">$55.0M</span></div>'
+    +   '<div class="cp-ctx-row"><span class="key">Gross margin</span><span class="val">84.9%</span></div>'
+    +   '<div class="cp-ctx-row"><span class="key">Net income</span><span class="val">$5.1M</span></div>'
+    +   '<div class="cp-ctx-row"><span class="key">Runway</span><span class="val">24 mo</span></div>'
+    + '</div>'
+    + '<div class="cp-ctx-section">'
+    +   '<div class="cp-ctx-label">DATA SCOPE (sample)</div>'
+    +   '<div class="cp-ctx-row"><span class="key">GL accounts</span><span class="val">18</span></div>'
+    +   '<div class="cp-ctx-row"><span class="key">Transactions in scope</span><span class="val">3,142</span></div>'
+    +   '<div class="cp-ctx-row"><span class="key">Period</span><span class="val">FY2026</span></div>'
+    +   '<div class="cp-ctx-row"><span class="key">Last sync</span><span class="val">53s ago</span></div>'
+    + '</div>'
+    + '<div class="cp-ctx-section">'
+    +   '<div class="cp-ctx-label">CONNECTED SOURCES (sample)</div>'
+    +   '<div class="cp-ctx-source"><span>Sample GL source</span><span class="live">illustrative</span></div>'
+    +   '<div class="cp-ctx-source"><span>Sample bank feed</span><span class="live">illustrative</span></div>'
+    +   '<div class="cp-ctx-source"><span>Sample payments</span><span class="live">illustrative</span></div>'
+    + '</div>'
+    + '<div class="cp-ctx-section">'
+    +   '<div class="cp-ctx-label">SESSION USAGE (sample)</div>'
+    +   '<div class="cp-ctx-row"><span class="key">Tokens used</span><span class="val">12,840</span></div>'
+    +   '<div class="cp-ctx-row"><span class="key">Model</span><span class="val">claude-opus-4.7</span></div>'
+    +   '<div class="cp-ctx-row"><span class="key">Avg response</span><span class="val">1.8s</span></div>'
+    + '</div>';
+
+  document.getElementById('copilotCtxMeta').textContent = '4 sample sections';
+  document.getElementById('copilotFooterMeta').textContent = (banner || 'Demo data') + ' · Open a conversation in copilot_conversations to see live data';
 }
 
 // ── P&L STATEMENT ──────────────────────────────────────────

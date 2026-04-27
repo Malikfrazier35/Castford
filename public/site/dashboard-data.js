@@ -439,6 +439,77 @@ window.CastfordData = (function() {
     return data || [];
   }
 
+  // copilot_conversations — most recent non-archived for org
+  async function getLatestCopilotConversation() {
+    if (!sb || demoMode || !orgId) return null;
+    var { data } = await sb
+      .from('copilot_conversations')
+      .select('id, title, messages, model, token_count, is_archived, created_at, updated_at')
+      .eq('org_id', orgId)
+      .eq('is_archived', false)
+      .order('updated_at', { ascending: false })
+      .limit(1);
+    return (data && data[0]) || null;
+  }
+
+  // ai_query_log — aggregate session usage for the org
+  async function getCopilotUsageSummary() {
+    if (!sb || demoMode || !orgId) {
+      return { totalTokens: 0, totalCostCents: 0, queryCount: 0, latestModel: null, latestAt: null };
+    }
+    var { data } = await sb
+      .from('ai_query_log')
+      .select('tokens_used, cost_cents, model, created_at')
+      .eq('org_id', orgId)
+      .order('created_at', { ascending: false })
+      .limit(200);
+    var rows = data || [];
+    var totalTokens = 0;
+    var totalCostCents = 0;
+    rows.forEach(function(r){
+      totalTokens += (r.tokens_used || 0);
+      totalCostCents += parseFloat(r.cost_cents || 0);
+    });
+    return {
+      totalTokens: totalTokens,
+      totalCostCents: totalCostCents,
+      queryCount: rows.length,
+      latestModel: rows.length ? rows[0].model : null,
+      latestAt: rows.length ? rows[0].created_at : null
+    };
+  }
+
+  // gl_accounts + gl_transactions counts for "data scope" panel
+  async function getCopilotDataScope() {
+    if (!sb || demoMode || !orgId) {
+      return { glAccountsCount: 0, txCount: 0, latestTxAt: null, period: 'FY2026' };
+    }
+    var accountsResp = await sb
+      .from('gl_accounts')
+      .select('id', { count: 'exact', head: true })
+      .eq('org_id', orgId);
+    var txCountResp = await sb
+      .from('gl_transactions')
+      .select('id', { count: 'exact', head: true })
+      .eq('org_id', orgId);
+    var latestTxResp = await sb
+      .from('gl_transactions')
+      .select('transaction_date')
+      .eq('org_id', orgId)
+      .order('transaction_date', { ascending: false })
+      .limit(1);
+    var latestAt = null;
+    if (latestTxResp.data && latestTxResp.data[0]) {
+      latestAt = latestTxResp.data[0].transaction_date;
+    }
+    return {
+      glAccountsCount: accountsResp.count || 0,
+      txCount: txCountResp.count || 0,
+      latestTxAt: latestAt,
+      period: 'FY' + new Date().getFullYear()
+    };
+  }
+
   // ==========================================
   // API surface
   // ==========================================
@@ -473,6 +544,10 @@ window.CastfordData = (function() {
     getClosePeriods: getClosePeriods,
     getCurrentClosePeriod: getCurrentClosePeriod,
     getCloseTasks: getCloseTasks,
+    // Phase 2B-3
+    getLatestCopilotConversation: getLatestCopilotConversation,
+    getCopilotUsageSummary: getCopilotUsageSummary,
+    getCopilotDataScope: getCopilotDataScope,
     // WRITE
     createBudget: createBudget,
     updateBudget: updateBudget,
