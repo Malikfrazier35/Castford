@@ -79,6 +79,25 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;bottom:0;background:
 .btn-outline{background:transparent;border:1px solid var(--border);color:var(--text-2)}
 .btn-outline:hover{border-color:var(--text-3);color:var(--text)}
 
+/* ===== PRO PACKS SECTION ===== */
+.packs-card{margin-bottom:20px}
+.packs-empty{padding:32px 24px;text-align:center;background:var(--surface-2);border:1px dashed var(--border);border-radius:var(--radius-sm)}
+.packs-empty-icon{font-size:24px;margin-bottom:8px;opacity:0.4}
+.packs-empty-title{font-size:14px;font-weight:700;color:var(--text);margin-bottom:4px}
+.packs-empty-sub{font-size:13px;color:var(--text-2);margin-bottom:16px;line-height:1.5}
+.pack-row{display:flex;align-items:center;justify-content:space-between;padding:16px 0;border-bottom:1px solid var(--border);gap:16px}
+.pack-row:last-child{border-bottom:none}
+.pack-row-meta{flex:1;min-width:0}
+.pack-row-name{font-size:14px;font-weight:700;color:var(--text);margin-bottom:2px;display:flex;align-items:center;gap:8px}
+.pack-row-status{font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;text-transform:uppercase;letter-spacing:.06em}
+.pack-row-status.active{background:var(--green-soft);color:var(--green-text)}
+.pack-row-status.trialing{background:var(--amber-soft);color:var(--amber-text)}
+.pack-row-status.past_due{background:var(--rose-soft);color:var(--rose-text)}
+.pack-row-status.canceled{background:var(--surface-3);color:var(--text-3)}
+.pack-row-detail{font-size:12px;color:var(--text-2)}
+.pack-row-detail .mono{font-family:'JetBrains Mono',monospace;font-size:11px}
+.pack-row-actions{display:flex;gap:8px;flex-shrink:0}
+
 .invoice-row{display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-bottom:1px solid var(--border)}
 .invoice-row:last-child{border-bottom:none}
 .invoice-date{font-size:13px;font-weight:600}
@@ -143,7 +162,7 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;bottom:0;background:
         </div>
       </div>
       <div style="display:flex;gap:8px" id="plan-actions">
-        <button class="btn btn-outline" onclick="manageBilling()">Manage Payment</button>
+        <button class="btn btn-outline" onclick="manageBilling(this)">Manage Payment</button>
         <button class="btn btn-primary" onclick="showUpgrade()">Upgrade Plan</button>
       </div>
     </div>
@@ -170,6 +189,16 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;bottom:0;background:
         <div class="usage-bar"><div class="usage-fill ok" id="entity-fill" style="width:50%"></div></div>
         <div class="usage-count" id="entity-count">— <span>/ —</span></div>
       </div>
+    </div>
+  </div>
+
+  <!-- Pro Packs (L3 add-ons) -->
+  <div class="card packs-card" id="packs-card">
+    <div class="card-title">Pro Packs</div>
+    <div class="card-sub">Role-based add-ons for CFO, Controller, FP&amp;A, and CEO. <a href="/packs" style="color:var(--blue);font-weight:600">Browse packs →</a></div>
+    <div id="packs-list">
+      <div class="skeleton" style="height:48px;margin-bottom:8px"></div>
+      <div class="skeleton" style="height:48px"></div>
     </div>
   </div>
 
@@ -205,6 +234,7 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;bottom:0;background:
 </div>
 
 <script src="/site/castford-energy.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 const SUPABASE_URL = 'https://crecesswagluelvkesul.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNyZWNlc3N3YWdsdWVsdmtlc3VsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM4ODkwNjIsImV4cCI6MjA4OTQ2NTA2Mn0.bR9I7_-eFbJzMBncm5Azgj7CfJWlTMXBpjz_vYfX7_Q';
@@ -305,7 +335,60 @@ function showUpgrade() {
 }
 
 function selectPlan(plan) { window.open('https://castford.com/site/pricing.html', '_blank'); }
-function manageBilling() { alert('Stripe Customer Portal coming soon. Contact malik@castford.com for billing changes.'); }
+async function manageBilling(btn) {
+  const token = localStorage.getItem('sb_access_token');
+  if (!token) {
+    showToast('Please sign in to manage billing.', 'error');
+    return;
+  }
+  if (btn) { btn.disabled = true; btn.dataset.origLabel = btn.textContent; btn.textContent = 'Opening portal…'; }
+  try {
+    const res = await fetch(SUPABASE_URL + '/functions/v1/billing-portal', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token, 'apikey': SUPABASE_KEY },
+      body: JSON.stringify({
+        action: 'create_portal',
+        return_url: window.location.origin + '/site/dashboard/billing.html'
+      })
+    });
+    const body = await res.json().catch(() => ({}));
+    if (res.ok && body.url) {
+      window.location.href = body.url;
+      return;
+    }
+    if (res.status === 400 && body.redirect) {
+      // No Stripe customer linked yet — send them to pricing
+      showToast('No active subscription yet. Redirecting to pricing.', 'error');
+      setTimeout(() => { window.location.href = body.redirect; }, 1200);
+      return;
+    }
+    if (res.status === 401) {
+      showToast('Session expired — please sign in again.', 'error');
+      return;
+    }
+    showToast(body.error || 'Could not open billing portal. Please try again.', 'error');
+  } catch (err) {
+    console.warn('manageBilling error', err);
+    showToast('Network error — please retry.', 'error');
+  } finally {
+    if (btn) { btn.disabled = false; btn.textContent = btn.dataset.origLabel || 'Manage Payment'; }
+  }
+}
+function showToast(msg, kind) {
+  let t = document.getElementById('billing-toast');
+  if (!t) {
+    t = document.createElement('div');
+    t.id = 'billing-toast';
+    t.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translate(-50%,80px);padding:14px 24px;font:600 13px Manrope,sans-serif;color:#fff;z-index:1000;opacity:0;transition:all .3s;border-radius:10px;max-width:520px;text-align:center;line-height:1.5';
+    document.body.appendChild(t);
+  }
+  t.textContent = msg;
+  t.style.background = kind === 'error' ? '#dc2626' : '#059669';
+  t.style.opacity = '1';
+  t.style.transform = 'translate(-50%,0)';
+  clearTimeout(t._timer);
+  t._timer = setTimeout(() => { t.style.opacity = '0'; t.style.transform = 'translate(-50%,80px)'; }, 4500);
+}
 function toggleApiKey() {
   const input = document.getElementById('api-key-display');
   if (input.type === 'text' && input.value !== '••••••••••••••••') { input.value = '••••••••••••••••'; input.type = 'text'; }
@@ -317,7 +400,79 @@ function regenerateApiKey() { alert('API key regeneration coming soon.'); }
 document.getElementById('invoices-list').innerHTML =
   '<div style="text-align:center;padding:24px;color:var(--text-3);font-size:13px">No invoices yet. Invoices will appear here after your first payment.</div>';
 
+const PACK_LABELS = {
+  cfo: 'CFO Pack',
+  controller: 'Controller Pack',
+  fp_a: 'FP&A Pack',
+  ceo: 'CEO Pack'
+};
+
+async function loadProPacks() {
+  const target = document.getElementById('packs-list');
+  if (!target) return;
+  const token = localStorage.getItem('sb_access_token');
+  if (!token) {
+    target.innerHTML = '<div style="text-align:center;padding:16px;color:var(--text-3);font-size:13px">Sign in to view your pro packs.</div>';
+    return;
+  }
+  if (!window.supabase || !window.supabase.createClient) {
+    target.innerHTML = '<div style="text-align:center;padding:16px;color:var(--text-3);font-size:13px">Could not load packs (SDK unavailable).</div>';
+    return;
+  }
+  try {
+    const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
+      global: { headers: { Authorization: 'Bearer ' + token } }
+    });
+    const { data, error } = await sb
+      .from('org_pack_purchases')
+      .select('pack_slug, status, billing_interval, current_period_end, canceled_at, cancel_at_period_end')
+      .order('pack_slug', { ascending: true });
+
+    if (error) throw error;
+
+    const rows = (data || []).filter(r => ['active', 'trialing', 'past_due', 'canceled'].includes(r.status));
+
+    if (rows.length === 0) {
+      target.innerHTML =
+        '<div class="packs-empty">' +
+          '<div class="packs-empty-icon">📦</div>' +
+          '<div class="packs-empty-title">No pro packs yet</div>' +
+          '<div class="packs-empty-sub">Add a role-based pack to unlock CFO, Controller, FP&amp;A, or CEO surfaces.</div>' +
+          '<a href="/packs" class="btn btn-primary" style="display:inline-block;text-decoration:none">Browse pro packs</a>' +
+        '</div>';
+      return;
+    }
+
+    target.innerHTML = rows.map(r => {
+      const label = PACK_LABELS[r.pack_slug] || r.pack_slug;
+      const interval = r.billing_interval === 'annual' ? 'Annual' : 'Monthly';
+      const status = r.status;
+      let detail = '';
+      if (r.cancel_at_period_end && r.current_period_end) {
+        detail = 'Cancels on <span class="mono">' + new Date(r.current_period_end).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) + '</span>';
+      } else if (r.current_period_end) {
+        detail = (interval) + ' · renews <span class="mono">' + new Date(r.current_period_end).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) + '</span>';
+      } else {
+        detail = interval;
+      }
+      return '<div class="pack-row">' +
+        '<div class="pack-row-meta">' +
+          '<div class="pack-row-name">' + label + ' <span class="pack-row-status ' + status + '">' + status.replace('_', ' ') + '</span></div>' +
+          '<div class="pack-row-detail">' + detail + '</div>' +
+        '</div>' +
+        '<div class="pack-row-actions">' +
+          '<button class="btn btn-outline" onclick="manageBilling(this)">Manage</button>' +
+        '</div>' +
+      '</div>';
+    }).join('');
+  } catch (err) {
+    console.warn('loadProPacks error', err);
+    target.innerHTML = '<div style="text-align:center;padding:16px;color:var(--text-3);font-size:13px">Could not load pro packs. Try refreshing.</div>';
+  }
+}
+
 loadBilling();
+loadProPacks();
 </script>
 <script src="/site/cf-app-shell.js" defer></script></body>
 </html>

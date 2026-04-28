@@ -151,6 +151,64 @@
     emailEl.textContent = email || 'Signed in';
     if (orgEl && orgName) orgEl.textContent = '· ' + orgName;
     badge.classList.add('show');
+
+    var manageBtn = document.getElementById('authManage');
+    if (manageBtn) {
+      manageBtn.addEventListener('click', openBillingPortal);
+    }
+  }
+
+  async function openBillingPortal() {
+    if (!currentSession) {
+      toast('Please sign in to manage billing.', 'error');
+      return;
+    }
+    var btn = document.getElementById('authManage');
+    var origLabel = btn ? btn.textContent : null;
+    if (btn) {
+      btn.disabled = true;
+      btn.textContent = 'Opening…';
+    }
+    try {
+      var r = await fetch(SB_URL + '/functions/v1/billing-portal', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: 'Bearer ' + currentSession.access_token,
+          apikey: SB_ANON
+        },
+        body: JSON.stringify({
+          action: 'create_portal',
+          return_url: window.location.origin + '/packs'
+        })
+      });
+      var body = null;
+      try {
+        body = await r.json();
+      } catch (e) {}
+
+      if (r.ok && body && body.url) {
+        window.location.href = body.url;
+        return;
+      }
+      if (r.status === 400 && body && body.redirect) {
+        toast('No active subscription yet — start one from the pricing page.', 'error');
+        return;
+      }
+      if (r.status === 401) {
+        toast('Session expired — please sign in again.', 'error');
+        return;
+      }
+      toast((body && body.error) || 'Could not open billing portal.', 'error');
+    } catch (err) {
+      console.warn('openBillingPortal error', err);
+      toast('Network error — please retry.', 'error');
+    } finally {
+      if (btn) {
+        btn.disabled = false;
+        if (origLabel) btn.textContent = origLabel;
+      }
+    }
   }
 
   async function init() {
