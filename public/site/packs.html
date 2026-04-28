@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="day">
+<head>
+<script>((d)=>{const t=localStorage.getItem("cf-theme");if(t)d.dataset.theme=t})(document.documentElement)</script>
+<style>.theme-opt{background:transparent}html[data-theme="day"] .theme-opt[data-theme-set="day"],html[data-theme="night"] .theme-opt[data-theme-set="night"]{background:var(--s1);color:var(--ink)}html[data-theme="night"] .theme-opt[data-theme-set="night"]{background:rgba(123,158,224,0.08);color:#7B9EE0;box-shadow:inset 0 0 0 1px rgba(123,158,224,0.20)}html[data-theme="day"] .theme-opt[data-theme-set="day"] svg,html[data-theme="night"] .theme-opt[data-theme-set="night"] svg{opacity:1;transform:scale(1.08)}</style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Castford Pro Packs | Role-Based Add-Ons for CFO, Controller, FP&A & CEO</title>
+<meta name="description" content="Castford Pro Packs: specialized executive surfaces for CFO, Controller, FP&A Lead, and CEO. $999/month or $9,990/year per role. Each pack adds dedicated workflows, KPIs, and AI copilot context.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://castford.com/packs">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://castford.com/packs">
+<meta property="og:title" content="Castford Pro Packs — Role-Based Executive Surfaces">
+<meta property="og:description" content="Four role-built dashboards: CFO, Controller, FP&A Lead, CEO. $999/month each. Available on the Business plan.">
+<meta property="og:site_name" content="Castford">
+<meta property="og:image" content="https://castford.com/opengraph-image">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Castford Pro Packs — Role-Based Executive Surfaces">
+<meta name="twitter:description" content="Four role-built dashboards. $999/month each. Available on Business plan.">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"Product","name":"Castford Pro Packs","description":"Role-based executive add-ons for the Castford FP&A platform","brand":{"@type":"Brand","name":"Castford"},"offers":{"@type":"AggregateOffer","priceCurrency":"USD","lowPrice":"999","highPrice":"9990","offerCount":"4","offers":[{"@type":"Offer","name":"CFO Pack","price":"999","priceCurrency":"USD","url":"https://castford.com/packs"},{"@type":"Offer","name":"Controller Pack","price":"999","priceCurrency":"USD","url":"https://castford.com/packs"},{"@type":"Offer","name":"FP&A Pack","price":"999","priceCurrency":"USD","url":"https://castford.com/packs"},{"@type":"Offer","name":"CEO Pack","price":"999","priceCurrency":"USD","url":"https://castford.com/packs"}]}}
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=Instrument+Sans:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--d:'Instrument Sans',-apple-system,sans-serif;--b:'DM Sans',-apple-system,sans-serif;--m:'Geist Mono','SF Mono',monospace;--ease:cubic-bezier(0.4,0,0.2,1);--max:1200px}
+[data-theme="day"]{--bg:#F8F9FC;--s1:#FFFFFF;--s2:#F1F3F9;--ink:#1A2238;--t1:#2D3548;--t2:#5A6B8A;--t3:#8591A8;--bdr:rgba(91,127,204,0.14);--prime:#5B7FCC;--prime2:#7B9EE0;--prime-bg:rgba(91,127,204,0.06);--prime-bdr:rgba(91,127,204,0.18);--accent:#C4884A;--accent-bg:rgba(196,136,74,0.08);--accent-bdr:rgba(196,136,74,0.22);--accent2:#A5702F;--logo-outer-o:0.08;--logo-mid-o:0.18;--logo-main:#5B7FCC;--logo-inner:#5B7FCC;--logo-core:#C4884A;--logo-inner-fill:0.06;--nav-bg:rgba(248,249,252,0.85);--nav-text:var(--t2);--nav-text-h:var(--ink);--nav-bdr:var(--bdr);--toggle-bg:var(--s2);--card-shadow:0 1px 3px rgba(91,127,204,0.05),0 4px 14px rgba(91,127,204,0.04);--card-shadow-h:0 8px 24px rgba(91,127,204,0.10),0 16px 48px rgba(91,127,204,0.08)}
+[data-theme="night"]{--bg:#0A1528;--s1:#0F1D38;--s2:#152342;--ink:#E6EBF5;--t1:#C7D0E0;--t2:#8896B0;--t3:#5A6A85;--bdr:rgba(123,158,224,0.15);--prime:#7B9EE0;--prime2:#9BB8EC;--prime-bg:rgba(123,158,224,0.08);--prime-bdr:rgba(123,158,224,0.20);--accent:#DAA160;--accent-bg:rgba(218,161,96,0.10);--accent-bdr:rgba(218,161,96,0.24);--accent2:#C4884A;--logo-outer-o:0.10;--logo-mid-o:0.20;--logo-main:#7B9EE0;--logo-inner:#9BB8EC;--logo-core:#DAA160;--logo-inner-fill:0.08;--nav-bg:rgba(10,21,40,0.85);--nav-text:var(--t2);--nav-text-h:var(--ink);--nav-bdr:var(--bdr);--toggle-bg:var(--s2);--card-shadow:0 1px 3px rgba(0,0,0,0.30),0 6px 20px rgba(0,0,0,0.22);--card-shadow-h:0 12px 32px rgba(0,0,0,0.40),0 24px 64px rgba(0,0,0,0.30)}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--b);background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased;line-height:1.6;overflow-x:hidden;transition:background .4s var(--ease),color .4s var(--ease)}
+a{color:inherit;text-decoration:none}
+button{font-family:inherit}
+
+.w{max-width:var(--max);margin:0 auto;padding:0 32px}
+
+/* ===== NAV ===== */
+nav{position:sticky;top:0;z-index:100;background:var(--nav-bg);backdrop-filter:blur(20px) saturate(1.3);-webkit-backdrop-filter:blur(20px) saturate(1.3);border-bottom:1.5px solid var(--nav-bdr);transition:background .4s,border .4s}
+.ni{max-width:var(--max);margin:0 auto;padding:14px 32px;display:flex;align-items:center;justify-content:space-between;gap:24px}
+.nl{display:flex;align-items:center;gap:10px}
+.nn{font-family:var(--d);font-size:17px;font-weight:600;letter-spacing:-0.01em;color:var(--ink)}
+.nk{display:flex;gap:4px}
+.nk a{font-size:13.5px;font-weight:500;color:var(--nav-text);padding:7px 14px;border-radius:0;transition:all .2s}
+.nk a:hover{color:var(--nav-text-h);background:var(--s2)}
+.nr{display:flex;align-items:center;gap:10px}
+.ns{font-size:13.5px;color:var(--t2);padding:7px 14px;font-weight:500}
+.ns:hover{color:var(--ink)}
+.nc{font-family:var(--b);font-size:13px;font-weight:600;background:var(--prime);color:#fff;padding:9px 22px;border-radius:0;border:none;cursor:pointer;letter-spacing:0.2px;transition:all .2s var(--ease)}
+.nc:hover{opacity:0.92;transform:translateY(-1px)}
+.theme-toggle{display:inline-flex;align-items:center;background:var(--toggle-bg);border:1px solid var(--bdr);border-radius:0;padding:3px;gap:2px}
+.theme-opt{display:inline-flex;align-items:center;gap:5px;padding:5px 10px;font-family:var(--b);font-size:11px;font-weight:600;color:var(--t3);border:none;border-radius:0;cursor:pointer;transition:all .2s var(--ease);letter-spacing:0.02em}
+.theme-opt svg{opacity:0.7;transition:all .2s var(--ease)}
+.theme-opt:hover{color:var(--ink)}
+
+/* ===== HERO ===== */
+.hero{position:relative;padding:88px 32px 48px;overflow:hidden;background:linear-gradient(180deg,var(--prime-bg) 0%,var(--bg) 100%)}
+.hero-inner{max-width:760px;margin:0 auto;text-align:center;position:relative;z-index:2}
+.eyebrow{display:inline-flex;align-items:center;gap:10px;font-family:var(--m);font-size:11px;font-weight:600;color:var(--prime);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:18px;padding:6px 14px;background:var(--prime-bg);border:1px solid var(--prime-bdr);border-radius:999px}
+.eyebrow::before{content:"";width:6px;height:6px;background:var(--accent);border-radius:50%}
+.hero h1{font-family:var(--d);font-size:clamp(36px,5vw,52px);font-weight:600;letter-spacing:-0.035em;line-height:1.05;margin-bottom:18px;color:var(--ink)}
+.hero h1 .gold{color:var(--accent)}
+.hero p{font-size:17px;color:var(--t2);max-width:560px;margin:0 auto 28px;line-height:1.55}
+
+/* Availability badge */
+.avail{display:inline-flex;align-items:center;gap:10px;padding:10px 18px;background:var(--s1);border:1px solid var(--bdr);font-size:12.5px;color:var(--t2);font-weight:500}
+.avail strong{color:var(--ink);font-weight:600}
+.avail .dot{width:7px;height:7px;background:var(--accent);border-radius:50%;flex-shrink:0}
+
+/* ===== BILLING TOGGLE ===== */
+.billing{display:flex;justify-content:center;padding:32px 32px 0;background:var(--bg)}
+.bt{display:inline-flex;background:var(--s1);border:1px solid var(--bdr);padding:4px;gap:0;position:relative}
+.bt button{padding:10px 28px;font-family:var(--b);font-size:13.5px;font-weight:600;color:var(--t2);background:transparent;border:none;cursor:pointer;transition:all .2s var(--ease);letter-spacing:0.01em;position:relative;z-index:2}
+.bt button.active{background:var(--ink);color:#fff}
+.bt button .save{display:inline-block;margin-left:6px;font-family:var(--m);font-size:10px;font-weight:600;color:var(--accent);letter-spacing:0.04em;text-transform:uppercase}
+.bt button.active .save{color:var(--accent)}
+
+/* ===== PACK GRID ===== */
+.packs-section{max-width:var(--max);margin:0 auto;padding:36px 32px 80px}
+.pack-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:20px}
+
+.pack{position:relative;background:var(--s1);border:1px solid var(--bdr);padding:32px 28px 28px;display:flex;flex-direction:column;transition:all .3s var(--ease);box-shadow:var(--card-shadow)}
+.pack:hover{transform:translateY(-3px);box-shadow:var(--card-shadow-h);border-color:var(--prime-bdr)}
+
+.pack.featured{border-color:var(--accent-bdr)}
+.pack.featured::before{content:"MOST CHOSEN";position:absolute;top:-1px;right:24px;background:var(--accent);color:#fff;font-family:var(--m);font-size:10px;font-weight:600;letter-spacing:0.08em;padding:5px 12px}
+
+.pack-head{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:6px;gap:16px}
+.pack-id{font-family:var(--m);font-size:11px;font-weight:600;color:var(--t3);letter-spacing:0.1em;text-transform:uppercase}
+.pack-icon{width:40px;height:40px;display:flex;align-items:center;justify-content:center;background:var(--prime-bg);border:1px solid var(--prime-bdr);color:var(--prime);flex-shrink:0}
+.pack-icon svg{width:20px;height:20px}
+
+.pack-title{font-family:var(--d);font-size:24px;font-weight:600;letter-spacing:-0.02em;color:var(--ink);margin:8px 0 6px}
+.pack-tag{font-size:13.5px;color:var(--t2);line-height:1.5;margin-bottom:22px}
+
+.pack-price{display:flex;align-items:baseline;gap:4px;padding-bottom:20px;border-bottom:1px solid var(--bdr);margin-bottom:20px}
+.pack-price .dollar{font-family:var(--m);font-size:18px;font-weight:600;color:var(--t1);align-self:flex-start;margin-top:6px}
+.pack-price .amount{font-family:var(--m);font-size:42px;font-weight:600;letter-spacing:-0.03em;line-height:1;color:var(--ink)}
+.pack-price .per{font-size:13px;color:var(--t3);font-weight:500;margin-left:4px}
+.pack-price-annual{display:none}
+.pack-price-annual .amount-sm{font-family:var(--m);font-size:13px;color:var(--t3);font-weight:500;margin-top:4px}
+.pack[data-billing="annual"] .pack-price-monthly{display:none}
+.pack[data-billing="annual"] .pack-price-annual{display:flex;flex-direction:column;align-items:flex-start;width:100%}
+.pack[data-billing="annual"] .pack-price-annual .amount-row{display:flex;align-items:baseline;gap:4px}
+
+/* Features list */
+.feats{list-style:none;display:flex;flex-direction:column;gap:11px;margin-bottom:24px;flex:1}
+.feats li{display:flex;align-items:flex-start;gap:10px;font-size:13.5px;color:var(--t1);line-height:1.5}
+.feats li svg{width:14px;height:14px;flex-shrink:0;margin-top:5px;color:var(--accent)}
+.feats li strong{color:var(--ink);font-weight:600}
+
+/* CTA */
+.pack-cta{display:flex;flex-direction:column;gap:8px}
+.pack-btn{width:100%;padding:13px 18px;background:var(--ink);color:#fff;font-family:var(--b);font-size:14px;font-weight:600;border:none;border-radius:0;cursor:pointer;transition:all .2s var(--ease);letter-spacing:0.01em;display:flex;align-items:center;justify-content:center;gap:8px}
+.pack-btn:hover:not(:disabled){background:var(--prime);transform:translateY(-1px)}
+.pack-btn:disabled{opacity:0.5;cursor:not-allowed}
+.pack-btn .spinner{display:none;width:14px;height:14px;border:2px solid rgba(255,255,255,0.3);border-top-color:#fff;border-radius:50%;animation:spin 0.7s linear infinite}
+.pack-btn.loading .spinner{display:inline-block}
+.pack-btn.loading .label{opacity:0.7}
+@keyframes spin{to{transform:rotate(360deg)}}
+.pack.featured .pack-btn{background:var(--accent)}
+.pack.featured .pack-btn:hover:not(:disabled){background:var(--accent2)}
+
+.pack-foot{font-family:var(--m);font-size:10.5px;color:var(--t3);letter-spacing:0.04em;text-align:center;text-transform:uppercase}
+
+/* ===== HOW IT WORKS ===== */
+.how{background:var(--s2);padding:72px 32px;border-top:1px solid var(--bdr);border-bottom:1px solid var(--bdr)}
+.how-inner{max-width:var(--max);margin:0 auto}
+.so{text-align:center;margin-bottom:48px}
+.so-eyebrow{display:inline-flex;align-items:center;gap:14px;font-family:var(--m);font-size:11px;font-weight:600;color:var(--prime);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:14px}
+.so-eyebrow::before,.so-eyebrow::after{content:"";width:18px;height:1px;background:var(--prime-bdr)}
+.so h2{font-family:var(--d);font-size:clamp(28px,3.6vw,38px);font-weight:600;letter-spacing:-0.025em;line-height:1.15;color:var(--ink)}
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border:1px solid var(--bdr);background:var(--s1)}
+.step{padding:28px;border-right:1px solid var(--bdr);position:relative}
+.step:last-child{border-right:none}
+.step-num{font-family:var(--m);font-size:11px;font-weight:600;color:var(--accent);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:12px}
+.step h3{font-family:var(--d);font-size:18px;font-weight:600;color:var(--ink);margin-bottom:8px;letter-spacing:-0.01em}
+.step p{font-size:13.5px;color:var(--t2);line-height:1.55}
+
+/* ===== FAQ ===== */
+.faq-section{padding:80px 32px;background:var(--bg)}
+.faq-inner{max-width:780px;margin:0 auto}
+.faq-list{margin-top:40px;border-top:1px solid var(--bdr)}
+.faq-item{border-bottom:1px solid var(--bdr);padding:22px 0}
+.faq-q{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;cursor:pointer;font-family:var(--d);font-size:16.5px;font-weight:600;color:var(--ink);letter-spacing:-0.01em}
+.faq-q::after{content:"+";font-family:var(--m);font-size:20px;color:var(--accent);font-weight:400;flex-shrink:0;transition:transform .25s var(--ease);line-height:1}
+.faq-item.open .faq-q::after{transform:rotate(45deg)}
+.faq-a{max-height:0;overflow:hidden;transition:max-height .3s var(--ease),padding .3s var(--ease);font-size:14.5px;color:var(--t2);line-height:1.6}
+.faq-item.open .faq-a{max-height:300px;padding-top:14px}
+
+/* ===== CTA ===== */
+.cta{padding:80px 32px;background:linear-gradient(180deg,var(--bg) 0%,var(--prime-bg) 100%)}
+.cta-card{max-width:880px;margin:0 auto;background:var(--ink);color:#fff;padding:56px 48px;text-align:center;position:relative;overflow:hidden}
+.cta-card::before{content:"";position:absolute;top:-100px;right:-100px;width:280px;height:280px;background:radial-gradient(circle,rgba(196,136,74,0.30) 0%,rgba(91,127,204,0.15) 40%,transparent 70%);pointer-events:none}
+.cta-card h2{font-family:var(--d);font-size:clamp(26px,3.4vw,34px);font-weight:600;letter-spacing:-0.025em;line-height:1.2;margin-bottom:14px;position:relative}
+.cta-card p{font-size:15.5px;color:rgba(255,255,255,0.72);margin-bottom:28px;max-width:520px;margin-left:auto;margin-right:auto;position:relative;line-height:1.55}
+.cta-btn{display:inline-block;padding:14px 32px;background:var(--accent);color:#fff;font-family:var(--b);font-size:14px;font-weight:600;border:none;border-radius:0;cursor:pointer;transition:all .2s var(--ease);position:relative;text-decoration:none;letter-spacing:0.02em}
+.cta-btn:hover{background:var(--accent2);transform:translateY(-1px)}
+
+/* ===== FOOTER ===== */
+footer{background:var(--s1);border-top:1.5px solid var(--bdr);padding:64px 0 32px;transition:background .4s}
+.fg{display:grid;grid-template-columns:1.6fr repeat(4,1fr);gap:48px;margin-bottom:40px}
+.fb p{font-size:13px;color:var(--t2);max-width:280px;margin-top:14px;line-height:1.6}
+.fc h5{font-family:var(--m);font-size:11px;font-weight:600;color:var(--t1);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid var(--bdr);position:relative}
+.fc h5::after{content:"";position:absolute;bottom:-1px;left:0;width:24px;height:1px;background:var(--prime)}
+.fc{display:flex;flex-direction:column;gap:9px}
+.fc a{font-size:13px;color:var(--t2);transition:all .2s var(--ease);padding:1px 0}
+.fc a:hover{color:var(--ink);transform:translateX(3px)}
+.fbot{padding-top:24px;border-top:1px solid var(--bdr);display:flex;justify-content:space-between;align-items:center;font-size:12px;color:var(--t3);font-family:var(--b)}
+
+/* ===== TOAST (status messages) ===== */
+.toast{position:fixed;bottom:24px;left:50%;transform:translate(-50%,80px);background:var(--ink);color:#fff;padding:14px 24px;font-size:13.5px;font-weight:500;z-index:1000;opacity:0;transition:all .3s var(--ease);max-width:520px;text-align:center;line-height:1.5}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+.toast.error{background:#B83040}
+.toast.success{background:#1A7A45}
+
+/* ===== AUTH BADGE ===== */
+.auth-badge{position:fixed;bottom:20px;right:20px;z-index:200;padding:10px 16px;background:var(--ink);color:#fff;font:600 12px var(--b);display:none;align-items:center;gap:8px;box-shadow:0 4px 16px rgba(0,0,0,0.15)}
+.auth-badge.show{display:flex}
+.auth-badge .pulse{width:7px;height:7px;background:#10b981;border-radius:50%;flex-shrink:0;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
+.auth-badge .org{opacity:0.6;font-weight:400}
+
+/* ===== RESPONSIVE ===== */
+@media(max-width:900px){
+  .nk{display:none}
+  .pack-grid{grid-template-columns:1fr}
+  .steps{grid-template-columns:1fr}
+  .step{border-right:none;border-bottom:1px solid var(--bdr)}
+  .step:last-child{border-bottom:none}
+  .fg{grid-template-columns:1fr 1fr;gap:32px}
+  .cta-card{padding:40px 24px}
+}
+@media(max-width:600px){
+  .ni{padding:12px 20px}
+  .hero{padding:64px 20px 32px}
+  .packs-section{padding:24px 20px 60px}
+  .how,.faq-section,.cta{padding:48px 20px}
+  .fg{grid-template-columns:1fr;gap:28px}
+  .fbot{flex-direction:column;gap:12px;text-align:center}
+}
+</style>
+</head>
+<body>
+
+<!-- ===== NAV ===== -->
+<nav><div class="ni">
+  <a href="/" class="nl">
+    <svg class="logo-mark" viewBox="0 0 100 100" width="26" height="26">
+      <path d="M50 5 L90 27 L90 73 L50 95 L10 73 L10 27 Z" fill="none" stroke="var(--logo-main)" stroke-width="0.8" style="opacity:var(--logo-outer-o)"/>
+      <path d="M50 10 L85 30 L85 70 L50 90 L15 70 L15 30 Z" fill="none" stroke="var(--logo-main)" stroke-width="1.2" style="opacity:var(--logo-mid-o)"/>
+      <path d="M50 16 L80 33 L80 67 L50 84 L20 67 L20 33 Z" fill="none" stroke="var(--logo-main)" stroke-width="2.5"/>
+      <path d="M36 47 L50 39 L64 47 L64 57 L50 65 L36 57 Z" fill="var(--logo-inner)" style="opacity:var(--logo-inner-fill)"/>
+      <path d="M36 47 L50 39 L64 47 L64 57 L50 65 L36 57 Z" fill="none" stroke="var(--logo-inner)" stroke-width="1.5"/>
+      <circle cx="50" cy="52" r="3" fill="var(--logo-core)"/>
+    </svg>
+    <span class="nn">Castford</span>
+  </a>
+  <div class="nk"><a href="/solutions">Solutions</a><a href="/integrations">Integrations</a><a href="/security">Trust</a><a href="/pricing">Pricing</a><a href="/resources">Resources</a></div>
+  <div class="nr">
+    <div class="theme-toggle" id="themeToggle" role="tablist" aria-label="Theme">
+      <button class="theme-opt" data-theme-set="day" aria-label="Day theme" type="button">
+        <svg viewBox="0 0 16 16" width="11" height="11" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><circle cx="8" cy="8" r="3" fill="currentColor" stroke="none"/><line x1="8" y1="1.5" x2="8" y2="3"/><line x1="8" y1="13" x2="8" y2="14.5"/><line x1="1.5" y1="8" x2="3" y2="8"/><line x1="13" y1="8" x2="14.5" y2="8"/><line x1="3.3" y1="3.3" x2="4.4" y2="4.4"/><line x1="11.6" y1="11.6" x2="12.7" y2="12.7"/><line x1="3.3" y1="12.7" x2="4.4" y2="11.6"/><line x1="11.6" y1="4.4" x2="12.7" y2="3.3"/></svg>
+        Day
+      </button>
+      <button class="theme-opt" data-theme-set="night" aria-label="Night theme" type="button">
+        <svg viewBox="0 0 16 16" width="11" height="11" fill="currentColor"><path d="M11.5 2.6A6.2 6.2 0 1 0 13.4 11 6.7 6.7 0 0 1 8 5.6c0-1.1.3-2.1.8-3z"/></svg>
+        Night
+      </button>
+    </div>
+    <a href="/login" class="ns">Sign in</a>
+    <button class="nc" onclick="window.location='/pricing'">Get started</button>
+  </div>
+</div></nav>
+
+<!-- ===== HERO ===== -->
+<section class="hero">
+  <div class="hero-inner">
+    <div class="eyebrow">Pro Packs · Role-Based Add-Ons</div>
+    <h1>Built for the way <span class="gold">finance actually works</span></h1>
+    <p>Specialized executive surfaces for CFO, Controller, FP&amp;A Lead, and CEO. Each pack adds dedicated workflows, KPIs, and AI copilot context tuned for the role.</p>
+    <div class="avail">
+      <span class="dot"></span>
+      <span><strong>Available on the Business plan.</strong> Each pack <span style="color:var(--t1)">$999/mo</span> or <span style="color:var(--t1)">$9,990/yr</span>.</span>
+    </div>
+  </div>
+</section>
+
+<!-- ===== BILLING TOGGLE ===== -->
+<div class="billing">
+  <div class="bt" role="tablist">
+    <button type="button" class="bt-opt active" data-billing-set="monthly" role="tab" aria-selected="true">Monthly</button>
+    <button type="button" class="bt-opt" data-billing-set="annual" role="tab" aria-selected="false">Annual <span class="save">Save 17%</span></button>
+  </div>
+</div>
+
+<!-- ===== PACK GRID ===== -->
+<section class="packs-section">
+  <div class="pack-grid">
+
+    <!-- CFO -->
+    <div class="pack featured" data-pack="cfo" data-billing="monthly">
+      <div class="pack-head">
+        <div>
+          <div class="pack-id">CFO Pack</div>
+          <div class="pack-title">Chief Financial Officer</div>
+        </div>
+        <div class="pack-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+        </div>
+      </div>
+      <p class="pack-tag">Cash command center, runway forecasting, and board-ready financials wired into your live GL.</p>
+      <div class="pack-price pack-price-monthly">
+        <span class="dollar">$</span>
+        <span class="amount">999</span>
+        <span class="per">/month</span>
+      </div>
+      <div class="pack-price pack-price-annual">
+        <div class="amount-row">
+          <span class="dollar">$</span>
+          <span class="amount">9,990</span>
+          <span class="per">/year</span>
+        </div>
+        <div class="amount-sm">$832/mo · save $1,998</div>
+      </div>
+      <ul class="feats">
+        <li><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 8 7 12 13 4"/></svg><span><strong>Cash command center</strong> with 13-week rolling forecast</span></li>
+        <li><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 8 7 12 13 4"/></svg><span><strong>Runway modeling</strong> with multi-scenario burn-rate stress tests</span></li>
+        <li><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 8 7 12 13 4"/></svg><span><strong>Board pack generator</strong> — KPIs, narrative, exec summary</span></li>
+        <li><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 8 7 12 13 4"/></svg><span><strong>Investor metrics</strong> — ARR, NRR, magic number, Rule of 40</span></li>
+        <li><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 8 7 12 13 4"/></svg><span><strong>Capital strategy modeling</strong> — debt, equity, dilution scenarios</span></li>
+        <li><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 8 7 12 13 4"/></svg><span><strong>AI copilot</strong> with CFO-tuned context — fundraising, treasury, capital allocation</span></li>
+      </ul>
+      <div class="pack-cta">
+        <button type="button" class="pack-btn" data-pack-buy="cfo">
+          <span class="spinner" aria-hidden="true"></span>
+          <span class="label">Subscribe to CFO Pack</span>
+        </button>
+        <div class="pack-foot">Per organization · cancel anytime</div>
+      </div>
+    </div>
+
+    <!-- Controller -->
+    <div class="pack" data-pack="controller" data-billing="monthly">
+      <div class="pack-head">
+        <div>
+          <div class="pack-id">Controller Pack</div>
+          <div class="pack-title">Controller</div>
+        </div>
+        <div class="pack-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11h6M9 15h4M3 7h18v14H3z"/><path d="M8 3v4M16 3v4"/></svg>
+        </div>
+      </div>
+      <p class="pack-tag">Month-end close orchestrator with GL hygiene, reconciliation workflows, and SOC 2 audit trail.</p>
+      <div class="pack-price pack-price-monthly">
+        <span class="dollar">$</span>
+        <span class="amount">999</span>
+        <span class="per">/month</span>
+      </div>
+      <div class="pack-price pack-price-annual">
+        <div class="amount-row">
+          <span class="dollar">$</span>
+          <span class="amount">9,990</span>
+          <span class="per">/year</span>
+        </div>
+        <div class="amount-sm">$832/mo · save $1,998</div>
+      </div>
+      <ul class="feats">
+        <li><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 8 7 12 13 4"/></svg><span><strong>Month-end close</strong> orchestrator with task assignment + SLA tracking</span></li>
+        <li><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 8 7 12 13 4"/></svg><span><strong>GL hygiene scan</strong> — uncategorized, unbalanced, anomaly detection</span></li>
+        <li><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 8 7 12 13 4"/></svg><span><strong>Accruals + reversals</strong> with templates and recurring schedules</span></li>
+        <li><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 8 7 12 13 4"/></svg><span><strong>Reconciliation workflows</strong> — bank, intercompany, sub-ledger</span></li>
+        <li><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 8 7 12 13 4"/></svg><span><strong>Audit trail</strong> — every change logged with reviewer signoff</span></li>
+        <li><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 8 7 12 13 4"/></svg><span><strong>Financial statements</strong> — auto-generated P&amp;L, balance sheet, cash flow</span></li>
+      </ul>
+      <div class="pack-cta">
+        <button type="button" class="pack-btn" data-pack-buy="controller">
+          <span class="spinner" aria-hidden="true"></span>
+          <span class="label">Subscribe to Controller Pack</span>
+        </button>
+        <div class="pack-foot">Per organization · cancel anytime</div>
+      </div>
+    </div>
+
+    <!-- FP&A -->
+    <div class="pack" data-pack="fp_a" data-billing="monthly">
+      <div class="pack-head">
+        <div>
+          <div class="pack-id">FP&amp;A Pack</div>
+          <div class="pack-title">FP&amp;A Lead</div>
+        </div>
+        <div class="pack-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><polyline points="7 14 11 10 14 13 21 6"/></svg>
+        </div>
+      </div>
+      <p class="pack-tag">Driver-based forecasting, multi-scenario planning, and a real formula engine over your GL data.</p>
+      <div class="pack-price pack-price-monthly">
+        <span class="dollar">$</span>
+        <span class="amount">999</span>
+        <span class="per">/month</span>
+      </div>
+      <div class="pack-price pack-price-annual">
+        <div class="amount-row">
+          <span class="dollar">$</span>
+          <span class="amount">9,990</span>
+          <span class="per">/year</span>
+        </div>
+        <div class="amount-sm">$832/mo · save $1,998</div>
+      </div>
+      <ul class="feats">
+        <li><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 8 7 12 13 4"/></svg><span><strong>Driver-based forecasting</strong> — revenue, headcount, COGS, OpEx drivers</span></li>
+        <li><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 8 7 12 13 4"/></svg><span><strong>Multi-scenario planning</strong> — base, upside, downside in parallel</span></li>
+        <li><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 8 7 12 13 4"/></svg><span><strong>Sensitivity analysis</strong> — tornado charts, Monte Carlo, what-ifs</span></li>
+        <li><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 8 7 12 13 4"/></svg><span><strong>Unit economics</strong> — CAC, LTV, payback, contribution margin</span></li>
+        <li><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 8 7 12 13 4"/></svg><span><strong>Formula engine</strong> over GL — sheet-grade math, no exports needed</span></li>
+        <li><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 8 7 12 13 4"/></svg><span><strong>Variance analysis</strong> — actual vs plan vs forecast, auto-narrated</span></li>
+      </ul>
+      <div class="pack-cta">
+        <button type="button" class="pack-btn" data-pack-buy="fp_a">
+          <span class="spinner" aria-hidden="true"></span>
+          <span class="label">Subscribe to FP&amp;A Pack</span>
+        </button>
+        <div class="pack-foot">Per organization · cancel anytime</div>
+      </div>
+    </div>
+
+    <!-- CEO -->
+    <div class="pack" data-pack="ceo" data-billing="monthly">
+      <div class="pack-head">
+        <div>
+          <div class="pack-id">CEO Pack</div>
+          <div class="pack-title">Chief Executive</div>
+        </div>
+        <div class="pack-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a13 13 0 0 1 0 18M12 3a13 13 0 0 0 0 18"/></svg>
+        </div>
+      </div>
+      <p class="pack-tag">Top-down KPIs, weekly business review, and an exec-summary AI tuned for board-room narrative.</p>
+      <div class="pack-price pack-price-monthly">
+        <span class="dollar">$</span>
+        <span class="amount">999</span>
+        <span class="per">/month</span>
+      </div>
+      <div class="pack-price pack-price-annual">
+        <div class="amount-row">
+          <span class="dollar">$</span>
+          <span class="amount">9,990</span>
+          <span class="per">/year</span>
+        </div>
+        <div class="amount-sm">$832/mo · save $1,998</div>
+      </div>
+      <ul class="feats">
+        <li><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 8 7 12 13 4"/></svg><span><strong>Top-down KPI command bar</strong> — revenue, growth, margin, cash, retention</span></li>
+        <li><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 8 7 12 13 4"/></svg><span><strong>Weekly business review</strong> — auto-compiled from GL + ops data</span></li>
+        <li><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 8 7 12 13 4"/></svg><span><strong>Board narrative builder</strong> — drafts the story, you edit and ship</span></li>
+        <li><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 8 7 12 13 4"/></svg><span><strong>Capital allocation</strong> — bets vs. results across departments</span></li>
+        <li><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 8 7 12 13 4"/></svg><span><strong>Exec summary AI</strong> — turn 30 metrics into a 3-paragraph note</span></li>
+        <li><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 8 7 12 13 4"/></svg><span><strong>Peer benchmarks</strong> — your numbers against industry medians</span></li>
+      </ul>
+      <div class="pack-cta">
+        <button type="button" class="pack-btn" data-pack-buy="ceo">
+          <span class="spinner" aria-hidden="true"></span>
+          <span class="label">Subscribe to CEO Pack</span>
+        </button>
+        <div class="pack-foot">Per organization · cancel anytime</div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ===== HOW IT WORKS ===== -->
+<section class="how">
+  <div class="how-inner">
+    <div class="so">
+      <div class="so-eyebrow">How It Works</div>
+      <h2>Three steps from purchase to first insight</h2>
+    </div>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">Step 01</div>
+        <h3>Choose your pack</h3>
+        <p>Pick the role-based surface that fits your seat. Owners and admins can purchase on behalf of the organization.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">Step 02</div>
+        <h3>Pay through Stripe</h3>
+        <p>Secure checkout with automatic tax. Cancel or change packs from the customer portal at any time.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">Step 03</div>
+        <h3>Surface unlocks instantly</h3>
+        <p>Pack-specific routes, dashboards, and AI copilot context become available the moment payment confirms.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FAQ ===== -->
+<section class="faq-section">
+  <div class="faq-inner">
+    <div class="so">
+      <div class="so-eyebrow">FAQ</div>
+      <h2>Common questions</h2>
+    </div>
+    <div class="faq-list">
+      <div class="faq-item">
+        <div class="faq-q">Do I need to be on the Business plan to buy a pack?</div>
+        <div class="faq-a">Yes. Pro packs are role-based add-ons that build on top of the Business plan's foundation — workspace, live GL data, AI copilot, and admin console. If you're on Starter or Growth, upgrade to Business first, then add the packs that match your team's roles.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Can I buy more than one pack?</div>
+        <div class="faq-a">Absolutely. Many teams pair Controller (for close + accuracy) with FP&amp;A (for forecasting + scenarios), or CFO with CEO for executive operating cadence. Each pack bills independently and can be added or removed without affecting the others.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Is the pack per-seat or per-organization?</div>
+        <div class="faq-a">Per-organization. One purchase unlocks the pack for everyone in your org with the appropriate role permission. There's no separate per-user fee on top of the $999/mo.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">What happens if I cancel?</div>
+        <div class="faq-a">You retain access through the end of the current billing period, then the role-specific surfaces are gracefully hidden — your underlying GL data, forecasts, and Castford foundation are unaffected. Re-subscribe at any time and your saved configurations come right back.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Are taxes included?</div>
+        <div class="faq-a">Stripe Tax automatically calculates VAT, GST, or US sales tax based on your billing address at checkout. The price shown is exclusive of tax; the final amount on your invoice will reflect the rate for your jurisdiction.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== CTA ===== -->
+<section class="cta">
+  <div class="cta-card">
+    <h2>Not sure which pack fits?</h2>
+    <p>Start a free Castford trial and explore the L1 platform first. The packs unlock from the same dashboard once you're on Business.</p>
+    <a href="/pricing" class="cta-btn">Start with Castford Business</a>
+  </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer><div class="w">
+  <div class="fg">
+    <div class="fb">
+      <div class="nl" style="margin-bottom:0">
+        <svg viewBox="0 0 100 100" width="22" height="22"><path d="M50 10 L85 30 L85 70 L50 90 L15 70 L15 30 Z" fill="none" stroke="var(--logo-main)" stroke-width="1.2" style="opacity:var(--logo-mid-o)"/><path d="M50 16 L80 33 L80 67 L50 84 L20 67 L20 33 Z" fill="none" stroke="var(--logo-main)" stroke-width="2.5"/><path d="M36 47 L50 39 L64 47 L64 57 L50 65 L36 57 Z" fill="none" stroke="var(--logo-inner)" stroke-width="1.5"/><circle cx="50" cy="52" r="3" fill="var(--logo-core)"/></svg>
+        <span style="font-family:var(--d);font-size:15px;font-weight:600">Castford</span>
+      </div>
+      <p>AI-native financial planning &amp; analysis for modern finance teams.</p>
+    </div>
+    <div class="fc"><h5>Product</h5><a href="/">Platform</a><a href="/integrations">Integrations</a><a href="/pricing">Pricing</a><a href="/packs">Pro Packs</a><a href="/security">Security</a></div>
+    <div class="fc"><h5>Solutions</h5><a href="/solutions">SaaS</a><a href="/solutions">E-Commerce</a><a href="/xpa-planning">Cross-Dept</a></div>
+    <div class="fc"><h5>Resources</h5><a href="/resources">Library</a><a href="/whats-new">Changelog</a></div>
+    <div class="fc"><h5>Company</h5><a href="#">About</a><a href="#">Careers</a><a href="mailto:sales@castford.com">Contact</a></div>
+  </div>
+  <div class="fbot"><span>&copy; 2026 Castford by 1Financial Holding LLC</span><div style="display:flex;gap:16px"><a href="/privacy" style="color:var(--t3)">Privacy</a><a href="/terms" style="color:var(--t3)">Terms</a><a href="/security" style="color:var(--t3)">Security</a></div></div>
+</div></footer>
+
+<!-- ===== TOAST + AUTH BADGE ===== -->
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<div class="auth-badge" id="authBadge">
+  <span class="pulse"></span>
+  <span id="authEmail"></span>
+  <span class="org" id="authOrg"></span>
+</div>
+
+<!-- ===== SCRIPTS ===== -->
+<script>
+// Theme toggle
+(function(){
+  const opts=document.querySelectorAll('.theme-opt');
+  const root=document.documentElement;
+  const setTheme=(t)=>{
+    root.dataset.theme=t;
+    try{localStorage.setItem('cf-theme',t)}catch(e){}
+    opts.forEach(el=>el.classList.toggle('active',el.dataset.themeSet===t));
+  };
+  const init=root.dataset.theme||'day';
+  setTheme(init);
+  opts.forEach(el=>el.addEventListener('click',()=>setTheme(el.dataset.themeSet)));
+})();
+
+// Billing toggle
+(function(){
+  const opts=document.querySelectorAll('.bt-opt');
+  const packs=document.querySelectorAll('.pack');
+  const setBilling=(mode)=>{
+    opts.forEach(el=>{
+      const active=el.dataset.billingSet===mode;
+      el.classList.toggle('active',active);
+      el.setAttribute('aria-selected',active?'true':'false');
+    });
+    packs.forEach(p=>p.dataset.billing=mode);
+  };
+  opts.forEach(el=>el.addEventListener('click',()=>setBilling(el.dataset.billingSet)));
+})();
+
+// FAQ accordion
+document.querySelectorAll('.faq-item').forEach(item=>{
+  item.querySelector('.faq-q').addEventListener('click',()=>item.classList.toggle('open'));
+});
+</script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="/site/castford-pack-checkout.js" defer></script>
+</body>
+</html>
