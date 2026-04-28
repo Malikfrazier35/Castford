@@ -1,269 +1,334 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="day">
 <head>
+<script>((d)=>{const t=localStorage.getItem("cf-theme");if(t)d.dataset.theme=t})(document.documentElement)</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Castford — FP&amp;A Manager Dashboard</title>
-<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-<style>
-*{margin:0;padding:0;box-sizing:border-box}
-:root{
-  --bg:#f8f7f4;--surface:#ffffff;--surface-2:#faf9f6;--surface-3:#f0eeea;
-  --border:rgba(0,0,0,0.06);--border-hover:rgba(217,119,6,0.25);
-  --text:#1a1a2e;--text-2:#5a5a72;--text-3:#8a8a9e;
-  --shadow-sm:0 1px 3px rgba(0,0,0,0.04),0 1px 2px rgba(0,0,0,0.03);
-  --shadow-md:0 4px 20px rgba(0,0,0,0.06),0 2px 8px rgba(0,0,0,0.04);
-  --shadow-lg:0 12px 40px rgba(0,0,0,0.08),0 4px 12px rgba(0,0,0,0.04);
-  --blue:#2563eb;--blue-soft:#dbeafe;--blue-text:#1e40af;
-  --green:#1A3F7A;--green-soft:#d1fae5;--green-text:#065f46;
-  --amber:#d97706;--amber-soft:#fef3c7;--amber-text:#92400e;
-  --rose:#dc2626;--rose-soft:#fee2e2;--rose-text:#991b1b;
-  --purple:#7c3aed;--purple-soft:#ede9fe;--purple-text:#5b21b6;
-  --cyan:#0891b2;--cyan-soft:#cffafe;--cyan-text:#155e75;
-  --radius:20px;--radius-sm:14px;--radius-xs:8px;
-}
-body{background:var(--bg);color:var(--text);font-family:'Manrope',system-ui,sans-serif;line-height:1.6;overflow-x:hidden;-webkit-font-smoothing:antialiased}
-body::before{content:'';position:fixed;top:0;left:0;right:0;bottom:0;background:radial-gradient(ellipse 80% 50% at 50% 0%,rgba(254,243,199,0.5),transparent),radial-gradient(ellipse 60% 40% at 50% 100%,rgba(237,233,254,0.4),transparent);pointer-events:none;z-index:0}
-
-.scroll-progress{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--amber),var(--rose),var(--purple));z-index:999;width:0%;border-radius:0 2px 2px 0}
-
-.dash-header{padding:24px 48px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);backdrop-filter:blur(24px) saturate(1.4);position:sticky;top:0;z-index:90;background:rgba(248,247,244,0.8)}
-.dash-logo{display:flex;align-items:center;gap:14px}
-.dash-logo-icon{width:40px;height:40px;border-radius:12px;background:linear-gradient(135deg,var(--amber),#b45309);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px;color:#fff;box-shadow:0 4px 16px rgba(217,119,6,0.25)}
-.dash-logo-text{font-size:19px;font-weight:800;color:var(--text)}
-.dash-role{font-size:13px;color:var(--text-2);background:var(--surface);padding:8px 18px;border-radius:24px;border:1px solid var(--border);box-shadow:var(--shadow-sm)}
-.dash-role span{color:var(--amber);font-weight:700}
-
-.dash-container{max-width:1400px;margin:0 auto;padding:36px 48px 80px;position:relative;z-index:1}
-.dash-title{font-size:30px;font-weight:800;letter-spacing:-0.02em;margin-bottom:4px}
-.dash-subtitle{color:var(--text-2);font-size:14px;margin-bottom:36px}
-
-/* Variance Summary */
-.var-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin-bottom:28px}
-.var-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:22px;position:relative;overflow:hidden;transition:transform 0.5s cubic-bezier(.23,1,.32,1),box-shadow 0.5s;cursor:default;box-shadow:var(--shadow-sm)}
-.var-card:hover{box-shadow:var(--shadow-lg);transform:translateY(-4px)}
-.var-card::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;border-radius:20px 20px 0 0;opacity:0;transition:opacity 0.3s}
-.var-card:hover::before{opacity:1}
-.var-card:nth-child(1)::before{background:var(--green)}
-.var-card:nth-child(2)::before{background:var(--rose)}
-.var-card:nth-child(3)::before{background:var(--green)}
-.var-card:nth-child(4)::before{background:var(--amber)}
-.var-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--text-3);margin-bottom:8px}
-.var-value{font-size:28px;font-weight:800;margin-bottom:6px;letter-spacing:-0.02em}
-.var-delta{font-size:12px;font-weight:700;display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:20px}
-.var-delta.fav{color:var(--green-text);background:var(--green-soft)}
-.var-delta.unfav{color:var(--rose-text);background:var(--rose-soft)}
-.var-delta.on-track{color:var(--amber-text);background:var(--amber-soft)}
-
-/* BvA */
-.panel{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow-sm);transition:box-shadow 0.3s;margin-bottom:28px}
-.panel:hover{box-shadow:var(--shadow-md)}
-.panel-header{padding:22px 28px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
-.panel-title{font-size:17px;font-weight:700}
-.panel-badge{font-size:11px;font-weight:700;padding:5px 12px;border-radius:20px}
-.badge-green{color:var(--green-text);background:var(--green-soft)}
-.badge-amber{color:var(--amber-text);background:var(--amber-soft)}
-.badge-blue{color:var(--blue-text);background:var(--blue-soft)}
-.badge-purple{color:var(--purple-text);background:var(--purple-soft)}
-.panel-body{padding:22px 28px 28px}
-.bva-tabs{display:flex;gap:4px}
-.bva-tab{padding:7px 16px;border-radius:20px;font-size:12px;font-weight:700;cursor:pointer;border:none;background:transparent;color:var(--text-3);transition:all 0.2s}
-.bva-tab.active{color:var(--amber-text);background:var(--amber-soft)}
-.bva-row{display:grid;grid-template-columns:1.8fr 1fr 1fr 1fr 120px;gap:8px;padding:12px 0;align-items:center;border-bottom:1px solid var(--border);font-size:14px}
-.bva-row:last-child{border-bottom:none}
-.bva-row.hdr{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--text-3)}
-.bva-row.total{font-weight:800;border-top:2px solid var(--border);padding-top:14px}
-.bva-cat{font-weight:700}
-.bva-val{text-align:right;font-weight:600}
-.bva-var{text-align:right;font-weight:700;font-size:12px}
-.bva-var.fav{color:var(--green)}
-.bva-var.unfav{color:var(--rose)}
-.bva-bar{height:6px;background:var(--surface-3);border-radius:3px;overflow:hidden}
-.bva-fill{height:100%;border-radius:3px;transition:width 1s cubic-bezier(.23,1,.32,1)}
-
-/* Two col */
-.two-col{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:28px}
-
-/* Forecast Accuracy */
-.forecast-score{text-align:center;padding:12px 0 20px}
-.forecast-num{font-size:60px;font-weight:800;background:linear-gradient(135deg,var(--amber),var(--green));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.forecast-sub{color:var(--text-2);font-size:13px}
-.forecast-history{display:flex;gap:8px;justify-content:center;margin-top:16px}
-.forecast-q{background:var(--surface-2);border-radius:var(--radius-xs);padding:10px 14px;text-align:center;flex:1;border:1px solid var(--border)}
-.forecast-q-label{font-size:10px;color:var(--text-3);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:4px;font-weight:700}
-.forecast-q-val{font-size:16px;font-weight:800}
-
-/* Scenarios */
-.scenario-row{display:grid;grid-template-columns:100px 1fr 80px;gap:12px;align-items:center;padding:14px;background:var(--surface-2);border-radius:var(--radius-xs);border:1px solid var(--border);margin-bottom:10px;transition:border-color 0.2s,box-shadow 0.2s}
-.scenario-row:hover{border-color:var(--border-hover);box-shadow:var(--shadow-sm)}
-.scenario-name{font-size:13px;font-weight:700}
-.scenario-bar-outer{height:8px;background:var(--surface-3);border-radius:4px;overflow:hidden;position:relative}
-.scenario-fill{height:100%;border-radius:4px;transition:width 1.2s cubic-bezier(.23,1,.32,1);position:absolute;top:0;left:0}
-.scenario-val{font-size:15px;font-weight:800;text-align:right}
-.scenario-note{margin-top:12px;padding:14px;background:var(--surface-2);border-radius:var(--radius-xs);font-size:12px;color:var(--text-2);border:1px solid var(--border);line-height:1.5}
-
-/* Drill-Down */
-.drill-section{margin-bottom:12px}
-.drill-header{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;background:var(--surface-2);border-radius:var(--radius-xs);cursor:pointer;border:1px solid var(--border);transition:background 0.2s,border-color 0.2s}
-.drill-header:hover{background:var(--surface-3);border-color:var(--border-hover)}
-.drill-left{display:flex;align-items:center;gap:10px}
-.drill-arrow{font-size:12px;color:var(--text-3);transition:transform 0.3s;display:inline-block}
-.drill-arrow.open{transform:rotate(90deg)}
-.drill-dept{font-size:14px;font-weight:700}
-.drill-dept-badge{font-size:12px;font-weight:700;padding:4px 10px;border-radius:12px}
-.drill-content{max-height:0;overflow:hidden;transition:max-height 0.4s cubic-bezier(.23,1,.32,1)}
-.drill-content.open{max-height:500px}
-.drill-items{padding:6px 0 0 30px}
-.drill-item{display:flex;align-items:center;justify-content:space-between;padding:9px 16px;font-size:13px;border-bottom:1px solid var(--border)}
-.drill-item:last-child{border-bottom:none}
-.drill-item-name{color:var(--text-2)}
-.drill-item-val{font-weight:700}
-
-/* Copilot */
-.copilot{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow-sm);margin-bottom:28px}
-.copilot-header{padding:18px 28px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;background:var(--surface-2)}
-.copilot-dot{width:8px;height:8px;border-radius:50%;background:var(--amber);animation:pulse 2s infinite}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
-.copilot-title{font-size:14px;font-weight:700}
-.copilot-body{padding:22px 28px}
-.copilot-msg{margin-bottom:18px}
-.copilot-msg.user{text-align:right}
-.copilot-msg.user .copilot-bubble{background:linear-gradient(135deg,var(--amber),#b45309);color:#fff;display:inline-block;text-align:left;box-shadow:0 4px 16px rgba(217,119,6,0.2)}
-.copilot-msg.ai .copilot-bubble{background:var(--surface-2);display:inline-block;border:1px solid var(--border)}
-.copilot-bubble{padding:14px 18px;border-radius:16px;font-size:13px;max-width:85%;line-height:1.6}
-.copilot-input{display:flex;gap:10px;padding:18px 28px;border-top:1px solid var(--border);background:var(--surface-2)}
-.copilot-input input{flex:1;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 16px;color:var(--text);font-size:13px;font-family:inherit;outline:none;transition:border-color 0.2s,box-shadow 0.2s}
-.copilot-input input:focus{border-color:var(--amber);box-shadow:0 0 0 3px rgba(217,119,6,0.1)}
-.copilot-input button{background:linear-gradient(135deg,var(--amber),#b45309);border:none;color:#fff;padding:12px 22px;border-radius:var(--radius-sm);font-weight:700;font-size:13px;cursor:pointer;box-shadow:0 4px 12px rgba(217,119,6,0.2)}
-
-@media(max-width:960px){.var-grid{grid-template-columns:repeat(2,1fr)}.two-col{grid-template-columns:1fr}.dash-header{padding:20px 24px}.dash-container{padding:24px}.bva-row{grid-template-columns:1.4fr 1fr 1fr 1fr;font-size:12px}.bva-row .bva-bar{display:none}}
-@media(max-width:560px){.var-grid{grid-template-columns:1fr}.bva-row{grid-template-columns:1.2fr 1fr 1fr}.forecast-history{flex-wrap:wrap}}
-</style>
-<script src="/site/castford-shell.js" defer></script>
+<title>FP&amp;A Pack · Castford</title>
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="/site/dashboard-data.js"></script>
-<script src="/site/castford-charts.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&family=Instrument+Sans:wght@400;500;600;700&family=Instrument+Serif&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/site/theme.css">
+<link rel="stylesheet" href="/site/dashboard/pro-pack.css">
 </head>
-<body>
-<div class="scroll-progress" id="scrollProgress"></div>
+<body class="pp">
 
-<header class="dash-header">
-  <div class="dash-logo"><div class="dash-logo-icon">C</div><div class="dash-logo-text">Castford</div></div>
-  <div class="dash-role"><span>FP&amp;A Manager</span>&ensp;Analytics Dashboard</div>
+<header class="pp-bar">
+  <div class="pp-bar-inner">
+    <div class="pp-bar-l">
+      <a href="/workspace" class="pp-logo">
+        <svg viewBox="0 0 100 100" aria-hidden="true">
+          <path d="M50 10 L85 30 L85 70 L50 90 L15 70 L15 30 Z" fill="none" stroke="var(--logo-main)" stroke-width="1.2" style="opacity:var(--logo-mid-o)"/>
+          <path d="M50 16 L80 33 L80 67 L50 84 L20 67 L20 33 Z" fill="none" stroke="var(--logo-main)" stroke-width="2.5"/>
+          <path d="M36 47 L50 39 L64 47 L64 57 L50 65 L36 57 Z" fill="none" stroke="var(--logo-inner)" stroke-width="1.5"/>
+          <circle cx="50" cy="52" r="3" fill="var(--logo-core)"/>
+        </svg>
+        <span class="pp-logo-text">Castford</span>
+      </a>
+      <div class="pp-divider-v"></div>
+      <span class="pp-pack-pill"><span class="dot"></span> FP&amp;A Pack</span>
+    </div>
+    <div class="pp-bar-r">
+      <div class="pp-period" role="tablist" aria-label="Period">
+        <button type="button" data-period="qtd" class="active">QTD</button>
+        <button type="button" data-period="ytd">YTD</button>
+        <button type="button" data-period="ntm">NTM</button>
+        <button type="button" data-period="ftm">FY+1</button>
+      </div>
+      <div class="pp-cmd">
+        <button type="button" title="Export"><svg viewBox="0 0 16 16" stroke-linecap="round" stroke-linejoin="round" stroke="currentColor" fill="none" stroke-width="1.7"><path d="M8 1.5v9M4 7l4 4 4-4M2 14h12"/></svg><span>Export</span></button>
+        <button type="button" title="Brief"><svg viewBox="0 0 16 16" stroke-linecap="round" stroke-linejoin="round" stroke="currentColor" fill="none" stroke-width="1.7"><path d="M3 3h10v10H3z M3 6h10 M5.5 9h5"/></svg><span>Brief</span></button>
+        <button type="button" title="Flag"><svg viewBox="0 0 16 16" stroke-linecap="round" stroke-linejoin="round" stroke="currentColor" fill="none" stroke-width="1.7"><path d="M3 14V2 M3 2h9l-2 3 2 3H3"/></svg><span>Flag</span></button>
+        <button type="button" title="Refresh" id="cmdRefresh"><svg viewBox="0 0 16 16" stroke-linecap="round" stroke-linejoin="round" stroke="currentColor" fill="none" stroke-width="1.7"><path d="M14 8a6 6 0 1 1-1.76-4.24M14 2v4h-4"/></svg><span>Refresh</span></button>
+      </div>
+      <div class="pp-theme" id="ppTheme" role="tablist" aria-label="Theme">
+        <button type="button" data-theme-set="day" aria-label="Day"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><circle cx="8" cy="8" r="3" fill="currentColor" stroke="none"/><line x1="8" y1="2" x2="8" y2="3.5"/><line x1="8" y1="12.5" x2="8" y2="14"/><line x1="2" y1="8" x2="3.5" y2="8"/><line x1="12.5" y1="8" x2="14" y2="8"/></svg></button>
+        <button type="button" data-theme-set="night" aria-label="Night"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M11.5 2.6A6.2 6.2 0 1 0 13.4 11 6.7 6.7 0 0 1 8 5.6c0-1.1.3-2.1.8-3z"/></svg></button>
+      </div>
+    </div>
+  </div>
 </header>
 
-<main class="dash-container">
-  <h1 class="dash-title">Variance & Forecast Command Center</h1>
-  <p class="dash-subtitle">Drill into every variance &middot; Real-time budget tracking</p>
+<main class="pp-main">
 
-  <div class="var-grid">
-    <div class="var-card"><div class="var-label">Revenue Variance</div><div class="var-value" style="color:var(--green)">+$1.2M</div><div class="var-delta fav">&#9650; 3.8% favorable</div></div>
-    <div class="var-card"><div class="var-label">OPEX Variance</div><div class="var-value" style="color:var(--rose)">-$420K</div><div class="var-delta unfav">&#9660; 2.1% unfavorable</div></div>
-    <div class="var-card"><div class="var-label">EBITDA Variance</div><div class="var-value" style="color:var(--green)">+$780K</div><div class="var-delta fav">&#9650; 4.2% favorable</div></div>
-    <div class="var-card"><div class="var-label">Headcount Variance</div><div class="var-value" style="color:var(--amber)">-4 FTE</div><div class="var-delta on-track">Hiring behind plan</div></div>
-  </div>
-
-  <div class="panel">
-    <div class="panel-header"><span class="panel-title">Budget vs Actual — March 2026</span><div class="bva-tabs"><button class="bva-tab active">Monthly</button><button class="bva-tab">QTD</button><button class="bva-tab">YTD</button></div></div>
-    <div class="panel-body">
-      <div class="bva-row hdr"><span>Category</span><span style="text-align:right">Budget</span><span style="text-align:right">Actual</span><span style="text-align:right">Variance</span><span>Attainment</span></div>
-      <div class="bva-row"><span class="bva-cat">Subscription Revenue</span><span class="bva-val">$4.80M</span><span class="bva-val">$5.12M</span><span class="bva-var fav">+6.7%</span><span class="bva-bar"><div class="bva-fill" style="width:0%;background:var(--green)" data-w="100%"></div></span></div>
-      <div class="bva-row"><span class="bva-cat">Services Revenue</span><span class="bva-val">$520K</span><span class="bva-val">$480K</span><span class="bva-var unfav">-7.7%</span><span class="bva-bar"><div class="bva-fill" style="width:0%;background:var(--amber)" data-w="92%"></div></span></div>
-      <div class="bva-row"><span class="bva-cat">COGS</span><span class="bva-val">$820K</span><span class="bva-val">$790K</span><span class="bva-var fav">+3.7%</span><span class="bva-bar"><div class="bva-fill" style="width:0%;background:var(--green)" data-w="96%"></div></span></div>
-      <div class="bva-row"><span class="bva-cat">Engineering</span><span class="bva-val">$1.60M</span><span class="bva-val">$1.52M</span><span class="bva-var fav">+5.0%</span><span class="bva-bar"><div class="bva-fill" style="width:0%;background:var(--green)" data-w="95%"></div></span></div>
-      <div class="bva-row"><span class="bva-cat">Sales &amp; Marketing</span><span class="bva-val">$1.40M</span><span class="bva-val">$1.62M</span><span class="bva-var unfav">-15.7%</span><span class="bva-bar"><div class="bva-fill" style="width:0%;background:var(--rose)" data-w="100%"></div></span></div>
-      <div class="bva-row"><span class="bva-cat">G&amp;A</span><span class="bva-val">$680K</span><span class="bva-val">$710K</span><span class="bva-var unfav">-4.4%</span><span class="bva-bar"><div class="bva-fill" style="width:0%;background:var(--amber)" data-w="100%"></div></span></div>
-      <div class="bva-row total"><span class="bva-cat">EBITDA</span><span class="bva-val">$1.82M</span><span class="bva-val">$2.00M</span><span class="bva-var fav">+9.9%</span><span class="bva-bar"><div class="bva-fill" style="width:0%;background:linear-gradient(90deg,var(--green),var(--cyan))" data-w="100%"></div></span></div>
+  <div class="pp-hero">
+    <div class="pp-hero-l">
+      <div class="pp-eyebrow">Financial Planning &amp; Analysis</div>
+      <h1 class="pp-title">Driver-based forecast &amp; scenarios</h1>
+      <p class="pp-subtitle">Multi-scenario planning, variance analysis, and sensitivity over your live general ledger — sheet-grade math, no exports needed.</p>
+    </div>
+    <div class="pp-hero-r">
+      <span class="pp-status">Forecast confidence 89%</span>
+      <span class="pp-asof">Plan version <strong>v3.2</strong> · locked <strong>Apr 14</strong></span>
     </div>
   </div>
 
-  <div class="two-col">
-    <div class="panel" style="margin-bottom:0">
-      <div class="panel-header"><span class="panel-title">Forecast Accuracy</span><span class="panel-badge badge-green">96.2%</span></div>
-      <div class="panel-body">
-        <div class="forecast-score"><div class="forecast-num" id="forecastNum">0</div><div class="forecast-sub">Weighted Absolute Percentage Error (WAPE)</div></div>
-        <div class="forecast-history">
-          <div class="forecast-q"><div class="forecast-q-label">Q1 '25</div><div class="forecast-q-val" style="color:var(--amber)">91.4%</div></div>
-          <div class="forecast-q"><div class="forecast-q-label">Q2 '25</div><div class="forecast-q-val" style="color:var(--amber)">93.1%</div></div>
-          <div class="forecast-q"><div class="forecast-q-label">Q3 '25</div><div class="forecast-q-val" style="color:var(--green)">94.8%</div></div>
-          <div class="forecast-q"><div class="forecast-q-label">Q4 '25</div><div class="forecast-q-val" style="color:var(--green)">95.6%</div></div>
-          <div class="forecast-q" style="border-color:var(--amber)"><div class="forecast-q-label">Q1 '26</div><div class="forecast-q-val" style="color:var(--green)">96.2%</div></div>
+  <section class="pp-kpi-grid" aria-label="FP&amp;A KPIs">
+
+    <article class="pp-kpi">
+      <div class="pp-kpi-head">
+        <span class="pp-kpi-label">Forecast Accuracy</span>
+        <span class="pp-kpi-trend up">↓ 1.3 pts MAPE</span>
+      </div>
+      <div class="pp-kpi-value">95.3<span class="unit">%</span></div>
+      <svg class="pp-spark" viewBox="0 0 100 24" preserveAspectRatio="none" aria-hidden="true">
+        <path class="area" d="M0,16 L20,14 L40,12 L60,9 L80,7 L100,5 L100,24 L0,24 Z"/>
+        <path d="M0,16 L20,14 L40,12 L60,9 L80,7 L100,5"/>
+      </svg>
+      <div class="pp-kpi-foot"><span class="meta">MAPE 4.7%</span><span class="meta">Best class &lt; 5%</span></div>
+    </article>
+
+    <article class="pp-kpi">
+      <div class="pp-kpi-head">
+        <span class="pp-kpi-label">Plan Variance YTD</span>
+        <span class="pp-kpi-trend down">2.3% under</span>
+      </div>
+      <div class="pp-kpi-value">−2.3<span class="unit">%</span></div>
+      <svg class="pp-spark" viewBox="0 0 100 24" preserveAspectRatio="none" aria-hidden="true">
+        <path d="M0,12 L20,11 L40,13 L60,15 L80,17 L100,18" stroke="var(--pp-down)"/>
+      </svg>
+      <div class="pp-kpi-foot"><span class="meta">Revenue −$1.2M</span><span class="meta">OpEx +$420K</span></div>
+    </article>
+
+    <article class="pp-kpi">
+      <div class="pp-kpi-head">
+        <span class="pp-kpi-label">Pipeline Coverage</span>
+        <span class="pp-kpi-trend up">↑ 0.4x</span>
+      </div>
+      <div class="pp-kpi-value">3.2<span class="unit">x</span></div>
+      <svg class="pp-spark" viewBox="0 0 100 24" preserveAspectRatio="none" aria-hidden="true">
+        <path class="area" d="M0,18 L20,16 L40,14 L60,11 L80,9 L100,7 L100,24 L0,24 Z"/>
+        <path d="M0,18 L20,16 L40,14 L60,11 L80,9 L100,7"/>
+      </svg>
+      <div class="pp-kpi-foot"><span class="meta">Q3 quota $4.8M</span><span class="meta">Pipeline $15.4M</span></div>
+    </article>
+
+    <article class="pp-kpi">
+      <div class="pp-kpi-head">
+        <span class="pp-kpi-label">Forecast Confidence</span>
+        <span class="pp-kpi-trend up">↑ 4 pts</span>
+      </div>
+      <div class="pp-kpi-value">89<span class="unit">%</span></div>
+      <svg class="pp-spark" viewBox="0 0 100 24" preserveAspectRatio="none" aria-hidden="true">
+        <path class="area" d="M0,16 L20,15 L40,12 L60,10 L80,8 L100,6 L100,24 L0,24 Z"/>
+        <path d="M0,16 L20,15 L40,12 L60,10 L80,8 L100,6"/>
+      </svg>
+      <div class="pp-kpi-foot"><span class="meta">Monte Carlo · 5,000 runs</span><span class="meta">P10–P90 ±$1.8M</span></div>
+    </article>
+
+  </section>
+
+  <section class="pp-brief">
+    <div class="pp-brief-eyebrow">FP&amp;A Brief · Generated by Castford AI</div>
+    <h2 class="pp-brief-title">Q2 tracking <span style="color:var(--pp-gold-2)">2.3% behind plan</span> on revenue, but pipeline coverage strengthened to <span style="color:var(--pp-gold-2)">3.2×</span>.</h2>
+    <div class="pp-brief-body">
+      Revenue is <span class="num">$1.2M</span> below the locked plan, concentrated in <strong>Enterprise New Logo</strong> (3 deals slipped from Q2 to Q3, $980K combined ARR). OpEx is <span class="num">$420K</span> over plan, driven by Sales &amp; Marketing acceleration ($340K incremental ad spend, $80K conference). Net impact: gross profit <span class="num">−$1.6M</span> vs plan, partially offset by $400K capital efficiency in cloud rightsizing. <strong>Confidence has risen to 89%</strong> as Q3 pipeline coverage moved from 2.8× to 3.2×, suggesting the slipped deals are recoverable. Recommend a mid-quarter reforecast to lock the new outlook.
+    </div>
+    <div class="pp-brief-actions">
+      <button type="button" class="pp-brief-btn primary">Open in Copilot</button>
+      <button type="button" class="pp-brief-btn">Build reforecast</button>
+      <button type="button" class="pp-brief-btn">Export to board</button>
+    </div>
+  </section>
+
+  <section class="pp-grid-2" style="margin-top:24px">
+
+    <div class="pp-panel">
+      <div class="pp-panel-head">
+        <div class="pp-panel-head-l">
+          <div class="pp-panel-eyebrow">Multi-scenario forecast · Revenue</div>
+          <h3 class="pp-panel-title">Base · Upside · Downside</h3>
+          <p class="pp-panel-sub">Three scenarios run in parallel against the same driver tree.</p>
+        </div>
+        <button type="button" class="pp-panel-action">Edit drivers</button>
+      </div>
+
+      <svg class="pp-chart" viewBox="0 0 600 220" preserveAspectRatio="none" role="img" aria-label="Three-scenario revenue forecast">
+        <g class="grid">
+          <line x1="0" y1="40" x2="600" y2="40"/>
+          <line x1="0" y1="90" x2="600" y2="90"/>
+          <line x1="0" y1="140" x2="600" y2="140"/>
+          <line x1="0" y1="190" x2="600" y2="190"/>
+        </g>
+        <!-- Upside band -->
+        <path fill="rgba(166,115,51,0.08)" d="M0,150 L100,135 L200,118 L300,100 L400,80 L500,62 L600,45 L600,80 L500,95 L400,110 L300,128 L200,145 L100,160 L0,170 Z"/>
+        <!-- Base -->
+        <path class="series actual" d="M0,160 L100,148 L200,135 L300,120 L400,105 L500,90 L600,75"/>
+        <!-- Upside -->
+        <path d="M0,150 L100,135 L200,118 L300,100 L400,80 L500,62 L600,45" fill="none" stroke="var(--pp-up)" stroke-width="1.5" stroke-dasharray="3 3"/>
+        <!-- Downside -->
+        <path d="M0,170 L100,160 L200,145 L300,128 L400,110 L500,95 L600,80" fill="none" stroke="var(--pp-down)" stroke-width="1.5" stroke-dasharray="3 3"/>
+        <g class="axis">
+          <text x="0" y="36" font-size="9">$60M</text>
+          <text x="0" y="86" font-size="9">$50M</text>
+          <text x="0" y="136" font-size="9">$40M</text>
+          <text x="0" y="186" font-size="9">$30M</text>
+        </g>
+        <g class="axis" text-anchor="middle">
+          <text x="0" y="215" font-size="9">Q1</text>
+          <text x="100" y="215" font-size="9">Q2</text>
+          <text x="200" y="215" font-size="9">Q3</text>
+          <text x="300" y="215" font-size="9">Q4</text>
+          <text x="400" y="215" font-size="9">Q5</text>
+          <text x="500" y="215" font-size="9">Q6</text>
+          <text x="600" y="215" font-size="9">Q7</text>
+        </g>
+      </svg>
+
+      <div class="pp-legend">
+        <span class="pp-legend-item"><span class="swatch"></span> Base ($48.2M)</span>
+        <span class="pp-legend-item" style="color:var(--pp-up)"><span class="swatch" style="background:var(--pp-up);background-image:linear-gradient(90deg,var(--pp-up) 50%,transparent 50%);background-size:6px 2px"></span> Upside ($54.6M)</span>
+        <span class="pp-legend-item" style="color:var(--pp-down)"><span class="swatch" style="background:var(--pp-down);background-image:linear-gradient(90deg,var(--pp-down) 50%,transparent 50%);background-size:6px 2px"></span> Downside ($42.0M)</span>
+      </div>
+    </div>
+
+    <div class="pp-panel">
+      <div class="pp-panel-head">
+        <div class="pp-panel-head-l">
+          <div class="pp-panel-eyebrow">Variance vs plan · YTD</div>
+          <h3 class="pp-panel-title">Drivers of the gap</h3>
+        </div>
+      </div>
+
+      <table class="pp-table">
+        <thead><tr><th>Driver</th><th class="r">Plan</th><th class="r">Actual</th><th class="r">Δ</th></tr></thead>
+        <tbody>
+          <tr><td><div class="name">Enterprise New Logo</div><div class="sub">3 deals slipped to Q3</div></td><td class="r">$2.4M</td><td class="r">$1.4M</td><td class="r neg">−$1.0M</td></tr>
+          <tr><td><div class="name">SMB Self-Serve</div><div class="sub">Conversion +14% vs plan</div></td><td class="r">$1.8M</td><td class="r">$2.1M</td><td class="r pos">+$310K</td></tr>
+          <tr><td><div class="name">Expansion ARR</div><div class="sub">NDR strong at 124%</div></td><td class="r">$3.2M</td><td class="r">$3.6M</td><td class="r pos">+$420K</td></tr>
+          <tr><td><div class="name">Sales &amp; Marketing</div><div class="sub">Acceleration in Q1+Q2</div></td><td class="r">$3.6M</td><td class="r">$3.94M</td><td class="r neg">−$340K</td></tr>
+          <tr><td><div class="name">Engineering headcount</div><div class="sub">2 backfills paused</div></td><td class="r">$2.8M</td><td class="r">$2.66M</td><td class="r pos">+$140K</td></tr>
+          <tr><td><div class="name">Cloud infrastructure</div><div class="sub">Rightsizing project</div></td><td class="r">$840K</td><td class="r">$440K</td><td class="r pos">+$400K</td></tr>
+          <tr><td><div class="name">G&amp;A · legal + audit</div><div class="sub">Series B closing fees</div></td><td class="r">$420K</td><td class="r">$520K</td><td class="r neg">−$100K</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+  </section>
+
+  <section class="pp-grid-1-1">
+
+    <div class="pp-panel">
+      <div class="pp-panel-head">
+        <div class="pp-panel-head-l">
+          <div class="pp-panel-eyebrow">Sensitivity · top 6 drivers</div>
+          <h3 class="pp-panel-title">What moves the forecast</h3>
+          <p class="pp-panel-sub">Tornado: ±10% change in driver → impact on Q4 ARR.</p>
+        </div>
+        <button type="button" class="pp-panel-action">Run analysis</button>
+      </div>
+
+      <div>
+        <div class="pp-bar-row">
+          <div class="l">New logo win rate<br><span style="font-family:var(--pp-m);font-size:10.5px;color:var(--pp-text-3);letter-spacing:0.04em;text-transform:uppercase">±10% → ±$1.4M</span></div>
+          <div class="track"><div class="fill" style="width:95%"></div></div>
+          <div class="v">$1.4M</div>
+        </div>
+        <div class="pp-bar-row">
+          <div class="l">NDR (expansion)<br><span style="font-family:var(--pp-m);font-size:10.5px;color:var(--pp-text-3);letter-spacing:0.04em;text-transform:uppercase">±5 pts → ±$1.1M</span></div>
+          <div class="track"><div class="fill" style="width:78%"></div></div>
+          <div class="v">$1.1M</div>
+        </div>
+        <div class="pp-bar-row">
+          <div class="l">Avg deal size<br><span style="font-family:var(--pp-m);font-size:10.5px;color:var(--pp-text-3);letter-spacing:0.04em;text-transform:uppercase">±10% → ±$890K</span></div>
+          <div class="track"><div class="fill" style="width:62%"></div></div>
+          <div class="v">$890K</div>
+        </div>
+        <div class="pp-bar-row">
+          <div class="l">Sales cycle length<br><span style="font-family:var(--pp-m);font-size:10.5px;color:var(--pp-text-3);letter-spacing:0.04em;text-transform:uppercase">±10 days → ±$640K</span></div>
+          <div class="track"><div class="fill" style="width:46%"></div></div>
+          <div class="v">$640K</div>
+        </div>
+        <div class="pp-bar-row">
+          <div class="l">Gross retention<br><span style="font-family:var(--pp-m);font-size:10.5px;color:var(--pp-text-3);letter-spacing:0.04em;text-transform:uppercase">±2 pts → ±$520K</span></div>
+          <div class="track"><div class="fill warn" style="width:36%"></div></div>
+          <div class="v">$520K</div>
+        </div>
+        <div class="pp-bar-row">
+          <div class="l">SDR ramp time<br><span style="font-family:var(--pp-m);font-size:10.5px;color:var(--pp-text-3);letter-spacing:0.04em;text-transform:uppercase">±30 days → ±$280K</span></div>
+          <div class="track"><div class="fill warn" style="width:20%"></div></div>
+          <div class="v">$280K</div>
         </div>
       </div>
     </div>
-    <div class="panel" style="margin-bottom:0">
-      <div class="panel-header"><span class="panel-title">Scenario Comparison</span><span class="panel-badge badge-purple">3 Scenarios</span></div>
-      <div class="panel-body">
-        <div class="scenario-row"><span class="scenario-name" style="color:var(--green)">Bull Case</span><div class="scenario-bar-outer"><div class="scenario-fill" style="width:0%;background:var(--green)" data-w="100%"></div></div><span class="scenario-val">$72.8M</span></div>
-        <div class="scenario-row" style="border-color:var(--amber)"><span class="scenario-name" style="color:var(--amber)">Base Case</span><div class="scenario-bar-outer"><div class="scenario-fill" style="width:0%;background:var(--amber)" data-w="82%"></div></div><span class="scenario-val">$62.4M</span></div>
-        <div class="scenario-row"><span class="scenario-name" style="color:var(--rose)">Bear Case</span><div class="scenario-bar-outer"><div class="scenario-fill" style="width:0%;background:var(--rose)" data-w="68%"></div></div><span class="scenario-val">$54.1M</span></div>
-        <div class="scenario-note"><strong>Key sensitivity:</strong> Enterprise pipeline conversion rate drives $8.4M swing between bull/bear. Each 10% change in win rate = ~$4.2M ARR impact.</div>
+
+    <div class="pp-panel">
+      <div class="pp-panel-head">
+        <div class="pp-panel-head-l">
+          <div class="pp-panel-eyebrow">Unit economics · trailing 12mo</div>
+          <h3 class="pp-panel-title">CAC · LTV · Payback</h3>
+        </div>
+      </div>
+
+      <div class="pp-stats">
+        <div class="pp-stat-row">
+          <div class="label">Customer Acquisition Cost<span class="sub">Blended, fully loaded</span></div>
+          <div class="val">$8,420<span class="delta down">+12% YoY</span></div>
+        </div>
+        <div class="pp-stat-row">
+          <div class="label">Lifetime Value<span class="sub">Gross profit basis, 5yr</span></div>
+          <div class="val">$48,200<span class="delta up">+22% YoY</span></div>
+        </div>
+        <div class="pp-stat-row">
+          <div class="label">LTV : CAC ratio<span class="sub">Healthy SaaS &gt; 3:1</span></div>
+          <div class="val" style="color:var(--pp-gold)">5.7 : 1<span class="delta up">+0.4 vs Q1</span></div>
+        </div>
+        <div class="pp-stat-row">
+          <div class="label">CAC Payback Period<span class="sub">Months to recoup CAC</span></div>
+          <div class="val">14 mo<span class="delta up">−2 mo YoY</span></div>
+        </div>
+        <div class="pp-stat-row">
+          <div class="label">Magic Number<span class="sub">Net new ARR / S&amp;M spend</span></div>
+          <div class="val">1.4×<span class="delta up">Top quartile</span></div>
+        </div>
+        <div class="pp-stat-row">
+          <div class="label">Contribution Margin<span class="sub">After variable costs</span></div>
+          <div class="val">68%<span class="delta">+1.2 pts</span></div>
+        </div>
       </div>
     </div>
-  </div>
 
-  <div class="panel">
-    <div class="panel-header"><span class="panel-title">Variance Drill-Down by Department</span><span class="panel-badge badge-amber">Click to expand</span></div>
-    <div class="panel-body">
-      <div class="drill-section"><div class="drill-header" onclick="toggleDrill('eng')"><div class="drill-left"><span class="drill-arrow" id="eng-arrow">&#9654;</span><span class="drill-dept">Engineering</span></div><span class="drill-dept-badge" style="color:var(--green-text);background:var(--green-soft)">+$80K favorable</span></div><div class="drill-content" id="eng"><div class="drill-items"><div class="drill-item"><span class="drill-item-name">Salaries & Benefits</span><span class="drill-item-val" style="color:var(--green)">+$120K (2 open roles)</span></div><div class="drill-item"><span class="drill-item-name">Cloud Infrastructure</span><span class="drill-item-val" style="color:var(--rose)">-$28K (usage spike)</span></div><div class="drill-item"><span class="drill-item-name">Software Licenses</span><span class="drill-item-val" style="color:var(--rose)">-$12K (new tools)</span></div></div></div></div>
-      <div class="drill-section"><div class="drill-header" onclick="toggleDrill('sales')"><div class="drill-left"><span class="drill-arrow" id="sales-arrow">&#9654;</span><span class="drill-dept">Sales & Marketing</span></div><span class="drill-dept-badge" style="color:var(--rose-text);background:var(--rose-soft)">-$220K unfavorable</span></div><div class="drill-content" id="sales"><div class="drill-items"><div class="drill-item"><span class="drill-item-name">Digital Advertising</span><span class="drill-item-val" style="color:var(--rose)">-$140K (campaign scale-up)</span></div><div class="drill-item"><span class="drill-item-name">Events & Conferences</span><span class="drill-item-val" style="color:var(--rose)">-$65K (unplanned sponsorship)</span></div><div class="drill-item"><span class="drill-item-name">Sales Commissions</span><span class="drill-item-val" style="color:var(--rose)">-$15K (accelerators hit)</span></div></div></div></div>
-      <div class="drill-section"><div class="drill-header" onclick="toggleDrill('ga')"><div class="drill-left"><span class="drill-arrow" id="ga-arrow">&#9654;</span><span class="drill-dept">G&A</span></div><span class="drill-dept-badge" style="color:var(--rose-text);background:var(--rose-soft)">-$30K unfavorable</span></div><div class="drill-content" id="ga"><div class="drill-items"><div class="drill-item"><span class="drill-item-name">Legal Fees</span><span class="drill-item-val" style="color:var(--rose)">-$22K (contract review)</span></div><div class="drill-item"><span class="drill-item-name">Office & Facilities</span><span class="drill-item-val" style="color:var(--rose)">-$8K (maintenance)</span></div></div></div></div>
-      <div class="drill-section"><div class="drill-header" onclick="toggleDrill('cogs')"><div class="drill-left"><span class="drill-arrow" id="cogs-arrow">&#9654;</span><span class="drill-dept">COGS</span></div><span class="drill-dept-badge" style="color:var(--green-text);background:var(--green-soft)">+$30K favorable</span></div><div class="drill-content" id="cogs"><div class="drill-items"><div class="drill-item"><span class="drill-item-name">Hosting Costs</span><span class="drill-item-val" style="color:var(--green)">+$18K (optimization)</span></div><div class="drill-item"><span class="drill-item-name">Customer Support</span><span class="drill-item-val" style="color:var(--green)">+$12K (under headcount)</span></div></div></div></div>
-    </div>
-  </div>
+  </section>
 
-  <div class="copilot">
-    <div class="copilot-header"><div class="copilot-dot"></div><div class="copilot-title">AI Variance Analyst</div></div>
-    <div class="copilot-body">
-      <div class="copilot-msg user"><div class="copilot-bubble">Why is S&M $220K over budget this month?</div></div>
-      <div class="copilot-msg ai"><div class="copilot-bubble">The S&M overspend breaks into three components: <strong>Digital advertising</strong> is $140K over due to the Q1 pipeline acceleration campaign approved by the CRO on March 3 — generating 42 MQLs at $3.3K/MQL vs. the $4.1K target. <strong>Events</strong> added $65K from the SaaStr sponsorship approved mid-month. <strong>Commissions</strong> are $15K over due to 3 reps hitting accelerator thresholds. Net ROI on the incremental spend projects at 3.2x within 2 quarters.</div></div>
-    </div>
-    <div class="copilot-input"><input type="text" placeholder="Ask about variances, forecasts, or budget scenarios..."><button>Send</button></div>
-  </div>
+  <footer class="pp-foot">
+    <span>FP&amp;A Pack · Per-org subscription · <a href="/site/dashboard/billing.html">Manage</a></span>
+    <span>Castford by 1Financial Holding LLC</span>
+  </footer>
+
 </main>
 
 <script>
-window.addEventListener('scroll',()=>{const h=document.documentElement;document.getElementById('scrollProgress').style.width=(h.scrollTop/(h.scrollHeight-h.clientHeight)*100)+'%'});
-
-function animateForecast(){const el=document.getElementById('forecastNum'),dur=1200,start=performance.now();(function tick(now){let p=Math.min((now-start)/dur,1);p=1-Math.pow(1-p,3);el.textContent=(96.2*p).toFixed(1)+'%';if(p<1)requestAnimationFrame(tick)})(performance.now())}
-
-function animateBars(){document.querySelectorAll('[data-w]').forEach(b=>{b.style.width=b.dataset.w})}
-
-function toggleDrill(id){const el=document.getElementById(id),arrow=document.getElementById(id+'-arrow');el.classList.toggle('open');arrow.classList.toggle('open')}
-
-document.querySelectorAll('.var-card,.scenario-row,.drill-header,.forecast-q').forEach(card=>{card.addEventListener('mousemove',e=>{const r=card.getBoundingClientRect(),x=(e.clientX-r.left)/r.width-.5,y=(e.clientY-r.top)/r.height-.5;card.style.transform=`perspective(600px) rotateY(${x*4}deg) rotateX(${-y*4}deg) translateY(-2px)`});card.addEventListener('mouseleave',()=>{card.style.transform=''})});
-
-const obs=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){e.target.style.opacity='1';e.target.style.transform='translateY(0)';obs.unobserve(e.target)}})},{threshold:0.1});
-document.querySelectorAll('.var-card,.panel,.copilot').forEach((el,i)=>{el.style.opacity='0';el.style.transform='translateY(20px)';el.style.transition=`opacity 0.5s ${i*.07}s cubic-bezier(.23,1,.32,1),transform 0.5s ${i*.07}s cubic-bezier(.23,1,.32,1)`;obs.observe(el)});
-
-setTimeout(()=>{animateForecast();animateBars()},400);
-</script>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
-<script src="/site/auth-guard.js"></script>
-
-<script>
-document.addEventListener('DOMContentLoaded', async function() {
-  if (window.CastfordData) {
-    var cd = await CastfordData.init();
-    // Fetch live data from dashboard-summary API using auth-guard's session
-    try {
-      var sb = window.__fos_supabase;
-      if (!sb) { console.warn('Auth guard not loaded'); return; }
-      var session = window.__fos_session || (await sb.auth.getSession()).data?.session;
-      var token = session?.access_token;
-      if (token) {
-        var resp = await fetch('https://crecesswagluelvkesul.supabase.co/functions/v1/dashboard-summary?view=summary', {headers:{'Authorization':'Bearer '+token,'Content-Type':'application/json'}});
-        var apiData = await resp.json();
-        if (window.CastfordCharts) CastfordCharts.render(apiData);
-        console.log('Castford: Live charts rendered', apiData.kpis);
-      } else { console.warn('No auth session — charts in demo mode'); }
-    } catch(e) { console.warn('Chart data fetch failed:', e); }
+(function(){
+  var opts = document.querySelectorAll('#ppTheme button');
+  var root = document.documentElement;
+  function setTheme(t){
+    root.dataset.theme = t;
+    try { localStorage.setItem('cf-theme', t); } catch(e){}
+    opts.forEach(function(el){ el.classList.toggle('active', el.dataset.themeSet === t); });
   }
-});
+  setTheme(root.dataset.theme || 'day');
+  opts.forEach(function(el){ el.addEventListener('click', function(){ setTheme(el.dataset.themeSet); }); });
+})();
+(function(){
+  var btns = document.querySelectorAll('.pp-period button');
+  btns.forEach(function(b){
+    b.addEventListener('click', function(){
+      btns.forEach(function(x){ x.classList.remove('active'); });
+      b.classList.add('active');
+    });
+  });
+})();
+(function(){
+  var btn = document.getElementById('cmdRefresh');
+  if (!btn) return;
+  btn.addEventListener('click', function(){
+    var svg = btn.querySelector('svg');
+    if (!svg) return;
+    svg.animate([{ transform:'rotate(0deg)' }, { transform:'rotate(360deg)' }], { duration: 600, iterations: 1, easing: 'cubic-bezier(0.4,0,0.2,1)' });
+  });
+})();
 </script>
-<script src="/site/copilot-ui.js" defer></script>
-<script src="/site/dashboard-brain.js" defer></script>
-<script src="/site/castford-energy.js" defer></script>
-<script src="/site/cf-app-shell.js" defer></script></body>
+
+</body>
 </html>
