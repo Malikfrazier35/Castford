@@ -120,6 +120,10 @@
       "destination": "/site/dashboard/cfo.html"
     },
     {
+      "source": "/ceo",
+      "destination": "/site/dashboard/ceo.html"
+    },
+    {
       "source": "/livedashboard",
       "destination": "/site/dashboard/live-dashboard.html"
     },
