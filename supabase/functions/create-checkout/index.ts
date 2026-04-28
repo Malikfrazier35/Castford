@@ -8,10 +8,14 @@ const supabaseAdmin = createClient(Deno.env.get('SUPABASE_URL')!, Deno.env.get('
 const AO = ['https://castford.com','https://www.castford.com','https://castford.vercel.app','http://localhost:3000'];
 function cors(req: Request) { const o=req.headers.get('origin')||''; return { 'Access-Control-Allow-Origin':AO.includes(o)?o:AO[0], 'Access-Control-Allow-Methods':'POST, OPTIONS', 'Access-Control-Allow-Headers':'Content-Type, Authorization, apikey' }; }
 
+// Source of truth: matches stripe-webhook/index.ts and billing-portal/index.ts.
+// All IDs belong to the current Castford Stripe account (acct_1SsLDtFV8yRihVmr).
+// Previous values used the FNFhtB2Zuj substring from a different/old account
+// and would have caused 'No such price' errors on every L1 checkout attempt.
 const PRICE_MAP: Record<string, Record<string, string>> = {
-  starter: { monthly: 'price_1TJQ5dFNFhtB2ZujJKkVC1TQ', annual: 'price_1TJQ5hFNFhtB2Zuj1npnIHRr' },
-  growth:  { monthly: 'price_1TJQ5tFNFhtB2Zuj3zLMf5cE', annual: 'price_1TJQ5yFNFhtB2Zujv4gzP5LG' },
-  business:{ monthly: 'price_1TJQ68FNFhtB2ZujuWy9vUcG', annual: 'price_1TJQ6EFNFhtB2Zujm9DDUIdb' },
+  starter:  { monthly: 'price_1TLtt4FV8yRihVmr0ou6Nkbk', annual: 'price_1TLtt4FV8yRihVmrYfF6W7gx' },
+  growth:   { monthly: 'price_1TLttbFV8yRihVmrnahm3ggj', annual: 'price_1TLtu7FV8yRihVmrNLEtEilH' },
+  business: { monthly: 'price_1TLtuZFV8yRihVmrkNhEVjwR', annual: 'price_1TLtv6FV8yRihVmraug5FV7F' },
 };
 const PLAN_FEATURES: Record<string, { seats: number; entities: number; label: string }> = {
   starter: { seats: 5, entities: 3, label: 'Starter' },
