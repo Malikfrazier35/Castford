@@ -526,13 +526,13 @@ window.CastfordData = (function() {
       .eq('org_id', orgId);
     var latestTxResp = await sb
       .from('gl_transactions')
-      .select('transaction_date')
+      .select('txn_date')
       .eq('org_id', orgId)
-      .order('transaction_date', { ascending: false })
+      .order('txn_date', { ascending: false })
       .limit(1);
     var latestAt = null;
     if (latestTxResp.data && latestTxResp.data[0]) {
-      latestAt = latestTxResp.data[0].transaction_date;
+      latestAt = latestTxResp.data[0].txn_date;
     }
     return {
       glAccountsCount: accountsResp.count || 0,

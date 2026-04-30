@@ -905,11 +905,23 @@
         var result = await callEdge('copilot', { query: query });
         if (thinking.parentNode) thinking.remove();
         if (result.error) {
-          append('assistant', 'Sorry — ' + esc(result.error));
+          // v54 returns { error, detail, anthropic_status, anthropic_error_type, model_attempted, diag }
+          var msg = '<strong>' + esc(result.error) + '</strong>';
+          if (result.detail) msg += '<br><span style="color:var(--t3);font-size:11px">' + esc(result.detail) + '</span>';
+          if (result.model_attempted) msg += '<br><span style="font-family:var(--mono);font-size:10px;color:var(--t4)">Model: ' + esc(result.model_attempted) + (result.anthropic_status ? ' · HTTP ' + result.anthropic_status : '') + (result.anthropic_error_type ? ' · ' + esc(result.anthropic_error_type) : '') + '</span>';
+          if (result.diag) msg += '<br><span style="font-family:var(--mono);font-size:10px;color:var(--t4)">Key: ' + esc(result.diag.key_prefix || '?') + '… (' + (result.diag.key_length || 0) + ' chars)' + (result.diag.fallback_used ? ' · fallback used' : '') + '</span>';
+          append('assistant', msg);
           return;
         }
-        var reply = result.answer || result.response || result.message || 'No response from Copilot.';
-        append('assistant', esc(reply).replace(/\n/g, '<br>'));
+        // v54 returns { text, response, model, model_label, fallback_used }
+        var reply = result.text || result.response || result.answer || result.message || 'No response from Copilot.';
+        var modelTag = '';
+        if (result.model_label) {
+          modelTag = '<div style="font-family:var(--mono);font-size:10px;color:var(--t4);margin-top:6px">' + esc(result.model_label);
+          if (result.fallback_used && result.first_attempt_error) modelTag += ' (fallback · ' + esc(result.first_attempt_error.substring(0, 60)) + ')';
+          modelTag += '</div>';
+        }
+        append('assistant', esc(reply).replace(/\n/g, '<br>') + modelTag);
       } finally {
         if (btn) btn.disabled = false;
         input.focus();

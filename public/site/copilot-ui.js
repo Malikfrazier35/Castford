@@ -81,11 +81,26 @@
       removeLoading();
 
       if (data.error) {
-        addMsg('ai', 'Error: ' + data.error);
+        // v54 returns { error, detail, anthropic_status, anthropic_error_type, model_attempted, diag, first_attempt_error }
+        var msg = data.error;
+        if (data.detail) msg += '\n\n' + data.detail;
+        var meta = [];
+        if (data.model_attempted) meta.push('Model: ' + data.model_attempted);
+        if (data.anthropic_status) meta.push('HTTP ' + data.anthropic_status);
+        if (data.anthropic_error_type) meta.push(data.anthropic_error_type);
+        if (data.diag && data.diag.key_prefix) meta.push('Key: ' + data.diag.key_prefix + '… (' + data.diag.key_length + ' chars)');
+        if (data.diag && data.diag.fallback_used) meta.push('fallback used');
+        if (meta.length) msg += '\n\n[' + meta.join(' · ') + ']';
+        if (data.first_attempt_error) msg += '\n\nFirst attempt: ' + data.first_attempt_error;
+        addMsg('ai', msg);
       } else {
-        addMsg('ai', data.text || data.response || 'No response');
+        var reply = data.text || data.response || 'No response';
+        if (data.fallback_used && data.first_attempt_error) {
+          reply += '\n\n[Note: ran on ' + (data.model_label || data.model || 'fallback') + ' after primary failed — ' + data.first_attempt_error.substring(0, 80) + ']';
+        }
+        addMsg('ai', reply);
         history.push({ role: 'user', content: query });
-        history.push({ role: 'assistant', content: data.text || '' });
+        history.push({ role: 'assistant', content: data.text || data.response || '' });
         if (data.conversation_id) conversationId = data.conversation_id;
       }
     } catch (e) {
