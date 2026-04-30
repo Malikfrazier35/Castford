@@ -1141,7 +1141,7 @@ function renderDashboard(){
       <div class="dash-date">☀ SATURDAY, MARCH 28, 2026</div>
       <div style="display:flex;align-items:center;">
         <div class="dash-greeting">Good afternoon, Malik <span class="fy-badge">FY2025 YTD</span></div>
-        <button class="ask-copilot">✨ Ask AI Copilot</button>
+        <button class="ask-copilot" data-cf-action="quick.askCopilot">✨ Ask AI Copilot</button>
       </div>
       <div class="status-strip">
         <span class="live">Revenue ahead by $2.09M</span>
@@ -1149,10 +1149,10 @@ function renderDashboard(){
         <span class="warning">4 variances</span>
       </div>
       <div class="quick-actions">
-        <button class="qa-btn"><svg viewBox="0 0 14 14" fill="none"><path d="M7 2v10M2 7h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg> New Forecast</button>
-        <button class="qa-btn"><svg viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="5" stroke="currentColor" stroke-width="1.2"/><path d="M7 5v4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg> Run Variance</button>
-        <button class="qa-btn"><svg viewBox="0 0 14 14" fill="none"><path d="M2 10l3-3 2 2 5-5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg> Export P&L</button>
-        <button class="qa-btn"><svg viewBox="0 0 14 14" fill="none"><path d="M3 7l3 3 5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg> Close Tasks</button>
+        <button class="qa-btn" data-cf-action="quick.newForecast"><svg viewBox="0 0 14 14" fill="none"><path d="M7 2v10M2 7h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg> New Forecast</button>
+        <button class="qa-btn" data-cf-action="quick.runVariance"><svg viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="5" stroke="currentColor" stroke-width="1.2"/><path d="M7 5v4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg> Run Variance</button>
+        <button class="qa-btn" data-cf-action="quick.exportPnl"><svg viewBox="0 0 14 14" fill="none"><path d="M2 10l3-3 2 2 5-5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg> Export P&L</button>
+        <button class="qa-btn" data-cf-action="quick.closeTasks"><svg viewBox="0 0 14 14" fill="none"><path d="M3 7l3 3 5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg> Close Tasks</button>
       </div>
     </div>
 
@@ -1271,8 +1271,8 @@ function adShellHTML(loading){
     +     '<div id="adHeaderMeta" style="font-size:12px;color:var(--t4);">' + (loading ? 'Loading admin context…' : '') + '</div>'
     +   '</div>'
     +   '<div style="margin-left:auto;display:flex;gap:8px;">'
-    +     '<button class="qa-btn">Export Log</button>'
-    +     '<button class="qa-btn" style="background:var(--accent);color:#fff;border-color:var(--accent);">+ Invite User</button>'
+    +     '<button class="qa-btn" data-cf-action="admin.exportLog">Export Log</button>'
+    +     '<button class="qa-btn" data-cf-action="admin.inviteUser" style="background:var(--accent);color:#fff;border-color:var(--accent);">+ Invite User</button>'
     +   '</div>'
     + '</div>'
     + '<div class="view-tabs">'
@@ -1558,8 +1558,8 @@ function adRenderDirectives(){
     +   '<div style="font-family:var(--body);font-size:12px;color:var(--t3);max-width:320px;margin:0 auto">Issue directives or broadcast alerts to selected seats. Directives appear here once created.</div>'
     + '</div>'
     + '<div style="margin-top:8px;display:flex;gap:8px;">'
-    +   '<button class="qa-btn" style="color:var(--accent);">+ New Directive</button>'
-    +   '<button class="qa-btn">Broadcast Alert</button>'
+    +   '<button class="qa-btn" data-cf-action="command.newDirective" style="color:var(--accent);">+ New Directive</button>'
+    +   '<button class="qa-btn" data-cf-action="command.broadcastAlert">Broadcast Alert</button>'
     + '</div>'
     + '</div>';
 }
@@ -1573,8 +1573,8 @@ function adRenderEscalations(){
     +   '<div style="font-family:var(--body);font-size:12px;color:var(--t3);max-width:320px;margin:0 auto">Team requests, access escalations, and report submissions will appear here when raised.</div>'
     + '</div>'
     + '<div style="margin-top:8px;display:flex;gap:8px;">'
-    +   '<button class="qa-btn" style="color:var(--accent);">View All Escalations</button>'
-    +   '<button class="qa-btn">Audit Trail</button>'
+    +   '<button class="qa-btn" data-cf-action="command.viewEscalations" style="color:var(--accent);">View All Escalations</button>'
+    +   '<button class="qa-btn" data-cf-action="command.auditTrail">Audit Trail</button>'
     + '</div>'
     + '</div>';
 }
@@ -1853,9 +1853,9 @@ function stRenderBilling(ctx){
 
   // Actions
   html += '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:14px;">'+
-    '<button class="qa-btn" style="justify-content:center;color:var(--accent);">Manage Subscription</button>'+
-    '<button class="qa-btn" style="justify-content:center;">View Invoices</button>'+
-    '<button class="qa-btn" style="justify-content:center;">Update Payment</button></div></div>';
+    '<button class="qa-btn" data-cf-action="billing.openPortal" style="justify-content:center;color:var(--accent);">Manage Subscription</button>'+
+    '<button class="qa-btn" data-cf-action="billing.openPortal" style="justify-content:center;">View Invoices</button>'+
+    '<button class="qa-btn" data-cf-action="billing.openPortal" style="justify-content:center;">Update Payment</button></div></div>';
 
   return html;
 }
@@ -2044,8 +2044,8 @@ function copilotShellHTML(loading){
     +     '<h1 class="sp-title">Castford <em>Copilot</em></h1>'
     +   '</div>'
     +   '<div class="sp-actions">'
-    +     '<button class="sp-btn">Conversation history</button>'
-    +     '<button class="sp-btn primary">+ New thread</button>'
+    +     '<button class="sp-btn" data-cf-action="copilot.history">Conversation history</button>'
+    +     '<button class="sp-btn primary" data-cf-action="copilot.newThread">+ New thread</button>'
     +   '</div>'
     + '</div>'
     + '<div class="cp-shell">'
@@ -2057,15 +2057,15 @@ function copilotShellHTML(loading){
     +     '<div class="cp-chat" id="copilotChat">' + (loading ? copilotChatSkeleton() : '') + '</div>'
     +     '<div class="cp-input">'
     +       '<div class="cp-suggest">'
-    +         '<button>Explain this month\'s variance</button>'
-    +         '<button>What\'s our runway?</button>'
-    +         '<button>Compare departments</button>'
-    +         '<button>Top 5 expense categories</button>'
-    +         '<button>Forecast Q1 ARR</button>'
+    +         '<button data-cf-action="copilot.askPrompt">Explain this month\'s variance</button>'
+    +         '<button data-cf-action="copilot.askPrompt">What\'s our runway?</button>'
+    +         '<button data-cf-action="copilot.askPrompt">Compare departments</button>'
+    +         '<button data-cf-action="copilot.askPrompt">Top 5 expense categories</button>'
+    +         '<button data-cf-action="copilot.askPrompt">Forecast Q1 ARR</button>'
     +       '</div>'
     +       '<div class="cp-input-row">'
     +         '<textarea placeholder="Ask anything about your financials..."></textarea>'
-    +         '<button class="send">Send</button>'
+    +         '<button class="send" data-cf-action="copilot.send">Send</button>'
     +       '</div>'
     +     '</div>'
     +   '</div>'
@@ -2359,7 +2359,7 @@ function pnlShellHTML(loading){
     +       '<option value="last-12"' + (_pnlPeriodKey==='last-12'?' selected':'') + '>Last 12 months</option>'
     +       '<option value="all">All available</option>'
     +     '</select>'
-    +     '<button class="sp-btn">Export PDF</button>'
+    +     '<button class="sp-btn" data-cf-action="pnl.exportPdf">Export PDF</button>'
     +     '<button class="sp-btn primary" onclick="showView(\'copilot\',null)">Ask Copilot →</button>'
     +   '</div>'
     + '</div>'
@@ -2727,7 +2727,7 @@ function forecastShellHTML(loading){
     +     '<h1 class="sp-title">Forecast <em>scenarios</em></h1>'
     +   '</div>'
     +   '<div class="sp-actions">'
-    +     '<button class="sp-btn">Export model</button>'
+    +     '<button class="sp-btn" data-cf-action="forecast.exportModel">Export model</button>'
     +     '<button class="sp-btn primary" id="fcGenerateBtn" onclick="onGenerateForecast()">Generate new forecast</button>'
     +   '</div>'
     + '</div>'
@@ -2977,7 +2977,7 @@ function renderConsolidation(){
     +   '<div class="sp-actions">'
     +     '<select class="sp-select"><option>December 2025</option><option>November 2025</option><option>Q4 2025</option></select>'
     +     '<select class="sp-select"><option>USD</option><option>EUR</option><option>GBP</option></select>'
-    +     '<button class="sp-btn primary">Run consolidation</button>'
+    +     '<button class="sp-btn primary" data-cf-action="consolidation.run">Run consolidation</button>'
     +   '</div>'
     + '</div>'
     + '<div class="sp-summary">'
@@ -3037,8 +3037,8 @@ function scShellHTML(loading){
     +     '<h1 class="sp-title">Scenario <em>library</em></h1>'
     +   '</div>'
     +   '<div class="sp-actions">'
-    +     '<button class="sp-btn">Compare scenarios</button>'
-    +     '<button class="sp-btn primary">+ New scenario</button>'
+    +     '<button class="sp-btn" data-cf-action="scenarios.compare">Compare scenarios</button>'
+    +     '<button class="sp-btn primary" data-cf-action="scenarios.new">+ New scenario</button>'
     +   '</div>'
     + '</div>'
     + '<div class="sp-sect-label">ACTIVE SCENARIOS <span class="sp-sect-meta" id="scGridMeta">' + (loading ? 'Loading…' : '') + '</span></div>'
@@ -3360,8 +3360,8 @@ function closeShellHTML(loading){
     +     '<h1 class="sp-title">Month-end <em>close</em></h1>'
     +   '</div>'
     +   '<div class="sp-actions">'
-    +     '<button class="sp-btn">Export checklist</button>'
-    +     '<button class="sp-btn primary">+ Add task</button>'
+    +     '<button class="sp-btn" data-cf-action="close.exportChecklist">Export checklist</button>'
+    +     '<button class="sp-btn primary" data-cf-action="close.addTask">+ Add task</button>'
     +   '</div>'
     + '</div>'
     + '<div id="closeProgressWrap">' + (loading ? closeProgressSkeleton() : '') + '</div>'
@@ -3669,8 +3669,8 @@ function teamShellHTML(loading){
     +     '<h1 class="sp-title">Team <em>members</em></h1>'
     +   '</div>'
     +   '<div class="sp-actions">'
-    +     '<button class="sp-btn">Export list</button>'
-    +     '<button class="sp-btn primary">+ Invite member</button>'
+    +     '<button class="sp-btn" data-cf-action="team.exportList">Export list</button>'
+    +     '<button class="sp-btn primary" data-cf-action="team.invite">+ Invite member</button>'
     +   '</div>'
     + '</div>'
     + '<div class="tm-summary" id="teamSummary">' + (loading ? teamSummarySkeleton() : '') + '</div>'
@@ -3877,8 +3877,8 @@ function integrationsShellHTML(loading){
     +     '<h1 class="sp-title">Connected <em>integrations</em></h1>'
     +   '</div>'
     +   '<div class="sp-actions">'
-    +     '<button class="sp-btn">Sync logs</button>'
-    +     '<button class="sp-btn primary">+ Add integration</button>'
+    +     '<button class="sp-btn" data-cf-action="integrations.viewSyncLogs">Sync logs</button>'
+    +     '<button class="sp-btn primary" data-cf-action="integrations.add">+ Add integration</button>'
     +   '</div>'
     + '</div>'
     + '<div class="sp-summary" id="intSummary">' + (loading ? integrationsSummarySkeleton() : '') + '</div>'
@@ -4144,8 +4144,8 @@ function ivShellHTML(loading){
     +     '<h1 class="sp-title">Investor <em>metrics</em></h1>'
     +   '</div>'
     +   '<div class="sp-actions">'
-    +     '<button class="sp-btn">Export to deck</button>'
-    +     '<button class="sp-btn primary">Generate board pack</button>'
+    +     '<button class="sp-btn" data-cf-action="investor.exportDeck">Export to deck</button>'
+    +     '<button class="sp-btn primary" data-cf-action="investor.generateBoardPack">Generate board pack</button>'
     +   '</div>'
     + '</div>'
     + '<div class="sp-sect-label">CORE SAAS METRICS <span class="sp-sect-meta" id="ivTilesMeta">' + (loading ? 'Loading…' : '') + '</span></div>'
@@ -4644,8 +4644,8 @@ function cmdShellHTML(loading){
     +     '<h1 class="sp-title">Command <em>center</em></h1>'
     +   '</div>'
     +   '<div class="sp-actions">'
-    +     '<button class="sp-btn">Alert rules</button>'
-    +     '<button class="sp-btn primary">+ New alert</button>'
+    +     '<button class="sp-btn" data-cf-action="alerts.openRules">Alert rules</button>'
+    +     '<button class="sp-btn primary" data-cf-action="alerts.new">+ New alert</button>'
     +   '</div>'
     + '</div>'
     + '<div class="cc-stats" id="cmdStatsWrap">' + (loading ? cmdStatsSkeleton() : '') + '</div>'
@@ -4963,8 +4963,8 @@ function intelShellHTML(loading){
     +     '<h1 class="sp-title">Financial <em>intelligence</em></h1>'
     +   '</div>'
     +   '<div class="sp-actions">'
-    +     '<button class="sp-btn">View archive</button>'
-    +     '<button class="sp-btn primary">Run new analysis</button>'
+    +     '<button class="sp-btn" data-cf-action="reports.viewArchive">View archive</button>'
+    +     '<button class="sp-btn primary" data-cf-action="reports.runAnalysis">Run new analysis</button>'
     +   '</div>'
     + '</div>'
     + '<div class="sp-sect-label">AI-GENERATED INSIGHTS <span class="sp-sect-meta" id="intelInsightsMeta">' + (loading ? 'Loading…' : '') + '</span></div>'
@@ -5324,6 +5324,7 @@ renderDashboard();
 <script src="/site/auth-guard.js"></script>
 <script src="/site/castford-energy.js" defer></script>
 <script src="/site/cf-app-shell.js" defer></script>
+<script src="/site/castford-actions.js" defer></script>
 <script>
 // Day/night theme toggle (persists in localStorage)
 (function(){
