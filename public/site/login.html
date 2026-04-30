@@ -105,19 +105,28 @@ body{min-height:100vh;display:flex;flex-direction:column}
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-const SB_URL='https://crecesswagluelvkesul.supabase.co',SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNyZWNlc3N3YWdsdWVsdmtlc3VsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM4MTI5NzYsImV4cCI6MjA4OTM4ODk3Nn0.IGEEYDStt-eH9Mf2G_DzqCPfruDjN8m_ORtAcmtSAZg',sb=window.supabase.createClient(SB_URL,SB_KEY),RD=window.location.origin+'/workspace';
+const SB_URL='https://crecesswagluelvkesul.supabase.co',SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNyZWNlc3N3YWdsdWVsdmtlc3VsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM4MTI5NzYsImV4cCI6MjA4OTM4ODk3Nn0.IGEEYDStt-eH9Mf2G_DzqCPfruDjN8m_ORtAcmtSAZg',sb=window.supabase.createClient(SB_URL,SB_KEY),RD=window.location.origin+'/home';
 async function goToUserHome(fallback){
+  // Honor ?return=<path> if present (came from pack-guard or auth-guard)
+  try {
+    const qs = new URLSearchParams(window.location.search);
+    const ret = qs.get('return');
+    if (ret && ret.startsWith('/') && !ret.startsWith('//')) {
+      window.location.href = ret;
+      return;
+    }
+  } catch(_){}
+  // Otherwise: verify session is real, then go to /home (universal landing)
   try {
     const {data:{session}} = await sb.auth.getSession();
     if (!session) { window.location.href = fallback || RD; return; }
-    const resp = await fetch(SB_URL + '/functions/v1/verify-session', {
+    // Fire verify-session in background (non-blocking) so the org/seed/drip
+    // automations still run. We don't wait for it — /home will load fine.
+    fetch(SB_URL + '/functions/v1/verify-session', {
       method: 'POST',
       headers: { 'Authorization': 'Bearer ' + session.access_token, 'Content-Type': 'application/json' }
-    });
-    if (!resp.ok) { window.location.href = fallback || RD; return; }
-    const d = await resp.json();
-    const role = (d.user && d.user.dashboard_role) || 'standard';
-    window.location.href = '/' + role;
+    }).catch(()=>{});
+    window.location.href = '/home';
   } catch(e) { window.location.href = fallback || RD; }
 }
 
