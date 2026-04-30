@@ -11,13 +11,25 @@ const AO = [
   'https://castford.vercel.app',
   'http://localhost:3000',
 ]
+/* Vercel preview URLs from the castford project:
+   - castford-<hash>-malikfrazier35s-projects.vercel.app (per-deploy aliases)
+   - castford-git-<branch>-malikfrazier35s-projects.vercel.app (git branch aliases) */
+const PREVIEW_RE = /^https:\/\/castford(?:-[a-z0-9-]+)?-malikfrazier35s-projects\.vercel\.app$/
+
+function allowedOrigin(origin: string): string {
+  if (!origin) return AO[0]
+  if (AO.includes(origin)) return origin
+  if (PREVIEW_RE.test(origin)) return origin
+  return AO[0]
+}
 
 function cors(req: Request) {
   const o = req.headers.get('origin') || ''
   return {
-    'Access-Control-Allow-Origin': AO.includes(o) ? o : AO[0],
+    'Access-Control-Allow-Origin': allowedOrigin(o),
     'Access-Control-Allow-Methods': 'POST, OPTIONS',
     'Access-Control-Allow-Headers': 'Content-Type, Authorization, apikey',
+    'Vary': 'Origin',
     'Content-Type': 'application/json',
   }
 }
