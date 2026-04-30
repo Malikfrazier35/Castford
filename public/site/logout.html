@@ -1,201 +1,311 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="day">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
-  <title>Signed out — Castford</title>
-  <link rel="icon" type="image/png" href="/site/favicon.png" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Instrument+Serif&display=swap" rel="stylesheet" />
-  <style>
-    :root {
-      --denim: #5B7FCC;
-      --gold: #C4884A;
-      --bg: #F8F9FC;
-      --surface: #ffffff;
-      --text-1: #1a2332;
-      --text-2: #475569;
-      --text-3: #94a3b8;
-      --border: #e2e8f0;
-    }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      min-height: 100vh;
-      background: var(--bg);
-      font-family: 'Instrument Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      color: var(--text-1);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 24px;
-    }
-    .brand {
-      position: absolute;
-      top: 32px;
-      left: 40px;
-      font-family: 'Instrument Serif', Georgia, serif;
-      font-size: 22px;
-      letter-spacing: -0.01em;
-      color: var(--text-1);
-    }
-    .card {
-      width: 100%;
-      max-width: 440px;
-      background: var(--surface);
-      border-radius: 12px;
-      padding: 48px 40px;
-      box-shadow: 0 1px 3px rgba(15,23,42,0.06), 0 1px 2px rgba(15,23,42,0.04);
-      text-align: center;
-    }
-    .icon {
-      width: 56px;
-      height: 56px;
-      margin: 0 auto 24px;
-      background: rgba(91, 127, 204, 0.08);
-      border-radius: 14px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: var(--denim);
-    }
-    .icon svg { width: 28px; height: 28px; }
-    h1 {
-      font-family: 'Instrument Serif', Georgia, serif;
-      font-size: 28px;
-      font-weight: 400;
-      letter-spacing: -0.01em;
-      margin-bottom: 12px;
-    }
-    p {
-      font-size: 14px;
-      line-height: 1.6;
-      color: var(--text-2);
-      margin-bottom: 28px;
-    }
-    .spinner {
-      display: inline-block;
-      width: 14px;
-      height: 14px;
-      border: 2px solid rgba(91, 127, 204, 0.2);
-      border-top-color: var(--denim);
-      border-radius: 50%;
-      animation: spin 0.8s linear infinite;
-      vertical-align: middle;
-      margin-right: 6px;
-    }
-    @keyframes spin { to { transform: rotate(360deg); } }
-    .btn {
-      display: inline-block;
-      padding: 12px 32px;
-      background: var(--denim);
-      color: #fff;
-      text-decoration: none;
-      border-radius: 6px;
-      font-size: 14px;
-      font-weight: 600;
-      cursor: pointer;
-      border: none;
-      transition: opacity 0.15s;
-    }
-    .btn:hover { opacity: 0.9; }
-    .progress-state {
-      font-size: 13px;
-      color: var(--text-3);
-      margin-bottom: 24px;
-    }
-  </style>
+<script>((d)=>{const t=localStorage.getItem("cf-theme");if(t)d.dataset.theme=t})(document.documentElement)</script>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1.0" />
+<title>Signed out — Castford</title>
+<meta name="robots" content="noindex">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --d:'Instrument Serif',Georgia,serif;
+    --b:'DM Sans',-apple-system,sans-serif;
+    --m:'Geist Mono',ui-monospace,monospace;
+    --ease:cubic-bezier(.2,.8,.2,1)
+  }
+  [data-theme="day"]{
+    --bg:#FAFAF9; --s1:#FFFFFF;
+    --ink:#0B0E1A; --t2:#4A4F6E; --t3:#6E738F; --t4:#9CA0BD;
+    --prime:#5B7FCC; --prime-ink:#1A3F7A; --prime-bg:rgba(91,127,204,0.06);
+    --warm:#C4884A;
+    --bdr:rgba(11,14,26,0.08); --bdr-strong:rgba(11,14,26,0.16);
+    --good:#3DA572;
+  }
+  [data-theme="night"]{
+    --bg:#0A0E1A; --s1:#13182A;
+    --ink:#E8E6F0; --t2:#9B98B5; --t3:#6E6A8E; --t4:#4D4A6B;
+    --prime:#9B8AFF; --prime-ink:#9B8AFF; --prime-bg:rgba(155,138,255,0.08);
+    --warm:#D4A574;
+    --bdr:rgba(232,230,240,0.08); --bdr-strong:rgba(232,230,240,0.16);
+    --good:#5DCC95;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{
+    min-height:100vh;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:var(--b);
+    display:flex;
+    flex-direction:column;
+  }
+
+  /* Top bar */
+  .top{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:18px 32px;
+  }
+  .brand{
+    display:flex;align-items:center;gap:8px;
+    font-family:var(--b);font-size:14px;font-weight:600;
+    letter-spacing:-0.01em;color:var(--ink);text-decoration:none;
+  }
+  .brand svg{width:22px;height:22px}
+  .theme-toggle{
+    width:32px;height:32px;border-radius:50%;
+    border:0.5px solid var(--bdr);background:var(--s1);
+    cursor:pointer;display:flex;align-items:center;justify-content:center;
+    transition:border-color 0.2s var(--ease);
+  }
+  .theme-toggle:hover{border-color:var(--bdr-strong)}
+  .theme-toggle::before{
+    content:'';width:10px;height:10px;border-radius:50%;
+    background:var(--ink);
+  }
+  [data-theme="night"] .theme-toggle::before{
+    background:var(--bg);box-shadow:inset -3px -3px 0 var(--ink);
+  }
+
+  /* Center stage */
+  main{
+    flex:1;
+    display:flex;align-items:center;justify-content:center;
+    padding:32px 24px 80px;
+  }
+  .card{
+    width:100%;max-width:480px;
+    background:var(--s1);
+    border:0.5px solid var(--bdr);
+    padding:56px 48px 48px;
+    text-align:center;
+    animation:cardIn 0.5s var(--ease) both;
+  }
+  @keyframes cardIn{
+    from{opacity:0;transform:translateY(12px)}
+    to{opacity:1;transform:translateY(0)}
+  }
+
+  /* Status indicator */
+  .status-dot{
+    display:inline-flex;align-items:center;gap:8px;
+    font-family:var(--m);font-size:10.5px;
+    color:var(--t3);
+    text-transform:uppercase;letter-spacing:0.14em;
+    margin-bottom:36px;
+  }
+  .status-dot::before{
+    content:'';width:6px;height:6px;border-radius:50%;
+    background:var(--prime);
+    animation:pulse 1.6s ease-in-out infinite;
+  }
+  .status-dot.done::before{
+    background:var(--good);animation:none;
+  }
+  @keyframes pulse{
+    0%,100%{opacity:0.4}
+    50%{opacity:1}
+  }
+
+  /* Headline */
+  h1{
+    font-family:var(--d);
+    font-size:36px;font-weight:400;
+    letter-spacing:-0.02em;line-height:1.1;
+    color:var(--ink);
+    margin-bottom:14px;
+  }
+  h1 em{
+    font-style:italic;color:var(--prime-ink);
+  }
+  [data-theme="night"] h1 em{color:var(--prime)}
+
+  p.sub{
+    font-family:var(--b);
+    font-size:14.5px;line-height:1.55;
+    color:var(--t2);
+    margin-bottom:36px;
+    max-width:340px;margin-left:auto;margin-right:auto;
+  }
+
+  /* Action button */
+  .btn{
+    display:inline-flex;align-items:center;justify-content:center;gap:8px;
+    padding:13px 28px;
+    font-family:var(--b);font-size:14px;font-weight:600;
+    letter-spacing:0.01em;
+    background:var(--prime);color:#fff;
+    border:none;cursor:pointer;
+    text-decoration:none;
+    transition:opacity 0.18s var(--ease),transform 0.18s var(--ease);
+    min-width:200px;
+  }
+  .btn:hover{opacity:0.9;transform:translateY(-1px)}
+  .btn:active{transform:translateY(0)}
+  .btn[disabled]{opacity:0.5;cursor:not-allowed;transform:none}
+  .btn-ghost{
+    background:transparent;color:var(--t2);
+    border:0.5px solid var(--bdr);
+    font-weight:500;
+  }
+  .btn-ghost:hover{
+    color:var(--ink);border-color:var(--bdr-strong);
+    background:var(--s1);opacity:1;
+  }
+  .btn-row{
+    display:flex;flex-direction:column;gap:10px;
+    align-items:center;
+  }
+
+  /* Meta strip below the button */
+  .meta{
+    display:flex;justify-content:center;gap:24px;
+    margin-top:36px;padding-top:24px;
+    border-top:0.5px solid var(--bdr);
+    font-family:var(--m);font-size:10.5px;
+    color:var(--t4);letter-spacing:0.08em;
+    text-transform:uppercase;
+  }
+  .meta span{display:flex;align-items:center;gap:6px}
+  .meta a{color:var(--t3);text-decoration:none;transition:color 0.15s}
+  .meta a:hover{color:var(--ink)}
+
+  /* Foot link */
+  .foot{
+    text-align:center;
+    padding:32px 24px;
+    font-family:var(--m);font-size:11px;
+    color:var(--t4);letter-spacing:0.06em;
+  }
+
+  @media(max-width:520px){
+    .card{padding:44px 28px 36px}
+    h1{font-size:30px}
+    .meta{gap:14px;flex-wrap:wrap}
+    .top{padding:14px 18px}
+  }
+  @media(prefers-reduced-motion:reduce){
+    .card,.status-dot::before{animation:none!important}
+  }
+</style>
 </head>
 <body>
-  <div class="brand">Castford</div>
 
+<!-- Top bar -->
+<div class="top">
+  <a href="/" class="brand">
+    <svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="2.5">
+      <path d="M50 16 L80 33 L80 67 L50 84 L20 67 L20 33 Z" stroke="var(--prime)"/>
+      <path d="M36 47 L50 39 L64 47 L64 57 L50 65 L36 57 Z" stroke="var(--prime)" stroke-width="1.5"/>
+      <circle cx="50" cy="52" r="3" fill="var(--prime)" stroke="none"/>
+    </svg>
+    Castford
+  </a>
+  <button class="theme-toggle" id="themeToggle" title="Toggle day/night" aria-label="Toggle theme"></button>
+</div>
+
+<!-- Center stage -->
+<main>
   <div class="card">
-    <div class="icon">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
-        <polyline points="16 17 21 12 16 7"/>
-        <line x1="21" y1="12" x2="9" y2="12"/>
-      </svg>
+    <div class="status-dot" id="statusDot">
+      <span id="statusText">SIGNING OUT</span>
     </div>
 
-    <h1 id="title">Signing you out…</h1>
-    <p id="subtitle">Clearing your session.</p>
+    <h1 id="title">Signing you <em>out</em>…</h1>
+    <p class="sub" id="subtitle">Clearing your session and revoking access on this device.</p>
 
-    <div class="progress-state" id="progressState"><span class="spinner"></span>Working…</div>
+    <div class="btn-row" id="btnRow" style="opacity:0;pointer-events:none;transition:opacity 0.4s">
+      <a href="/login" class="btn" id="signinBtn">Sign in again</a>
+      <a href="/" class="btn btn-ghost">Back to home</a>
+    </div>
 
-    <a id="signinBtn" href="/login" class="btn" style="display:none">Sign in again</a>
+    <div class="meta">
+      <span><a href="/security">Trust Center</a></span>
+      <span><a href="/privacy">Privacy</a></span>
+      <span><a href="/contact">Support</a></span>
+    </div>
   </div>
+</main>
 
-  <script src="https://esm.sh/@supabase/supabase-js@2.49.1"></script>
-  <script>
-    (async function() {
-      var SB_URL = 'https://crecesswagluelvkesul.supabase.co';
-      var SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNyZWNlc3N3YWdsdWVsdmtlc3VsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM4MTI5NzYsImV4cCI6MjA4OTM4ODk3Nn0.IGEEYDStt-eH9Mf2G_DzqCPfruDjN8m_ORtAcmtSAZg';
+<div class="foot">CASTFORD · FINANCIAL OPERATING SURFACE</div>
 
-      var titleEl = document.getElementById('title');
-      var subtitleEl = document.getElementById('subtitle');
-      var progressEl = document.getElementById('progressState');
-      var signinBtn = document.getElementById('signinBtn');
+<script src="https://esm.sh/@supabase/supabase-js@2.49.1"></script>
+<script>
+  document.getElementById('themeToggle').addEventListener('click', function(){
+    var h = document.documentElement;
+    h.dataset.theme = h.dataset.theme === 'day' ? 'night' : 'day';
+    localStorage.setItem('cf-theme', h.dataset.theme);
+  });
 
-      // ── INVISIBLE TECHNICAL COOLDOWN (5 sec, not user-facing) ──
-      // Just enough to prevent the Apple SSO instant-redirect chain from auto-firing.
-      // Users see no countdown — by the time they decide to click "Sign in again",
-      // the cooldown is already over.
-      var COOLDOWN_KEY = 'castford_signout_cooldown_until';
-      var COOLDOWN_MS = 5 * 1000; // 5 seconds — invisible to user
-      var cooldownUntil = Date.now() + COOLDOWN_MS;
-      try { localStorage.setItem(COOLDOWN_KEY, String(cooldownUntil)); } catch (e) {}
+  (async function() {
+    var SB_URL = 'https://crecesswagluelvkesul.supabase.co';
+    var SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNyZWNlc3N3YWdsdWVsdmtlc3VsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM4MTI5NzYsImV4cCI6MjA4OTM4ODk3Nn0.IGEEYDStt-eH9Mf2G_DzqCPfruDjN8m_ORtAcmtSAZg';
 
+    var titleEl = document.getElementById('title');
+    var subtitleEl = document.getElementById('subtitle');
+    var statusDot = document.getElementById('statusDot');
+    var statusText = document.getElementById('statusText');
+    var btnRow = document.getElementById('btnRow');
+
+    // Invisible 5-second cooldown to prevent Apple SSO instant re-auth
+    var COOLDOWN_KEY = 'castford_signout_cooldown_until';
+    var COOLDOWN_MS = 5000;
+    try { localStorage.setItem(COOLDOWN_KEY, String(Date.now() + COOLDOWN_MS)); } catch (e) {}
+
+    try {
+      var mod = await import('https://esm.sh/@supabase/supabase-js@2.49.1');
+      var sb = mod.createClient(SB_URL, SB_KEY);
+      await sb.auth.signOut({ scope: 'global' }).catch(function() {});
+
+      // Nuke ALL local Castford state
       try {
-        // 1. Supabase global signOut (revokes server-side session)
-        var mod = await import('https://esm.sh/@supabase/supabase-js@2.49.1');
-        var sb = mod.createClient(SB_URL, SB_KEY);
-        await sb.auth.signOut({ scope: 'global' }).catch(function() {});
-
-        // 2. Nuke ALL Castford state
-        try {
-          Object.keys(localStorage).forEach(function(k) {
-            if (
-              k.indexOf('supabase.auth') > -1 ||
-              k.indexOf('sb-') === 0 ||
-              k.indexOf('castford') > -1 ||
-              k.indexOf('__fos_') > -1 ||
-              k.indexOf('cf_') > -1 ||
-              k.indexOf('fos_') > -1
-            ) {
-              if (k !== COOLDOWN_KEY) localStorage.removeItem(k);
-            }
-          });
-          sessionStorage.clear();
-        } catch (e) {}
-
-        // 3. Clear all auth + app cookies
-        document.cookie.split(';').forEach(function(c) {
-          var name = c.split('=')[0].trim();
+        Object.keys(localStorage).forEach(function(k) {
           if (
-            name.indexOf('sb-') === 0 ||
-            name.indexOf('cf_') === 0 ||
-            name.indexOf('castford') > -1 ||
-            name.indexOf('supabase') > -1
+            k.indexOf('supabase.auth') > -1 ||
+            k.indexOf('sb-') === 0 ||
+            (k.indexOf('castford') > -1 && k !== COOLDOWN_KEY) ||
+            k.indexOf('__fos_') > -1 ||
+            k.indexOf('cf_') > -1 ||
+            k.indexOf('fos_') > -1
           ) {
-            ['/', '/site', '/dashboard'].forEach(function(path) {
-              document.cookie = name + '=; Path=' + path + '; Expires=Thu, 01 Jan 1970 00:00:01 GMT';
-              document.cookie = name + '=; Path=' + path + '; Domain=' + location.hostname + '; Expires=Thu, 01 Jan 1970 00:00:01 GMT';
-              document.cookie = name + '=; Path=' + path + '; Domain=.' + location.hostname + '; Expires=Thu, 01 Jan 1970 00:00:01 GMT';
-            });
+            localStorage.removeItem(k);
           }
         });
+        sessionStorage.clear();
+      } catch (e) {}
 
-      } catch (e) {
-        console.warn('[Logout] error during cleanup:', e);
-      }
+      // Clear all auth + app cookies
+      document.cookie.split(';').forEach(function(c) {
+        var name = c.split('=')[0].trim();
+        if (
+          name.indexOf('sb-') === 0 ||
+          name.indexOf('cf_') === 0 ||
+          name.indexOf('castford') > -1 ||
+          name.indexOf('supabase') > -1
+        ) {
+          ['/', '/site', '/dashboard'].forEach(function(path) {
+            document.cookie = name + '=; Path=' + path + '; Expires=Thu, 01 Jan 1970 00:00:01 GMT';
+            document.cookie = name + '=; Path=' + path + '; Domain=' + location.hostname + '; Expires=Thu, 01 Jan 1970 00:00:01 GMT';
+            document.cookie = name + '=; Path=' + path + '; Domain=.' + location.hostname + '; Expires=Thu, 01 Jan 1970 00:00:01 GMT';
+          });
+        }
+      });
 
-      // ── SHOW SUCCESS — IMMEDIATE BUTTON ──
-      titleEl.textContent = "You're signed out";
-      subtitleEl.textContent = 'Your session has been cleared from this device.';
-      progressEl.style.display = 'none';
-      signinBtn.style.display = 'inline-block';
-    })();
-  </script>
+    } catch (e) {
+      console.warn('[Logout] error during cleanup:', e);
+    }
+
+    // Show success state
+    titleEl.innerHTML = "You're signed <em>out</em>";
+    subtitleEl.textContent = 'Your session has been cleared from this device.';
+    statusText.textContent = 'COMPLETE';
+    statusDot.classList.add('done');
+    btnRow.style.opacity = '1';
+    btnRow.style.pointerEvents = 'auto';
+  })();
+</script>
+
 </body>
 </html>
