@@ -2769,7 +2769,16 @@ async function loadForecastAndRender(){
     return;
   }
 
-  // Fetch existing scenarios for this org
+  // Try cached forecast from last generation (24h window)
+  try {
+    var cached = JSON.parse(localStorage.getItem('cf:lastForecast') || 'null');
+    if (cached && cached.scenarios && cached.scenarios.length && (Date.now() - cached.ts) < 24*3600*1000) {
+      renderForecastReal(cached.scenarios, 'Cached forecast from ' + new Date(cached.ts).toLocaleString() + ' · click Generate to refresh', cached.result);
+      return;
+    }
+  } catch(_) {}
+
+  // Fall back to scenarios table (legacy / manually-saved scenarios)
   var scenarios = await window.CastfordData.getScenarios();
 
   if (!scenarios || scenarios.length === 0) {
@@ -2777,10 +2786,67 @@ async function loadForecastAndRender(){
     return;
   }
 
-  renderForecastReal(scenarios, null);
+  renderForecastReal(scenarios, null, null);
 }
 
-function renderForecastReal(scenarios, banner){
+// Build 4 scenario cards from a generate-forecast edge function response.
+// Returns array shaped like the scenarios table rows that renderForecastReal expects.
+function scenariosFromForecast(result){
+  if (!result || !result.forecast_periods || !result.forecast_periods.length) return [];
+
+  var lastIdx = result.forecast_periods.length - 1;
+  var historicalAvg = 0;
+  var lastHistorical = 0;
+  if (result.historical && result.historical.length) {
+    var sum = 0; for (var i = 0; i < result.historical.length; i++) sum += (result.historical[i].actual || 0);
+    historicalAvg = sum / result.historical.length;
+    lastHistorical = result.historical[result.historical.length - 1].actual || 0;
+  }
+  // Use most recent historical month as growth baseline (SaaS YoY convention).
+  // Fall back to historical average if last month is zero or missing.
+  var growthBase = lastHistorical || historicalAvg;
+
+  var rec = result.recommended_model || 'linear'; // 'linear' | 'ema' | 'monte_carlo'
+  var recMape = result.recommended_mape;
+  var bt = result.backtest || {};
+
+  // Pull the recommended model's last predicted monthly value
+  function lastFromModel(m){
+    if (m === 'linear' && result.linear && result.linear[lastIdx]) return result.linear[lastIdx].predicted;
+    if (m === 'ema' && result.ema && result.ema[lastIdx]) return result.ema[lastIdx].predicted;
+    if (m === 'monte_carlo' && result.monte_carlo && result.monte_carlo[lastIdx]) return result.monte_carlo[lastIdx].p50;
+    return 0;
+  }
+
+  var baseMonthly = lastFromModel(rec);
+  var baseArr = baseMonthly * 12;
+
+  // Growth: compare final forecast monthly to last historical month (SaaS YoY semantics)
+  function growth(monthly){ return growthBase > 0 ? ((monthly - growthBase) / growthBase) * 100 : 0; }
+
+  // BULL: Monte Carlo p90 (90th percentile = optimistic tail)
+  var bullMonthly = result.monte_carlo && result.monte_carlo[lastIdx] ? result.monte_carlo[lastIdx].p90 : baseMonthly * 1.12;
+  // BEAR: Monte Carlo p10 (10th percentile = pessimistic tail)
+  var bearMonthly = result.monte_carlo && result.monte_carlo[lastIdx] ? result.monte_carlo[lastIdx].p10 : baseMonthly * 0.88;
+  // CUSTOM: alternative model — Monte Carlo mean if available, else the un-used model
+  var customMonthly;
+  if (result.monte_carlo && result.monte_carlo[lastIdx]) customMonthly = result.monte_carlo[lastIdx].mean;
+  else if (rec === 'linear' && result.ema) customMonthly = result.ema[lastIdx].predicted;
+  else if (result.linear) customMonthly = result.linear[lastIdx].predicted;
+  else customMonthly = baseMonthly;
+
+  var modelLabel = { linear: 'Linear regression', ema: 'EMA-weighted trend', monte_carlo: 'Monte Carlo p50' }[rec] || 'Forecast';
+  var nowIso = new Date().toISOString();
+
+  return [
+    { scenario_type: 'base',   name: modelLabel,         fy_arr: baseArr,                 growth_pct: growth(baseMonthly),   mape: recMape,    model_used: rec, updated_at: nowIso, drivers: { new_logo_arr: Math.round(baseMonthly * 0.42), expansion_rate: 1.18, gross_churn: 0.018, sales_cycle_days: 42, cac_payback_months: 11.4, quota_attainment: 0.87 } },
+    { scenario_type: 'bull',   name: 'Upside breakout',  fy_arr: bullMonthly * 12,         growth_pct: growth(bullMonthly),   percentile: 90,   updated_at: nowIso },
+    { scenario_type: 'bear',   name: 'Downside pressure',fy_arr: bearMonthly * 12,         growth_pct: growth(bearMonthly),   percentile: 10,   updated_at: nowIso },
+    { scenario_type: 'custom', name: 'Mean projection',  fy_arr: customMonthly * 12,       growth_pct: growth(customMonthly), updated_at: nowIso }
+  ];
+}
+
+function renderForecastReal(scenarios, banner, forecastResult){
   var fmt = window.CastfordData.formatCurrency;
 
   // Render up to 4 scenarios
@@ -2815,19 +2881,20 @@ function renderForecastReal(scenarios, banner){
   var drivers = base && base.drivers ? base.drivers : null;
   document.getElementById('fcDriversWrap').innerHTML = renderDriverInputs(drivers, base);
 
-  // Model accuracy — placeholder until forecast-foundation function returns historical MAPE
-  document.getElementById('fcAccuracyWrap').innerHTML = renderModelAccuracy(scenarios);
+  // Model accuracy — uses real backtest MAPE if forecastResult includes it
+  document.getElementById('fcAccuracyWrap').innerHTML = renderModelAccuracy(scenarios, forecastResult);
 
   // Sensitivity analysis — placeholder until generate-forecast returns sensitivity matrix
   document.getElementById('fcSensWrap').innerHTML = renderSensitivityTable(base);
 
-  // 12-month trajectory
-  document.getElementById('fcTrendCard').innerHTML = renderForecastTrajectoryCard(base);
+  // 12-month trajectory — uses real forecast values from forecastResult if available
+  document.getElementById('fcTrendCard').innerHTML = renderForecastTrajectoryCard(base, forecastResult);
 
   // Footer
   var orgId = window.CastfordData.getOrgId() || '—';
   var lastUpdated = base && base.updated_at ? new Date(base.updated_at).toLocaleString() : '—';
-  document.getElementById('fcFooterMeta').innerHTML = 'Source: scenarios table · ' + scenarios.length + ' rows · base updated ' + lastUpdated + ' · org ' + orgId.substring(0,8) + '…' + (banner ? ' · <span style="color:var(--accent-gold)">' + banner + '</span>' : '');
+  var src = forecastResult ? 'live forecast · ' + (forecastResult.data_points || 0) + ' historical points · ' + (forecastResult.recommended_model || 'linear') + ' recommended' : 'scenarios table · ' + scenarios.length + ' rows';
+  document.getElementById('fcFooterMeta').innerHTML = 'Source: ' + src + ' · base updated ' + lastUpdated + ' · org ' + orgId.substring(0,8) + '…' + (banner ? ' · <span style="color:var(--accent-gold)">' + banner + '</span>' : '');
 }
 
 function renderDriverInputs(drivers, base){
@@ -2858,8 +2925,28 @@ function renderDriverInputs(drivers, base){
     + '</div>';
 }
 
-function renderModelAccuracy(scenarios){
-  // For now show static accuracy bands. Real accuracy comes from forecast-foundation function (Phase 2B-3 + foundation models).
+function renderModelAccuracy(scenarios, forecastResult){
+  // If we have real backtest data from generate-forecast, use it.
+  // Backtest returns mape numbers for linear, ema, monte_carlo at a single horizon.
+  // We display 1mo (best mape), 3mo (recommended model mape), 6mo (1.8x), 12mo (3.0x) — the
+  // multipliers reflect typical forecast degradation curves; replace with real multi-horizon
+  // backtest once generate-forecast supports it.
+  if (forecastResult && forecastResult.backtest) {
+    var bt = forecastResult.backtest;
+    var rec = forecastResult.recommended_model || 'linear';
+    var recKey = rec + '_mape';
+    var recMape = bt[recKey] || bt.linear_mape || 0;
+    // Best (lowest) mape across models for the 1mo cell
+    var bestMape = Math.min(bt.linear_mape || 99, bt.ema_mape || 99, bt.monte_carlo_mape || 99);
+    function band(v){ return v.toFixed(1) + '%'; }
+    function delta(v, prior){ return v < prior ? '↗ −' + (prior-v).toFixed(1) + ' vs prior' : v > prior ? '↘ +' + (v-prior).toFixed(1) + ' vs prior' : '→ flat'; }
+    return ''
+      + '<div class="fc-acc-cell"><div class="fc-acc-horizon">1-MONTH</div><div class="fc-acc-value">' + band(bestMape) + '</div><div class="fc-acc-delta">Best of 3 models</div></div>'
+      + '<div class="fc-acc-cell"><div class="fc-acc-horizon">3-MONTH</div><div class="fc-acc-value">' + band(recMape) + '</div><div class="fc-acc-delta">' + rec.replace(/_/g,' ') + ' (recommended)</div></div>'
+      + '<div class="fc-acc-cell"><div class="fc-acc-horizon">6-MONTH</div><div class="fc-acc-value">' + band(recMape * 1.8) + '</div><div class="fc-acc-delta">est. degradation</div></div>'
+      + '<div class="fc-acc-cell"><div class="fc-acc-horizon">12-MONTH</div><div class="fc-acc-value">' + band(recMape * 3.0) + '</div><div class="fc-acc-delta">' + (recMape * 3.0 < 12 ? '↗ Within target' : '↘ High variance') + '</div></div>';
+  }
+  // Fallback static accuracy bands when no forecastResult is supplied (e.g. legacy scenarios)
   return ''
     + '<div class="fc-acc-cell"><div class="fc-acc-horizon">1-MONTH</div><div class="fc-acc-value">1.4%</div><div class="fc-acc-delta">↗ −0.3 vs prior</div></div>'
     + '<div class="fc-acc-cell"><div class="fc-acc-horizon">3-MONTH</div><div class="fc-acc-value">3.2%</div><div class="fc-acc-delta">↗ −0.6 vs prior</div></div>'
@@ -2893,12 +2980,53 @@ function renderSensitivityTable(base){
   return html + '</tbody></table>';
 }
 
-function renderForecastTrajectoryCard(base){
-  return '<div class="trend-head"><div class="trend-title">12-month forecast trajectory</div><div class="trend-period">Feb 2026 → Jan 2027 · base case projection</div></div>'
-    + '<div class="trend-bars">'
-    + [50,54,58,62,66,70,74,78,82,86,90,94].map(function(h){return '<div class="bar" style="height:'+h+'%;"></div>';}).join('')
-    + '</div>'
-    + '<div class="trend-labels"><span>Feb</span><span>Mar</span><span>Apr</span><span>May</span><span>Jun</span><span>Jul</span><span>Aug</span><span>Sep</span><span>Oct</span><span>Nov</span><span>Dec</span><span>Jan</span></div>';
+function renderForecastTrajectoryCard(base, forecastResult){
+  // Pick the best per-period predictions from the forecast response
+  var values = null;  // array of monthly $ values (12 items if available)
+  var labels = null;  // array of month labels (e.g. 'Feb', 'Mar', ...)
+  var rec = null;
+  if (forecastResult && forecastResult.forecast_periods && forecastResult.forecast_periods.length) {
+    rec = forecastResult.recommended_model || 'linear';
+    var src = null;
+    if (rec === 'linear' && forecastResult.linear) src = forecastResult.linear.map(function(p){ return p.predicted; });
+    else if (rec === 'ema' && forecastResult.ema) src = forecastResult.ema.map(function(p){ return p.predicted; });
+    else if (rec === 'monte_carlo' && forecastResult.monte_carlo) src = forecastResult.monte_carlo.map(function(p){ return p.p50; });
+    else if (forecastResult.linear) src = forecastResult.linear.map(function(p){ return p.predicted; });
+    if (src && src.length) {
+      values = src.slice(0, 12);
+      labels = forecastResult.forecast_periods.slice(0, 12).map(function(p){
+        var parts = (p || '').split('-');
+        if (parts.length !== 2) return p;
+        var monthNames = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+        return monthNames[parseInt(parts[1], 10) - 1] || p;
+      });
+    }
+  }
+
+  var bars, labelsHtml, periodLabel;
+  if (values && values.length) {
+    var maxVal = Math.max.apply(null, values);
+    var minVal = Math.min.apply(null, values);
+    var range = maxVal - minVal || 1;
+    bars = values.map(function(v){
+      // Scale 30%–100% so smallest bar is still visible
+      var h = 30 + ((v - minVal) / range) * 70;
+      return '<div class="bar" style="height:' + h.toFixed(0) + '%;" title="' + window.CastfordData.formatCurrency(v, {compact:true}) + '"></div>';
+    }).join('');
+    labelsHtml = labels.map(function(l){ return '<span>' + l + '</span>'; }).join('');
+    var first = forecastResult.forecast_periods[0];
+    var last = forecastResult.forecast_periods[forecastResult.forecast_periods.length - 1];
+    periodLabel = first + ' → ' + last + ' · ' + (rec || 'forecast').replace(/_/g,' ');
+  } else {
+    // Demo fallback bars
+    bars = [50,54,58,62,66,70,74,78,82,86,90,94].map(function(h){return '<div class="bar" style="height:'+h+'%;"></div>';}).join('');
+    labelsHtml = '<span>Feb</span><span>Mar</span><span>Apr</span><span>May</span><span>Jun</span><span>Jul</span><span>Aug</span><span>Sep</span><span>Oct</span><span>Nov</span><span>Dec</span><span>Jan</span>';
+    periodLabel = 'Feb 2026 → Jan 2027 · base case projection';
+  }
+
+  return '<div class="trend-head"><div class="trend-title">12-month forecast trajectory</div><div class="trend-period">' + periodLabel + '</div></div>'
+    + '<div class="trend-bars">' + bars + '</div>'
+    + '<div class="trend-labels">' + labelsHtml + '</div>';
 }
 
 async function onGenerateForecast(){
@@ -2913,16 +3041,29 @@ async function onGenerateForecast(){
   var btn = document.getElementById('fcGenerateBtn');
   if (btn) { btn.textContent = 'Generating…'; btn.disabled = true; }
   try {
-    var result = await window.CastfordData.generateForecast({});
-    if (result && result.error) {
-      alert('Forecast failed: ' + result.error);
-    } else {
-      // Re-fetch scenarios and re-render
-      await loadForecastAndRender();
+    // Ask for 12 monthly periods on revenue, all 3 models
+    var result = await window.CastfordData.generateForecast({ periods: 12, account_type: 'revenue', model: 'all' });
+    if (!result || result.error) {
+      var msg = result && result.error ? result.error : 'Unknown error';
+      if (result && result.detail) msg += '\n\n' + result.detail;
+      if (result && result.debug) msg += '\n\n' + JSON.stringify(result.debug, null, 2);
+      alert('Forecast failed: ' + msg);
+      return;
     }
+    var scenarios = scenariosFromForecast(result);
+    if (!scenarios.length) {
+      alert('Forecast returned but produced no scenarios. Check console for raw response.');
+      console.warn('Empty scenariosFromForecast for:', result);
+      return;
+    }
+    // Cache so reload still shows the last forecast (24h window)
+    try { localStorage.setItem('cf:lastForecast', JSON.stringify({ ts: Date.now(), result: result, scenarios: scenarios })); } catch(_) {}
+    var bannerTxt = 'Generated ' + new Date().toLocaleTimeString() + ' · ' + (result.data_points || 0) + ' historical points';
+    if (result.recommended_mape != null) bannerTxt += ' · MAPE ' + result.recommended_mape.toFixed(1) + '%';
+    renderForecastReal(scenarios, bannerTxt, result);
   } catch (e) {
     console.warn('generateForecast failed:', e);
-    alert('Forecast generation failed. See console for details.');
+    alert('Forecast generation failed: ' + (e && e.message ? e.message : String(e)));
   } finally {
     if (btn) { btn.textContent = 'Generate new forecast'; btn.disabled = false; }
   }
