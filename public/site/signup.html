@@ -1068,7 +1068,36 @@ function setBusy(stepEl, busy, msg){
 }
 
 // ── Existing-session triage on load
-sb.auth.getSession().then(async ({data:{session}})=>{
+// PKCE OAuth completes by appending ?code=XXX to the redirect URL. The Supabase
+// JS client kicks off an async token exchange on init, but our getSession()
+// can fire before that exchange finishes — returning null and bouncing the
+// user back to step 1 even though they just successfully authenticated.
+// Wait for the SIGNED_IN event before checking session if a code is present.
+async function _waitForOAuthExchange() {
+  const params = new URLSearchParams(window.location.search);
+  const hasOAuthCode = params.has('code') || (window.location.hash && window.location.hash.includes('access_token='));
+  if (!hasOAuthCode) return;
+  // Race a 4-second timeout vs SIGNED_IN/INITIAL_SESSION events
+  await new Promise(resolve => {
+    let done = false;
+    const finish = () => { if (done) return; done = true; try { sub.subscription.unsubscribe(); } catch(_){} resolve(); };
+    const sub = sb.auth.onAuthStateChange((event, session) => {
+      if (event === 'SIGNED_IN' || event === 'INITIAL_SESSION' || event === 'TOKEN_REFRESHED') {
+        if (session) finish();
+      }
+    }).data;
+    setTimeout(finish, 4000); // safety: don't hang the page
+  });
+  // Strip the code from the URL so a refresh doesn't re-trigger
+  if (window.history && window.history.replaceState) {
+    const url = new URL(window.location.href);
+    url.searchParams.delete('code');
+    url.searchParams.delete('state');
+    window.history.replaceState({}, document.title, url.toString());
+  }
+}
+
+_waitForOAuthExchange().then(() => sb.auth.getSession()).then(async ({data:{session}})=>{
   if (!session) return; // anonymous → run wizard normally
   // Show "signed in as" line in step 2
   document.getElementById('signedInEmail').textContent = session.user.email || session.user.id;
