@@ -983,17 +983,37 @@ sb.auth.getSession().then(async ({data:{session}})=>{
   // verify-session is idempotent + auto-provisions an org if missing
   let hasOrg = false;
   let currentOrg = null;
+  let staleSession = false;
   try {
     const r = await fetch(SB_URL+'/functions/v1/verify-session', {
       method: 'POST',
       headers: { 'Content-Type':'application/json', 'Authorization':'Bearer '+session.access_token }
     });
-    if (r.ok){ 
+    if (r.status === 401 || r.status === 403) {
+      staleSession = true;
+    } else if (r.ok){ 
       const d = await r.json(); 
       hasOrg = !!(d.org && d.org.id);
       currentOrg = d.org || null;
     }
   } catch(_){}
+
+  // Stale-session detection: localStorage has a token for a deleted user.
+  // Clean it up and send to /login so they can sign up fresh.
+  if (staleSession) {
+    console.warn('[signup] Stale session detected on init. Clearing.');
+    try {
+      for (let i = localStorage.length - 1; i >= 0; i--) {
+        const k = localStorage.key(i);
+        if (k && k.indexOf('sb-') === 0 && k.indexOf('auth-token') !== -1) {
+          localStorage.removeItem(k);
+        }
+      }
+      localStorage.removeItem('castford_signout_cooldown_until');
+    } catch(_){}
+    window.location.replace('/login?reason=stale_session');
+    return;
+  }
 
   // Detect if user is being routed to a specific step via URL (?step=3, ?step=4)
   const urlStep = parseInt((new URLSearchParams(window.location.search)).get('step') || '0', 10);
@@ -1156,6 +1176,24 @@ document.getElementById('companyForm').addEventListener('submit', async (e)=>{
       headers:{'Content-Type':'application/json','Authorization':'Bearer '+session.access_token},
       body: JSON.stringify({ orgName: name, industry })
     });
+
+    // Stale-session detection: if onboard rejects auth, the user's JWT references
+    // a deleted user. Force a clean signout instead of looping with bad token.
+    if (r.status === 401 || r.status === 403) {
+      console.warn('[signup] Stale session detected (onboard returned ' + r.status + '). Clearing.');
+      try {
+        for (let i = localStorage.length - 1; i >= 0; i--) {
+          const k = localStorage.key(i);
+          if (k && k.indexOf('sb-') === 0 && k.indexOf('auth-token') !== -1) {
+            localStorage.removeItem(k);
+          }
+        }
+        localStorage.removeItem('castford_signout_cooldown_until');
+      } catch(_){}
+      window.location.replace('/login?reason=stale_session');
+      return;
+    }
+
     const d = await r.json();
     if (!r.ok){
       setBusy(step2, false); btn.textContent=defaultText; btn.disabled=false;

@@ -75,55 +75,83 @@
       return;
     }
 
-    // Valid session
+    // Valid session client-side
     window.__fos_session=result.data.session;
     window.__fos_user=result.data.session.user;
 
     var user=result.data.session.user;
     console.log('[AuthGuard] Authenticated:',user.email);
 
-    // ── PAID-PLAN GATE ────────────────────────────────────────────────
-    // Pages that bypass the gate (signup wizard, billing, logout, etc.)
-    var path = window.location.pathname;
-    var BYPASS = [
-      '/site/signup.html', '/signup',
-      '/site/login.html',  '/login',
-      '/site/logout.html', '/logout',
-      '/site/dashboard/billing.html', '/billing',
-      '/site/checkout-success.html'
-    ];
-    var isBypass = BYPASS.some(function(p){ return path.indexOf(p) === 0; });
+    // ── STALE-SESSION CHECK ───────────────────────────────────────────
+    // localStorage may have a session whose user has been deleted server-side.
+    // getSession() returns the cached token without validation. Hit /user
+    // (which validates the JWT against the DB) and force a clean signout if
+    // the user no longer exists.
+    sb.auth.getUser().then(function(uRes){
+      if (uRes.error || !uRes.data || !uRes.data.user) {
+        console.warn('[AuthGuard] Stale session — user not found server-side. Forcing signout.');
+        // Manually nuke any sb-*-auth-token keys (signOut() can hang on stale sessions)
+        try {
+          for (var i = localStorage.length - 1; i >= 0; i--) {
+            var k = localStorage.key(i);
+            if (k && k.indexOf('sb-') === 0 && k.indexOf('auth-token') !== -1) {
+              localStorage.removeItem(k);
+            }
+          }
+          localStorage.removeItem('castford_signout_cooldown_until');
+        } catch(_){}
+        // Don't go through /logout (which would set a 60s cooldown blocking re-login)
+        window.location.replace('/login?reason=stale_session');
+        return;
+      }
 
-    if (!isBypass) {
-      // Check plan + subscription. If unpaid → redirect to /signup?step=3
-      sb.from('users').select('org_id').eq('id', user.id).maybeSingle().then(function(uRes){
-        var orgId = uRes && uRes.data && uRes.data.org_id;
-        if (!orgId) {
-          console.log('[AuthGuard] No org → /signup?step=2');
-          window.location.href = '/site/signup.html?step=2';
-          return;
-        }
-        sb.from('organizations').select('plan, stripe_subscription_id, closed_at').eq('id', orgId).maybeSingle().then(function(oRes){
-          var org = oRes && oRes.data;
-          if (!org || org.closed_at) {
-            console.log('[AuthGuard] Org missing or closed → /signup?step=2');
+      // User is valid server-side. Continue with paid-plan gate check.
+
+      // ── PAID-PLAN GATE ────────────────────────────────────────────────
+      // Pages that bypass the gate (signup wizard, billing, logout, etc.)
+      var path = window.location.pathname;
+      var BYPASS = [
+        '/site/signup.html', '/signup',
+        '/site/login.html',  '/login',
+        '/site/logout.html', '/logout',
+        '/site/dashboard/billing.html', '/billing',
+        '/site/checkout-success.html'
+      ];
+      var isBypass = BYPASS.some(function(p){ return path.indexOf(p) === 0; });
+
+      if (!isBypass) {
+        // Check plan + subscription. If unpaid → redirect to /signup?step=3
+        sb.from('users').select('org_id').eq('id', user.id).maybeSingle().then(function(uRes){
+          var orgId = uRes && uRes.data && uRes.data.org_id;
+          if (!orgId) {
+            console.log('[AuthGuard] No org → /signup?step=2');
             window.location.href = '/site/signup.html?step=2';
             return;
           }
-          var unpaid = (!org.stripe_subscription_id) && (org.plan === 'demo' || org.plan === 'pending' || !org.plan);
-          if (unpaid) {
-            console.log('[AuthGuard] Unpaid org (plan=' + org.plan + ') → /signup?step=3');
-            window.location.href = '/site/signup.html?step=3';
-            return;
-          }
-          // Passed the gate — continue normally
-          window.dispatchEvent(new CustomEvent('fos:auth',{detail:{user:user,session:result.data.session,org:org}}));
+          sb.from('organizations').select('plan, stripe_subscription_id, closed_at').eq('id', orgId).maybeSingle().then(function(oRes){
+            var org = oRes && oRes.data;
+            if (!org || org.closed_at) {
+              console.log('[AuthGuard] Org missing or closed → /signup?step=2');
+              window.location.href = '/site/signup.html?step=2';
+              return;
+            }
+            var unpaid = (!org.stripe_subscription_id) && (org.plan === 'demo' || org.plan === 'pending' || !org.plan);
+            if (unpaid) {
+              console.log('[AuthGuard] Unpaid org (plan=' + org.plan + ') → /signup?step=3');
+              window.location.href = '/site/signup.html?step=3';
+              return;
+            }
+            // Passed the gate — reveal the page
+            try { document.documentElement.classList.remove('cf-gate-checking'); } catch(_){}
+            window.dispatchEvent(new CustomEvent('fos:auth',{detail:{user:user,session:result.data.session,org:org}}));
+          });
         });
-      });
-    } else {
-      // Bypass page — fire auth event without gate check
-      window.dispatchEvent(new CustomEvent('fos:auth',{detail:{user:user,session:result.data.session}}));
-    }
+      } else {
+        // Bypass page — reveal immediately, fire auth event without gate check
+        try { document.documentElement.classList.remove('cf-gate-checking'); } catch(_){}
+        window.dispatchEvent(new CustomEvent('fos:auth',{detail:{user:user,session:result.data.session}}));
+      }
+    });
   });
 
   // Listen for sign out — but route through /logout for proper cleanup

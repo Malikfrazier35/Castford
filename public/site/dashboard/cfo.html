@@ -2,6 +2,7 @@
 <html lang="en" data-theme="day">
 <head>
 <script>((d)=>{const t=localStorage.getItem("cf-theme");if(t)d.dataset.theme=t})(document.documentElement)</script>
+<script>(function(){try{var hasSb=false;for(var i=0;i<localStorage.length;i++){var k=localStorage.key(i);if(k&&k.indexOf("sb-")===0&&k.indexOf("auth-token")!==-1){var v=localStorage.getItem(k);if(v&&v.length>40){hasSb=true;break}}}if(hasSb){document.documentElement.classList.add("cf-gate-checking");setTimeout(function(){document.documentElement.classList.remove("cf-gate-checking")},3000)}}catch(_){}})();</script><style>html.cf-gate-checking body{visibility:hidden!important}</style>
 <style>html[data-pp-checking]{visibility:hidden!important}html[data-pp-checking]::after{content:'';position:fixed;inset:0;background:#0A1528;z-index:99999;visibility:visible}</style>
 <script>document.documentElement.setAttribute('data-pp-checking','1')</script>
 <script src="/site/dashboard/pack-guard.js" data-pack="cfo"></script>
