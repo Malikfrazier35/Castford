@@ -40,3 +40,5 @@ castford-diagnose-and-fix.py
 *.bak
 *.bak-old
 FETCH_HEAD
+.vercel
+.env*.local

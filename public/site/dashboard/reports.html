@@ -75,9 +75,9 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;bottom:0;background:
 function fmt(v) { const a=Math.abs(v); if(a>=1e6)return'$'+(v/1e6).toFixed(1)+'M'; if(a>=1e3)return'$'+(v/1e3).toFixed(0)+'K'; return'$'+v.toFixed(0); }
 
 const demoReports = [
-  { id:'1', report_type:'monthly_board', title:'Financial Holding LLC — Monthly Board Report', period:'2026-04', status:'generated', created_at:new Date().toISOString(), content:{ kpis:{ revenue:55395000, gross_profit:47115000, gross_margin:'85.1', net_income:5067000, net_margin:'9.1', transactions:162 } } },
-  { id:'2', report_type:'monthly_board', title:'Financial Holding LLC — Monthly Board Report', period:'2026-03', status:'generated', created_at:new Date(Date.now()-2592000000).toISOString(), content:{ kpis:{ revenue:52100000, gross_profit:44285000, gross_margin:'85.0', net_income:4700000, net_margin:'9.0', transactions:148 } } },
-  { id:'3', report_type:'monthly_board', title:'Financial Holding LLC — Monthly Board Report', period:'2026-02', status:'generated', created_at:new Date(Date.now()-5184000000).toISOString(), content:{ kpis:{ revenue:49800000, gross_profit:42330000, gross_margin:'85.0', net_income:4200000, net_margin:'8.4', transactions:135 } } },
+  { id:'1', report_type:'monthly_board', title:'Your Company — Monthly Board Report', period:'2026-04', status:'generated', created_at:new Date().toISOString(), content:{ kpis:{ revenue:55395000, gross_profit:47115000, gross_margin:'85.1', net_income:5067000, net_margin:'9.1', transactions:162 } } },
+  { id:'2', report_type:'monthly_board', title:'Your Company — Monthly Board Report', period:'2026-03', status:'generated', created_at:new Date(Date.now()-2592000000).toISOString(), content:{ kpis:{ revenue:52100000, gross_profit:44285000, gross_margin:'85.0', net_income:4700000, net_margin:'9.0', transactions:148 } } },
+  { id:'3', report_type:'monthly_board', title:'Your Company — Monthly Board Report', period:'2026-02', status:'generated', created_at:new Date(Date.now()-5184000000).toISOString(), content:{ kpis:{ revenue:49800000, gross_profit:42330000, gross_margin:'85.0', net_income:4200000, net_margin:'8.4', transactions:135 } } },
 ];
 
 function renderReports(reports) {

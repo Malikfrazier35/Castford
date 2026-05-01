@@ -10,6 +10,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700;800&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<!-- Stripe.js for embedded Payment Element on step 4 -->
+<script src="https://js.stripe.com/dahlia/stripe.js"></script>
 <style>
 :root{
   --d:'Instrument Sans',-apple-system,sans-serif;
@@ -35,12 +37,12 @@
 [data-theme="night"]{
   --bg:#0A0F1F; --canvas:#0F1628; --s1:#161D30; --s2:#1F2740;
   --ink:#E8E6F0; --t1:#C4C0D8; --t2:#8A86A8; --t3:#5E5A78; --t4:#454059;
-  --bdr:rgba(155,138,255,0.10); --bdr-strong:rgba(155,138,255,0.18);
-  --prime:#9B8AFF; --prime-ink:#C4B8FF; --prime-bg:rgba(155,138,255,0.08);
+  --bdr:rgba(123,158,224,0.10); --bdr-strong:rgba(123,158,224,0.18);
+  --prime:#7B9EE0; --prime-ink:#9BB8EC; --prime-bg:rgba(123,158,224,0.08);
   --gold:#D4A574; --gold-bg:rgba(212,165,116,0.08);
   --good:#4ADE80; --bad:#F87171;
   --nav-bg:rgba(10,15,31,0.92);
-  --logo-main:#9B8AFF; --logo-inner:#C4B8FF; --logo-core:#DDD8FF;
+  --logo-main:#7B9EE0; --logo-inner:#9BB8EC; --logo-core:#DDD8FF;
   --logo-outer-o:0.10; --logo-mid-o:0.18; --logo-inner-fill:0.06;
   --shadow-card:0 1px 2px rgba(0,0,0,0.3),0 4px 16px rgba(0,0,0,0.2);
   --shadow-card-h:0 2px 4px rgba(0,0,0,0.4),0 8px 28px rgba(0,0,0,0.3);
@@ -387,6 +389,140 @@ main{flex:1;display:flex;align-items:center;justify-content:center;padding:48px 
 [data-theme="night"] .step3-cta:hover{box-shadow:0 4px 16px rgba(0,0,0,0.4)}
 .step3-cta:disabled{opacity:0.55;cursor:not-allowed;transform:none;box-shadow:none}
 
+/* ─── Step 4: Embedded checkout ─── */
+#step4{padding:0;overflow:visible}
+#step4 .hero{margin-bottom:24px}
+.step4-grid{
+  display:grid;grid-template-columns:1.4fr 1fr;gap:28px;align-items:flex-start;
+}
+.s4-card{
+  background:var(--s1);border:0.5px solid var(--bdr);border-radius:10px;
+  padding:24px 26px;box-shadow:var(--shadow-card);
+}
+.s4-card + .s4-card{margin-top:14px}
+.s4-bx-h{
+  font-family:var(--m);font-size:10px;font-weight:500;letter-spacing:1.5px;
+  color:var(--t3);text-transform:uppercase;margin-bottom:14px;
+  display:flex;align-items:center;gap:8px;
+}
+.s4-bx-h-tag{
+  font-family:var(--m);font-size:9px;font-weight:500;letter-spacing:1.4px;
+  color:var(--gold);text-transform:uppercase;padding:2px 7px;
+  background:var(--gold-bg);border-radius:3px;
+}
+.s4-plan-row{
+  display:flex;align-items:flex-start;justify-content:space-between;gap:18px;
+  margin-bottom:16px;
+}
+.s4-plan-name{
+  font-family:var(--d);font-size:24px;font-weight:800;letter-spacing:-0.6px;
+  color:var(--ink);margin-bottom:4px;
+}
+.s4-plan-desc{font-size:13px;color:var(--t2);line-height:1.5}
+.s4-plan-price{
+  font-family:var(--d);font-size:26px;font-weight:800;letter-spacing:-0.8px;color:var(--ink);
+  display:flex;align-items:baseline;gap:4px;justify-content:flex-end;
+}
+.s4-plan-price-unit{font-family:var(--b);font-size:12px;font-weight:500;color:var(--t3);letter-spacing:0}
+.s4-plan-cycle{
+  font-family:var(--m);font-size:9.5px;font-weight:500;letter-spacing:1.3px;
+  color:var(--t3);text-transform:uppercase;margin-top:2px;
+}
+.s4-change-link{
+  font-size:11.5px;color:var(--prime-ink);font-weight:500;cursor:pointer;
+  text-decoration:underline;text-underline-offset:2px;background:none;border:none;font-family:var(--b);padding:0;
+}
+[data-theme="night"] .s4-change-link{color:var(--prime)}
+.s4-lines{display:flex;flex-direction:column;border-top:0.5px solid var(--bdr);margin-top:16px}
+.s4-line{
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+  padding:11px 0;border-bottom:0.5px solid var(--bdr);font-size:13px;
+}
+.s4-line-label{color:var(--t1);display:flex;align-items:center;gap:6px;flex:1;min-width:0}
+.s4-line-label .meta{font-size:11px;color:var(--t3);font-family:var(--m);margin-left:6px}
+.s4-line-value{font-family:var(--m);color:var(--ink);font-weight:500}
+.s4-line-value.credit{color:var(--good)}
+.s4-line-total{
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+  padding-top:14px;margin-top:6px;
+  border-top:0.5px solid var(--bdr-strong);
+  font-family:var(--d);font-size:18px;font-weight:700;letter-spacing:-0.3px;
+}
+.s4-line-total-sub{font-size:11.5px;color:var(--t3);margin-top:6px;font-family:var(--m);text-align:right}
+.s4-mbg-card{
+  background:rgba(31,73,55,0.08);border:0.5px solid rgba(31,73,55,0.18);
+  border-radius:10px;padding:16px 18px;
+  display:flex;align-items:flex-start;gap:14px;
+}
+[data-theme="night"] .s4-mbg-card{background:rgba(74,222,128,0.10);border-color:rgba(74,222,128,0.18)}
+.s4-mbg-icon{
+  width:36px;height:36px;border-radius:50%;background:var(--good);color:#fff;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+  font-family:var(--m);font-size:11px;font-weight:600;
+}
+.s4-mbg-h{font-family:var(--d);font-size:14.5px;font-weight:700;letter-spacing:-0.2px;color:var(--ink);margin-bottom:3px;line-height:1.3}
+.s4-mbg-sub{font-size:12.5px;color:var(--t2);line-height:1.5}
+.s4-diff-strip{
+  display:grid;grid-template-columns:1fr 1fr 1fr;gap:1px;
+  background:var(--bdr);border-radius:10px;overflow:hidden;
+  border:0.5px solid var(--bdr);
+}
+.s4-diff-cell{background:var(--s1);padding:14px 16px;display:flex;flex-direction:column;gap:6px}
+.s4-diff-label{font-family:var(--m);font-size:9.5px;font-weight:500;letter-spacing:1.4px;color:var(--t3);text-transform:uppercase}
+.s4-diff-value{font-family:var(--d);font-size:18px;font-weight:700;letter-spacing:-0.3px;color:var(--ink)}
+.s4-diff-sub{font-size:11px;color:var(--t3);font-family:var(--m);line-height:1.4}
+.s4-pay-col{position:sticky;top:96px}
+.s4-pay-h{font-family:var(--d);font-size:18px;font-weight:700;letter-spacing:-0.4px;color:var(--ink);margin-bottom:4px}
+.s4-pay-sub{font-size:12.5px;color:var(--t2);margin-bottom:18px;line-height:1.5}
+#payment-element{
+  border:0.5px solid var(--bdr);border-radius:8px;
+  background:var(--canvas);padding:14px;margin-bottom:14px;min-height:240px;
+}
+.s4-subscribe{
+  width:100%;padding:13px;
+  font-family:var(--b);font-size:14px;font-weight:600;
+  background:var(--ink);color:var(--bg);
+  border:none;border-radius:6px;cursor:pointer;
+  transition:all .2s var(--ease);
+}
+.s4-subscribe:hover:not(:disabled){opacity:0.92;transform:translateY(-1px);box-shadow:0 4px 16px rgba(0,0,0,0.15)}
+[data-theme="night"] .s4-subscribe:hover:not(:disabled){box-shadow:0 4px 16px rgba(0,0,0,0.4)}
+.s4-subscribe:disabled{opacity:0.55;cursor:not-allowed}
+.s4-error{
+  display:none;margin-top:10px;padding:10px 12px;border-radius:6px;
+  background:rgba(153,60,29,0.08);border:0.5px solid rgba(153,60,29,0.18);
+  font-size:12.5px;color:var(--bad);line-height:1.5;
+}
+[data-theme="night"] .s4-error{background:rgba(248,113,113,0.10);border-color:rgba(248,113,113,0.18)}
+.s4-error.show{display:block}
+.s4-disclaimer{font-size:11px;color:var(--t3);text-align:center;margin-top:10px;line-height:1.5}
+.s4-disclaimer a{color:inherit;text-decoration:underline;text-underline-offset:2px}
+.s4-stripe-badge{
+  margin-top:16px;padding-top:14px;border-top:0.5px solid var(--bdr);
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  font-family:var(--m);font-size:10px;color:var(--t3);
+  letter-spacing:1.2px;text-transform:uppercase;
+}
+.s4-stripe-badge::before{
+  content:'';width:14px;height:14px;border-radius:50%;background:var(--good);
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' fill='none' stroke='white' stroke-width='1.8'%3E%3Cpath d='M3 6L5 8L9 4'/%3E%3C/svg%3E");
+  background-size:11px;background-position:center;background-repeat:no-repeat;
+}
+.s4-trust{
+  margin-top:24px;padding:16px 20px;
+  background:var(--s1);border:0.5px solid var(--bdr);border-radius:10px;
+  display:flex;align-items:center;gap:18px;flex-wrap:wrap;
+  font-family:var(--m);font-size:10.5px;font-weight:500;letter-spacing:1.2px;
+  color:var(--t2);text-transform:uppercase;
+}
+.s4-trust span{display:flex;align-items:center;gap:7px}
+.s4-trust span::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--good)}
+@media(max-width:900px){
+  .step4-grid{grid-template-columns:1fr;gap:18px}
+  .s4-pay-col{position:static}
+  .s4-diff-strip{grid-template-columns:1fr}
+}
+
 @media(max-width:600px){
   .plan-grid{grid-template-columns:1fr;gap:14px}
   .shell.wide{max-width:480px}
@@ -443,6 +579,11 @@ main{flex:1;display:flex;align-items:center;justify-content:center;padding:48px 
         <span class="num"><span>3</span></span>
         <span class="label">PLAN</span>
       </div>
+      <div class="step-line"></div>
+      <div class="step-dot" data-step="4">
+        <span class="num"><span>4</span></span>
+        <span class="label">PAY</span>
+      </div>
     </div>
 
     <!-- Plan banner (only shows if ?next=checkout) -->
@@ -483,6 +624,11 @@ main{flex:1;display:flex;align-items:center;justify-content:center;padding:48px 
       <div class="divider"><span>OR</span></div>
 
       <form id="signupForm" novalidate>
+        <div class="field">
+          <label for="fullName">Your full name</label>
+          <input type="text" id="fullName" name="fullName" autocomplete="name" required placeholder="Jane Doe" minlength="2">
+          <div class="field-error" id="nameError">Please enter your full name.</div>
+        </div>
         <div class="field">
           <label for="email">Work email</label>
           <input type="email" id="email" name="email" autocomplete="email" required placeholder="you@company.com">
@@ -624,7 +770,7 @@ main{flex:1;display:flex;align-items:center;justify-content:center;padding:48px 
 
       <p class="plan-foot">All plans include a 30-day money-back guarantee · No setup fees · Cancel anytime</p>
 
-      <button type="button" class="step3-cta" id="step3CtaBtn">Continue to Growth checkout →</button>
+      <button type="button" class="step3-cta" id="step3CtaBtn">Continue to payment →</button>
 
       <div class="busy-overlay">
         <div class="spinner"></div>
@@ -633,6 +779,115 @@ main{flex:1;display:flex;align-items:center;justify-content:center;padding:48px 
 
       <div class="alt-cta" style="border-top:none;padding-top:14px">
         <span style="color:var(--t3);font-size:11.5px">Workspace ready · You can change your plan later in Settings → Billing</span>
+      </div>
+    </div>
+
+    <!-- ── STEP 4 — Embedded payment ── -->
+    <div class="card step-pane" id="step4" style="background:transparent;border:none;box-shadow:none;padding:0">
+      <div class="hero">
+        <div class="eyebrow">FINAL STEP</div>
+        <h1>Confirm and <em>activate</em>.</h1>
+        <p>Review your plan and complete payment to launch your Castford workspace. Cancel within 30 days for a full refund.</p>
+      </div>
+
+      <div class="step4-grid">
+
+        <!-- LEFT: Order summary -->
+        <div>
+          <!-- Plan summary card -->
+          <div class="s4-card">
+            <div class="s4-bx-h">Your plan <span class="s4-bx-h-tag" id="s4PopularTag" style="display:none">Most Popular</span></div>
+            <div class="s4-plan-row">
+              <div style="flex:1;min-width:0">
+                <div class="s4-plan-name" id="s4PlanName">Growth</div>
+                <div class="s4-plan-desc" id="s4PlanDesc">For finance teams scaling fast. Unlimited forecasts, workforce planning, priority support.</div>
+                <button type="button" class="s4-change-link" id="s4ChangePlan" style="margin-top:10px">Change plan</button>
+              </div>
+              <div style="text-align:right;flex-shrink:0">
+                <div class="s4-plan-price"><span id="s4PlanPriceMonthly">$1,499</span><span class="s4-plan-price-unit">/mo</span></div>
+                <div class="s4-plan-cycle" id="s4CycleLabel">BILLED ANNUALLY</div>
+              </div>
+            </div>
+
+            <div class="s4-lines">
+              <div class="s4-line">
+                <div class="s4-line-label" id="s4LineLabel">Growth plan <span class="meta" id="s4LineMeta">12 × $1,499</span></div>
+                <div class="s4-line-value" id="s4LineSubtotal">$17,988.00</div>
+              </div>
+              <div class="s4-line" id="s4DiscountLine">
+                <div class="s4-line-label">Annual discount <span class="meta">17% off list</span></div>
+                <div class="s4-line-value credit" id="s4DiscountValue">−$3,053.16</div>
+              </div>
+            </div>
+
+            <div class="s4-line-total">
+              <div>Due today</div>
+              <div id="s4TotalDue">$14,934.84</div>
+            </div>
+            <div class="s4-line-total-sub" id="s4RecurringNote">Renews annually · $14,934.84 on renewal date</div>
+          </div>
+
+          <!-- 30-day MBG -->
+          <div class="s4-card s4-mbg-card">
+            <div class="s4-mbg-icon">30</div>
+            <div>
+              <div class="s4-mbg-h">30-day money-back guarantee</div>
+              <div class="s4-mbg-sub">If Castford doesn't deliver value in your first month, get a full refund. No call, no friction — just email support.</div>
+            </div>
+          </div>
+
+          <!-- Differentiator strip -->
+          <div class="s4-diff-strip">
+            <div class="s4-diff-cell">
+              <div class="s4-diff-label">GL TRANSACTIONS</div>
+              <div class="s4-diff-value" id="s4DiffGl">~50K / mo</div>
+              <div class="s4-diff-sub" id="s4DiffGlSub">Estimated from company size. Plan covers headroom.</div>
+            </div>
+            <div class="s4-diff-cell">
+              <div class="s4-diff-label">FIRST VARIANCE</div>
+              <div class="s4-diff-value">&lt; 24 hrs</div>
+              <div class="s4-diff-sub">10 min to ERP connect. First variance report next morning.</div>
+            </div>
+            <div class="s4-diff-cell">
+              <div class="s4-diff-label">PAYBACK PERIOD</div>
+              <div class="s4-diff-value">~2 months</div>
+              <div class="s4-diff-sub">One variance caught typically pays for the year.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- RIGHT: Payment -->
+        <div class="s4-pay-col">
+          <div class="s4-card">
+            <div class="s4-pay-h">Payment details</div>
+            <p class="s4-pay-sub">Securely processed by Stripe. We never see or store your card information.</p>
+
+            <!-- Stripe Embedded Checkout iframe mounts here. Includes the Subscribe button. -->
+            <div id="payment-element">
+              <div style="display:flex;align-items:center;justify-content:center;height:200px;color:var(--t3);font-size:12px;font-family:var(--m)">Loading payment form…</div>
+            </div>
+
+            <div class="s4-disclaimer" style="margin-top:14px">
+              By subscribing you authorize Castford to charge your card recurring. Cancel any time during the 30-day window for a full refund. <a href="/terms">Terms</a> · <a href="/privacy">Privacy</a>
+            </div>
+
+            <div class="s4-stripe-badge">SECURED BY STRIPE</div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Trust strip -->
+      <div class="s4-trust">
+        <span>SOC 2 ready</span>
+        <span>256-bit AES</span>
+        <span>PCI DSS compliant</span>
+        <span>GDPR compliant</span>
+      </div>
+
+      <div class="busy-overlay">
+        <div class="spinner"></div>
+        <span id="busyMsg4">Preparing payment…</span>
       </div>
     </div>
 
@@ -707,9 +962,9 @@ function showStep(n){
     if (num < n) d.classList.add('done');
     else if (num === n) d.classList.add('active');
   });
-  // Step 3 needs wider shell to fit 3 plan cards
+  // Step 3 (plan picker) and Step 4 (embedded checkout) need wider shell
   const shell = document.getElementById('shell');
-  if (shell) shell.classList.toggle('wide', n === 3);
+  if (shell) shell.classList.toggle('wide', n === 3 || n === 4);
 }
 function setBusy(stepEl, busy, msg){
   stepEl.classList.toggle('busy', busy);
@@ -727,32 +982,55 @@ sb.auth.getSession().then(async ({data:{session}})=>{
 
   // verify-session is idempotent + auto-provisions an org if missing
   let hasOrg = false;
+  let currentOrg = null;
   try {
     const r = await fetch(SB_URL+'/functions/v1/verify-session', {
       method: 'POST',
       headers: { 'Content-Type':'application/json', 'Authorization':'Bearer '+session.access_token }
     });
-    if (r.ok){ const d = await r.json(); hasOrg = !!(d.org && d.org.id); }
+    if (r.ok){ 
+      const d = await r.json(); 
+      hasOrg = !!(d.org && d.org.id);
+      currentOrg = d.org || null;
+    }
   } catch(_){}
 
-  // Existing user WITH org coming from /pricing with next=checkout → straight to Stripe
+  // Detect if user is being routed to a specific step via URL (?step=3, ?step=4)
+  const urlStep = parseInt((new URLSearchParams(window.location.search)).get('step') || '0', 10);
+
+  // Detect unpaid org (demo/pending plan = needs to complete checkout)
+  const orgUnpaid = hasOrg && currentOrg && (
+    currentOrg.plan === 'demo' || currentOrg.plan === 'pending' || !currentOrg.plan
+  );
+
+  // Existing user WITH org coming from /pricing with next=checkout → step 4 embedded checkout
   if (hasOrg && NEXT_ACTION === 'checkout' && NEXT_PLAN){
-    setBusy(document.getElementById('step1'), true, 'Loading checkout…');
-    try {
-      const cr = await fetch(SB_URL+'/functions/v1/create-checkout', {
-        method:'POST',
-        headers:{'Content-Type':'application/json','Authorization':'Bearer '+session.access_token,'apikey':SB_KEY},
-        body: JSON.stringify({ plan: NEXT_PLAN, interval: NEXT_INTERVAL })
-      });
-      const cd = await cr.json();
-      if (cr.ok && cd.url){ window.location.href = cd.url; return; }
-      alert('Could not start checkout. ' + (cd.error||cd.detail||''));
-      window.location.href = '/billing';
-    } catch(err){ window.location.href = '/pricing'; }
+    // Set PLAN_STATE so step 4 renders correctly
+    PLAN_STATE.plan = NEXT_PLAN;
+    PLAN_STATE.interval = NEXT_INTERVAL === 'annual' ? 'annual' : 'monthly';
+    setBusy(document.getElementById('step1'), true, 'Loading payment form…');
+    const ok = await initStep4Checkout(session);
+    setBusy(document.getElementById('step1'), false);
+    if (ok) { showStep(4); return; }
+    // Fall through to /billing if init fails
+    window.location.href = '/billing';
     return;
   }
 
-  // Existing user WITH org, no checkout intent → home
+  // Existing user WITH org but explicitly directed to step 3 (plan picker) — gate redirect path
+  if (hasOrg && urlStep === 3){
+    document.getElementById('step2WelcomeBack')?.style.setProperty('display','none');
+    showStep(3);
+    return;
+  }
+
+  // Existing user WITH org but unpaid → force plan picker (Option B gate)
+  if (hasOrg && orgUnpaid){
+    showStep(3);
+    return;
+  }
+
+  // Existing user WITH paid org, no checkout intent → home
   if (hasOrg){ window.location.href = RD; return; }
 
   // Has session but no org yet → step 2 directly
@@ -826,12 +1104,19 @@ document.getElementById('signupForm').addEventListener('submit', async (e)=>{
   const pw = document.getElementById('password').value;
   const emailErr = document.getElementById('emailError');
   const pwErr = document.getElementById('pwError');
-  emailErr.style.display='none'; pwErr.style.display='none';
+  const nameErr = document.getElementById('nameError');
+  emailErr.style.display='none'; pwErr.style.display='none'; nameErr.style.display='none';
+  const fullName = (document.getElementById('fullName').value || '').trim();
+  if (!fullName || fullName.length < 2){ nameErr.style.display='block'; return; }
   if (!em || !em.includes('@')){ emailErr.style.display='block'; return; }
   if (!pw || pw.length < 8){ pwErr.textContent='Password must be at least 8 characters.'; pwErr.style.display='block'; return; }
   const btn = document.getElementById('step1Btn');
   btn.textContent='Creating account…'; btn.disabled=true;
-  const { data, error } = await sb.auth.signUp({ email: em, password: pw });
+  const { data, error } = await sb.auth.signUp({ 
+    email: em, 
+    password: pw,
+    options: { data: { full_name: fullName } }
+  });
   if (error){
     btn.textContent='Continue'; btn.disabled=false;
     pwErr.textContent = error.message || 'Sign-up failed.';
@@ -977,13 +1262,13 @@ document.querySelectorAll('.billing-toggle button').forEach(btn=>{
   });
 });
 
-// Step 3 CTA — call create-checkout with current selection, redirect to Stripe
+// Step 3 CTA — advance to Step 4 (embedded checkout). Plan info in PLAN_STATE.
 document.getElementById('step3CtaBtn').addEventListener('click', async ()=>{
   const cta = document.getElementById('step3CtaBtn');
   const step3 = document.getElementById('step3');
   const orig = cta.textContent;
   cta.disabled = true;
-  setBusy(step3, true, 'Loading checkout…');
+  setBusy(step3, true, 'Loading payment form…');
   const { data:{session} } = await sb.auth.getSession();
   if (!session){
     setBusy(step3, false); cta.disabled=false; cta.textContent=orig;
@@ -991,22 +1276,134 @@ document.getElementById('step3CtaBtn').addEventListener('click', async ()=>{
     window.location.href='/login';
     return;
   }
+  // Pre-mount the Stripe Elements BEFORE switching steps so user sees a ready form
+  const ok = await initStep4Checkout(session);
+  setBusy(step3, false); cta.disabled=false; cta.textContent=orig;
+  if (ok) showStep(4);
+});
+
+// ── Step 4: Embedded checkout (Stripe-hosted form embedded in our page)
+// Uses ui_mode='embedded' — Stripe renders the entire payment form (including
+// Subscribe button) in an iframe. We own everything around it: plan summary,
+// MBG callout, differentiators. On success, Stripe redirects to return_url.
+const PLAN_DETAILS = {
+  starter:  { label:'Starter',  desc:'For early-stage finance teams. Driver-based forecasting, GL connect, email support.', monthly:599,  annual:499,  popular:false, glEst:'~10K / mo',  glSub:'Estimated from company size. Starter covers 50K — you have headroom.' },
+  growth:   { label:'Growth',   desc:'For finance teams scaling fast. Unlimited forecasts, workforce planning, priority support.', monthly:1799, annual:1499, popular:true,  glEst:'~50K / mo',  glSub:'Estimated from company size. Growth covers 200K — you have headroom.' },
+  business: { label:'Business', desc:'For multi-entity finance orgs. Consolidation, all pro packs, SSO/SAML, dedicated CSM.', monthly:4799, annual:3999, popular:false, glEst:'~200K / mo', glSub:'Estimated from company size. Business covers unlimited — you have headroom.' },
+};
+
+let _stripeEmbedded = null;
+
+async function initStep4Checkout(session){
+  // Reset any previous mount
+  if (_stripeEmbedded){
+    try { _stripeEmbedded.unmount(); _stripeEmbedded.destroy(); } catch(_){}
+    _stripeEmbedded = null;
+  }
+
+  // Render plan summary FIRST so user sees their selection immediately
+  renderStep4PlanSummary();
+
+  // Fetch the Stripe embedded checkout client_secret from our edge function
+  let clientSecret, publishableKey;
   try {
-    const cr = await fetch(SB_URL+'/functions/v1/create-checkout', {
+    const r = await fetch(SB_URL+'/functions/v1/create-elements-session', {
       method:'POST',
       headers:{'Content-Type':'application/json','Authorization':'Bearer '+session.access_token,'apikey':SB_KEY},
       body: JSON.stringify({ plan: PLAN_STATE.plan, interval: PLAN_STATE.interval })
     });
-    const cd = await cr.json();
-    if (cr.ok && cd.url){ window.location.href = cd.url; return; }
-    console.error('[signup] create-checkout failed:', cd);
-    setBusy(step3, false); cta.disabled=false; cta.textContent=orig;
-    alert('Could not start checkout. ' + (cd.error||cd.detail||'Try again or contact support.'));
+    const d = await r.json();
+    if (!r.ok || !d.clientSecret){
+      console.error('[signup] create-elements-session failed:', d);
+      alert('Could not start checkout. ' + (d.error||d.detail||'Try again or contact support.'));
+      return false;
+    }
+    clientSecret = d.clientSecret;
+    publishableKey = d.publishableKey;
   } catch(err){
-    console.error('[signup] create-checkout network error:', err);
-    setBusy(step3, false); cta.disabled=false; cta.textContent=orig;
+    console.error('[signup] create-elements-session network error:', err);
     alert('Network error. Please try again.');
+    return false;
   }
+
+  if (!publishableKey){
+    console.error('[signup] No publishable key returned. Set STRIPE_PUBLISHABLE_KEY in Supabase env.');
+    alert('Payment is temporarily unavailable. Please try again or contact support.');
+    return false;
+  }
+
+  if (typeof Stripe === 'undefined'){
+    console.error('[signup] Stripe.js failed to load.');
+    alert('Payment system unavailable. Reload and try again.');
+    return false;
+  }
+
+  try {
+    const stripe = Stripe(publishableKey);
+    // Mount Stripe's embedded checkout iframe — includes the Subscribe button.
+    _stripeEmbedded = await stripe.initEmbeddedCheckout({ clientSecret });
+
+    // Clear placeholder content
+    const mount = document.getElementById('payment-element');
+    if (mount) mount.innerHTML = '';
+
+    _stripeEmbedded.mount('#payment-element');
+    return true;
+  } catch(err){
+    console.error('[signup] Stripe Embedded Checkout init failed:', err);
+    alert('Could not initialize payment form. ' + (err?.message || 'Please try again.'));
+    return false;
+  }
+}
+
+// Render plan summary on step 4 left column from PLAN_STATE
+function renderStep4PlanSummary(){
+  const plan = PLAN_STATE.plan;
+  const interval = PLAN_STATE.interval;
+  const d = PLAN_DETAILS[plan];
+  if (!d) return;
+
+  const monthly = interval === 'annual' ? d.annual : d.monthly;
+  const months = interval === 'annual' ? 12 : 1;
+  const subtotal = monthly * months;
+  // Display the savings vs. monthly billing rate (annual prices are already discounted)
+  const monthlyEquivAnnualPrice = d.monthly * 12;
+  const actualAnnualCost = d.annual * 12;
+  const annualSavings = monthlyEquivAnnualPrice - actualAnnualCost;
+  const total = interval === 'annual' ? actualAnnualCost : d.monthly;
+
+  document.getElementById('s4PlanName').textContent = d.label;
+  document.getElementById('s4PlanDesc').textContent = d.desc;
+  document.getElementById('s4PopularTag').style.display = d.popular ? '' : 'none';
+  document.getElementById('s4PlanPriceMonthly').textContent = '$' + monthly.toLocaleString();
+  document.getElementById('s4CycleLabel').textContent = interval === 'annual' ? 'BILLED ANNUALLY' : 'BILLED MONTHLY';
+  document.getElementById('s4DiffGl').textContent = d.glEst;
+  document.getElementById('s4DiffGlSub').textContent = d.glSub;
+
+  document.getElementById('s4LineLabel').firstChild.textContent = d.label + ' plan ';
+  document.getElementById('s4LineMeta').textContent = months + ' × $' + monthly.toLocaleString();
+  document.getElementById('s4LineSubtotal').textContent = fmtMoney(subtotal);
+
+  const discountLine = document.getElementById('s4DiscountLine');
+  if (interval === 'annual' && annualSavings > 0){
+    discountLine.style.display = '';
+    document.getElementById('s4DiscountValue').textContent = '−' + fmtMoney(annualSavings);
+  } else {
+    discountLine.style.display = 'none';
+  }
+
+  document.getElementById('s4TotalDue').textContent = fmtMoney(total);
+  document.getElementById('s4RecurringNote').textContent =
+    interval === 'annual'
+      ? `Renews annually · ${fmtMoney(total)} on renewal date`
+      : `Renews monthly · ${fmtMoney(total)} per month`;
+}
+
+function fmtMoney(n){ return '$' + n.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2}); }
+
+// "Change plan" link on step 4 → return to step 3
+document.getElementById('s4ChangePlan').addEventListener('click', ()=>{
+  showStep(3);
 });
 
 // Initial sync (in case user lands directly on step 3 due to existing org)
