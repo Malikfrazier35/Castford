@@ -85,7 +85,8 @@
   --green-600:var(--prime-dark);--green-700:var(--prime-dark);
   --text:var(--ink);--text-sec:var(--t1);--text-primary:var(--ink);
   --text-secondary:var(--t2);--muted:var(--t2);--light:var(--t3);
-  --border:var(--bdr);--border-lt:var(--bdr);--bg-alt:var(--s2);
+  --border:var(--bdr);--border-lt:var(--bdr);--border-light:var(--bdr);--bg-alt:var(--s2);
+  --bg-card:var(--s1);--radius:0;--green-dark:var(--prime-dark);--green-light:var(--prime-bg);
   --font:var(--b);--mono:var(--m);--r:var(--r-0);--max-w:var(--max);
   --surface:var(--s1);--surface-alt:var(--s2);--prime2:var(--prime-dark);
 }
@@ -142,7 +143,8 @@
   --green-600:var(--prime-light);--green-700:var(--prime-light);
   --text:var(--ink);--text-sec:var(--t1);--text-primary:var(--ink);
   --text-secondary:var(--t2);--muted:var(--t2);--light:var(--t3);
-  --border:var(--bdr);--border-lt:var(--bdr);--bg-alt:var(--s2);
+  --border:var(--bdr);--border-lt:var(--bdr);--border-light:var(--bdr);--bg-alt:var(--s2);
+  --bg-card:var(--s1);--radius:0;--green-dark:var(--prime-dark);--green-light:var(--prime-bg);
   --font:var(--b);--mono:var(--m);--r:var(--r-0);--max-w:var(--max);
   --surface:var(--s1);--surface-alt:var(--s2);--prime2:var(--prime-light);
 }

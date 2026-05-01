@@ -87,7 +87,7 @@
 /* HOW IT WORKS */
 .how{background:var(--bg-alt);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
 .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:32px;position:relative}
-.steps::before{content:'';position:absolute;top:32px;left:18%;right:18%;height:2px;background:linear-gradient(90deg,var(--green),#0891B2,#7C3AED);opacity:0.15;border-radius:1px}
+.steps::before{content:'';position:absolute;top:32px;left:18%;right:18%;height:2px;background:linear-gradient(90deg,var(--green),var(--prime),var(--prime));opacity:0.15;border-radius:1px}
 .step{text-align:center;position:relative;z-index:1}
 .step-num{width:52px;height:52px;border-radius:50%;background:var(--bg);border:2px solid var(--green);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:20px;font-weight:700;color:var(--green);margin:0 auto 14px;box-shadow:var(--shadow-sm)}
 .step h4{font-size:15px;font-weight:700;margin-bottom:6px}
@@ -110,7 +110,7 @@
 .api-t-header span:nth-child(2){background:var(--gold)}
 .api-t-header span:nth-child(3){background:var(--prime)}
 .api-t-
-.api-t-body .kw{color:#67E8F9}
+.api-t-body .kw{color:var(--prime-light)}
 .api-t-body .str{color:var(--gold)}
 .api-t-body .cm{color:var(--t1)}
 
@@ -127,6 +127,9 @@
 @media(max-width:768px){.nav-links{display:none}.steps{grid-template-columns:1fr}.steps::before{display:none}.stats{grid-template-columns:repeat(2,1fr)}.api-section{grid-template-columns:1fr;padding:24px}.cta-form{flex-direction:column}}
 @media(max-width:480px){.stats{grid-template-columns:1fr}}
 .fade-in{opacity:0;transform:translateY(16px);transition:opacity .5s,transform .5s}.fade-in.visible{opacity:1;transform:translateY(0)}
+.hero h1{font-family:'Instrument Sans',-apple-system,sans-serif!important;font-size:clamp(36px,4.8vw,58px)!important;font-weight:600!important;letter-spacing:-1.5px!important;line-height:1.05!important}
+.hero h1 em{font-style:normal;color:var(--prime);position:relative}
+.hero h1 em::after{content:'';position:absolute;left:0;right:0;bottom:2px;height:6px;background:var(--prime-bg);z-index:-1;border-radius:2px}
 </style>
 <script src="/site/rain.js" defer></script>
 <script src="/site/castford-shell.js" defer></script>
@@ -162,9 +165,9 @@
   <div class="hub">
     <div class="hub-center">
       <!-- Generic connectors -->
-      <div class="hub-logo"><svg viewBox="0 0 40 40" fill="none"><rect width="40" height="40" rx="10" fill="#E0F2FE"/><path d="M12 14h16v2H12zM12 19h16v2H12zM12 24h10v2H12z" fill="#0284C7"/></svg></div>
+      <div class="hub-logo"><svg viewBox="0 0 40 40" fill="none"><rect width="40" height="40" rx="10" fill="var(--prime-bg)"/><path d="M12 14h16v2H12zM12 19h16v2H12zM12 24h10v2H12z" fill="var(--prime)"/></svg></div>
       <div class="hub-connector"></div>
-      <div class="hub-logo"><svg viewBox="0 0 40 40" fill="none"><rect width="40" height="40" rx="10" fill="#EFF6FF"/><circle cx="20" cy="15" r="5" fill="#2563EB"/><path d="M12 28c0-4.4 3.6-8 8-8s8 3.6 8 8" fill="#2563EB"/></svg></div>
+      <div class="hub-logo"><svg viewBox="0 0 40 40" fill="none"><rect width="40" height="40" rx="10" fill="var(--prime-bg)"/><circle cx="20" cy="15" r="5" fill="var(--prime)"/><path d="M12 28c0-4.4 3.6-8 8-8s8 3.6 8 8" fill="var(--prime)"/></svg></div>
       <div class="hub-connector"></div>
       <!-- Castford center -->
       <div class="hub-main"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg></div>
@@ -172,7 +175,7 @@
       <!-- Generic connectors -->
       <div class="hub-logo"><svg viewBox="0 0 40 40" fill="none"><rect width="40" height="40" rx="10" fill="#FFF7ED"/><rect x="10" y="14" width="20" height="12" rx="2" fill="#EA580C"/><path d="M10 18h20" stroke="#FFF7ED" stroke-width="1.5"/></svg></div>
       <div class="hub-connector"></div>
-      <div class="hub-logo"><svg viewBox="0 0 40 40" fill="none"><rect width="40" height="40" rx="10" fill="#F5F3FF"/><path d="M12 14l8 4.5v9L12 32V14z" fill="#7C3AED"/><path d="M28 14l-8 4.5v9l8-4.5V14z" fill="#A78BFA"/></svg></div>
+      <div class="hub-logo"><svg viewBox="0 0 40 40" fill="none"><rect width="40" height="40" rx="10" fill="var(--prime-bg)"/><path d="M12 14l8 4.5v9L12 32V14z" fill="var(--prime)"/><path d="M28 14l-8 4.5v9l8-4.5V14z" fill="var(--prime-light)"/></svg></div>
     </div>
   </div>
 </section>
@@ -184,15 +187,15 @@
   </div>
   <div class="int-grid" id="intGrid">
     <div class="int-card" data-cat="erp">
-      <div class="int-logo"><svg viewBox="0 0 40 40"><rect fill="#E0F2FE" rx="8" width="40" height="40"/><path fill="#0284C7" d="M12 14h16v2H12zM12 19h16v2H12zM12 24h10v2H12z"/></svg></div>
+      <div class="int-logo"><svg viewBox="0 0 40 40"><rect fill="var(--prime-bg)" rx="8" width="40" height="40"/><path fill="var(--prime)" d="M12 14h16v2H12zM12 19h16v2H12zM12 24h10v2H12z"/></svg></div>
       <div class="int-info"><h4>ERP & Accounting Systems</h4><p>Full GL, AP/AR, revenue sync</p></div><span class="int-badge">30+ connectors</span>
     </div>
     <div class="int-card" data-cat="crm">
-      <div class="int-logo"><svg viewBox="0 0 40 40"><rect fill="#EFF6FF" rx="8" width="40" height="40"/><circle cx="20" cy="15" r="5" fill="#2563EB"/><path fill="#2563EB" d="M12 28c0-4.4 3.6-8 8-8s8 3.6 8 8"/></svg></div>
+      <div class="int-logo"><svg viewBox="0 0 40 40"><rect fill="var(--prime-bg)" rx="8" width="40" height="40"/><circle cx="20" cy="15" r="5" fill="var(--prime)"/><path fill="var(--prime)" d="M12 28c0-4.4 3.6-8 8-8s8 3.6 8 8"/></svg></div>
       <div class="int-info"><h4>CRM & Revenue Platforms</h4><p>Pipeline, bookings & ARR</p></div><span class="int-badge">25+ connectors</span>
     </div>
     <div class="int-card" data-cat="hris">
-      <div class="int-logo"><svg viewBox="0 0 40 40"><rect fill="#F5F3FF" rx="8" width="40" height="40"/><circle cx="15" cy="15" r="4" fill="#7C3AED"/><circle cx="25" cy="15" r="4" fill="#7C3AED"/><path fill="#7C3AED" d="M8 28c0-3.9 3.1-7 7-7s7 3.1 7 7M18 28c0-3.9 3.1-7 7-7s7 3.1 7 7"/></svg></div>
+      <div class="int-logo"><svg viewBox="0 0 40 40"><rect fill="var(--prime-bg)" rx="8" width="40" height="40"/><circle cx="15" cy="15" r="4" fill="var(--prime)"/><circle cx="25" cy="15" r="4" fill="var(--prime)"/><path fill="var(--prime)" d="M8 28c0-3.9 3.1-7 7-7s7 3.1 7 7M18 28c0-3.9 3.1-7 7-7s7 3.1 7 7"/></svg></div>
       <div class="int-info"><h4>HRIS & Workforce</h4><p>Headcount, comp & payroll</p></div><span class="int-badge">20+ connectors</span>
     </div>
     <div class="int-card" data-cat="bank">
@@ -200,11 +203,11 @@
       <div class="int-info"><h4>Banking & Payments</h4><p>Bank feeds, cards & expenses</p></div><span class="int-badge">30+ connectors</span>
     </div>
     <div class="int-card" data-cat="data">
-      <div class="int-logo"><svg viewBox="0 0 40 40"><rect fill="#ECFEFF" rx="8" width="40" height="40"/><path fill="#0891B2" d="M20 10l-8 4.5v11L20 30l8-4.5v-11L20 10z"/><path fill="#ECFEFF" d="M20 18l4 2.4v4.8L20 28l-4-2.8v-4.8L20 18z"/></svg></div>
+      <div class="int-logo"><svg viewBox="0 0 40 40"><rect fill="var(--prime-bg)" rx="8" width="40" height="40"/><path fill="var(--prime)" d="M20 10l-8 4.5v11L20 30l8-4.5v-11L20 10z"/><path fill="var(--prime-bg)" d="M20 18l4 2.4v4.8L20 28l-4-2.8v-4.8L20 18z"/></svg></div>
       <div class="int-info"><h4>Data Warehouses</h4><p>Cloud warehouse & lakehouse</p></div><span class="int-badge">15+ connectors</span>
     </div>
     <div class="int-card" data-cat="bi">
-      <div class="int-logo"><svg viewBox="0 0 40 40"><rect fill="#FFFBEB" rx="8" width="40" height="40"/><rect fill="#D97706" x="12" y="22" width="4" height="6" rx="1"/><rect fill="#D97706" x="18" y="16" width="4" height="12" rx="1"/><rect fill="#D97706" x="24" y="12" width="4" height="16" rx="1"/></svg></div>
+      <div class="int-logo"><svg viewBox="0 0 40 40"><rect fill="#FFFBEB" rx="8" width="40" height="40"/><rect fill="var(--accent)" x="12" y="22" width="4" height="6" rx="1"/><rect fill="var(--accent)" x="18" y="16" width="4" height="12" rx="1"/><rect fill="var(--accent)" x="24" y="12" width="4" height="16" rx="1"/></svg></div>
       <div class="int-info"><h4>BI & Analytics</h4><p>Dashboard & reporting tools</p></div><span class="int-badge">15+ connectors</span>
     </div>
   </div>

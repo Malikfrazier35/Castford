@@ -508,6 +508,34 @@ main{flex:1;display:flex;align-items:center;justify-content:center;padding:48px 
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' fill='none' stroke='white' stroke-width='1.8'%3E%3Cpath d='M3 6L5 8L9 4'/%3E%3C/svg%3E");
   background-size:11px;background-position:center;background-repeat:no-repeat;
 }
+/* Plan details + add-ons card under the diff strip */
+.s4-detail-card{padding:24px}
+.s4-detail-h{
+  font-family:'Instrument Sans',var(--s);font-size:18px;font-weight:600;
+  letter-spacing:-0.4px;color:var(--ink);margin-bottom:18px;
+  padding-bottom:14px;border-bottom:1px solid var(--bdr);
+}
+.s4-detail-section{margin-top:18px}
+.s4-detail-section:first-of-type{margin-top:0}
+.s4-detail-label{
+  font-family:var(--m);font-size:10.5px;font-weight:600;
+  letter-spacing:1.4px;color:var(--accent);text-transform:uppercase;
+  margin-bottom:10px;
+}
+.s4-detail-row{
+  display:flex;justify-content:space-between;align-items:flex-start;
+  gap:16px;padding:7px 0;font-size:13.5px;line-height:1.4;
+}
+.s4-detail-row + .s4-detail-row{border-top:0.5px solid var(--bdr-soft,rgba(0,0,0,0.04))}
+[data-theme="night"] .s4-detail-row + .s4-detail-row{border-top-color:rgba(255,255,255,0.04)}
+.s4-detail-k{color:var(--t1);font-weight:500;flex:1}
+.s4-detail-k .meta{display:block;color:var(--t3);font-size:11.5px;font-weight:400;margin-top:2px;font-family:var(--m);letter-spacing:0.2px}
+.s4-detail-v{color:var(--ink);font-weight:600;font-family:var(--m);font-size:13px;text-align:right;flex-shrink:0}
+.s4-detail-foot{
+  margin-top:18px;padding-top:14px;border-top:1px solid var(--bdr);
+  font-size:12px;line-height:1.55;color:var(--t2);
+}
+.s4-detail-foot strong{color:var(--ink);font-weight:600}
 .s4-trust{
   margin-top:24px;padding:16px 20px;
   background:var(--s1);border:0.5px solid var(--bdr);border-radius:10px;
@@ -589,7 +617,7 @@ main{flex:1;display:flex;align-items:center;justify-content:center;padding:48px 
     <!-- Plan banner (only shows if ?next=checkout) -->
     <div class="plan-banner" id="planBanner" data-energy>
       <span class="plan-banner-tag" id="planBannerPlan">GROWTH</span>
-      <span id="planBannerText">$1,499 / month, billed annually · 30-day money-back guarantee</span>
+      <span id="planBannerText">$1,499 / month, billed annually · 14-day free trial</span>
     </div>
 
     <!-- ── STEP 1 — Auth ── -->
@@ -701,7 +729,7 @@ main{flex:1;display:flex;align-items:center;justify-content:center;padding:48px 
       <div class="hero">
         <div class="eyebrow">PICK A PLAN</div>
         <h1>Choose your <em>plan</em>.</h1>
-        <p>30-day money-back guarantee on every plan. Cancel anytime.</p>
+        <p>14-day free trial on every plan · Cancel anytime.</p>
       </div>
 
       <div class="billing-toggle-row">
@@ -768,7 +796,7 @@ main{flex:1;display:flex;align-items:center;justify-content:center;padding:48px 
         </div>
       </div>
 
-      <p class="plan-foot">All plans include a 30-day money-back guarantee · No setup fees · Cancel anytime</p>
+      <p class="plan-foot">All plans include a 14-day free trial · No setup fees · Cancel anytime</p>
 
       <button type="button" class="step3-cta" id="step3CtaBtn">Continue to payment →</button>
 
@@ -787,7 +815,7 @@ main{flex:1;display:flex;align-items:center;justify-content:center;padding:48px 
       <div class="hero">
         <div class="eyebrow">FINAL STEP</div>
         <h1>Confirm and <em>activate</em>.</h1>
-        <p>Review your plan and complete payment to launch your Castford workspace. Cancel within 30 days for a full refund.</p>
+        <p>Review your plan and complete payment to launch your Castford workspace. <em style="font-style:normal;color:var(--prime);font-weight:600">First 14 days free.</em> Cancel anytime before day 15 — no charge.</p>
       </div>
 
       <div class="step4-grid">
@@ -821,18 +849,18 @@ main{flex:1;display:flex;align-items:center;justify-content:center;padding:48px 
             </div>
 
             <div class="s4-line-total">
-              <div>Due today</div>
+              <div>Due after trial</div>
               <div id="s4TotalDue">$14,934.84</div>
             </div>
-            <div class="s4-line-total-sub" id="s4RecurringNote">Renews annually · $14,934.84 on renewal date</div>
+            <div class="s4-line-total-sub" id="s4RecurringNote"><span style="color:var(--prime);font-weight:600">First 14 days free</span> · Then renews annually · $14,934.84 on renewal date</div>
           </div>
 
-          <!-- 30-day MBG -->
+          <!-- 14-day free trial -->
           <div class="s4-card s4-mbg-card">
-            <div class="s4-mbg-icon">30</div>
+            <div class="s4-mbg-icon">14</div>
             <div>
-              <div class="s4-mbg-h">30-day money-back guarantee</div>
-              <div class="s4-mbg-sub">If Castford doesn't deliver value in your first month, get a full refund. No call, no friction — just email support.</div>
+              <div class="s4-mbg-h">14-day free trial</div>
+              <div class="s4-mbg-sub">Full plan access for 14 days. Your card is on file but not charged until day 15. Cancel anytime in Settings → Billing — no questions, no friction.</div>
             </div>
           </div>
 
@@ -854,6 +882,71 @@ main{flex:1;display:flex;align-items:center;justify-content:center;padding:48px 
               <div class="s4-diff-sub">One variance caught typically pays for the year.</div>
             </div>
           </div>
+
+          <!-- WHAT'S INCLUDED + ADD-ONS DETAIL ROWS (post-checkout context) -->
+          <div class="s4-card s4-detail-card">
+            <div class="s4-detail-h">Plan details &amp; usage</div>
+
+            <div class="s4-detail-section">
+              <div class="s4-detail-label">INCLUDED IN <span id="s4DetailPlanName">GROWTH</span></div>
+              <div class="s4-detail-row">
+                <span class="s4-detail-k">Seats included</span>
+                <span class="s4-detail-v" id="s4DetailSeats">Up to 25</span>
+              </div>
+              <div class="s4-detail-row">
+                <span class="s4-detail-k">Entities</span>
+                <span class="s4-detail-v" id="s4DetailEntities">Up to 10</span>
+              </div>
+              <div class="s4-detail-row">
+                <span class="s4-detail-k">AI Copilot queries / mo</span>
+                <span class="s4-detail-v" id="s4DetailAi">1,000</span>
+              </div>
+              <div class="s4-detail-row">
+                <span class="s4-detail-k">Connector syncs / mo</span>
+                <span class="s4-detail-v" id="s4DetailSyncs">5,000</span>
+              </div>
+              <div class="s4-detail-row">
+                <span class="s4-detail-k">Pro packs included</span>
+                <span class="s4-detail-v" id="s4DetailPacks">1 pack of choice</span>
+              </div>
+            </div>
+
+            <div class="s4-detail-section">
+              <div class="s4-detail-label">OPTIONAL ADD-ONS · CHARGED MONTHLY</div>
+              <div class="s4-detail-row">
+                <span class="s4-detail-k">Extra seat <span class="meta">above plan limit</span></span>
+                <span class="s4-detail-v">$29 / seat / mo</span>
+              </div>
+              <div class="s4-detail-row">
+                <span class="s4-detail-k">Additional pro pack <span class="meta">CFO · Controller · FP&amp;A · CEO</span></span>
+                <span class="s4-detail-v">$199 / pack / mo</span>
+              </div>
+              <div class="s4-detail-row">
+                <span class="s4-detail-k">SSO/SAML <span class="meta">on Growth</span></span>
+                <span class="s4-detail-v" id="s4DetailSso">$99 / mo</span>
+              </div>
+            </div>
+
+            <div class="s4-detail-section">
+              <div class="s4-detail-label">USAGE OVERAGES · BILLED IN ARREARS</div>
+              <div class="s4-detail-row">
+                <span class="s4-detail-k">AI Copilot queries</span>
+                <span class="s4-detail-v">$0.04 / query above plan</span>
+              </div>
+              <div class="s4-detail-row">
+                <span class="s4-detail-k">Connector syncs</span>
+                <span class="s4-detail-v">$0.002 / sync above plan</span>
+              </div>
+              <div class="s4-detail-row">
+                <span class="s4-detail-k">Report exports</span>
+                <span class="s4-detail-v">$0.10 / report above plan</span>
+              </div>
+            </div>
+
+            <div class="s4-detail-foot">
+              All add-ons can be enabled or disabled later in <strong>Settings &rarr; Billing</strong>. Usage overages only apply if you exceed your plan's monthly allowance.
+            </div>
+          </div>
         </div>
 
         <!-- RIGHT: Payment -->
@@ -868,7 +961,7 @@ main{flex:1;display:flex;align-items:center;justify-content:center;padding:48px 
             </div>
 
             <div class="s4-disclaimer" style="margin-top:14px">
-              By subscribing you authorize Castford to charge your card recurring. Cancel any time during the 30-day window for a full refund. <a href="/terms">Terms</a> · <a href="/privacy">Privacy</a>
+              By subscribing you authorize Castford to charge your card after the 14-day free trial. Cancel any time before day 15 in Settings → Billing — no charge. <a href="/terms">Terms</a> · <a href="/privacy">Privacy</a>
             </div>
 
             <div class="s4-stripe-badge">SECURED BY STRIPE</div>
@@ -894,7 +987,7 @@ main{flex:1;display:flex;align-items:center;justify-content:center;padding:48px 
     <div class="trust" data-energy>
       <span>SOC 2 ready</span>
       <span>256-bit AES</span>
-      <span>30-day MBG</span>
+      <span>14-day free trial</span>
     </div>
 
     <div class="foot-link" data-energy><a href="/">← Back to castford.com</a></div>
@@ -942,7 +1035,7 @@ function applyCheckoutContext(){
   document.getElementById('planBannerPlan').textContent = planLabel.toUpperCase();
   const priceText = (PRICE_DISPLAY[NEXT_PLAN] && PRICE_DISPLAY[NEXT_PLAN][NEXT_INTERVAL])
     || planLabel + ' plan';
-  document.getElementById('planBannerText').textContent = priceText + ' · 30-day money-back guarantee';
+  document.getElementById('planBannerText').textContent = priceText + ' · 14-day free trial';
   // Step 1 copy
   document.getElementById('step1Eyebrow').textContent = 'STEP 1 OF 3 · CREATE ACCOUNT';
   document.getElementById('step1Heading').innerHTML = 'Create your <em>Castford</em> account.';
@@ -1325,9 +1418,12 @@ document.getElementById('step3CtaBtn').addEventListener('click', async ()=>{
 // Subscribe button) in an iframe. We own everything around it: plan summary,
 // MBG callout, differentiators. On success, Stripe redirects to return_url.
 const PLAN_DETAILS = {
-  starter:  { label:'Starter',  desc:'For early-stage finance teams. Driver-based forecasting, GL connect, email support.', monthly:599,  annual:499,  popular:false, glEst:'~10K / mo',  glSub:'Estimated from company size. Starter covers 50K — you have headroom.' },
-  growth:   { label:'Growth',   desc:'For finance teams scaling fast. Unlimited forecasts, workforce planning, priority support.', monthly:1799, annual:1499, popular:true,  glEst:'~50K / mo',  glSub:'Estimated from company size. Growth covers 200K — you have headroom.' },
-  business: { label:'Business', desc:'For multi-entity finance orgs. Consolidation, all pro packs, SSO/SAML, dedicated CSM.', monthly:4799, annual:3999, popular:false, glEst:'~200K / mo', glSub:'Estimated from company size. Business covers unlimited — you have headroom.' },
+  starter:  { label:'Starter',  desc:'For early-stage finance teams. Driver-based forecasting, GL connect, email support.', monthly:599,  annual:499,  popular:false, glEst:'~10K / mo',  glSub:'Estimated from company size. Starter covers 50K — you have headroom.',
+              seats:'Up to 5', entities:'Up to 3',  aiQ:'100',    syncs:'500',     packs:'0 (add for $199/mo each)', sso:'Not available' },
+  growth:   { label:'Growth',   desc:'For finance teams scaling fast. Unlimited forecasts, workforce planning, priority support.', monthly:1799, annual:1499, popular:true,  glEst:'~50K / mo',  glSub:'Estimated from company size. Growth covers 200K — you have headroom.',
+              seats:'Up to 25', entities:'Up to 10', aiQ:'1,000',  syncs:'5,000',   packs:'1 pack of choice', sso:'$99 / mo add-on' },
+  business: { label:'Business', desc:'For multi-entity finance orgs. Consolidation, all pro packs, SSO/SAML, dedicated CSM.', monthly:4799, annual:3999, popular:false, glEst:'~200K / mo', glSub:'Estimated from company size. Business covers unlimited — you have headroom.',
+              seats:'Unlimited', entities:'Unlimited', aiQ:'10,000', syncs:'Unlimited', packs:'All 4 packs included', sso:'Included' },
 };
 
 let _stripeEmbedded = null;
@@ -1353,7 +1449,17 @@ async function initStep4Checkout(session){
     const d = await r.json();
     if (!r.ok || !d.clientSecret){
       console.error('[signup] create-elements-session failed:', d);
-      alert('Could not start checkout. ' + (d.error||d.detail||'Try again or contact support.'));
+      // Build a verbose error that surfaces stage + Stripe codes so users can
+      // tell us exactly what's failing instead of a generic message.
+      var msg = d.error || 'Checkout init failed';
+      var bits = [];
+      if (d.stage) bits.push('Stage: ' + d.stage);
+      if (d.stripe_code) bits.push('Stripe code: ' + d.stripe_code);
+      if (d.stripe_param) bits.push('Param: ' + d.stripe_param);
+      if (d.detail) bits.push(d.detail);
+      else if (d.raw && d.raw.message) bits.push(d.raw.message);
+      var detail = bits.length ? '\n\n' + bits.join('\n') : '';
+      alert(msg + detail + '\n\nIf this keeps happening, take a screenshot and email support@castford.com.');
       return false;
     }
     clientSecret = d.clientSecret;
@@ -1431,10 +1537,23 @@ function renderStep4PlanSummary(){
   }
 
   document.getElementById('s4TotalDue').textContent = fmtMoney(total);
-  document.getElementById('s4RecurringNote').textContent =
-    interval === 'annual'
-      ? `Renews annually · ${fmtMoney(total)} on renewal date`
-      : `Renews monthly · ${fmtMoney(total)} per month`;
+  // Trial-aware recurring note. The initial s4RecurringNote span includes the
+  // "First 14 days free" pill in markup; update only the suffix to keep that.
+  const renewSuffix = interval === 'annual'
+    ? `Then renews annually · ${fmtMoney(total)} on renewal date`
+    : `Then renews monthly · ${fmtMoney(total)} per month`;
+  document.getElementById('s4RecurringNote').innerHTML =
+    '<span style="color:var(--prime);font-weight:600">First 14 days free</span> · ' + renewSuffix;
+
+  // Populate the new "Plan details & usage" section
+  const setText = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
+  setText('s4DetailPlanName', d.label.toUpperCase());
+  setText('s4DetailSeats', d.seats);
+  setText('s4DetailEntities', d.entities);
+  setText('s4DetailAi', d.aiQ);
+  setText('s4DetailSyncs', d.syncs);
+  setText('s4DetailPacks', d.packs);
+  setText('s4DetailSso', d.sso);
 }
 
 function fmtMoney(n){ return '$' + n.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2}); }

@@ -84,7 +84,7 @@ Organization settings, billing management (Stripe Customer Portal), security con
 - AI queries: $0.02/query above included tier
 - Connector syncs: $0.001/record above 1M/month
 - Report exports: $0.10/PDF above 100/month
-- 30-day money-back guarantee on all plans
+- 14-day free trial on all plans
 
 ## Technical Architecture
 - Frontend: Next.js 15 (React), deployed on Vercel

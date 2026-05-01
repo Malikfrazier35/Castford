@@ -5,18 +5,18 @@
 <meta charset="UTF-8">
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="Simple, transparent Castford pricing. Starter $499, Growth $1,499, Business $3,999 annual. AI-native FP&A with 30-day money-back guarantee. No hidden fees.">
+<meta name="description" content="Simple, transparent Castford pricing. Starter $499, Growth $1,499, Business $3,999 annual. AI-native FP&A with 14-day free trial. No hidden fees.">
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="https://castford.com/pricing">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://castford.com/pricing">
 <meta property="og:title" content="Castford Pricing — Transparent FP&A Pricing from $499/mo">
-<meta property="og:description" content="Simple, transparent Castford pricing. Starter $499, Growth $1,499, Business $3,999 annual. 30-day money-back guarantee.">
+<meta property="og:description" content="Simple, transparent Castford pricing. Starter $499, Growth $1,499, Business $3,999 annual. 14-day free trial.">
 <meta property="og:site_name" content="Castford">
 <meta property="og:image" content="https://castford.com/opengraph-image">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Castford Pricing — AI-Native FP&A from $499/mo">
-<meta name="twitter:description" content="Transparent consumption-based pricing. 30-day money-back guarantee.">
+<meta name="twitter:description" content="Transparent consumption-based pricing. 14-day free trial.">
 <meta name="twitter:image" content="https://castford.com/opengraph-image">
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"Product","name":"Castford FP&A Platform","description":"AI-native financial planning and analysis platform for modern finance teams","brand":{"@type":"Brand","name":"Castford"},"offers":{"@type":"AggregateOffer","priceCurrency":"USD","lowPrice":"499","highPrice":"3999","offerCount":"4","offers":[{"@type":"Offer","name":"Starter","price":"499","priceCurrency":"USD","url":"https://castford.com/pricing"},{"@type":"Offer","name":"Growth","price":"1499","priceCurrency":"USD","url":"https://castford.com/pricing"},{"@type":"Offer","name":"Business","price":"3999","priceCurrency":"USD","url":"https://castford.com/pricing"}]}}
@@ -184,6 +184,9 @@
 
 @media(max-width:1024px){.pricing-grid{grid-template-columns:1fr 1fr}}
 @media(max-width:600px){.pricing-grid,.comp-strip-grid{grid-template-columns:1fr}.nav-links{display:none}.cs-card{flex-direction:column}.cs-tiers{flex-direction:column}}
+.hero h1{font-family:'Instrument Sans',-apple-system,sans-serif!important;font-size:clamp(36px,4.8vw,58px)!important;font-weight:600!important;letter-spacing:-1.5px!important;line-height:1.05!important}
+.hero h1 em{font-style:normal;color:var(--prime);position:relative}
+.hero h1 em::after{content:'';position:absolute;left:0;right:0;bottom:2px;height:6px;background:var(--prime-bg);z-index:-1;border-radius:2px}
 </style>
 <script src="/site/rain.js" defer></script>
 <script src="/site/castford-shell.js" defer></script>
@@ -206,7 +209,7 @@
   <div class="cf-nav-right">
     <div class="cf-toggle" id="themeToggle" title="Toggle day/night"></div>
     <a href="/login" class="cf-nav-sign">Sign in</a>
-    <button class="cf-nav-cta" onclick="window.location='/pricing'">Get started</button>
+    <button class="cf-nav-cta" onclick="window.location='/signup'">Sign up</button>
   </div>
 </div></nav>
 
@@ -230,19 +233,19 @@
 <div class="pricing-card">
 <div class="plan-name">Starter</div>
 <div class="plan-price"><span class="dollar">$</span><span class="amount" data-monthly="599" data-annual="499">499</span><span class="per">/mo</span></div><div style="margin-top:18px;padding-top:16px;border-top:1px solid rgba(0,0,0,0.08)">
-<div style="font-size:10px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#94a3b8;margin-bottom:10px">Seats included</div>
-<div style="display:flex;flex-direction:column;gap:6px;font-size:13px;color:#475569">
-<div><strong style="color:#1a2332;font-weight:600">5</strong> full seats <span style="color:#94a3b8">· edit data, run reports, use AI</span></div>
-<div><strong style="color:#1a2332;font-weight:600">5</strong> view-only seats <span style="color:#94a3b8">· read-only access</span></div>
-<div><strong style="color:#1a2332;font-weight:600">3</strong> external observer seats <span style="color:#94a3b8">· board, auditors, fractional CFOs</span></div>
+<div style="font-size:10px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--t3);margin-bottom:10px">Seats included</div>
+<div style="display:flex;flex-direction:column;gap:6px;font-size:13px;color:var(--t1)">
+<div><strong style="color:var(--ink);font-weight:600">5</strong> full seats <span style="color:var(--t3)">· edit data, run reports, use AI</span></div>
+<div><strong style="color:var(--ink);font-weight:600">5</strong> view-only seats <span style="color:var(--t3)">· read-only access</span></div>
+<div><strong style="color:var(--ink);font-weight:600">3</strong> external observer seats <span style="color:var(--t3)">· board, auditors, fractional CFOs</span></div>
 </div>
-<div style="margin-top:12px;padding-top:10px;border-top:1px solid rgba(0,0,0,0.04);font-size:11px;color:#94a3b8">Add view-only seats: $25/mo each</div>
+<div style="margin-top:12px;padding-top:10px;border-top:1px solid rgba(0,0,0,0.04);font-size:11px;color:var(--t3)">Add view-only seats: $25/mo each</div>
 </div>
 <div class="plan-save" data-save-annual="Save $1,200/year" data-save-monthly="">Save $1,200/year</div>
 <div class="plan-desc">For small finance teams getting started with modern FP&A</div>
 <div class="plan-btns">
 <a href="/login" class="plan-btn outline">Try Demo</a>
-<button type="button" class="plan-btn green" data-checkout-plan="starter">Subscribe</button>
+<button type="button" class="plan-btn green" data-checkout-plan="starter">Sign up</button>
 </div>
 <div class="feat-section-title">Platform</div>
 <ul class="feat-list">
@@ -257,26 +260,26 @@
 <div class="consumption-row"><span class="c-label">Connector syncs</span><span class="c-val">500</span></div>
 <div class="consumption-row"><span class="c-label">Report exports</span><span class="c-val">50</span></div>
 <div class="consumption-row"><span class="c-label">Scenario runs</span><span class="c-val">10</span></div>
-<div class="guarantee">30-day money-back guarantee</div>
+<div class="guarantee">14-day free trial · No commitment</div>
 </div>
 
 <!-- GROWTH (FEATURED) -->
 <div class="pricing-card featured">
 <div class="plan-name">Growth</div>
 <div class="plan-price"><span class="dollar">$</span><span class="amount" data-monthly="1799" data-annual="1499">1,499</span><span class="per">/mo</span></div><div style="margin-top:18px;padding-top:16px;border-top:1px solid rgba(0,0,0,0.08)">
-<div style="font-size:10px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#94a3b8;margin-bottom:10px">Seats included</div>
-<div style="display:flex;flex-direction:column;gap:6px;font-size:13px;color:#475569">
-<div><strong style="color:#1a2332;font-weight:600">15</strong> full seats <span style="color:#94a3b8">· edit data, run reports, use AI</span></div>
-<div><strong style="color:#1a2332;font-weight:600">25</strong> view-only seats <span style="color:#94a3b8">· read-only access</span></div>
-<div><strong style="color:#1a2332;font-weight:600">10</strong> external observer seats <span style="color:#94a3b8">· board, auditors, fractional CFOs</span></div>
+<div style="font-size:10px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--t3);margin-bottom:10px">Seats included</div>
+<div style="display:flex;flex-direction:column;gap:6px;font-size:13px;color:var(--t1)">
+<div><strong style="color:var(--ink);font-weight:600">15</strong> full seats <span style="color:var(--t3)">· edit data, run reports, use AI</span></div>
+<div><strong style="color:var(--ink);font-weight:600">25</strong> view-only seats <span style="color:var(--t3)">· read-only access</span></div>
+<div><strong style="color:var(--ink);font-weight:600">10</strong> external observer seats <span style="color:var(--t3)">· board, auditors, fractional CFOs</span></div>
 </div>
-<div style="margin-top:12px;padding-top:10px;border-top:1px solid rgba(0,0,0,0.04);font-size:11px;color:#94a3b8">Add full seats: $80/mo · view-only: $25/mo</div>
+<div style="margin-top:12px;padding-top:10px;border-top:1px solid rgba(0,0,0,0.04);font-size:11px;color:var(--t3)">Add full seats: $80/mo · view-only: $25/mo</div>
 </div>
 <div class="plan-save" data-save-annual="Save $3,600/year" data-save-monthly="">Save $3,600/year</div>
 <div class="plan-desc">For scaling teams with advanced forecasting and AI needs</div>
 <div class="plan-btns">
 <a href="/login" class="plan-btn outline">Try Demo</a>
-<button type="button" class="plan-btn green" data-checkout-plan="growth">Subscribe</button>
+<button type="button" class="plan-btn green" data-checkout-plan="growth">Sign up</button>
 </div>
 <div class="feat-section-title">Platform</div>
 <ul class="feat-list">
@@ -293,26 +296,26 @@
 <div class="consumption-row"><span class="c-label">Report exports</span><span class="c-val">500</span></div>
 <div class="consumption-row"><span class="c-label">Scenario runs</span><span class="c-val">100</span></div>
 <div class="consumption-row"><span class="c-label">API calls</span><span class="c-val">5,000</span></div>
-<div class="guarantee">30-day money-back guarantee</div>
+<div class="guarantee">14-day free trial · No commitment</div>
 </div>
 
 <!-- BUSINESS -->
 <div class="pricing-card">
 <div class="plan-name">Business</div>
 <div class="plan-price"><span class="dollar">$</span><span class="amount" data-monthly="4799" data-annual="3999">3,999</span><span class="per">/mo</span></div><div style="margin-top:18px;padding-top:16px;border-top:1px solid rgba(0,0,0,0.08)">
-<div style="font-size:10px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#94a3b8;margin-bottom:10px">Seats included</div>
-<div style="display:flex;flex-direction:column;gap:6px;font-size:13px;color:#475569">
-<div><strong style="color:#1a2332;font-weight:600">30</strong> full seats <span style="color:#94a3b8">· edit data, run reports, use AI</span></div>
-<div><strong style="color:#C4884A;font-weight:600">∞</strong> view-only seats <span style="color:#94a3b8">· read-only access</span></div>
-<div><strong style="color:#C4884A;font-weight:600">∞</strong> external observer seats <span style="color:#94a3b8">· board, auditors, fractional CFOs</span></div>
+<div style="font-size:10px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--t3);margin-bottom:10px">Seats included</div>
+<div style="display:flex;flex-direction:column;gap:6px;font-size:13px;color:var(--t1)">
+<div><strong style="color:var(--ink);font-weight:600">30</strong> full seats <span style="color:var(--t3)">· edit data, run reports, use AI</span></div>
+<div><strong style="color:#C4884A;font-weight:600">∞</strong> view-only seats <span style="color:var(--t3)">· read-only access</span></div>
+<div><strong style="color:#C4884A;font-weight:600">∞</strong> external observer seats <span style="color:var(--t3)">· board, auditors, fractional CFOs</span></div>
 </div>
-<div style="margin-top:12px;padding-top:10px;border-top:1px solid rgba(0,0,0,0.04);font-size:11px;color:#94a3b8">Add full seats: $200/mo · view-only & external always free</div>
+<div style="margin-top:12px;padding-top:10px;border-top:1px solid rgba(0,0,0,0.04);font-size:11px;color:var(--t3)">Add full seats: $200/mo · view-only & external always free</div>
 </div>
 <div class="plan-save" data-save-annual="Save $9,600/year" data-save-monthly="">Save $9,600/year</div>
 <div class="plan-desc">Full enterprise suite for large, complex finance orgs</div>
 <div class="plan-btns">
 <a href="/login" class="plan-btn outline">Try Demo</a>
-<button type="button" class="plan-btn green" data-checkout-plan="business">Subscribe</button>
+<button type="button" class="plan-btn green" data-checkout-plan="business">Sign up</button>
 </div>
 <div class="feat-section-title">Platform</div>
 <ul class="feat-list">
@@ -330,7 +333,7 @@
 <div class="consumption-row"><span class="c-label">Report exports</span><span class="c-val unlimited">Unlimited</span></div>
 <div class="consumption-row"><span class="c-label">Scenario runs</span><span class="c-val">1,000</span></div>
 <div class="consumption-row"><span class="c-label">API calls</span><span class="c-val unlimited">Unlimited</span></div>
-<div class="guarantee">30-day money-back guarantee</div>
+<div class="guarantee">14-day free trial · No commitment</div>
 </div>
 
 <!-- ENTERPRISE (Custom) -->
@@ -432,8 +435,8 @@
 <div class="faq-a"><p>Yes. Nonprofits get 50% off any plan. Startups under $5M ARR qualify for our Emerging program — 30% off Growth for the first year. Email sales@castford.com to apply.</p></div>
 </div>
 <div class="faq-item" onclick="this.classList.toggle('open')">
-<div class="faq-q">What's included in the 30-day money-back guarantee?<svg viewBox="0 0 24 24"><polyline points="6,9 12,15 18,9"/></svg></div>
-<div class="faq-a"><p>Full refund, no questions asked, within the first 30 days of any paid plan. Enterprise contracts have a separate evaluation period negotiated at signing.</p></div>
+<div class="faq-q">How does the 14-day free trial work?<svg viewBox="0 0 24 24"><polyline points="6,9 12,15 18,9"/></svg></div>
+<div class="faq-a"><p>Full access to your selected plan for 14 days. We collect your card upfront so the workspace continues seamlessly when you convert. Cancel anytime in Settings → Billing before day 15 and you won't be charged. Enterprise contracts have a separate evaluation period negotiated at signing.</p></div>
 </div>
 </div>
 </section>
@@ -441,9 +444,9 @@
 <!-- BOTTOM CTA -->
 <section class="bottom-cta">
 <h2>Start building smarter forecasts today</h2>
-<p>Try any plan free for 30 days. Setup in minutes for demo. Setup in under 10 minutes.</p>
+<p>Try any plan free for 14 days. Cancel anytime · No setup fees.</p>
 <div class="cta-row">
-<button type="button" class="cta-green" data-checkout-plan="growth">Subscribe Now</button>
+<button type="button" class="cta-green" data-checkout-plan="growth">Sign up free</button>
 <a href="/contact" class="cta-outline-w">Request Demo</a>
 </div>
 </section>

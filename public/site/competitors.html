@@ -1,51 +1,151 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="day">
 <head>
+<script>((d)=>{const t=localStorage.getItem("cf-theme");if(t)d.dataset.theme=t})(document.documentElement)</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Careers -- Castford</title>
+<title>How Castford compares · Castford</title>
+<meta name="description" content="A side-by-side comparison of Castford against legacy FP&A platforms. Coming soon.">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=Instrument+Sans:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/site/theme.css">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#0a0a0a;color:#fff;min-height:100vh;display:flex;flex-direction:column}
-nav{display:flex;align-items:center;justify-content:space-between;padding:16px 40px;border-bottom:1px solid rgba(255,255,255,0.08)}
-.logo{font-size:18px;font-weight:700;letter-spacing:-0.5px;color:#fff;text-decoration:none}
-.logo span{color:#22c55e}
-.nav-links{display:flex;gap:24px;align-items:center}
-.nav-links a{color:rgba(255,255,255,0.6);text-decoration:none;font-size:14px;transition:color 0.2s}
-.nav-links a:hover{color:#fff}
-.nav-cta{background:#22c55e;color:#000;padding:8px 16px;border-radius:8px;font-weight:600;font-size:14px;text-decoration:none}
-.nav-cta:hover{background:#16a34a;color:#000}
-main{flex:1;display:flex;align-items:center;justify-content:center;padding:80px 40px;text-align:center}
-.careers-content{max-width:560px}
-.careers-content h1{font-size:42px;font-weight:700;letter-spacing:-1px;margin-bottom:16px;line-height:1.1}
-.careers-content p{color:rgba(255,255,255,0.6);font-size:18px;line-height:1.6;margin-bottom:32px}
-.careers-content a{color:#22c55e;text-decoration:none;font-weight:600;font-size:16px}
-.careers-content a:hover{text-decoration:underline}
-footer{padding:24px 40px;border-top:1px solid rgba(255,255,255,0.08);text-align:center;color:rgba(255,255,255,0.3);font-size:13px}
+body{
+  font-family:'DM Sans',-apple-system,BlinkMacSystemFont,sans-serif;
+  background:var(--bg);color:var(--ink);
+  min-height:100vh;display:flex;flex-direction:column;
+  -webkit-font-smoothing:antialiased;
+}
+
+nav{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:18px 48px;border-bottom:1px solid var(--bdr);
+  background:var(--bg);position:sticky;top:0;z-index:10;
+}
+.logo{display:flex;align-items:center;gap:8px;text-decoration:none;color:var(--ink);font-weight:700;font-size:18px;letter-spacing:-0.3px}
+.logo-mark{width:24px;height:24px;border-radius:6px;background:linear-gradient(135deg,var(--prime),var(--prime-dark));display:flex;align-items:center;justify-content:center;color:#fff;font-size:11px;font-family:'Geist Mono',monospace}
+.nav-links{display:flex;gap:28px;align-items:center}
+.nav-links a{color:var(--t2);text-decoration:none;font-size:14px;font-weight:500;transition:color .15s}
+.nav-links a:hover{color:var(--ink)}
+.nav-cta{
+  background:var(--prime);color:#fff;padding:9px 18px;border-radius:6px;
+  font-weight:600;font-size:14px;text-decoration:none;transition:background .15s;
+}
+.nav-cta:hover{background:var(--prime-dark)}
+
+.theme-toggle{
+  display:flex;align-items:center;gap:6px;
+  background:var(--s2);border:1px solid var(--bdr);border-radius:999px;
+  padding:4px;cursor:pointer;font-family:'Geist Mono',monospace;font-size:11px;letter-spacing:0.04em;
+}
+.theme-toggle button{
+  background:transparent;border:none;color:var(--t3);
+  padding:4px 10px;border-radius:999px;cursor:pointer;font:inherit;
+  transition:all .15s;
+}
+.theme-toggle button.active{background:var(--s1);color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,0.06)}
+
+main{flex:1;display:flex;align-items:center;justify-content:center;padding:96px 40px;text-align:center}
+.shell{max-width:680px}
+
+.eyebrow{
+  font-family:'Geist Mono',monospace;font-size:11px;letter-spacing:0.14em;
+  color:var(--accent);text-transform:uppercase;margin-bottom:20px;
+}
+h1{
+  font-family:'Instrument Sans',-apple-system,sans-serif;
+  font-size:clamp(40px,5vw,56px);font-weight:600;letter-spacing:-1.5px;
+  line-height:1.05;margin-bottom:20px;color:var(--ink);
+}
+h1 em{font-style:normal;color:var(--prime);position:relative}
+h1 em::after{
+  content:"";position:absolute;left:0;right:0;bottom:2px;height:6px;
+  background:var(--prime-bg);z-index:-1;border-radius:2px;
+}
+.lede{
+  font-size:18px;line-height:1.65;color:var(--t2);
+  margin-bottom:36px;max-width:520px;margin-left:auto;margin-right:auto;
+}
+
+.row{display:flex;gap:12px;justify-content:center;align-items:center;flex-wrap:wrap}
+.btn{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:12px 22px;border-radius:6px;font-weight:600;font-size:14px;
+  text-decoration:none;transition:all .15s;
+}
+.btn-primary{background:var(--prime);color:#fff}
+.btn-primary:hover{background:var(--prime-dark);transform:translateY(-1px)}
+.btn-ghost{color:var(--t1);border:1px solid var(--bdr);background:var(--s1)}
+.btn-ghost:hover{border-color:var(--prime);color:var(--prime)}
+
+footer{
+  padding:32px 48px;border-top:1px solid var(--bdr);
+  text-align:center;color:var(--t3);font-size:13px;
+}
+footer a{color:var(--t2);text-decoration:none}
+footer a:hover{color:var(--ink)}
+
+@media (max-width:640px){
+  nav{padding:14px 20px}
+  .nav-links{gap:14px}
+  .nav-links a:not(.nav-cta){display:none}
+  main{padding:64px 20px}
+}
 </style>
 <script src="/site/castford-shell.js" defer></script>
-<link rel="icon" type="image/svg+xml" href="/favicon.svg">
 </head>
 <body>
+
 <nav>
-<a href="/" class="logo">Cast<span>ford</span></a>
-<div class="nav-links">
-<a href="/solutions">Solutions</a>
-<a href="/pricing">Pricing</a>
-<a href="/integrations">Integrations</a>
-<a href="/security">Security</a>
-<a href="/resources">Resources</a>
-<a href="/about">About</a>
-<a href="/contact" class="nav-cta">Get a Demo</a>
-</div>
+  <a href="/" class="logo">
+    <span class="logo-mark">C</span>
+    Castford
+  </a>
+  <div class="nav-links">
+    <a href="/solutions">Solutions</a>
+    <a href="/pricing">Pricing</a>
+    <a href="/integrations">Integrations</a>
+    <a href="/security">Trust</a>
+    <a href="/resources">Resources</a>
+    <div class="theme-toggle" role="group" aria-label="Theme">
+      <button data-theme-set="day" class="active">DAY</button>
+      <button data-theme-set="night">NIGHT</button>
+    </div>
+    <a href="/signup" class="nav-cta">Get started</a>
+  </div>
 </nav>
+
 <main>
-<div class="careers-content">
-<h1>We are not currently hiring</h1>
-<p>Thank you for your interest in Castford. We do not have any open positions at this time. Please check back in the future for updates.</p>
-<a href="/">Back to Home</a>
-</div>
+  <div class="shell">
+    <div class="eyebrow">COMPARISON</div>
+    <h1>How Castford <em>compares</em>.</h1>
+    <p class="lede">
+      We're putting together a careful, accurate comparison of Castford against the legacy FP&amp;A platforms our customers most often replace. We'd rather take the time to get it right than ship a hand-wavy chart.
+    </p>
+    <div class="row">
+      <a href="/contact" class="btn btn-primary">Talk to founders</a>
+      <a href="/solutions" class="btn btn-ghost">See what Castford does</a>
+    </div>
+  </div>
 </main>
-<footer>2024 Castford. All rights reserved.</footer>
+
+<footer>
+  © 2026 Castford · A Financial Holding LLC product · <a href="/terms">Terms</a> · <a href="/privacy">Privacy</a>
+</footer>
+
+<script>
+document.querySelectorAll('[data-theme-set]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const t = btn.dataset.themeSet;
+    document.documentElement.dataset.theme = t;
+    try { localStorage.setItem('cf-theme', t); } catch(_){}
+    document.querySelectorAll('[data-theme-set]').forEach(b => b.classList.toggle('active', b === btn));
+  });
+});
+const cur = document.documentElement.dataset.theme || 'day';
+document.querySelectorAll('[data-theme-set]').forEach(b => b.classList.toggle('active', b.dataset.themeSet === cur));
+</script>
 </body>
 </html>
