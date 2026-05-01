@@ -49,17 +49,19 @@
 .hero::before{content:'';position:absolute;top:0;left:0;right:0;height:100%;background:linear-gradient(180deg,var(--green-50) 0%,var(--bg) 80%);z-index:-1}
 .hero-badge{display:inline-flex;align-items:center;gap:8px;padding:6px 6px 6px 14px;border-radius:100px;font-size:13px;font-weight:500;color:var(--text-secondary);background:var(--bg);border:1px solid var(--border);margin-bottom:20px}
 .hero-badge .tag{background:var(--green-100);color:var(--green-700);padding:3px 10px;border-radius:100px;font-size:11px;font-weight:700;letter-spacing:0.02em}
-.hero h1{font-size:clamp(32px,4.5vw,52px);font-weight:800;letter-spacing:-0.035em;line-height:1.1;margin-bottom:16px;max-width:720px;margin-left:auto;margin-right:auto}
-.hero h1 span{color:var(--green-600)}
+.hero h1{font-family:'Instrument Sans',-apple-system,sans-serif;font-size:clamp(36px,4.8vw,58px);font-weight:600;letter-spacing:-1.5px;line-height:1.05;margin-bottom:18px;max-width:780px;margin-left:auto;margin-right:auto}
+.hero h1 em{font-style:normal;color:var(--prime);position:relative}
+.hero h1 em::after{content:'';position:absolute;left:0;right:0;bottom:2px;height:6px;background:var(--prime-bg);z-index:-1;border-radius:2px}
 .hero-sub{font-size:clamp(15px,1.5vw,17px);color:var(--text-secondary);max-width:560px;margin:0 auto 36px;line-height:1.55}
 
 /* CERTIFICATIONS STRIP */
 .cert-strip{padding:40px 24px;border-bottom:1px solid var(--border-light)}
 .cert-inner{max-width:var(--max-w);margin:0 auto;text-align:center}
-.cert-inner p{font-size:12px;color:var(--light);text-transform:uppercase;letter-spacing:0.08em;font-weight:500;margin-bottom:20px}
+.cert-inner p{font-family:'Geist Mono',monospace;font-size:11px;color:var(--accent);text-transform:uppercase;letter-spacing:0.14em;font-weight:500;margin-bottom:24px}
 .cert-logos{display:flex;justify-content:center;gap:32px;flex-wrap:wrap;align-items:center}
 .cert-badge{display:flex;flex-direction:column;align-items:center;gap:6px}
-.cert-icon{width:48px;height:48px;border-radius:0;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:11px;letter-spacing:0.02em;border:2px solid var(--border)}
+.cert-icon{width:56px;height:56px;border-radius:0;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;letter-spacing:0.04em;border:1.5px solid var(--bdr);font-family:'Geist Mono',monospace;transition:all .2s ease}
+.cert-badge:hover .cert-icon{transform:translateY(-2px);box-shadow:var(--card-shadow)}
 .cert-badge span{font-size:11px;font-weight:600;color:var(--muted)}
 
 /* SECTIONS */
@@ -198,13 +200,13 @@ h2{font-size:clamp(24px,3vw,36px);font-weight:800;letter-spacing:-0.025em;margin
     Zero Trust Security Architecture
     <span class="tag">TRUST</span>
   </div>
-  <h1>Your financial data is <span>never trusted, always verified</span></h1>
+  <h1>Your financial data is <em>never</em> trusted, always verified.</h1>
   <p class="hero-sub">Castford applies zero trust principles to every data interaction — whether your team connects via our integration portal or uploads files manually. No implicit trust. Every request authenticated. Every byte encrypted.</p>
   <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:12px">
     <button class="btn btn-primary btn-lg">Request Security Whitepaper</button>
     <button class="btn btn-outline btn-lg">Talk to Security Team</button>
   </div>
-  <p style="font-size:12px;color:var(--light)">SOC 2 Ready -- GDPR compliant -- SOX 404 ready</p>
+  <p style="font-size:12px;color:var(--light)">SOC 2 Ready · GDPR compliant · SOX 404 ready</p>
 </section>
 
 <!-- CERTIFICATIONS -->
@@ -213,10 +215,10 @@ h2{font-size:clamp(24px,3vw,36px);font-weight:800;letter-spacing:-0.025em;margin
     <p>Compliance & Certifications</p>
     <div class="cert-logos">
       <div class="cert-badge"><div class="cert-icon" style="border-color:var(--green-200);color:var(--green-700)">SOC 2</div><span>Ready</span></div>
-      <div class="cert-badge"><div class="cert-icon" style="border-color:#BFDBFE;color:#1D4ED8">GDPR</div><span>Compliant</span></div>
-      <div class="cert-badge"><div class="cert-icon" style="border-color:#DDD6FE;color:#6D28D9">SOX</div><span>404 Ready</span></div>
-      <div class="cert-badge"><div class="cert-icon" style="border-color:#FED7AA;color:#C2410C">ISO</div><span>27001</span></div>
-      <div class="cert-badge"><div class="cert-icon" style="border-color:#CFFAFE;color:#0E7490">CCPA</div><span>Compliant</span></div>
+      <div class="cert-badge"><div class="cert-icon" style="border-color:var(--prime-bdr);color:var(--prime)">GDPR</div><span>Compliant</span></div>
+      <div class="cert-badge"><div class="cert-icon" style="border-color:var(--accent-bdr);color:var(--accent)">SOX</div><span>404 Ready</span></div>
+      <div class="cert-badge"><div class="cert-icon" style="border-color:var(--prime-bdr);color:var(--prime)">ISO</div><span>27001</span></div>
+      <div class="cert-badge"><div class="cert-icon" style="border-color:var(--accent-bdr);color:var(--accent)">CCPA</div><span>Compliant</span></div>
       <div class="cert-badge"><div class="cert-icon" style="border-color:var(--border);color:var(--muted)">HIPAA</div><span>BAA Available</span></div>
     </div>
   </div>
@@ -463,35 +465,35 @@ h2{font-size:clamp(24px,3vw,36px);font-weight:800;letter-spacing:-0.025em;margin
       </div>
     </div>
     <div class="comp-card fade-in">
-      <div class="comp-icon" style="background:#EFF6FF;color:#1D4ED8">GDP</div>
+      <div class="comp-icon" style="background:var(--prime-bg);color:var(--prime)">GDP</div>
       <div>
         <h4>GDPR Data Protection</h4>
         <p>Right to access, right to erasure, data portability, and processing records. Data residency options for EU customers. Data Processing Agreement (DPA) available for all customers.</p>
       </div>
     </div>
     <div class="comp-card fade-in">
-      <div class="comp-icon" style="background:#F5F3FF;color:#6D28D9">SOC</div>
+      <div class="comp-icon" style="background:var(--accent-bg);color:var(--accent)">SOC</div>
       <div>
         <h4>SOC 2 Ready</h4>
         <p>Annual third-party audit covering security, availability, processing integrity, confidentiality, and privacy. Audit report available to customers and prospects under NDA.</p>
       </div>
     </div>
     <div class="comp-card fade-in">
-      <div class="comp-icon" style="background:var(--s1)BEB;color:#B45309">CCP</div>
+      <div class="comp-icon" style="background:var(--prime-bg);color:var(--prime)">CCP</div>
       <div>
         <h4>CCPA Consumer Privacy</h4>
         <p>Do-not-sell compliance, consumer data access requests, and deletion workflows. Applicable to customers operating in California or processing California resident data.</p>
       </div>
     </div>
     <div class="comp-card fade-in">
-      <div class="comp-icon" style="background:#FEF2F2;color:#DC2626">HIP</div>
+      <div class="comp-icon" style="background:var(--accent-bg);color:var(--accent)">HIP</div>
       <div>
         <h4>HIPAA (BAA Available)</h4>
         <p>Business Associate Agreement available for healthcare and life sciences customers. PHI-specific controls, access restrictions, and breach notification procedures.</p>
       </div>
     </div>
     <div class="comp-card fade-in">
-      <div class="comp-icon" style="background:#ECFEFF;color:#0E7490">ISO</div>
+      <div class="comp-icon" style="background:var(--prime-bg);color:var(--prime)">ISO</div>
       <div>
         <h4>ISO 27001 Information Security</h4>
         <p>Certified information security management system covering risk assessment, access control, incident management, and business continuity planning.</p>
