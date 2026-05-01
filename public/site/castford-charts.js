@@ -20,10 +20,10 @@ window.CastfordCharts = (function() {
     green: '#22C55E',
     red: '#EF4444',
     blue: '#5B7FCC',
-    violet: '#9B8AFF',
+    violet: '#7B9EE0',
     cyan: '#06B6D4',
     slate: '#64748B',
-    series: ['#1A3F7A', '#5B7FCC', '#C4884A', '#9B8AFF', '#06B6D4', '#22C55E', '#64748B', '#EF4444']
+    series: ['#1A3F7A', '#5B7FCC', '#C4884A', '#7B9EE0', '#06B6D4', '#22C55E', '#64748B', '#EF4444']
   };
 
   function fmt(val, type) {

@@ -31,8 +31,8 @@
 [data-theme="night"]{
   --bg:#0A0F1F;--canvas:#0F1428;--s1:#161D30;--s2:#1A2238;--s3:#0F1428;
   --ink:#E8E6F0;--t1:#C4C0D8;--t2:#8A86A8;--t3:#5E5A78;--t4:#48445E;
-  --bdr:rgba(155,138,255,0.14);--bdr-soft:rgba(155,138,255,0.08);--bdr-strong:rgba(155,138,255,0.24);
-  --prime:#9B8AFF;--prime-ink:#C4B8FF;--prime-bg:rgba(155,138,255,0.10);
+  --bdr:rgba(123,158,224,0.14);--bdr-soft:rgba(123,158,224,0.08);--bdr-strong:rgba(123,158,224,0.24);
+  --prime:#7B9EE0;--prime-ink:#9BB8EC;--prime-bg:rgba(123,158,224,0.10);
   --up:#4ADE80;--down:#F87171;--amber:#D4A574;--rose:#F472B6;
   --shadow-sm:0 1px 2px rgba(0,0,0,0.3);
   --shadow-md:0 1px 3px rgba(0,0,0,0.3),0 4px 12px rgba(0,0,0,0.2);
@@ -408,19 +408,19 @@ body{
   <!-- Member List -->
   <div class="member-list">
 
-    <!-- Malik Frazier -->
+    <!-- Current user (first row) -->
     <div class="member fade-up fd4">
-      <div class="avatar avatar-mf">
-        MF
+      <div class="avatar avatar-mf" data-cf-bind="user.initials" data-cf-fallback="··">
+        ··
         <span class="avatar-status status-online"></span>
       </div>
       <div class="member-info">
         <div class="member-top">
-          <span class="member-name">Malik Frazier</span>
+          <span class="member-name" data-cf-bind="user.full_name" data-cf-fallback="You">You</span>
           <span class="member-role-badge badge-owner">Owner</span>
         </div>
         <div class="member-meta">
-          <span class="member-title">CEO & Founder</span>
+          <span class="member-title" data-cf-bind="user.email" data-cf-fallback="—">—</span>
           <span class="member-sep"></span>
           <span class="member-dept"><span class="member-dept-dot dept-exec"></span> Executive</span>
           <span class="member-sep"></span>
@@ -714,6 +714,7 @@ document.querySelectorAll('.member').forEach(row=>{
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script src="/site/auth-guard.js"></script>
+<script src="/site/cf-identity-bind.js" defer></script>
 
 <script>
 document.addEventListener('DOMContentLoaded', async function() {

@@ -59,18 +59,18 @@
   --t2:#8A86A8;
   --t3:#5E5A78;
   --t4:#454059;
-  --bdr:rgba(155,138,255,0.10);
-  --bdr-strong:rgba(155,138,255,0.18);
-  --prime:#9B8AFF;
-  --prime-ink:#C4B8FF;
-  --prime-bg:rgba(155,138,255,0.08);
+  --bdr:rgba(123,158,224,0.10);
+  --bdr-strong:rgba(123,158,224,0.18);
+  --prime:#7B9EE0;
+  --prime-ink:#9BB8EC;
+  --prime-bg:rgba(123,158,224,0.08);
   --gold:#D4A574;
   --gold-bg:rgba(212,165,116,0.08);
   --good:#4ADE80;
   --bad:#F87171;
   --nav-bg:rgba(10,15,31,0.92);
-  --logo-main:#9B8AFF;
-  --logo-inner:#C4B8FF;
+  --logo-main:#7B9EE0;
+  --logo-inner:#9BB8EC;
   --logo-core:#DDD8FF;
   --logo-outer-o:0.10;
   --logo-mid-o:0.18;
@@ -381,14 +381,14 @@ main{padding:36px 0 80px}
         <circle cx="50" cy="52" r="3" fill="var(--logo-core)"/>
       </svg>
       <span class="nn">Castford</span>
-      <span class="nb">Enterprise</span>
+      <span class="nb" id="brandBadge">Workspace</span>
     </a>
     <div class="nr">
       <div class="nu">
-        <div class="na">MF</div>
+        <div class="na" id="navAvatar">··</div>
         <div>
-          <div class="nu-name">Malik Frazier</div>
-          <div class="nu-org">FINANCIAL HOLDING LLC</div>
+          <div class="nu-name" id="navUserName">Loading…</div>
+          <div class="nu-org" id="navOrgName">—</div>
         </div>
       </div>
       <div class="toggle" id="themeToggle" title="Toggle day/night"></div>
@@ -533,6 +533,7 @@ main{padding:36px 0 80px}
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script src="/site/auth-guard.js"></script>
+<script src="/site/cf-identity-bind.js" defer></script>
 <script src="/site/cf-app-shell.js" defer></script>
 
 <!-- ─── Live data hydration (replaces all hardcoded values) ─────────── -->
@@ -578,6 +579,17 @@ main{padding:36px 0 80px}
 
   setTxt('heroName', firstName);
 
+  // Top-right dropdown: avatar initials + email fallback
+  var initials = (function(name){
+    if (!name) return '··';
+    var parts = name.trim().split(/\s+/);
+    if (parts.length === 1) return parts[0].slice(0,2).toUpperCase();
+    return (parts[0][0] + parts[parts.length-1][0]).toUpperCase();
+  })(session.user.user_metadata && session.user.user_metadata.full_name);
+  setTxt('navAvatar', initials);
+  setTxt('navUserName', (session.user.user_metadata && session.user.user_metadata.full_name) || userEmail);
+  setTxt('navOrgName', '—');  // updated once org loads
+
   // 2. PROFILE + ORG ──────────────────────────────────────────────────
   var profile = null, org = null;
   try {
@@ -603,6 +615,22 @@ main{padding:36px 0 80px}
   // Plan label (top-right of Section A)
   var planUpper = (org.plan || 'demo').toUpperCase();
   setTxt('planLabel', 'INCLUDED IN ' + planUpper);
+
+  // Top-right org name + brand badge → real data
+  setTxt('navOrgName', (org.name || '').toUpperCase());
+  // Map plan to nice badge label
+  var badgeMap = { demo:'Demo', pending:'Pending', starter:'Starter', growth:'Growth', business:'Business', enterprise:'Enterprise' };
+  setTxt('brandBadge', badgeMap[org.plan] || 'Workspace');
+
+  // Better full_name fallback: also update top nav once profile loaded
+  if (profile && profile.full_name) {
+    setTxt('navUserName', profile.full_name);
+    var pInitials = (function(n){
+      var p=n.trim().split(/\s+/); if(p.length===1) return p[0].slice(0,2).toUpperCase();
+      return (p[0][0]+p[p.length-1][0]).toUpperCase();
+    })(profile.full_name);
+    setTxt('navAvatar', pInitials);
+  }
 
   // Footer
   setTxt('footOrg', 'CASTFORD · ' + (org.name || '').toUpperCase() + ' · ' + planUpper + ' PLAN');

@@ -82,7 +82,48 @@
     var user=result.data.session.user;
     console.log('[AuthGuard] Authenticated:',user.email);
 
-    window.dispatchEvent(new CustomEvent('fos:auth',{detail:{user:user,session:result.data.session}}));
+    // ── PAID-PLAN GATE ────────────────────────────────────────────────
+    // Pages that bypass the gate (signup wizard, billing, logout, etc.)
+    var path = window.location.pathname;
+    var BYPASS = [
+      '/site/signup.html', '/signup',
+      '/site/login.html',  '/login',
+      '/site/logout.html', '/logout',
+      '/site/dashboard/billing.html', '/billing',
+      '/site/checkout-success.html'
+    ];
+    var isBypass = BYPASS.some(function(p){ return path.indexOf(p) === 0; });
+
+    if (!isBypass) {
+      // Check plan + subscription. If unpaid → redirect to /signup?step=3
+      sb.from('users').select('org_id').eq('id', user.id).maybeSingle().then(function(uRes){
+        var orgId = uRes && uRes.data && uRes.data.org_id;
+        if (!orgId) {
+          console.log('[AuthGuard] No org → /signup?step=2');
+          window.location.href = '/site/signup.html?step=2';
+          return;
+        }
+        sb.from('organizations').select('plan, stripe_subscription_id, closed_at').eq('id', orgId).maybeSingle().then(function(oRes){
+          var org = oRes && oRes.data;
+          if (!org || org.closed_at) {
+            console.log('[AuthGuard] Org missing or closed → /signup?step=2');
+            window.location.href = '/site/signup.html?step=2';
+            return;
+          }
+          var unpaid = (!org.stripe_subscription_id) && (org.plan === 'demo' || org.plan === 'pending' || !org.plan);
+          if (unpaid) {
+            console.log('[AuthGuard] Unpaid org (plan=' + org.plan + ') → /signup?step=3');
+            window.location.href = '/site/signup.html?step=3';
+            return;
+          }
+          // Passed the gate — continue normally
+          window.dispatchEvent(new CustomEvent('fos:auth',{detail:{user:user,session:result.data.session,org:org}}));
+        });
+      });
+    } else {
+      // Bypass page — fire auth event without gate check
+      window.dispatchEvent(new CustomEvent('fos:auth',{detail:{user:user,session:result.data.session}}));
+    }
   });
 
   // Listen for sign out — but route through /logout for proper cleanup

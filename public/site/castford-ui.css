@@ -191,7 +191,7 @@
   align-self:flex-start;
   transition:background var(--dur-base) var(--ease);
 }
-.cf-copilot-msg:hover{background:var(--ai-bg),rgba(155,138,255,0.04)}
+.cf-copilot-msg:hover{background:var(--ai-bg),rgba(123,158,224,0.04)}
 
 .cf-copilot-msg .cf-ai-label{margin-bottom:var(--sp-2)}
 

@@ -35,18 +35,18 @@
 }
 [data-theme="night"]{
   --bg:#0A0F1F;--surface:#161D30;--card:#161D30;--elevated:#1F2740;
-  --border:rgba(155,138,255,0.10);--border2:rgba(155,138,255,0.18);--border-sub:rgba(155,138,255,0.06);
+  --border:rgba(123,158,224,0.10);--border2:rgba(123,158,224,0.18);--border-sub:rgba(123,158,224,0.06);
   --t1:#E8E6F0;--t2:#C4C0D8;--t3:#8A86A8;--t4:#5E5A78;
-  --accent:#9B8AFF;--accent-ink:#C4B8FF;--accent-dim:rgba(155,138,255,0.08);
+  --accent:#7B9EE0;--accent-ink:#9BB8EC;--accent-dim:rgba(123,158,224,0.08);
   --gold:#D4A574;--gold-dim:rgba(212,165,116,0.08);
   --green:#4ADE80;--green-dim:rgba(74,222,128,0.08);
   --red:#F87171;--red-dim:rgba(248,113,113,0.08);
   --amber:#D4A574;--amber-dim:rgba(212,165,116,0.08);
-  --purple:#9B8AFF;--purple-dim:rgba(155,138,255,0.08);
-  --cyan:#9B8AFF;--cyan-dim:rgba(155,138,255,0.08);
+  --purple:#7B9EE0;--purple-dim:rgba(123,158,224,0.08);
+  --cyan:#7B9EE0;--cyan-dim:rgba(123,158,224,0.08);
   --shadow:0 1px 2px rgba(0,0,0,0.3),0 4px 16px rgba(0,0,0,0.2);
   --shadow-md:0 2px 4px rgba(0,0,0,0.4),0 8px 28px rgba(0,0,0,0.3);
-  --logo-main:#9B8AFF;--logo-inner:#C4B8FF;--logo-core:#DDD8FF;
+  --logo-main:#7B9EE0;--logo-inner:#9BB8EC;--logo-core:#DDD8FF;
   --toggle-bg:#1F2740;
 }
 body{transition:background .4s var(--ease),color .4s var(--ease)}
@@ -879,7 +879,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--t1);-webkit-font-s
     <svg viewBox="0 0 16 16" fill="none"><path d="M2 4h12M2 8h12M2 12h12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
   </button>
   <a href="/site/landing.html" class="topbar-logo" style="text-decoration:none;color:inherit;">
-    <svg viewBox="0 0 32 32" fill="none"><defs><linearGradient id="lg" x1="0" y1="0" x2="32" y2="32"><stop stop-color="#3B82F6"/><stop offset="1" stop-color="#9B8AFF"/></linearGradient></defs><rect width="32" height="32" rx="8" fill="url(#lg)"/><path d="M8 12h16M8 16h12M8 20h8" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>
+    <svg viewBox="0 0 32 32" fill="none"><defs><linearGradient id="lg" x1="0" y1="0" x2="32" y2="32"><stop stop-color="#3B82F6"/><stop offset="1" stop-color="#7B9EE0"/></linearGradient></defs><rect width="32" height="32" rx="8" fill="url(#lg)"/><path d="M8 12h16M8 16h12M8 20h8" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>
     <span class="name">Castford</span>
     <span class="plan-badge">ENTERPRISE</span>
   </a>
@@ -996,17 +996,17 @@ body{font-family:var(--font);background:var(--bg);color:var(--t1);-webkit-font-s
       </div>
       <div class="sidebar-team" style="margin-top:8px;">TEAM <span class="online">1 online</span></div>
       <div class="sidebar-user">
-        <div class="sidebar-avatar" style="background:linear-gradient(135deg,#3B82F6,#9B8AFF);">MF</div>
+        <div class="sidebar-avatar" data-cf-bind="user.initials" data-cf-fallback="··" style="background:linear-gradient(135deg,#3B82F6,#7B9EE0);">··</div>
         <div class="sidebar-user-info">
-          <div class="name">Malik Frazier</div>
+          <div class="name" data-cf-bind="user.full_name" data-cf-fallback="Loading…">Loading…</div>
           <div class="role">Owner</div>
         </div>
       </div>
       <div class="sidebar-invite">+ Invite teammates</div>
       <div style="padding:6px 8px;margin-top:4px;border-top:1px solid var(--border);padding-top:8px;">
         <div style="display:flex;align-items:center;gap:8px;">
-          <div class="sidebar-avatar" style="background:linear-gradient(135deg,#1A3F7A,#1A3F7A);width:24px;height:24px;font-size:9px;">MF</div>
-          <div><div style="font-size:11px;font-weight:600;">Malik Frazier</div><div style="font-size:9px;color:var(--t4);">ENTERPRISE</div></div>
+          <div class="sidebar-avatar" data-cf-bind="user.initials" data-cf-fallback="··" style="background:linear-gradient(135deg,#1A3F7A,#1A3F7A);width:24px;height:24px;font-size:9px;">··</div>
+          <div><div style="font-size:11px;font-weight:600;" data-cf-bind="user.full_name" data-cf-fallback="Loading…">Loading…</div><div style="font-size:9px;color:var(--t4);" data-cf-bind="org.plan_upper" data-cf-fallback="—">—</div></div>
         </div>
       </div>
       <a href="/site/landing.html" style="padding:4px 12px;font-size:11px;color:var(--accent);cursor:pointer;display:flex;align-items:center;gap:6px;text-decoration:none;font-weight:600;">
@@ -1140,7 +1140,7 @@ function renderDashboard(){
     <div class="dash-header">
       <div class="dash-date">☀ SATURDAY, MARCH 28, 2026</div>
       <div style="display:flex;align-items:center;">
-        <div class="dash-greeting">Good afternoon, Malik <span class="fy-badge">FY2025 YTD</span></div>
+        <div class="dash-greeting">Good afternoon, <span data-cf-bind="user.first_name" data-cf-fallback="there">there</span> <span class="fy-badge">FY2025 YTD</span></div>
         <button class="ask-copilot" data-cf-action="quick.askCopilot">✨ Ask AI Copilot</button>
       </div>
       <div class="status-strip">
@@ -1165,7 +1165,7 @@ function renderDashboard(){
       <div class="connectors">
         <span class="connector-chip"><span class="cdot" style="background:#1A3F7A;"></span> NetSuite 847K</span>
         <span class="connector-chip"><span class="cdot" style="background:#3B82F6;"></span> Salesforce 124K</span>
-        <span class="connector-chip"><span class="cdot" style="background:#9B8AFF;"></span> Stripe 38K</span>
+        <span class="connector-chip"><span class="cdot" style="background:#7B9EE0;"></span> Stripe 38K</span>
         <span class="connector-chip"><span class="cdot" style="background:#06B6D4;"></span> Snowflake 2.1M</span>
         <span class="connector-chip"><span class="cdot" style="background:#EC4899;"></span> Rippling 312</span>
       </div>
@@ -3692,34 +3692,69 @@ function teamTableSkeleton(){
 }
 
 async function loadTeamAndRender(){
-  if (!window.CastfordData) {
-    renderTeamDemo('Data layer not loaded — showing demo data');
-    return;
-  }
+  // Primary path: query public.users directly via auth-guard's Supabase client.
+  // This works for orgs onboarded via /signup wizard (they have public.users rows
+  // but not org_members rows yet — onboard doesn't populate org_members).
   try {
-    if (!window.CastfordData.isInitialized()) {
-      await window.CastfordData.init();
+    var sb = window.__fos_supabase;
+    var session = window.__fos_session;
+    if (!sb || !session || !session.user) {
+      renderTeamDemo('Not signed in — showing demo data');
+      return;
     }
+
+    // Look up the user's org_id
+    var profileRes = await sb.from('users').select('org_id').eq('id', session.user.id).maybeSingle();
+    var orgId = profileRes && profileRes.data && profileRes.data.org_id;
+    if (!orgId) {
+      renderTeamDemo('No organization yet — showing demo data');
+      return;
+    }
+
+    // Query members + pending invites in parallel
+    var memberRes = await sb.from('users')
+      .select('id, full_name, email, role, last_active_at, status, avatar_url')
+      .eq('org_id', orgId)
+      .order('created_at', { ascending: true });
+
+    var inviteRes = await sb.from('org_invitations')
+      .select('id, email, full_name, primary_role, invited_by, created_at, expires_at')
+      .eq('org_id', orgId)
+      .is('accepted_at', null).is('declined_at', null).is('revoked_at', null)
+      .order('created_at', { ascending: false });
+
+    var rawMembers = (memberRes && memberRes.data) || [];
+    var invites = (inviteRes && inviteRes.data) || [];
+
+    if (rawMembers.length === 0) {
+      renderTeamDemo('No team members for org · showing demo data');
+      return;
+    }
+
+    // Adapt shape to what renderTeamReal expects: { role, last_active_at, status, users: {full_name, email} }
+    var members = rawMembers.map(function(u){
+      return {
+        role: u.role || 'member',
+        last_active_at: u.last_active_at,
+        status: u.status || 'active',
+        users: { full_name: u.full_name, email: u.email, avatar_url: u.avatar_url }
+      };
+    });
+
+    // Adapt invites shape: rename primary_role → role for renderTeamReal
+    var adaptedInvites = invites.map(function(i){
+      return { email: i.email, role: i.primary_role || 'member',
+               invited_by: '—', created_at: i.created_at };
+    });
+
+    renderTeamReal(members, adaptedInvites, null);
+
+    // Re-bind any data-cf-bind elements rendered into the new tables
+    if (typeof window.cfRehydrate === 'function') window.cfRehydrate();
   } catch (e) {
-    console.warn('CastfordData init failed:', e);
-    renderTeamDemo('Data layer init failed — showing demo data');
-    return;
+    console.warn('[loadTeamAndRender] Direct query failed:', e);
+    renderTeamDemo('Could not load team — showing demo data');
   }
-
-  if (window.CastfordData.isDemoMode()) {
-    renderTeamDemo('Demo mode active — connect your workspace to see real team members');
-    return;
-  }
-
-  var members = await window.CastfordData.getTeamMembers();
-  var invites = await window.CastfordData.getOrgInvitations();
-
-  if (!members || members.length === 0) {
-    renderTeamDemo('No team members for org · showing demo data');
-    return;
-  }
-
-  renderTeamReal(members, invites || [], null);
 }
 
 function teamInitials(name, email){
@@ -3815,9 +3850,10 @@ function renderTeamReal(members, invites, banner){
   }
 
   // Footer attribution
-  var orgId = window.CastfordData.getOrgId() || '—';
+  var orgId = '—';
+  try { orgId = (window.CastfordData && window.CastfordData.getOrgId && window.CastfordData.getOrgId()) || '—'; } catch(_){}
   var orgIdShort = orgId === '—' ? '—' : orgId.slice(0, 8) + '…';
-  var footerText = 'Source: org_members + users · ' + members.length + ' member' + (members.length===1?'':'s');
+  var footerText = 'Source: public.users · ' + members.length + ' member' + (members.length===1?'':'s');
   if (pendingCount) footerText += ' · ' + pendingCount + ' invitation' + (pendingCount===1?'':'s');
   footerText += ' · org ' + orgIdShort;
   if (banner) footerText = banner + ' · ' + footerText;
@@ -3837,7 +3873,7 @@ function renderTeamDemo(banner){
     + '<table class="tm-table">'
     +   '<thead><tr><th>MEMBER</th><th>ROLE</th><th>STATUS</th><th>LAST ACTIVE</th><th></th></tr></thead>'
     +   '<tbody>'
-    +     '<tr><td><div class="person"><div class="avatar-lg">MF</div><div class="person-info"><b>Malik Frazier</b><span>malik@castford.com</span></div></div></td><td><span class="role owner">Owner</span></td><td><span class="status-dot online">Online now</span></td><td><span class="last-active">Just now</span></td><td></td></tr>'
+    +     '<tr><td><div class="person"><div class="avatar-lg" data-cf-bind="user.initials" data-cf-fallback="··">··</div><div class="person-info"><b data-cf-bind="user.full_name" data-cf-fallback="You">You</b><span data-cf-bind="user.email" data-cf-fallback="—">—</span></div></div></td><td><span class="role owner">Owner</span></td><td><span class="status-dot online">Online now</span></td><td><span class="last-active">Just now</span></td><td></td></tr>'
     +     '<tr><td><div class="person"><div class="avatar-lg">SC</div><div class="person-info"><b>Sample Member</b><span>sample1@example.com</span></div></div></td><td><span class="role admin">Admin</span></td><td><span class="status-dot online">Online now</span></td><td><span class="last-active">2 min ago</span></td><td></td></tr>'
     +     '<tr><td><div class="person"><div class="avatar-lg">JM</div><div class="person-info"><b>Sample Member</b><span>sample2@example.com</span></div></div></td><td><span class="role admin">Admin</span></td><td><span class="status-dot idle">Idle</span></td><td><span class="last-active">23 min ago</span></td><td></td></tr>'
     +     '<tr><td><div class="person"><div class="avatar-lg">RP</div><div class="person-info"><b>Sample Member</b><span>sample3@example.com</span></div></div></td><td><span class="role">Editor</span></td><td><span class="status-dot online">Online now</span></td><td><span class="last-active">8 min ago</span></td><td></td></tr>'
@@ -3854,12 +3890,15 @@ function renderTeamDemo(banner){
     + '<table class="tm-table">'
     +   '<thead><tr><th>EMAIL</th><th>ROLE</th><th>INVITED BY</th><th>SENT</th><th></th></tr></thead>'
     +   '<tbody>'
-    +     '<tr><td><div class="person"><div class="avatar-lg" style="background:var(--elevated);color:var(--t3);">?</div><div class="person-info"><b>sample-invite-1@example.com</b><span>Pending</span></div></div></td><td><span class="role">Editor</span></td><td><span class="last-active">Malik F.</span></td><td><span class="last-active">2 days ago</span></td><td></td></tr>'
-    +     '<tr><td><div class="person"><div class="avatar-lg" style="background:var(--elevated);color:var(--t3);">?</div><div class="person-info"><b>sample-invite-2@example.com</b><span>Pending</span></div></div></td><td><span class="role">Viewer</span></td><td><span class="last-active">Sample</span></td><td><span class="last-active">5 days ago</span></td><td></td></tr>'
+    +     '<tr><td><div class="person"><div class="avatar-lg" style="background:var(--elevated);color:var(--t3);">?</div><div class="person-info"><b>sample-invite-1@example.com</b><span>Pending</span></div></div></td><td><span class="role">Editor</span></td><td><span class="last-active" data-cf-bind="user.full_name" data-cf-fallback="You">You</span></td><td><span class="last-active">2 days ago</span></td><td></td></tr>'
+    +     '<tr><td><div class="person"><div class="avatar-lg" style="background:var(--elevated);color:var(--t3);">?</div><div class="person-info"><b>sample-invite-2@example.com</b><span>Pending</span></div></div></td><td><span class="role">Viewer</span></td><td><span class="last-active" data-cf-bind="user.full_name" data-cf-fallback="You">You</span></td><td><span class="last-active">5 days ago</span></td><td></td></tr>'
     +   '</tbody>'
     + '</table>';
 
-  document.getElementById('teamFooterMeta').textContent = (banner || 'Demo data') + ' · Workspace plan: Enterprise · 8 of 22 seats used';
+  document.getElementById('teamFooterMeta').textContent = (banner || 'Demo data') + ' · 8 of 22 seats used';
+
+  // Re-bind dynamically-rendered cells (data-cf-bind in injected HTML)
+  if (typeof window.cfRehydrate === 'function') window.cfRehydrate();
 }
 
 function renderIntegrations(){
@@ -5322,6 +5361,7 @@ renderDashboard();
 </script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script src="/site/auth-guard.js"></script>
+<script src="/site/cf-identity-bind.js" defer></script>
 <script src="/site/castford-energy.js" defer></script>
 <script src="/site/cf-app-shell.js" defer></script>
 <script src="/site/castford-actions.js" defer></script>
