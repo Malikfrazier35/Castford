@@ -3,225 +3,1018 @@
 <head>
 <script>((d)=>{const t=localStorage.getItem("cf-theme");if(t)d.dataset.theme=t})(document.documentElement)</script>
 <meta charset="UTF-8">
-<link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Get Started — Castford</title>
-<meta name="description" content="Create your Castford account. AI-native FP&A for modern finance teams.">
+<title>Get started · Castford</title>
+<meta name="robots" content="noindex">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700;9..40,800&family=Instrument+Sans:wght@400;500;600;700;800&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/site/theme.css">
-<script src="/site/rain.js" defer></script>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700;800&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-body{min-height:100vh;display:flex;flex-direction:column}
-.login-geo{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
-.lg{position:absolute;will-change:opacity,transform;opacity:0;animation:lgB var(--dur) ease-in-out infinite;animation-delay:var(--del)}
-.lg svg{width:100%;height:100%}
-@keyframes lgB{0%,100%{opacity:var(--lo);transform:scale(1)}50%{opacity:var(--hi);transform:scale(1.04)}}
-.login-scan{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
-.login-scan::after{content:'';position:absolute;top:0;left:0;width:100%;height:200%;background:linear-gradient(180deg,transparent 40%,rgba(26,63,122,0.07) 48%,transparent 52%);animation:lsV 14s ease-in-out infinite}
-[data-theme="night"] .login-scan::after{background:linear-gradient(180deg,transparent 40%,rgba(155,138,255,0.08) 48%,transparent 52%)}
-@keyframes lsV{0%{transform:translateY(-60%)}50%{transform:translateY(20%)}100%{transform:translateY(-60%)}}
-.login-page{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;z-index:2;padding:32px 20px;min-height:100vh}
-.login-top{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:16px 32px}
-.login-top-logo{display:flex;align-items:center;gap:8px;font-family:var(--d);font-size:16px;font-weight:700;color:var(--ink);text-decoration:none}
-.login-card{width:100%;max-width:420px;background:var(--s1);border:1px solid var(--bdr);padding:40px 36px;box-shadow:0 8px 40px rgba(26,63,122,0.10);border-top:3px solid var(--green);animation:lcIn .6s var(--ease) both}
-[data-theme="night"] .login-card{box-shadow:0 8px 40px rgba(0,0,0,0.35)}
-@keyframes lcIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
-.lc-logo{text-align:center;margin-bottom:28px}
-.lc-logo svg{width:48px;height:48px;margin:0 auto 12px;display:block}
-.lc-logo h1{font-family:var(--d);font-size:22px;font-weight:700;letter-spacing:-0.5px}
-.lc-logo p{font-size:13px;color:var(--t2);margin-top:4px}
-.lo-btn{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:11px;border:1px solid var(--bdr);background:var(--s1);color:var(--ink);font-size:14px;font-weight:500;font-family:var(--b);cursor:pointer;transition:all .15s;margin-bottom:8px}
-.lo-btn:hover{border-color:var(--green);background:var(--prime-bg)}
-.lo-btn:active{transform:scale(0.98)}
-.lo-btn .spinner{display:none;width:16px;height:16px;border:2px solid var(--bdr);border-top-color:var(--green);border-radius:50%;animation:spin .6s linear infinite}
-.lo-btn.loading .spinner{display:block}
-.lo-btn.loading .btn-label{display:none}
-@keyframes spin{to{transform:rotate(360deg)}}
-.lc-divider{display:flex;align-items:center;gap:14px;margin:18px 0}
-.lc-divider::before,.lc-divider::after{content:'';flex:1;height:1px;background:var(--bdr)}
-.lc-divider span{font-size:11px;color:var(--t3);text-transform:uppercase;letter-spacing:1px;font-family:var(--m)}
-.lc-field{margin-bottom:14px}
-.lc-field label{display:block;font-size:12px;font-weight:600;margin-bottom:5px;color:var(--t2);text-transform:uppercase;letter-spacing:0.5px}
-.lc-field input,.lc-field select{width:100%;padding:11px 14px;border:1px solid var(--bdr);background:var(--s1);color:var(--ink);font-size:14px;font-family:var(--b);outline:none;transition:all .15s}
-.lc-field input:focus,.lc-field select:focus{border-color:var(--green);box-shadow:0 0 0 3px var(--prime-bg)}
-.lc-field input::placeholder{color:var(--t3)}
-.lc-error{font-size:11px;color:#E24B4A;margin-top:4px;display:none}
-.lc-submit{width:100%;padding:12px;background:var(--green);color:#fff;font-size:15px;font-weight:600;font-family:var(--b);border:none;cursor:pointer;transition:all .2s;letter-spacing:0.3px}
-.lc-submit:hover{opacity:0.9;transform:translateY(-1px);box-shadow:0 4px 16px rgba(16,185,129,0.25)}
-.lc-submit:disabled{opacity:0.5;cursor:not-allowed;transform:none}
-.lc-signup{text-align:center;margin-top:20px;font-size:13px;color:var(--t2)}
-.lc-signup a{color:var(--green);cursor:pointer;font-weight:600}
-.lc-signup a:hover{text-decoration:underline}
-.lc-trust{display:flex;justify-content:center;gap:24px;margin-top:28px;animation:lcIn .6s var(--ease) .15s both}
-.lc-trust-item{font-family:var(--m);font-size:11px;color:var(--t3);letter-spacing:0.4px;display:flex;align-items:center;gap:6px}
-.lc-trust-dot{width:5px;height:5px;background:var(--green);opacity:0.4}
-.lc-back{margin-top:20px;animation:lcIn .6s var(--ease) .25s both}
-.lc-back a{font-size:13px;color:var(--t3);text-decoration:none;display:flex;align-items:center;gap:6px}
-.lc-back a:hover{color:var(--green)}
-.lc-terms{font-size:11px;color:var(--t3);text-align:center;margin-top:16px;line-height:1.5}
-.lc-terms a{color:var(--green)}
-.lc-field-wrap{position:relative}
-.lc-toggle-pw{position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--t3);font-size:11px;cursor:pointer;font-family:var(--m);padding:4px 8px;letter-spacing:0.5px}
-.lc-toggle-pw:hover{color:var(--ink)}
-.step-indicator{display:flex;gap:6px;justify-content:center;margin-bottom:20px}
-.step-dot{width:8px;height:8px;background:var(--bdr);transition:background .3s}
-.step-dot.active{background:var(--green)}
-.step-panel{display:none}
-.step-panel.active{display:block}
-@media(max-width:480px){.login-card{padding:32px 24px}.login-top{padding:12px 16px}}
-@media(prefers-reduced-motion:reduce){.lg,.login-scan::after,.login-card,.lc-trust,.lc-back{animation:none!important;opacity:1!important}}
-</style>
-<script src="/site/castford-shell.js" defer></script>
-</head>
-<body>
-<div class="login-geo">
-  <div class="lg" style="top:6%;left:5%;width:120px;height:104px;--dur:7s;--del:0s;--lo:0.05;--hi:0.20"><svg viewBox="0 0 120 104"><path d="M60 1L119 27L119 77L60 103L1 77L1 27Z" fill="none" stroke="var(--green)" stroke-width="1.4"/></svg></div>
-  <div class="lg" style="top:16%;right:7%;width:160px;height:139px;--dur:9s;--del:1.5s;--lo:0.04;--hi:0.16"><svg viewBox="0 0 160 139"><path d="M80 1L159 36L159 103L80 138L1 103L1 36Z" fill="none" stroke="var(--green)" stroke-width="1.2"/></svg></div>
-  <div class="lg" style="top:48%;left:3%;width:90px;height:78px;--dur:6s;--del:3s;--lo:0.05;--hi:0.22"><svg viewBox="0 0 90 78"><path d="M45 1L89 21L89 57L45 77L1 57L1 21Z" fill="none" stroke="var(--green)" stroke-width="1.3"/></svg></div>
-  <div class="lg" style="bottom:12%;right:5%;width:130px;height:113px;--dur:10s;--del:0.8s;--lo:0.04;--hi:0.17"><svg viewBox="0 0 130 113"><path d="M65 1L129 30L129 83L65 112L1 83L1 30Z" fill="none" stroke="var(--green)" stroke-width="1.1"/></svg></div>
-</div>
-<div class="login-scan"></div>
-<div class="login-top">
-  <a class="login-top-logo" href="/"><svg viewBox="0 0 100 100" width="22" height="22"><path d="M50 16 L80 33 L80 67 L50 84 L20 67 L20 33 Z" fill="none" stroke="var(--green)" stroke-width="2.5"/><path d="M36 47 L50 39 L64 47 L64 57 L50 65 L36 57 Z" fill="none" stroke="var(--green)" stroke-width="1.5"/><circle cx="50" cy="52" r="3" fill="var(--green)"/></svg> Castford</a>
-  <div class="cf-toggle" id="themeToggle" title="Toggle day/night"></div>
-</div>
-<div class="login-page">
-  <div class="login-card">
-    <div class="lc-logo">
-      <svg viewBox="0 0 100 100"><path d="M50 10 L85 30 L85 70 L50 90 L15 70 L15 30 Z" fill="none" stroke="var(--green)" stroke-width="1.2" opacity="0.3"/><path d="M50 16 L80 33 L80 67 L50 84 L20 67 L20 33 Z" fill="none" stroke="var(--green)" stroke-width="2.5"/><path d="M36 47 L50 39 L64 47 L64 57 L50 65 L36 57 Z" fill="var(--green)" fill-opacity="0.06" stroke="var(--green)" stroke-width="1.5"/><circle cx="50" cy="52" r="3" fill="var(--green)"/></svg>
-      <h1>Create your account</h1>
-      <p>Start analyzing your financials in minutes</p>
-    </div>
+:root{
+  --d:'Instrument Sans',-apple-system,sans-serif;
+  --b:'DM Sans',-apple-system,sans-serif;
+  --m:'Geist Mono','SF Mono',monospace;
+  --ease:cubic-bezier(0.4,0,0.2,1);
+  --max:1280px;
+}
+[data-theme="day"]{
+  --bg:#FFFFFF; --canvas:#FAFAF9; --s1:#FFFFFF; --s2:#F5F5F4;
+  --ink:#0B0E1A; --t1:#1E2038; --t2:#4A4F6E; --t3:#6E738F; --t4:#9AA0B5;
+  --bdr:rgba(91,127,204,0.10); --bdr-strong:rgba(91,127,204,0.18);
+  --prime:#5B7FCC; --prime-ink:#1A3F7A; --prime-bg:rgba(91,127,204,0.06);
+  --gold:#C4884A; --gold-bg:rgba(196,136,74,0.08);
+  --good:#1F4937; --bad:#993C1D;
+  --nav-bg:rgba(255,255,255,0.92);
+  --logo-main:#1A3F7A; --logo-inner:#1A3F7A; --logo-core:#1A3F7A;
+  --logo-outer-o:0.08; --logo-mid-o:0.15; --logo-inner-fill:0.05;
+  --shadow-card:0 1px 2px rgba(0,0,0,0.02),0 4px 14px rgba(91,127,204,0.05);
+  --shadow-card-h:0 2px 4px rgba(0,0,0,0.03),0 8px 24px rgba(91,127,204,0.10);
+  --toggle-bg:#F5F5F4;
+}
+[data-theme="night"]{
+  --bg:#0A0F1F; --canvas:#0F1628; --s1:#161D30; --s2:#1F2740;
+  --ink:#E8E6F0; --t1:#C4C0D8; --t2:#8A86A8; --t3:#5E5A78; --t4:#454059;
+  --bdr:rgba(155,138,255,0.10); --bdr-strong:rgba(155,138,255,0.18);
+  --prime:#9B8AFF; --prime-ink:#C4B8FF; --prime-bg:rgba(155,138,255,0.08);
+  --gold:#D4A574; --gold-bg:rgba(212,165,116,0.08);
+  --good:#4ADE80; --bad:#F87171;
+  --nav-bg:rgba(10,15,31,0.92);
+  --logo-main:#9B8AFF; --logo-inner:#C4B8FF; --logo-core:#DDD8FF;
+  --logo-outer-o:0.10; --logo-mid-o:0.18; --logo-inner-fill:0.06;
+  --shadow-card:0 1px 2px rgba(0,0,0,0.3),0 4px 16px rgba(0,0,0,0.2);
+  --shadow-card-h:0 2px 4px rgba(0,0,0,0.4),0 8px 28px rgba(0,0,0,0.3);
+  --toggle-bg:#1F2740;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+  font-family:var(--b);background:var(--canvas);color:var(--ink);
+  -webkit-font-smoothing:antialiased;line-height:1.6;min-height:100vh;
+  transition:background .4s var(--ease),color .4s var(--ease);
+  display:flex;flex-direction:column;
+}
+a{color:inherit;text-decoration:none}
 
-    <div class="step-indicator">
-      <div class="step-dot active" id="dot-1"></div>
-      <div class="step-dot" id="dot-2"></div>
-    </div>
+/* ─── Topbar ─── */
+nav{
+  position:sticky;top:0;z-index:100;background:var(--nav-bg);
+  backdrop-filter:blur(20px) saturate(1.3); -webkit-backdrop-filter:blur(20px) saturate(1.3);
+  border-bottom:0.5px solid var(--bdr);
+}
+.ni{max-width:var(--max);margin:0 auto;padding:0 32px;height:64px;
+  display:flex;align-items:center;justify-content:space-between;gap:24px}
+.nl{display:flex;align-items:center;gap:10px}
+.nl svg{width:22px;height:22px}
+.nl-name{font-family:var(--d);font-size:15px;font-weight:700;letter-spacing:-0.4px;color:var(--ink)}
+.nr{display:flex;align-items:center;gap:14px}
+.toggle{width:36px;height:20px;border-radius:10px;background:var(--toggle-bg);
+  border:0.5px solid var(--bdr);cursor:pointer;position:relative;transition:background .3s}
+.toggle::after{content:'';position:absolute;top:2px;left:2px;width:14px;height:14px;
+  border-radius:7px;background:var(--prime);transition:transform .3s var(--ease)}
+[data-theme="night"] .toggle::after{transform:translateX(16px)}
 
-    <!-- STEP 1: Auth -->
-    <div class="step-panel active" id="step-auth">
-      <button class="lo-btn" id="btn-google" type="button"><div class="spinner"></div><svg width="18" height="18" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09a7.12 7.12 0 010-4.17V7.08H2.18a11.97 11.97 0 000 9.84l3.66-2.83z" fill="#FBBC05"/><path d="M12 4.75c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 1.09 14.97 0 12 0 7.7 0 3.99 2.47 2.18 6.07l3.66 2.84c.87-2.6 3.3-4.16 6.16-4.16z" fill="#EA4335"/></svg><span class="btn-label">Continue with Google</span></button>
-      <button class="lo-btn" id="btn-apple" type="button"><div class="spinner"></div><svg width="18" height="18" viewBox="0 0 24 24"><path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z" fill="currentColor"/></svg><span class="btn-label">Continue with Apple</span></button>
-      <div class="lc-divider"><span>or</span></div>
-      <form id="signupForm" autocomplete="on">
-        <div class="lc-field"><label for="email">Work email</label><input type="email" id="email" placeholder="you@company.com" autocomplete="email" required><div class="lc-error" id="emailError">Enter a valid work email address</div></div>
-        <div class="lc-field"><label for="password">Password</label><div class="lc-field-wrap"><input type="password" id="password" placeholder="Min 8 characters" autocomplete="new-password" required minlength="8"><button type="button" class="lc-toggle-pw" id="togglePw">SHOW</button></div><div class="lc-error" id="pwError">Password must be at least 8 characters</div></div>
-        <button type="submit" class="lc-submit" id="submitBtn">Create Account</button>
-      </form>
-    </div>
+/* ─── Main ─── */
+main{flex:1;display:flex;align-items:center;justify-content:center;padding:48px 24px;position:relative;z-index:1}
+.shell{width:100%;max-width:480px}
 
-    <!-- STEP 2: Company info (after auth) -->
-    <div class="step-panel" id="step-company">
-      <form id="companyForm">
-        <div class="lc-field"><label for="companyName">Company name</label><input type="text" id="companyName" placeholder="Acme Corp" required></div>
-        <div class="lc-field"><label for="industry">Industry</label><select id="industry"><option value="saas">SaaS / Software</option><option value="fintech">Fintech</option><option value="healthcare">Healthcare</option><option value="ecommerce">E-Commerce</option><option value="manufacturing">Manufacturing</option><option value="services">Professional Services</option><option value="marketplace">Marketplace</option><option value="other">Other</option></select></div>
-        <button type="submit" class="lc-submit" id="companyBtn">Continue to Dashboard</button>
-      </form>
-    </div>
+/* Step indicator */
+.steps{
+  display:flex;align-items:center;justify-content:center;gap:14px;margin-bottom:32px;
+  font-family:var(--m);font-size:9.5px;letter-spacing:1.5px;
+  color:var(--t3);text-transform:uppercase;
+}
+.step-dot{
+  display:flex;align-items:center;gap:8px;
+}
+.step-dot .num{
+  width:22px;height:22px;border-radius:50%;
+  background:var(--canvas);border:0.5px solid var(--bdr);
+  display:flex;align-items:center;justify-content:center;
+  font-size:11px;font-weight:600;color:var(--t3);
+  transition:all .25s var(--ease);
+}
+.step-dot.active .num{
+  background:var(--prime);border-color:var(--prime);color:#fff;
+  box-shadow:0 0 0 4px var(--prime-bg);
+}
+.step-dot.done .num{
+  background:var(--good);border-color:var(--good);color:#fff;
+}
+.step-dot.done .num::after{content:'✓';font-size:11px;font-weight:700}
+.step-dot.done .num span{display:none}
+.step-dot.active .label,.step-dot.done .label{color:var(--ink);font-weight:600}
+.step-line{width:32px;height:1px;background:var(--bdr)}
 
-    <div class="lc-terms">By creating an account, you agree to our <a href="/terms">Terms of Service</a> and <a href="/privacy">Privacy Policy</a>.</div>
-    <div class="lc-signup">Already have an account? <a href="/login">Sign in</a></div>
-  </div>
-  <div class="lc-trust"><span class="lc-trust-item"><span class="lc-trust-dot"></span> SOC 2 Ready</span><span class="lc-trust-item"><span class="lc-trust-dot"></span> 256-bit AES</span><span class="lc-trust-item"><span class="lc-trust-dot"></span> 30-day guarantee</span></div>
-  <div class="lc-back"><a href="/">&larr; Back to castford.com</a></div>
-</div>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script>
-const SB_URL='https://crecesswagluelvkesul.supabase.co',SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNyZWNlc3N3YWdsdWVsdmtlc3VsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM4MTI5NzYsImV4cCI6MjA4OTM4ODk3Nn0.IGEEYDStt-eH9Mf2G_DzqCPfruDjN8m_ORtAcmtSAZg';
-const sb=window.supabase.createClient(SB_URL,SB_KEY);
-const RD=window.location.origin+'/workspace';
-
-document.getElementById('themeToggle').addEventListener('click',()=>{const h=document.documentElement;h.dataset.theme=h.dataset.theme==='day'?'night':'day';localStorage.setItem('cf-theme',h.dataset.theme)});
-
-// If already logged in with an org, go to dashboard
-sb.auth.getSession().then(async({data:{session}})=>{
-  if(session){
-    const r=await fetch(SB_URL+'/functions/v1/verify-session',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+session.access_token}});
-    if(r.ok){const d=await r.json();if(d.org_id){window.location.href=RD;return}}
-    // Has auth but no org — show step 2
-    showStep(2);
-  }
-});
-
-// Check for stripe_session_id in URL (user paid before signing up)
-const urlParams=new URLSearchParams(window.location.search);
-const stripeSessionId=urlParams.get('stripe_session_id');
-
-let currentUser=null;
-
-function showStep(n){
-  document.querySelectorAll('.step-panel').forEach(p=>p.classList.remove('active'));
-  document.querySelectorAll('.step-dot').forEach(d=>d.classList.remove('active'));
-  document.getElementById('step-'+(n===1?'auth':'company')).classList.add('active');
-  for(let i=1;i<=n;i++)document.getElementById('dot-'+i).classList.add('active');
+/* Eyebrow */
+.eyebrow{
+  font-size:10px;font-family:var(--m);font-weight:500;letter-spacing:2px;
+  color:var(--gold);text-transform:uppercase;margin-bottom:12px;
 }
 
-// OAuth signup
-document.getElementById('btn-google').addEventListener('click',async()=>{
-  const b=document.getElementById('btn-google');b.classList.add('loading');
-  const{error}=await sb.auth.signInWithOAuth({provider:'google',options:{redirectTo:window.location.origin+'/site/signup.html?step=2'}});
-  if(error){b.classList.remove('loading');alert(error.message)}
-});
-document.getElementById('btn-apple').addEventListener('click',async()=>{
-  const b=document.getElementById('btn-apple');b.classList.add('loading');
-  const{error}=await sb.auth.signInWithOAuth({provider:'apple',options:{redirectTo:window.location.origin+'/site/signup.html?step=2'}});
-  if(error){b.classList.remove('loading');alert(error.message)}
+/* Hero */
+.hero h1{
+  font-family:var(--d);font-size:36px;font-weight:800;
+  letter-spacing:-1.2px;line-height:1.05;color:var(--ink);margin-bottom:10px;
+}
+.hero h1 em{font-style:normal;color:var(--prime-ink);position:relative;display:inline-block}
+.hero h1 em::after{
+  content:'';position:absolute;bottom:-2px;left:0;right:0;height:2.5px;
+  background:var(--prime-ink);animation:ul .7s var(--ease) .8s both;
+}
+[data-theme="night"] .hero h1 em{color:var(--prime)}
+[data-theme="night"] .hero h1 em::after{background:var(--prime)}
+@keyframes ul{from{transform:scaleX(0);transform-origin:left}to{transform:scaleX(1);transform-origin:left}}
+.hero p{font-size:14.5px;color:var(--t2);line-height:1.6;margin-bottom:28px}
+
+/* Plan banner — appears when ?next=checkout&plan=X */
+.plan-banner{
+  display:none;align-items:center;gap:10px;
+  padding:10px 14px;margin-bottom:20px;
+  background:var(--gold-bg);border:0.5px solid var(--bdr);border-radius:8px;
+  font-size:12.5px;color:var(--ink);
+}
+.plan-banner.show{display:flex}
+.plan-banner-tag{
+  font-family:var(--m);font-size:9px;font-weight:500;letter-spacing:1.4px;
+  color:var(--gold);text-transform:uppercase;
+  padding:2px 7px;background:var(--gold-bg);border-radius:3px;
+}
+
+/* Card */
+.card{
+  background:var(--s1);border:0.5px solid var(--bdr);border-radius:10px;
+  padding:36px 32px;box-shadow:var(--shadow-card);
+  animation:cardIn .5s var(--ease) both;
+}
+.step-pane{display:none}
+.step-pane.active{display:block}
+@keyframes cardIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+
+/* OAuth buttons */
+.oauth-row{display:flex;flex-direction:column;gap:10px;margin-bottom:8px}
+.oauth-btn{
+  display:flex;align-items:center;justify-content:center;gap:10px;
+  width:100%;padding:11px 16px;
+  font-family:var(--b);font-size:14px;font-weight:500;
+  background:var(--s1);color:var(--ink);
+  border:0.5px solid var(--bdr);border-radius:8px;
+  cursor:pointer;transition:all .18s var(--ease);
+}
+.oauth-btn:hover{border-color:var(--bdr-strong);background:var(--s2);transform:translateY(-1px)}
+.oauth-btn:active{transform:translateY(0)}
+.oauth-btn:disabled{opacity:0.5;cursor:not-allowed;transform:none}
+.oauth-btn svg{width:16px;height:16px;flex-shrink:0}
+.oauth-btn .spinner{
+  width:14px;height:14px;border:2px solid var(--bdr);
+  border-top-color:var(--prime);border-radius:50%;
+  animation:spin .6s linear infinite;display:none;
+}
+.oauth-btn.loading .spinner{display:inline-block}
+.oauth-btn.loading svg{display:none}
+.oauth-btn.loading .btn-label{opacity:0.6}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* Divider */
+.divider{
+  display:flex;align-items:center;gap:12px;margin:18px 0;
+  font-family:var(--m);font-size:9.5px;letter-spacing:1.5px;
+  color:var(--t4);text-transform:uppercase;
+}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--bdr)}
+
+/* Form */
+.field{margin-bottom:14px}
+.field label{
+  display:block;font-family:var(--m);font-size:9.5px;font-weight:500;
+  letter-spacing:1.5px;color:var(--t3);text-transform:uppercase;margin-bottom:6px;
+}
+.field-wrap{position:relative}
+.field input,.field select{
+  width:100%;padding:11px 14px;
+  font-family:var(--b);font-size:14px;color:var(--ink);
+  background:var(--canvas);border:0.5px solid var(--bdr);border-radius:6px;
+  outline:none;transition:all .15s var(--ease);
+  appearance:none;-webkit-appearance:none;
+}
+.field select{
+  background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12' fill='none' stroke='%236E738F' stroke-width='1.5' stroke-linecap='round'%3E%3Cpath d='M3 5l3 3 3-3'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 12px center;
+  padding-right:36px;cursor:pointer;
+}
+.field input:focus,.field select:focus{border-color:var(--prime);box-shadow:0 0 0 3px var(--prime-bg);background:var(--s1)}
+.field input::placeholder{color:var(--t4)}
+.field-pw-toggle{
+  position:absolute;right:10px;top:50%;transform:translateY(-50%);
+  background:none;border:none;cursor:pointer;
+  font-family:var(--m);font-size:9.5px;font-weight:500;letter-spacing:1px;
+  color:var(--t3);padding:4px 8px;
+}
+.field-pw-toggle:hover{color:var(--ink)}
+.field-error{font-size:11.5px;color:var(--bad);margin-top:5px;display:none;font-family:var(--b)}
+
+/* Hint text */
+.hint{
+  font-size:11.5px;color:var(--t3);margin-top:6px;
+  font-family:var(--b);line-height:1.5;
+}
+
+/* Primary submit — ink fill (not prime) for less color saturation */
+.submit{
+  width:100%;padding:13px 16px;margin-top:6px;
+  font-family:var(--b);font-size:14px;font-weight:600;letter-spacing:0.01em;
+  background:var(--ink);color:var(--bg);
+  border:none;border-radius:6px;cursor:pointer;
+  transition:all .2s var(--ease);
+}
+.submit:hover{opacity:0.92;transform:translateY(-1px);box-shadow:0 4px 16px rgba(0,0,0,0.12)}
+[data-theme="night"] .submit:hover{box-shadow:0 4px 16px rgba(0,0,0,0.4)}
+.submit:active{transform:translateY(0)}
+.submit:disabled{opacity:0.55;cursor:not-allowed;transform:none;box-shadow:none}
+
+/* Bottom CTA */
+.alt-cta{
+  text-align:center;margin-top:22px;font-size:13px;color:var(--t2);
+  padding-top:18px;border-top:0.5px solid var(--bdr);
+}
+.alt-cta a{color:var(--prime-ink);font-weight:600;cursor:pointer}
+[data-theme="night"] .alt-cta a{color:var(--prime)}
+.alt-cta a:hover{text-decoration:underline}
+
+/* Trust strip */
+.trust{
+  display:flex;justify-content:center;gap:22px;margin-top:28px;
+  font-family:var(--m);font-size:10.5px;color:var(--t3);
+  letter-spacing:1.2px;text-transform:uppercase;
+  animation:cardIn .6s var(--ease) .15s both;
+}
+.trust span{display:flex;align-items:center;gap:6px}
+.trust span::before{
+  content:'';width:5px;height:5px;border-radius:50%;
+  background:var(--t3);opacity:0.6;
+}
+
+/* Foot link */
+.foot-link{
+  text-align:center;margin-top:24px;font-size:13px;color:var(--t3);
+  animation:cardIn .6s var(--ease) .25s both;
+}
+.foot-link a{transition:color .15s}
+.foot-link a:hover{color:var(--ink)}
+
+/* Loading state for entire card */
+.card.busy{pointer-events:none;opacity:0.8}
+.busy-overlay{
+  display:none;align-items:center;justify-content:center;gap:10px;
+  margin-top:14px;padding:12px;
+  background:var(--prime-bg);border:0.5px solid var(--bdr);border-radius:6px;
+  font-size:13px;color:var(--prime-ink);font-family:var(--b);
+}
+.card.busy .busy-overlay{display:flex}
+.busy-overlay .spinner{
+  width:14px;height:14px;border:2px solid var(--bdr);
+  border-top-color:var(--prime);border-radius:50%;
+  animation:spin .6s linear infinite;
+}
+[data-theme="night"] .busy-overlay{color:var(--prime)}
+
+/* ─── Step 3: Plan picker ─── */
+.shell.wide{max-width:780px}
+.billing-toggle-row{display:flex;justify-content:center;align-items:center;gap:10px;margin-bottom:24px}
+.billing-toggle{
+  display:inline-flex;align-items:center;gap:0;padding:3px;
+  background:var(--canvas);border:0.5px solid var(--bdr);border-radius:8px;
+}
+.billing-toggle button{
+  padding:7px 16px;
+  font-family:var(--b);font-size:12px;font-weight:500;
+  background:transparent;color:var(--t2);
+  border:none;border-radius:5px;cursor:pointer;
+  transition:all .15s;
+}
+.billing-toggle button.active{
+  background:var(--s1);color:var(--ink);
+  box-shadow:0 1px 2px rgba(0,0,0,0.04);
+}
+.billing-savings{
+  font-family:var(--m);font-size:9.5px;letter-spacing:1.4px;
+  color:var(--gold);font-weight:500;text-transform:uppercase;
+}
+.billing-savings.hidden{visibility:hidden}
+
+.plan-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:18px;
+}
+.plan-card{
+  background:var(--s1);border:0.5px solid var(--bdr);border-radius:10px;
+  padding:20px 18px;cursor:pointer;transition:all .2s var(--ease);
+  position:relative;text-align:left;display:flex;flex-direction:column;
+  font-family:var(--b);
+}
+.plan-card:hover{border-color:var(--bdr-strong);transform:translateY(-1px);box-shadow:var(--shadow-card)}
+.plan-card.selected{
+  border:1px solid var(--ink);
+  box-shadow:0 4px 16px rgba(11,14,26,0.08),0 1px 2px rgba(0,0,0,0.03);
+}
+[data-theme="night"] .plan-card.selected{
+  border:1px solid var(--ink);
+  box-shadow:0 4px 16px rgba(0,0,0,0.4);
+}
+.plan-card.popular::before{
+  content:'MOST POPULAR';position:absolute;top:-9px;right:14px;
+  font-family:var(--m);font-size:8.5px;letter-spacing:1.4px;font-weight:500;
+  background:var(--gold);color:#fff;padding:3px 8px;border-radius:3px;
+}
+.plan-eyebrow{
+  font-family:var(--m);font-size:9px;letter-spacing:1.6px;font-weight:500;
+  color:var(--t3);text-transform:uppercase;margin-bottom:6px;
+}
+.plan-name{
+  font-family:var(--d);font-size:18px;font-weight:700;letter-spacing:-0.4px;
+  color:var(--ink);margin-bottom:10px;
+}
+.plan-price-wrap{display:flex;align-items:baseline;gap:4px;margin-bottom:2px}
+.plan-price{
+  font-family:var(--d);font-size:28px;font-weight:800;letter-spacing:-1.2px;
+  color:var(--ink);line-height:1;
+}
+.plan-price-unit{
+  font-family:var(--b);font-size:12px;font-weight:500;color:var(--t3);
+}
+.plan-billed{
+  font-family:var(--m);font-size:9px;letter-spacing:1.2px;
+  color:var(--t3);text-transform:uppercase;margin-top:3px;margin-bottom:14px;
+}
+.plan-features{
+  list-style:none;padding:0;margin:0 0 16px 0;
+  display:flex;flex-direction:column;gap:7px;flex:1;
+}
+.plan-features li{
+  font-size:12px;color:var(--t2);line-height:1.4;
+  display:flex;align-items:flex-start;gap:7px;
+}
+.plan-features li::before{
+  content:'';flex-shrink:0;margin-top:5px;
+  width:5px;height:5px;border-radius:50%;
+  background:var(--good);
+}
+.plan-select-btn{
+  width:100%;padding:9px;
+  font-family:var(--b);font-size:12.5px;font-weight:600;letter-spacing:0.01em;
+  background:transparent;color:var(--ink);
+  border:0.5px solid var(--bdr-strong);border-radius:6px;
+  cursor:pointer;transition:all .15s var(--ease);
+  margin-top:auto;
+}
+.plan-card:hover .plan-select-btn{border-color:var(--ink)}
+.plan-card.selected .plan-select-btn{
+  background:var(--ink);color:var(--bg);border-color:var(--ink);
+}
+
+.plan-foot{
+  text-align:center;font-size:11.5px;color:var(--t3);
+  margin:6px 0 18px;font-family:var(--b);
+}
+
+/* Step 3 main CTA — bigger than card-level select buttons */
+.step3-cta{
+  width:100%;padding:13px 16px;
+  font-family:var(--b);font-size:14px;font-weight:600;letter-spacing:0.01em;
+  background:var(--ink);color:var(--bg);
+  border:none;border-radius:6px;cursor:pointer;
+  transition:all .2s var(--ease);
+}
+.step3-cta:hover{opacity:0.92;transform:translateY(-1px);box-shadow:0 4px 16px rgba(0,0,0,0.12)}
+[data-theme="night"] .step3-cta:hover{box-shadow:0 4px 16px rgba(0,0,0,0.4)}
+.step3-cta:disabled{opacity:0.55;cursor:not-allowed;transform:none;box-shadow:none}
+
+@media(max-width:600px){
+  .plan-grid{grid-template-columns:1fr;gap:14px}
+  .shell.wide{max-width:480px}
+}
+@media(max-width:480px){
+  .card{padding:28px 22px}
+  .hero h1{font-size:30px;letter-spacing:-1px}
+  .ni{padding:0 18px}
+  main{padding:32px 18px}
+  .step-line{width:20px}
+}
+@media(prefers-reduced-motion:reduce){
+  .card,.trust,.foot-link,.hero h1 em::after{animation:none!important;opacity:1!important}
+}
+</style>
+</head>
+<body>
+
+<!-- Topbar -->
+<nav>
+  <div class="ni">
+    <a href="/" class="nl" aria-label="Castford home">
+      <svg viewBox="0 0 100 100" width="22" height="22" aria-hidden="true">
+        <path d="M50 10 L85 30 L85 70 L50 90 L15 70 L15 30 Z" fill="none" stroke="var(--logo-main)" stroke-width="1.2" style="opacity:var(--logo-outer-o)"/>
+        <path d="M50 16 L80 33 L80 67 L50 84 L20 67 L20 33 Z" fill="none" stroke="var(--logo-main)" stroke-width="2.5"/>
+        <path d="M36 47 L50 39 L64 47 L64 57 L50 65 L36 57 Z" fill="var(--logo-inner)" style="opacity:var(--logo-inner-fill)"/>
+        <path d="M36 47 L50 39 L64 47 L64 57 L50 65 L36 57 Z" fill="none" stroke="var(--logo-inner)" stroke-width="1.5"/>
+        <circle cx="50" cy="52" r="3" fill="var(--logo-core)"/>
+      </svg>
+      <span class="nl-name">Castford</span>
+    </a>
+    <div class="nr">
+      <button class="toggle" id="themeToggle" aria-label="Toggle day/night theme"></button>
+    </div>
+  </div>
+</nav>
+
+<!-- Main -->
+<main>
+  <div class="shell" id="shell">
+    <!-- Step indicator -->
+    <div class="steps" id="stepIndicator" data-energy>
+      <div class="step-dot active" data-step="1">
+        <span class="num"><span>1</span></span>
+        <span class="label">ACCOUNT</span>
+      </div>
+      <div class="step-line"></div>
+      <div class="step-dot" data-step="2">
+        <span class="num"><span>2</span></span>
+        <span class="label">WORKSPACE</span>
+      </div>
+      <div class="step-line"></div>
+      <div class="step-dot" data-step="3">
+        <span class="num"><span>3</span></span>
+        <span class="label">PLAN</span>
+      </div>
+    </div>
+
+    <!-- Plan banner (only shows if ?next=checkout) -->
+    <div class="plan-banner" id="planBanner" data-energy>
+      <span class="plan-banner-tag" id="planBannerPlan">GROWTH</span>
+      <span id="planBannerText">$1,499 / month, billed annually · 30-day money-back guarantee</span>
+    </div>
+
+    <!-- ── STEP 1 — Auth ── -->
+    <div class="card step-pane active" id="step1" data-energy>
+      <div class="hero">
+        <div class="eyebrow" id="step1Eyebrow">CREATE YOUR ACCOUNT</div>
+        <h1 id="step1Heading">Get started with <em>Castford</em>.</h1>
+        <p id="step1Sub">A clean financial planning workspace, ready in two minutes.</p>
+      </div>
+
+      <div class="oauth-row">
+        <button type="button" class="oauth-btn" id="btn-apple">
+          <span class="spinner"></span>
+          <svg viewBox="0 0 24 24"><path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z" fill="currentColor"/></svg>
+          <span class="btn-label">Sign up with Apple</span>
+        </button>
+        <button type="button" class="oauth-btn" id="btn-google">
+          <span class="spinner"></span>
+          <svg viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09a7.12 7.12 0 010-4.17V7.08H2.18a11.97 11.97 0 000 9.84l3.66-2.83z" fill="#FBBC05"/><path d="M12 4.75c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 1.09 14.97 0 12 0 7.7 0 3.99 2.47 2.18 6.07l3.66 2.84c.87-2.6 3.3-4.16 6.16-4.16z" fill="#EA4335"/></svg>
+          <span class="btn-label">Sign up with Google</span>
+        </button>
+        <button type="button" class="oauth-btn" id="btn-sso">
+          <span class="spinner"></span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2L4 6v6c0 5 3.5 9 8 10 4.5-1 8-5 8-10V6l-8-4z"/>
+            <path d="M9 12l2 2 4-4"/>
+          </svg>
+          <span class="btn-label">Sign up with SSO</span>
+        </button>
+      </div>
+
+      <div class="divider"><span>OR</span></div>
+
+      <form id="signupForm" novalidate>
+        <div class="field">
+          <label for="email">Work email</label>
+          <input type="email" id="email" name="email" autocomplete="email" required placeholder="you@company.com">
+          <div class="field-error" id="emailError">Please enter a valid email.</div>
+        </div>
+        <div class="field">
+          <label for="password">Password</label>
+          <div class="field-wrap">
+            <input type="password" id="password" name="password" autocomplete="new-password" required placeholder="At least 8 characters" minlength="8">
+            <button type="button" class="field-pw-toggle" id="togglePw">SHOW</button>
+          </div>
+          <div class="field-error" id="pwError">Password must be at least 8 characters.</div>
+          <div class="hint">8+ characters. We recommend a passphrase.</div>
+        </div>
+        <button type="submit" class="submit" id="step1Btn">Continue</button>
+      </form>
+
+      <div class="busy-overlay">
+        <div class="spinner"></div>
+        <span id="busyMsg">Creating your account…</span>
+      </div>
+
+      <div class="alt-cta">
+        Already have an account? <a href="/login" id="loginLink">Sign in →</a>
+      </div>
+    </div>
+
+    <!-- ── STEP 2 — Workspace setup ── -->
+    <div class="card step-pane" id="step2">
+      <div class="hero">
+        <div class="eyebrow" id="step2Eyebrow">LAST STEP</div>
+        <h1>Tell us about your <em>company</em>.</h1>
+        <p id="step2Sub">This sets up your Castford workspace. You can change anything later in Settings.</p>
+      </div>
+
+      <form id="companyForm" novalidate>
+        <div class="field">
+          <label for="companyName">Company name</label>
+          <input type="text" id="companyName" name="companyName" required placeholder="Acme, Inc.">
+          <div class="field-error" id="companyError">Company name is required.</div>
+        </div>
+        <div class="field">
+          <label for="industry">Industry</label>
+          <select id="industry" name="industry">
+            <option value="">Select…</option>
+            <option value="saas">SaaS / Software</option>
+            <option value="fintech">Financial Services / Fintech</option>
+            <option value="healthcare">Healthcare</option>
+            <option value="ecommerce">E-commerce / Retail</option>
+            <option value="marketplace">Marketplace</option>
+            <option value="enterprise">Enterprise / Mid-market</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+        <button type="submit" class="submit" id="companyBtn" data-default-text="Continue to workspace →">Continue to workspace →</button>
+      </form>
+
+      <div class="busy-overlay">
+        <div class="spinner"></div>
+        <span id="busyMsg2">Setting up your workspace…</span>
+      </div>
+
+      <div class="alt-cta" style="border-top:none;padding-top:14px">
+        <span style="color:var(--t3);font-size:11.5px">You're signed in as <span id="signedInEmail" style="color:var(--ink);font-weight:500">—</span></span>
+      </div>
+    </div>
+
+    <!-- ── STEP 3 — Plan picker ── -->
+    <div class="card step-pane" id="step3">
+      <div class="hero">
+        <div class="eyebrow">PICK A PLAN</div>
+        <h1>Choose your <em>plan</em>.</h1>
+        <p>30-day money-back guarantee on every plan. Cancel anytime.</p>
+      </div>
+
+      <div class="billing-toggle-row">
+        <div class="billing-toggle" role="tablist" aria-label="Billing interval">
+          <button type="button" data-interval="monthly" role="tab">Monthly</button>
+          <button type="button" data-interval="annual" class="active" role="tab">Annual</button>
+        </div>
+        <span class="billing-savings" id="annualSavings">SAVE ~17%</span>
+      </div>
+
+      <div class="plan-grid" id="planGrid">
+        <!-- Starter -->
+        <div class="plan-card" data-plan="starter" tabindex="0">
+          <div class="plan-eyebrow">STARTER</div>
+          <div class="plan-name">For early-stage finance teams</div>
+          <div class="plan-price-wrap">
+            <span class="plan-price" data-price-monthly="$599" data-price-annual="$499">$499</span>
+            <span class="plan-price-unit">/ month</span>
+          </div>
+          <div class="plan-billed" data-bill-monthly="Billed monthly" data-bill-annual="Billed annually">Billed annually</div>
+          <ul class="plan-features">
+            <li>Driver-based forecasting (1 model)</li>
+            <li>GL connect &amp; auto-sync (QuickBooks, Xero)</li>
+            <li>Up to 3 seats included</li>
+            <li>Email support</li>
+          </ul>
+          <button type="button" class="plan-select-btn">Select Starter</button>
+        </div>
+
+        <!-- Growth — most popular -->
+        <div class="plan-card popular selected" data-plan="growth" tabindex="0">
+          <div class="plan-eyebrow">GROWTH</div>
+          <div class="plan-name">For finance teams scaling fast</div>
+          <div class="plan-price-wrap">
+            <span class="plan-price" data-price-monthly="$1,799" data-price-annual="$1,499">$1,499</span>
+            <span class="plan-price-unit">/ month</span>
+          </div>
+          <div class="plan-billed" data-bill-monthly="Billed monthly" data-bill-annual="Billed annually">Billed annually</div>
+          <ul class="plan-features">
+            <li>Unlimited forecast models &amp; scenarios</li>
+            <li>Workforce planning &amp; headcount</li>
+            <li>Up to 10 seats · 1 pro pack included</li>
+            <li>Priority support · audit log</li>
+          </ul>
+          <button type="button" class="plan-select-btn">Select Growth</button>
+        </div>
+
+        <!-- Business -->
+        <div class="plan-card" data-plan="business" tabindex="0">
+          <div class="plan-eyebrow">BUSINESS</div>
+          <div class="plan-name">For multi-entity finance orgs</div>
+          <div class="plan-price-wrap">
+            <span class="plan-price" data-price-monthly="$4,799" data-price-annual="$3,999">$3,999</span>
+            <span class="plan-price-unit">/ month</span>
+          </div>
+          <div class="plan-billed" data-bill-monthly="Billed monthly" data-bill-annual="Billed annually">Billed annually</div>
+          <ul class="plan-features">
+            <li>Multi-entity consolidation</li>
+            <li>All pro packs unlocked (CFO, Controller, FP&amp;A, CEO)</li>
+            <li>Unlimited seats · SSO/SAML</li>
+            <li>Dedicated CSM · SOC 2 report</li>
+          </ul>
+          <button type="button" class="plan-select-btn">Select Business</button>
+        </div>
+      </div>
+
+      <p class="plan-foot">All plans include a 30-day money-back guarantee · No setup fees · Cancel anytime</p>
+
+      <button type="button" class="step3-cta" id="step3CtaBtn">Continue to Growth checkout →</button>
+
+      <div class="busy-overlay">
+        <div class="spinner"></div>
+        <span id="busyMsg3">Loading checkout…</span>
+      </div>
+
+      <div class="alt-cta" style="border-top:none;padding-top:14px">
+        <span style="color:var(--t3);font-size:11.5px">Workspace ready · You can change your plan later in Settings → Billing</span>
+      </div>
+    </div>
+
+    <div class="trust" data-energy>
+      <span>SOC 2 ready</span>
+      <span>256-bit AES</span>
+      <span>30-day MBG</span>
+    </div>
+
+    <div class="foot-link" data-energy><a href="/">← Back to castford.com</a></div>
+  </div>
+</main>
+
+<!-- Live infrastructure: matches castford.com auth pages -->
+<script src="/site/rain.js" defer></script>
+<script src="/site/castford-shell.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SB_URL='https://crecesswagluelvkesul.supabase.co';
+const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNyZWNlc3N3YWdsdWVsdmtlc3VsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM4MTI5NzYsImV4cCI6MjA4OTM4ODk3Nn0.IGEEYDStt-eH9Mf2G_DzqCPfruDjN8m_ORtAcmtSAZg';
+const sb = window.supabase.createClient(SB_URL, SB_KEY);
+const RD = window.location.origin + '/home';
+
+// Parse ?next=checkout&plan=X&interval=Y from URL
+const QP = new URLSearchParams(window.location.search);
+const NEXT_ACTION = QP.get('next');                    // 'checkout' or null
+const NEXT_PLAN = (QP.get('plan')||'').toLowerCase();   // starter|growth|business
+const NEXT_INTERVAL = (QP.get('interval')||'monthly').toLowerCase();
+const STRIPE_SESSION_ID = QP.get('stripe_session_id'); // legacy from old Payment Link flow
+
+// Plan price map for display only (truth lives in create-checkout edge fn)
+const PRICE_DISPLAY = {
+  starter:  { monthly: '$599 / month', annual: '$499 / month, billed annually' },
+  growth:   { monthly: '$1,799 / month', annual: '$1,499 / month, billed annually' },
+  business: { monthly: '$4,799 / month', annual: '$3,999 / month, billed annually' },
+};
+
+// Theme toggle
+document.getElementById('themeToggle').addEventListener('click', ()=>{
+  const h=document.documentElement;
+  h.dataset.theme = h.dataset.theme==='day'?'night':'day';
+  localStorage.setItem('cf-theme', h.dataset.theme);
 });
 
-// Email/password signup
-document.getElementById('signupForm').addEventListener('submit',async(e)=>{
-  e.preventDefault();
-  const em=document.getElementById('email').value.trim();
-  const pw=document.getElementById('password').value;
-  document.getElementById('emailError').style.display='none';
-  document.getElementById('pwError').style.display='none';
-  if(!em||!em.includes('@')){document.getElementById('emailError').style.display='block';return}
-  if(!pw||pw.length<8){document.getElementById('pwError').style.display='block';return}
-  const btn=document.getElementById('submitBtn');
-  btn.textContent='Creating account...';btn.disabled=true;
-  const{data,error}=await sb.auth.signUp({email:em,password:pw,options:{emailRedirectTo:window.location.origin+'/site/signup.html?step=2'}});
-  if(error){btn.textContent='Create Account';btn.disabled=false;document.getElementById('pwError').textContent=error.message;document.getElementById('pwError').style.display='block';return}
-  currentUser=data.user;
-  if(data.session){
-    // Email confirmation disabled — proceed to step 2
-    showStep(2);
-  } else {
-    // Email confirmation required
-    btn.textContent='Check your email';
-    document.getElementById('pwError').textContent='We sent a confirmation link to '+em+'. Click it to continue.';
-    document.getElementById('pwError').style.display='block';
-    document.getElementById('pwError').style.color='var(--green)';
+// ── Adjust copy + plan banner if user is heading to checkout
+function applyCheckoutContext(){
+  if (NEXT_ACTION !== 'checkout' || !NEXT_PLAN) return;
+  const planLabel = NEXT_PLAN.charAt(0).toUpperCase() + NEXT_PLAN.slice(1);
+  // Banner
+  const banner = document.getElementById('planBanner');
+  banner.classList.add('show');
+  document.getElementById('planBannerPlan').textContent = planLabel.toUpperCase();
+  const priceText = (PRICE_DISPLAY[NEXT_PLAN] && PRICE_DISPLAY[NEXT_PLAN][NEXT_INTERVAL])
+    || planLabel + ' plan';
+  document.getElementById('planBannerText').textContent = priceText + ' · 30-day money-back guarantee';
+  // Step 1 copy
+  document.getElementById('step1Eyebrow').textContent = 'STEP 1 OF 3 · CREATE ACCOUNT';
+  document.getElementById('step1Heading').innerHTML = 'Create your <em>Castford</em> account.';
+  document.getElementById('step1Sub').textContent = 'Quick sign-up — workspace setup and plan are next.';
+  // Step 2 advances to step 3, so its button stays neutral; the plan picker will show pre-selected
+  document.getElementById('step2Sub').textContent = 'Tell us about your company. Plan selection is next.';
+}
+applyCheckoutContext();
+
+// ── Step navigation
+function showStep(n){
+  document.querySelectorAll('.step-pane').forEach(p=>p.classList.remove('active'));
+  document.getElementById('step'+n).classList.add('active');
+  document.querySelectorAll('.step-dot').forEach(d=>{
+    const num = +d.dataset.step;
+    d.classList.remove('active','done');
+    if (num < n) d.classList.add('done');
+    else if (num === n) d.classList.add('active');
+  });
+  // Step 3 needs wider shell to fit 3 plan cards
+  const shell = document.getElementById('shell');
+  if (shell) shell.classList.toggle('wide', n === 3);
+}
+function setBusy(stepEl, busy, msg){
+  stepEl.classList.toggle('busy', busy);
+  if (msg){
+    const sel = stepEl.querySelector('.busy-overlay span');
+    if (sel) sel.textContent = msg;
+  }
+}
+
+// ── Existing-session triage on load
+sb.auth.getSession().then(async ({data:{session}})=>{
+  if (!session) return; // anonymous → run wizard normally
+  // Show "signed in as" line in step 2
+  document.getElementById('signedInEmail').textContent = session.user.email || session.user.id;
+
+  // verify-session is idempotent + auto-provisions an org if missing
+  let hasOrg = false;
+  try {
+    const r = await fetch(SB_URL+'/functions/v1/verify-session', {
+      method: 'POST',
+      headers: { 'Content-Type':'application/json', 'Authorization':'Bearer '+session.access_token }
+    });
+    if (r.ok){ const d = await r.json(); hasOrg = !!(d.org && d.org.id); }
+  } catch(_){}
+
+  // Existing user WITH org coming from /pricing with next=checkout → straight to Stripe
+  if (hasOrg && NEXT_ACTION === 'checkout' && NEXT_PLAN){
+    setBusy(document.getElementById('step1'), true, 'Loading checkout…');
+    try {
+      const cr = await fetch(SB_URL+'/functions/v1/create-checkout', {
+        method:'POST',
+        headers:{'Content-Type':'application/json','Authorization':'Bearer '+session.access_token,'apikey':SB_KEY},
+        body: JSON.stringify({ plan: NEXT_PLAN, interval: NEXT_INTERVAL })
+      });
+      const cd = await cr.json();
+      if (cr.ok && cd.url){ window.location.href = cd.url; return; }
+      alert('Could not start checkout. ' + (cd.error||cd.detail||''));
+      window.location.href = '/billing';
+    } catch(err){ window.location.href = '/pricing'; }
+    return;
+  }
+
+  // Existing user WITH org, no checkout intent → home
+  if (hasOrg){ window.location.href = RD; return; }
+
+  // Has session but no org yet → step 2 directly
+  showStep(2);
+});
+
+// ── Apple OAuth
+document.getElementById('btn-apple').addEventListener('click', async ()=>{
+  const b = document.getElementById('btn-apple');
+  b.classList.add('loading'); b.disabled=true;
+  // OAuth must round-trip back to /signup so we can finish the wizard
+  const back = '/signup' + window.location.search;
+  const redirectTo = window.location.origin + back;
+  const { error } = await sb.auth.signInWithOAuth({ provider:'apple', options:{ redirectTo } });
+  if (error){ b.classList.remove('loading'); b.disabled=false;
+    alert('Apple sign-up is temporarily unavailable. Please try email or Google.');
   }
 });
 
-// If returning from OAuth with step=2
-if(urlParams.get('step')==='2'){showStep(2)}
-
-// Company info form — calls onboard edge function
-document.getElementById('companyForm').addEventListener('submit',async(e)=>{
-  e.preventDefault();
-  const name=document.getElementById('companyName').value.trim();
-  const industry=document.getElementById('industry').value;
-  if(!name)return;
-  const btn=document.getElementById('companyBtn');
-  btn.textContent='Setting up your workspace...';btn.disabled=true;
-  const{data:{session}}=await sb.auth.getSession();
-  if(!session){alert('Session expired. Please sign in again.');window.location.href='/login';return}
-  try{
-    const r=await fetch(SB_URL+'/functions/v1/onboard',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+session.access_token},body:JSON.stringify({company_name:name,industry:industry})});
-    const d=await r.json();
-    if(!r.ok){btn.textContent='Continue to Dashboard';btn.disabled=false;alert(d.error||'Setup failed');return}
-    // If user has a stripe_session_id, verify it now
-    if(stripeSessionId){
-      try{await fetch(SB_URL+'/functions/v1/verify-checkout',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+session.access_token},body:JSON.stringify({session_id:stripeSessionId})})}catch{}
-    }
-    window.location.href=RD;
-  }catch(err){btn.textContent='Continue to Dashboard';btn.disabled=false;alert('Network error. Please try again.')}
+// ── Google OAuth
+document.getElementById('btn-google').addEventListener('click', async ()=>{
+  const b = document.getElementById('btn-google');
+  b.classList.add('loading'); b.disabled=true;
+  const back = '/signup' + window.location.search;
+  const redirectTo = window.location.origin + back;
+  const { error } = await sb.auth.signInWithOAuth({ provider:'google', options:{ redirectTo } });
+  if (error){ b.classList.remove('loading'); b.disabled=false;
+    alert('Google sign-up is temporarily unavailable. Please try email or Apple.');
+  }
 });
 
-document.getElementById('togglePw').addEventListener('click',()=>{const p=document.getElementById('password'),b=document.getElementById('togglePw');p.type=p.type==='password'?'text':'password';b.textContent=p.type==='password'?'SHOW':'HIDE'});
+// ── SSO / SAML — for enterprise customers using Okta, Azure AD, Google Workspace SAML, etc.
+document.getElementById('btn-sso').addEventListener('click', async ()=>{
+  const b = document.getElementById('btn-sso');
+  const email = prompt('Enter your work email — we\'ll route you to your company\'s SSO provider:');
+  if (!email) return;
+  const at = email.indexOf('@');
+  if (at < 1 || at === email.length-1){
+    alert('Please enter a valid work email (e.g., you@company.com).'); return;
+  }
+  const domain = email.slice(at+1).trim().toLowerCase();
+  if (!domain.includes('.')){ alert('Please enter a valid work email.'); return; }
+  b.classList.add('loading'); b.disabled=true;
+  const back = '/signup' + window.location.search;
+  const redirectTo = window.location.origin + back;
+  try {
+    const { data, error } = await sb.auth.signInWithSSO({ domain, options:{ redirectTo } });
+    if (error){
+      b.classList.remove('loading'); b.disabled=false;
+      const msg = String(error.message||'').toLowerCase();
+      if (msg.includes('not found') || msg.includes('no sso') || String(error.code||'').includes('sso')){
+        alert('No SSO is configured for ' + domain + '. Use Apple, Google, or email/password — or contact your admin to set up SAML SSO.');
+      } else {
+        alert('SSO sign-up failed: ' + (error.message || 'Unknown error'));
+      }
+      return;
+    }
+    if (data && data.url){ window.location.href = data.url; return; }
+    b.classList.remove('loading'); b.disabled=false;
+    alert('SSO did not return a redirect URL. Please try again or contact your admin.');
+  } catch(err){
+    b.classList.remove('loading'); b.disabled=false;
+    alert('SSO is currently unavailable. Please use Apple, Google, or email/password.');
+  }
+});
+
+// ── Step 1 form (email + password)
+document.getElementById('signupForm').addEventListener('submit', async (e)=>{
+  e.preventDefault();
+  const em = document.getElementById('email').value.trim();
+  const pw = document.getElementById('password').value;
+  const emailErr = document.getElementById('emailError');
+  const pwErr = document.getElementById('pwError');
+  emailErr.style.display='none'; pwErr.style.display='none';
+  if (!em || !em.includes('@')){ emailErr.style.display='block'; return; }
+  if (!pw || pw.length < 8){ pwErr.textContent='Password must be at least 8 characters.'; pwErr.style.display='block'; return; }
+  const btn = document.getElementById('step1Btn');
+  btn.textContent='Creating account…'; btn.disabled=true;
+  const { data, error } = await sb.auth.signUp({ email: em, password: pw });
+  if (error){
+    btn.textContent='Continue'; btn.disabled=false;
+    pwErr.textContent = error.message || 'Sign-up failed.';
+    pwErr.style.display='block';
+    return;
+  }
+  // Show "signed in as" and advance to step 2
+  document.getElementById('signedInEmail').textContent = em;
+  showStep(2);
+});
+
+// ── Step 2 form (company info → onboard → optionally checkout)
+document.getElementById('companyForm').addEventListener('submit', async (e)=>{
+  e.preventDefault();
+  const name = document.getElementById('companyName').value.trim();
+  const industry = document.getElementById('industry').value;
+  const errEl = document.getElementById('companyError');
+  errEl.style.display='none';
+  if (!name){ errEl.style.display='block'; return; }
+  const btn = document.getElementById('companyBtn');
+  const defaultText = btn.getAttribute('data-default-text') || 'Continue to workspace →';
+  const step2 = document.getElementById('step2');
+  setBusy(step2, true, 'Setting up your workspace…');
+  btn.disabled=true;
+
+  const { data:{session} } = await sb.auth.getSession();
+  if (!session){
+    setBusy(step2, false); btn.textContent=defaultText; btn.disabled=false;
+    alert('Session expired. Please sign in again.');
+    window.location.href='/login';
+    return;
+  }
+
+  try {
+    const r = await fetch(SB_URL+'/functions/v1/onboard', {
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+session.access_token},
+      body: JSON.stringify({ orgName: name, industry })
+    });
+    const d = await r.json();
+    if (!r.ok){
+      setBusy(step2, false); btn.textContent=defaultText; btn.disabled=false;
+      alert(d.error || 'Setup failed.');
+      return;
+    }
+
+    // Legacy: stripe_session_id from old Payment Link flow (already paid before signup)
+    if (STRIPE_SESSION_ID){
+      try { await fetch(SB_URL+'/functions/v1/verify-checkout', {
+        method:'POST',
+        headers:{'Content-Type':'application/json','Authorization':'Bearer '+session.access_token},
+        body: JSON.stringify({ session_id: STRIPE_SESSION_ID })
+      }); } catch(_){}
+      // Already paid → no plan-picker needed, go home
+      window.location.href = RD;
+      return;
+    }
+
+    // ── Workspace provisioned. Advance to Step 3 (plan picker) regardless of next action.
+    //    Step 3 will pre-select if NEXT_PLAN is set and own the checkout call.
+    setBusy(step2, false);
+    btn.textContent=defaultText; btn.disabled=false;
+    showStep(3);
+    syncStep3State(); // updates pre-selection + button label from URL params
+  } catch(err){
+    setBusy(step2, false); btn.textContent=defaultText; btn.disabled=false;
+    alert('Network error. Please try again.');
+  }
+});
+
+// Show/hide password
+document.getElementById('togglePw').addEventListener('click', ()=>{
+  const p = document.getElementById('password');
+  const b = document.getElementById('togglePw');
+  p.type = p.type==='password'?'text':'password';
+  b.textContent = p.type==='password'?'SHOW':'HIDE';
+});
+
+// ────────────────────────────────────────────────────────────────────
+// ── Step 3: Plan picker
+// ────────────────────────────────────────────────────────────────────
+
+// In-memory state
+const PLAN_STATE = {
+  plan: (NEXT_PLAN && ['starter','growth','business'].includes(NEXT_PLAN)) ? NEXT_PLAN : 'growth',
+  interval: NEXT_INTERVAL === 'monthly' ? 'monthly' : 'annual'
+};
+
+function planLabel(p){ return p.charAt(0).toUpperCase() + p.slice(1); }
+
+// Sync UI from PLAN_STATE
+function syncStep3State(){
+  // Plan card selection
+  document.querySelectorAll('.plan-card').forEach(card=>{
+    const isSel = card.dataset.plan === PLAN_STATE.plan;
+    card.classList.toggle('selected', isSel);
+  });
+  // Billing toggle
+  document.querySelectorAll('.billing-toggle button').forEach(btn=>{
+    btn.classList.toggle('active', btn.dataset.interval === PLAN_STATE.interval);
+  });
+  // Annual savings badge: hide on monthly
+  document.getElementById('annualSavings').classList.toggle('hidden', PLAN_STATE.interval !== 'annual');
+  // Each plan card: update price + billing line
+  document.querySelectorAll('.plan-card').forEach(card=>{
+    const priceEl = card.querySelector('.plan-price');
+    const billEl = card.querySelector('.plan-billed');
+    if (PLAN_STATE.interval === 'monthly'){
+      priceEl.textContent = priceEl.dataset.priceMonthly;
+      billEl.textContent = billEl.dataset.billMonthly;
+    } else {
+      priceEl.textContent = priceEl.dataset.priceAnnual;
+      billEl.textContent = billEl.dataset.billAnnual;
+    }
+  });
+  // CTA button text
+  const cta = document.getElementById('step3CtaBtn');
+  cta.textContent = 'Continue to ' + planLabel(PLAN_STATE.plan) + ' checkout →';
+}
+
+// Plan card clicks (delegated)
+document.getElementById('planGrid').addEventListener('click', (e)=>{
+  const card = e.target.closest('.plan-card');
+  if (!card) return;
+  PLAN_STATE.plan = card.dataset.plan;
+  syncStep3State();
+});
+// Keyboard accessibility
+document.getElementById('planGrid').addEventListener('keydown', (e)=>{
+  if (e.key !== 'Enter' && e.key !== ' ') return;
+  const card = e.target.closest('.plan-card');
+  if (!card) return;
+  e.preventDefault();
+  PLAN_STATE.plan = card.dataset.plan;
+  syncStep3State();
+});
+
+// Billing toggle
+document.querySelectorAll('.billing-toggle button').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    PLAN_STATE.interval = btn.dataset.interval;
+    syncStep3State();
+  });
+});
+
+// Step 3 CTA — call create-checkout with current selection, redirect to Stripe
+document.getElementById('step3CtaBtn').addEventListener('click', async ()=>{
+  const cta = document.getElementById('step3CtaBtn');
+  const step3 = document.getElementById('step3');
+  const orig = cta.textContent;
+  cta.disabled = true;
+  setBusy(step3, true, 'Loading checkout…');
+  const { data:{session} } = await sb.auth.getSession();
+  if (!session){
+    setBusy(step3, false); cta.disabled=false; cta.textContent=orig;
+    alert('Session expired. Please sign in again.');
+    window.location.href='/login';
+    return;
+  }
+  try {
+    const cr = await fetch(SB_URL+'/functions/v1/create-checkout', {
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+session.access_token,'apikey':SB_KEY},
+      body: JSON.stringify({ plan: PLAN_STATE.plan, interval: PLAN_STATE.interval })
+    });
+    const cd = await cr.json();
+    if (cr.ok && cd.url){ window.location.href = cd.url; return; }
+    console.error('[signup] create-checkout failed:', cd);
+    setBusy(step3, false); cta.disabled=false; cta.textContent=orig;
+    alert('Could not start checkout. ' + (cd.error||cd.detail||'Try again or contact support.'));
+  } catch(err){
+    console.error('[signup] create-checkout network error:', err);
+    setBusy(step3, false); cta.disabled=false; cta.textContent=orig;
+    alert('Network error. Please try again.');
+  }
+});
+
+// Initial sync (in case user lands directly on step 3 due to existing org)
+syncStep3State();
 </script>
+
+<!-- Energy system loads last so it can pick up all [data-energy] elements -->
 <script src="/site/castford-energy.js" defer></script>
+
 </body>
 </html>
